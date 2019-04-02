@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * File Utilities usually used inside of compiler
+ * File Utilities used in this project
  * 
  * @author Yong Zhu
  * @since 1.0.0
@@ -28,6 +28,11 @@ public class FrogFileUtils {
 
 	private FrogFileUtils() {
 		// default constructor
+	}
+
+	public static boolean deleteFile(String fileFullPath) {
+		File file = new File(fileFullPath);
+		return file.delete(); // NOSONAR
 	}
 
 	public static void writeFile(String fileFullPath, byte[] byteArry) {

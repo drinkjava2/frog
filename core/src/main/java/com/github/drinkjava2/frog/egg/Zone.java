@@ -32,13 +32,25 @@ public class Zone implements Serializable {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
+		if (this.x < 0)
+			this.x = 0;
+		if (this.y < 0)
+			this.y = 0;
+		if (this.x > Egg.BRAIN_WIDTH)
+			this.x = Egg.BRAIN_WIDTH;
+		if (this.y > Egg.BRAIN_WIDTH)
+			this.y = Egg.BRAIN_WIDTH;
+	}
+
+	public Zone(Zone z) {
+		this.x = z.x;
+		this.y = z.y;
+		this.radius = z.radius;
 	}
 
 	public boolean nearby(Zone z) {
 		float dist = radius + z.radius;
-		if (Math.abs(x - z.x) < dist && Math.abs(y - z.y) < dist)
-			return true;
-		return false;
+		return (Math.abs(x - z.x) < dist && Math.abs(y - z.y) < dist);
 	}
 
 	public int roundX() {

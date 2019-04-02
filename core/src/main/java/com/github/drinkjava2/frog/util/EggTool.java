@@ -40,17 +40,15 @@ public class EggTool {
 	 */
 	public static void layEggs(Env env) {
 		sortFrogsOrderByEnergyDesc(env);
-		System.out.print("First frog energy=" + env.frogs.get(0).energy);
+		System.out.print("First frog has " + env.frogs.get(0).cellGroups.length + " cellgroups, energy="
+				+ env.frogs.get(0).energy);
 		System.out.print(",  Last frog energy=" + env.frogs.get(env.frogs.size() - 1).energy + ",  ");
-		for (Frog frog : env.frogs) {
-			System.out.print(frog.energy + ",");
-		}
-		System.out.println();
 		try {
 			List<Egg> newEggs = new ArrayList<Egg>();
 			for (int i = 0; i < env.EGG_QTY; i++)
-				newEggs.add(env.frogs.get(i).layEgg());
-
+				newEggs.add(  new Egg(env.frogs.get(i), true));
+			System.out.print(",  EggCellGroups="+newEggs.get(0).cellGroups.length);
+ 
 			if (JSON_FILE_FORMAT) {
 				String newEggsString = JSON.toJSONString(newEggs);
 				FrogFileUtils.writeFile(Application.CLASSPATH + "eggs.json", newEggsString, "utf-8");
@@ -62,7 +60,7 @@ public class EggTool {
 			}
 			env.eggs = newEggs;
 			System.out
-					.println("Saved " + env.eggs.size() + " eggs to file '" + Application.CLASSPATH + "eggs.ser" + "'");
+					.println(" Saved " + env.eggs.size() + " eggs to file '" + Application.CLASSPATH + "eggs.ser" + "'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}
@@ -70,6 +68,7 @@ public class EggTool {
 
 	private static void sortFrogsOrderByEnergyDesc(Env env) {
 		Collections.sort(env.frogs, new Comparator<Frog>() {
+
 			public int compare(Frog a, Frog b) {
 				if (a.energy > b.energy)
 					return -1;
@@ -79,6 +78,11 @@ public class EggTool {
 					return 1;
 			}
 		});
+	}
+
+	public static void deleteEggs() {
+		FrogFileUtils.deleteFile(Application.CLASSPATH + "eggs.json");
+		FrogFileUtils.deleteFile(Application.CLASSPATH + "eggs.ser");
 	}
 
 	/**
@@ -109,11 +113,11 @@ public class EggTool {
 						"Loaded " + env.eggs.size() + " eggs from file '" + Application.CLASSPATH + "eggs.ser" + "'.");
 				eggsInputStream.close();
 			} catch (Exception e) {
-				errorfound = true; 
+				errorfound = true;
 			}
 		}
 		if (errorfound) {
-			System.out.println("No eggs files ' " + Application.CLASSPATH + " found, created " + env.EGG_QTY
+			System.out.println("No eggs files in path '" + Application.CLASSPATH + "' found, created " + env.EGG_QTY
 					+ " new eggs to do test.");
 			env.eggs = new ArrayList<Egg>();
 			for (int i = 0; i < env.EGG_QTY; i++)

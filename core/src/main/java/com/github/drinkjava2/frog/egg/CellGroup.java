@@ -11,6 +11,7 @@
 package com.github.drinkjava2.frog.egg;
 
 import java.io.Serializable;
+import java.util.Random;
 
 /**
  * CellGroup represents a bunch of similar nerve cells <br/>
@@ -33,8 +34,43 @@ public class CellGroup implements Serializable {
 	public float cellInputRadius; // input radius of each cell
 	public float cellOutputRadius; // output radius of each cell
 
-	public int cellQty; // how many nerve cells in this CellGroup
+	public float cellQty; // how many nerve cells in this CellGroup
 
-	public int inputQtyPerCell; // input qty per cell
-	public int outputQtyPerCell; // output qty per cell
+	public float inputQtyPerCell; // input qty per cell
+	public float outputQtyPerCell; // output qty per cell
+
+	public long fat = 0; // if activate times=0 ,this cellgroup may be ignored in egg
+	public boolean inherit = false; // set to true if is inherited from egg, not by random
+
+	private static final Random r = new Random();
+
+	public CellGroup() {
+
+	}
+
+	public CellGroup(CellGroup g) {// clone old CellGroup
+		groupInputZone = new Zone(g.groupInputZone);
+		groupOutputZone = new Zone(g.groupOutputZone);
+		cellInputRadius = g.cellInputRadius;
+		cellOutputRadius = g.cellOutputRadius;
+		cellQty = g.cellQty;
+		inputQtyPerCell = g.inputQtyPerCell;
+		outputQtyPerCell = g.outputQtyPerCell;
+		fat = g.fat;
+		inherit = g.inherit;
+	}
+
+	public CellGroup(int brainWidth, int randomCellQtyPerGroup, int randomInputQtyPerCell, int randomOutQtyPerCell) {
+		inherit = false;
+		groupInputZone = new Zone(r.nextFloat() * brainWidth, r.nextFloat() * brainWidth,
+				(float) (r.nextFloat() * brainWidth * .01));
+		groupOutputZone = new Zone(r.nextFloat() * brainWidth, r.nextFloat() * brainWidth,
+				(float) (r.nextFloat() * brainWidth * .01));
+		cellQty = 1 + r.nextInt(randomCellQtyPerGroup);
+		cellInputRadius = (float) (0.001 + r.nextFloat() * 2);
+		cellOutputRadius = (float) (0.001 + r.nextFloat() * 2);
+		inputQtyPerCell = 1 + r.nextInt(randomInputQtyPerCell);
+		outputQtyPerCell = 1 + r.nextInt(randomOutQtyPerCell);
+	}
+
 }

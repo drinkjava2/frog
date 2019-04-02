@@ -18,7 +18,7 @@ import com.github.drinkjava2.frog.egg.Zone;
  * @author Yong Zhu
  * @since 1.0.0
  */
-public class Input  extends Zone{ 
-	public float energy;
+@SuppressWarnings("serial")
+public class Input extends Zone {
 	public Cell cell;
 }

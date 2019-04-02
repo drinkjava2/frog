@@ -18,7 +18,7 @@ import com.github.drinkjava2.frog.egg.Zone;
  * @author Yong Zhu
  * @since 1.0.0
  */
+@SuppressWarnings("serial")
 public class Output extends Zone {
-	public float energy;
 	public Cell cell;
 }
