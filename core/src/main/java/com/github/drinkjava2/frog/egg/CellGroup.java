@@ -13,6 +13,8 @@ package com.github.drinkjava2.frog.egg;
 import java.io.Serializable;
 import java.util.Random;
 
+import com.github.drinkjava2.frog.brain.Zone;
+
 /**
  * CellGroup represents a bunch of similar nerve cells <br/>
  * 
@@ -23,7 +25,7 @@ import java.util.Random;
  * 模拟一公一母两个蛋受精，CellGroup叠加也许很fun,这样可以将不同环境训练出的蛋叠加成一个。但现在暂时不考虑。
  * 
  * @author Yong Zhu
- * @since 1.0.0
+ * @since 1.0
  */
 public class CellGroup implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -60,7 +62,7 @@ public class CellGroup implements Serializable {
 		inherit = g.inherit;
 	}
 
-	public CellGroup(int brainWidth, int randomCellQtyPerGroup, int randomInputQtyPerCell, int randomOutQtyPerCell) {
+	public CellGroup(float brainWidth, int randomCellQtyPerGroup, int randomInputQtyPerCell, int randomOutQtyPerCell) {
 		inherit = false;
 		groupInputZone = new Zone(r.nextFloat() * brainWidth, r.nextFloat() * brainWidth,
 				(float) (r.nextFloat() * brainWidth * .01));

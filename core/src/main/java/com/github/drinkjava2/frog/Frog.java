@@ -21,47 +21,35 @@ import javax.imageio.ImageIO;
 
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Input;
+import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.Output;
+import com.github.drinkjava2.frog.brain.Zone;
 import com.github.drinkjava2.frog.egg.CellGroup;
 import com.github.drinkjava2.frog.egg.Egg;
-import com.github.drinkjava2.frog.egg.Zone;
-import com.github.drinkjava2.frog.env.Application;
-import com.github.drinkjava2.frog.env.Env;
 
 /**
- * Frog = brain + body, but now let's only focus on brain, ignore body
+ * Frog = brain + organ, but now let's only focus on brain, organs are hard
+ * coded in egg
  * 
- * 为了简化模型，这个类里出现多个固定数值的编码，以后要改进成可以可以放在蛋里遗传进化的动态数值，先让生命延生是第一步，优化是以后的事
+ * 青蛙由脑细胞和器官组成，目前脑细胞可以变异、进化、遗传，以由电脑自动生成神经网络，但是器官在蛋里硬编码，不许进化，将来可以考虑器官的进化
  * 
  * @author Yong Zhu
- * @since 1.0.0
+ * @since 1.0
  */
 public class Frog {
 
 	public CellGroup[] cellGroups;
 
 	/** brain cells */
-	public List<Cell> cells = new ArrayList<Cell>();
+	public List<Cell> cells = new ArrayList<>();
 
-	/** 视觉细胞的输入区在脑中的坐标，随便取一个区就可以了，以后再考虑进化成两个眼睛 */
-	public Zone eye = new Zone(50, 250, 50);
+	/** organs */
+	public List<Organ> organs = new ArrayList<>();
 
-	/** 饥饿的感收区在脑中的坐标，先随便取就可以了，以后再考虑放到蛋里去进化 */
-	public Zone hungry = new Zone(300, 100, 100);
-
-	/** 进食奖励的感收区在脑中的坐标，先随便取就可以了，以后再考虑放到蛋里去进化 */
-	public Zone happy = new Zone(300, 600, 100);
-
-	/** 运动细胞的输入区在脑中的坐标，先随便取就可以了，以后再考虑放到蛋里去进化 */
-	public Zone moveDown = new Zone(700, 100, 40); // 屏幕y坐标是向下的
-	public Zone moveUp = new Zone(700, 400, 40);
-	public Zone moveLeft = new Zone(650, 250, 40);
-	public Zone moveRight = new Zone(750, 250, 40);
-
-	public int x;
-	public int y;
-	public long energy = 10000; 
-	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与任何计算，以节省时间
+	public int x; // frog在env中的x坐标
+	public int y; // frog在env中的y坐标
+	public long energy = 10000; // 能量为0则死掉
+	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与任何计算和显示，以节省时间
 
 	static final Random r = new Random();
 	static Image frogImg;
@@ -76,118 +64,54 @@ public class Frog {
 	public Frog(int x, int y, Egg egg) {
 		this.x = x;
 		this.y = y;
-		if (egg.cellGroups == null)
-			throw new IllegalArgumentException("Illegal egg cellgroups argument:" + egg.cellGroups);
 
-		cellGroups = new CellGroup[egg.cellGroups.length];
-		for (int k = 0; k < egg.cellGroups.length; k++) {
-			CellGroup g = egg.cellGroups[k];
-			cellGroups[k] = new CellGroup(g);
-			for (int i = 0; i < g.cellQty; i++) {// 开始根据蛋来创建脑细胞
-				Cell c = new Cell();
-				c.group = k;
-				int cellQTY = Math.round(g.inputQtyPerCell);
-				c.inputs = new Input[cellQTY];
-				for (int j = 0; j < cellQTY; j++) {
-					c.inputs[j] = new Input();
-					c.inputs[j].cell = c;
-					Zone.copyXY(randomPosInZone(g.groupInputZone), c.inputs[j]);
-					c.inputs[j].radius = g.cellInputRadius;
+		// Brain cells
+		if (egg.cellGroups != null) {
+			cellGroups = new CellGroup[egg.cellGroups.length];
+			for (int k = 0; k < egg.cellGroups.length; k++) {
+				CellGroup g = egg.cellGroups[k];
+				cellGroups[k] = new CellGroup(g);
+				for (int i = 0; i < g.cellQty; i++) {// 开始根据蛋来创建脑细胞
+					Cell c = new Cell();
+					c.group = k;
+					int cellQTY = Math.round(g.inputQtyPerCell);
+					c.inputs = new Input[cellQTY];
+					for (int j = 0; j < cellQTY; j++) {
+						c.inputs[j] = new Input();
+						c.inputs[j].cell = c;
+						Zone.copyXY(randomPosInZone(g.groupInputZone), c.inputs[j]);
+						c.inputs[j].radius = g.cellInputRadius;
+					}
+					cellQTY = Math.round(g.outputQtyPerCell);
+					c.outputs = new Output[cellQTY];
+					for (int j = 0; j < cellQTY; j++) {
+						c.outputs[j] = new Output();
+						c.outputs[j].cell = c;
+						Zone.copyXY(randomPosInZone(g.groupOutputZone), c.outputs[j]);
+						c.outputs[j].radius = g.cellOutputRadius;
+					}
+					cells.add(c);
 				}
-				cellQTY = Math.round(g.outputQtyPerCell);
-				c.outputs = new Output[cellQTY];
-				for (int j = 0; j < cellQTY; j++) {
-					c.outputs[j] = new Output();
-					c.outputs[j].cell = c;
-					Zone.copyXY(randomPosInZone(g.groupOutputZone), c.outputs[j]);
-					c.outputs[j].radius = g.cellOutputRadius;
-				}
-				cells.add(c);
 			}
-		} 
+		}
+
+		for (Organ org : egg.organs)
+			organs.add(org.newCopy());
+
 	}
 
-	private int goUp = 0;
-	private int goDown = 0;
-	private int goLeft = 0;
-	private int goRight = 0;
-
-	/** Active a frog, if frog is dead return false */
-	public boolean active(Env env) {
+	public boolean active(Env v) {
+		energy -= 20;
 		if (!alive)
 			return false;
-		energy -= 20;
 		if (energy < 0) {
 			alive = false;
 			return false;
 		}
 
-		for (Cell cell : cells) {
-			if (energy < 10000) // in hungry
-				for (Input input : cell.inputs) {
-					if (input.nearby(hungry)) { 
-						if (cell.energy < 100)
-							cell.energy++;
-					}
-				}
-
-			for (Output output : cell.outputs) { // hungry drive moves
-				if (goUp < 1 && cell.energy > 10 && moveUp.nearby(output)) {
-					cellGroups[cell.group].fat++;
-					goUp++;
-					if (cell.energy > 0)
-						cell.energy--;
-				}
-				if (goDown < 1 && cell.energy > 10 && moveDown.nearby(output)) {
-					cellGroups[cell.group].fat++;
-					goDown++;
-					if (cell.energy > 0)
-						cell.energy--;
-				}
-				if (goLeft < 1 && cell.energy > 10 && moveLeft.nearby(output)) {
-					cellGroups[cell.group].fat++;
-					goLeft++;
-					if (cell.energy > 0)
-						cell.energy--;
-				}
-				if (goRight < 1 && cell.energy > 10 && moveRight.nearby(output)) {
-					cellGroups[cell.group].fat++;
-					goRight++;
-					if (cell.energy > 0)
-						cell.energy--;
-				}
-			}
-		}
-		moveAndEat(env);
+		for (Organ o : organs)
+			o.active(this);
 		return alive;
-	}
-
-	/** 如果青蛙位置与food重合，吃掉它 */
-	private void moveAndEat(Env env) {
-		if (!alive)
-			return;
-		x = x + Math.round(goRight - goLeft);
-		y = y + Math.round(goUp - goDown);
-
-		goUp = 0;// 方向重置
-		goDown = 0;
-		goLeft = 0;
-		goRight = 0;
-		if (x < 0 || x >= env.ENV_XSIZE || y < 0 || y >= env.ENV_YSIZE) {// 越界者死！
-			alive = false;
-			return;
-		}
-
-		boolean eatedFood = false;
-		if (env.foods[x][y] > 0) {
-			env.foods[x][y] = 0;
-			energy = energy + 1000;// 吃掉food，能量境加
-			eatedFood = true;
-		}
-		// 奖励
-		if (eatedFood) {
-
-		}
 	}
 
 	private static Zone randomPosInZone(Zone z) {

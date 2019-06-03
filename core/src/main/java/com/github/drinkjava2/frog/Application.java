@@ -1,4 +1,4 @@
-package com.github.drinkjava2.frog.env;
+package com.github.drinkjava2.frog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,8 +7,13 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import com.github.drinkjava2.frog.brain.BrainPicture;
+
 /**
  * Application's main method start the program
+ * 
+ * @author Yong Zhu
+ * @since 1.0
  */
 public class Application {
 	/** SHOW first frog's brain structure */
@@ -22,33 +27,35 @@ public class Application {
 	}
 	public static JFrame mainFrame = new JFrame();
 	public static Env env = new Env();
-	public static BrainStructure brainStructure = new BrainStructure();
+	public static BrainPicture brainStructure = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_WIDTH,
+			Env.FROG_BRAIN_DISP_WIDTH);
 
 	public static void main(String[] args) throws InterruptedException {
 		mainFrame.setLayout(null);
-		if (SHOW_FIRST_FROG_BRAIN)
-			mainFrame.setSize(1320, 840); // 窗口大小
-		else
-			mainFrame.setSize(550, 570); // 窗口大小
+		mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100); // 窗口大小
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 关闭时退出程序
 		mainFrame.add(env);
 
 		mainFrame.add(brainStructure);
 
 		JButton button = new JButton("Show first frog's brain");
-		button.setVisible(true);
-		button.setLayout(null);// 空布局
-		button.setBounds(150, 450, 180, 30);
+		int buttonWidth = 180;
+		int buttonHeight = 22;
+		int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
+		button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
 		ActionListener al = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				SHOW_FIRST_FROG_BRAIN = !SHOW_FIRST_FROG_BRAIN;
 				if (SHOW_FIRST_FROG_BRAIN) {
 					button.setText("Hide first frog's brain");
-					mainFrame.setSize(1320, 840);
+					int y = Env.ENV_HEIGHT + 100;
+					if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
+						y = Env.FROG_BRAIN_DISP_WIDTH + 41;
+					mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
 				} else {
 					button.setText("Show first frog's brain");
-					mainFrame.setSize(550, 570);
+					mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100);
 				}
 			}
 		};
@@ -56,17 +63,15 @@ public class Application {
 		mainFrame.add(button);
 
 		JButton stopButton = new JButton("Pause");
-		stopButton.setVisible(true);
-		stopButton.setLayout(null);// 空布局
-		stopButton.setBounds(150, 490, 180, 30);
+		stopButton.setBounds(buttonXpos, Env.ENV_HEIGHT + 35, buttonWidth, buttonHeight);
 		ActionListener a2 = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Env.pause = !Env.pause; 
+				Env.pause = !Env.pause;
 				if (Env.pause) {
-					stopButton.setText("Resume"); 
+					stopButton.setText("Resume");
 				} else {
-					stopButton.setText("Pause"); 
+					stopButton.setText("Pause");
 				}
 			}
 		};
