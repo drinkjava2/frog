@@ -16,13 +16,12 @@ import java.util.Random;
 import com.github.drinkjava2.frog.brain.Zone;
 
 /**
- * CellGroup represents a bunch of similar nerve cells <br/>
+ * CellGroup has big change from v2.0
  * 
- * CellGroup代表了一束相同功能和结构、分布位置相近的脑神经元，目的是为了下蛋时简化串行化海量的神经元,
- * 只需要在egg里定义一组cellGroup就行了，不需要将海量的一个个的神经元串行化存放到egg里，这样一来Frog就不能"永生"了，因为每一个egg都不等同于
- * 它的母体， 而且每一次测试，一些复杂的条件反射的建立都必须从头开始训练，在项目后期，有可能每个frog生命的一半时间都花在重新建立条件反射的学习过程中。
- * 
- * 模拟一公一母两个蛋受精，CellGroup叠加也许很fun,这样可以将不同环境训练出的蛋叠加成一个。但现在暂时不考虑。
+ * CellGroup代表了一组平均分布于一个正方形内的细胞群，细胞数量、每个细胞的触突连接方式等参数由当前CellGroup决定。
+ * CellGroup会参与遗传和进化，但是它生成的细胞不会参与遗传。 
+ * 各个CellGroups生成的细胞相加总和就是脑细胞总数。  Cellgroup在脑活动中不起作用，可以把CellGroup比作播种机，把种子排列好后，就撒手不管了。
+ * 蛋里存放着所有CellGroups的位置、大小、内部参数等信息，但是蛋里面不保存具体的细胞。这样通过控制有多少个"播种机"，就可以控制大脑的结构了。
  * 
  * @author Yong Zhu
  * @since 1.0
