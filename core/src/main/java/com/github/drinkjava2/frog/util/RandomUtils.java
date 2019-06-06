@@ -1,5 +1,5 @@
-/*
- * Copyright 2018 the original author or authors. 
+/* Copyright 2018-2020 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
@@ -8,18 +8,25 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.brain;
+package com.github.drinkjava2.frog.util;
+
+import java.util.Random;
 
 /**
- * Cell is the basic unit of frog's brain
+ * Random Utilities used in this project
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Cell {
-	public int organNo; // this cell belong to frog's which organ
-	public Input[] inputs; // inputs of cell
-	public Output[] outputs; // outputs of cell
-	public long energy; // energy of cell, energy got from food
+public class RandomUtils {
+	private static final Random r = new Random();
+
+	public static int nextInt(int i) {
+		return r.nextInt(i);
+	}
+
+	public static float nextFloat() {
+		return r.nextFloat();
+	}
 
 }

@@ -26,10 +26,7 @@ import com.github.drinkjava2.frog.brain.Zone;
  */
 public class Eye extends Organ {
 	private static final long serialVersionUID = 1L;
-
-	private static boolean hasFood(int x, int y) {
-		return x >= 0 && y >= 0 && x < Env.ENV_WIDTH && y < Env.ENV_HEIGHT && Env.foods[x][y];
-	}
+	public boolean isFixed = false; // 如果是固定的，则不参与变异和进化
 
 	@Override
 	public void active(Frog f) {
@@ -49,28 +46,28 @@ public class Eye extends Organ {
 
 		int seeDist = 10;
 		for (int i = 1; i < seeDist; i++)
-			if (hasFood(f.x, f.y + i)) {
+			if (Env.hasFood(f.x, f.y + i)) {
 				seeFood = true;
 				foodAtUp = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (hasFood(f.x, f.y - i)) {
+			if (Env.hasFood(f.x, f.y - i)) {
 				seeFood = true;
 				foodAtDown = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (hasFood(f.x - i, f.y)) {
+			if (Env.hasFood(f.x - i, f.y)) {
 				seeFood = true;
 				foodAtLeft = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (hasFood(f.x + i, f.y)) {
+			if (Env.hasFood(f.x + i, f.y)) {
 				seeFood = true;
 				foodAtRight = true;
 				break;

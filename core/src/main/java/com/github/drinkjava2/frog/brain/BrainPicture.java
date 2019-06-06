@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.egg.CellGroup;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
@@ -72,7 +71,7 @@ public class BrainPicture extends JPanel {
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
 		int y = Math.round(z.y * rate);
-		g.drawString(text, x - text.length() * 3, y);
+		g.drawString(text, x - text.length() * 3 - 2, y);
 	}
 
 	private static final Color[] rainbow = new Color[] { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
@@ -84,8 +83,10 @@ public class BrainPicture extends JPanel {
 		return rainbow[nextColor++];
 	}
 
-	private static Color color(float i) {
-		if (i <= 1)
+	public static Color color(float i) {
+		if (i == 0)
+			return Color.black;
+		if (i == 1)
 			return Color.RED;
 		if (i <= 3)
 			return Color.ORANGE;
@@ -109,26 +110,7 @@ public class BrainPicture extends JPanel {
 		g.setColor(Color.black);
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-		for (Organ organ : frog.organs) {
-			g.setColor(Color.BLACK);
-			drawZone(g, organ);
-			if (organ.name != null)
-				drawText(g, organ, String.valueOf(organ.name));
-		}
-
-		for (CellGroup group : frog.cellGroups) {
-			if (!group.inherit)
-				g.setColor(Color.lightGray); // 如果是本轮随机生成的，灰色表示
-			else
-				g.setColor(color(group.cellQty)); // 如果是继承的，彩虹色表示，颜色数越往后表示数量越多
-			drawLine(g, group.groupInputZone, group.groupOutputZone);
-			drawZone(g, group.groupInputZone);
-			fillZone(g, group.groupOutputZone);
-			if (group.fat > 0) {
-				g.setColor(Color.BLACK);
-				drawCircle(g, group.groupOutputZone); // 如果胖了，表示激活过了，下次下蛋少不了这一组
-			}
-		}
-
+		for (Organ organ : frog.organs)
+			organ.drawOnBrainPicture(this); // each organ draw itself
 	}
 }

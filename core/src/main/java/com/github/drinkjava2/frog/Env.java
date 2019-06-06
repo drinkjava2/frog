@@ -21,7 +21,7 @@ import com.github.drinkjava2.frog.egg.EggTool;
 @SuppressWarnings("serial")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 10; // 测试速度，1~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 100; // 测试速度，1~1000,可调, 数值越小，速度越慢
 
 	public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
 
@@ -53,7 +53,7 @@ public class Env extends JPanel {
 
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
 
-	public static final boolean[][] foods = new boolean[ENV_WIDTH][ENV_HEIGHT];// 食物数组定义
+	private static final boolean[][] foods = new boolean[ENV_WIDTH][ENV_HEIGHT];// 食物数组定义
 
 	public List<Frog> frogs = new ArrayList<>();
 
@@ -63,6 +63,26 @@ public class Env extends JPanel {
 		super();
 		this.setLayout(null);// 空布局
 		this.setBounds(1, 1, ENV_WIDTH, ENV_HEIGHT);
+	}
+
+	public static boolean insideEnv(int x, int y) {
+		return !(x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT);
+	}
+
+	public static boolean outsideEnv(int x, int y) {
+		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT;
+	}
+
+	public static boolean hasFood(int x, int y) {
+		return !(x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT) && Env.foods[x][y];
+	}
+
+	public static boolean eatFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
+		if (hasFood(x, y)) {
+			foods[x][y] = false;
+			return true;
+		}
+		return false;
 	}
 
 	private void rebuildFrogAndFood() {
@@ -128,7 +148,7 @@ public class Env extends JPanel {
 				}
 				allDead = true;
 				for (Frog frog : frogs)
-					if (frog.active(this))
+					if (frog.activeOrgan(this))
 						allDead = false;
 				if (i % SHOW_SPEED != 0) // 画青蛙会拖慢速度
 					continue;

@@ -11,6 +11,7 @@
 package com.github.drinkjava2.frog.brain;
 
 import java.io.Serializable;
+import java.util.Random;
 
 import com.github.drinkjava2.frog.Env;
 
@@ -22,6 +23,8 @@ import com.github.drinkjava2.frog.Env;
  */
 public class Zone implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final Random random = new Random();
+
 	public float x;
 	public float y;
 	public float radius;// so width of the zone= radius*2
@@ -72,5 +75,10 @@ public class Zone implements Serializable {
 		to.x = from.x;
 		to.y = from.y;
 		to.radius = from.radius;
+	}
+
+	public Zone randomPosInZone(Zone z) {
+		return new Zone(z.x - z.radius + z.radius * 2 * random.nextFloat(),
+				z.y - z.radius + z.radius * 2 * random.nextFloat(), 0);
 	}
 }
