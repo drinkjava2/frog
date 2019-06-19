@@ -10,6 +10,8 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import com.github.drinkjava2.frog.brain.group.Group;
+
 /**
  * Cell is the basic unit of frog's brain
  * 
@@ -17,9 +19,18 @@ package com.github.drinkjava2.frog.brain;
  * @since 1.0
  */
 public class Cell {
-	public int organNo; // this cell belong to frog's which organ
-	public Input[] inputs; // inputs of cell
-	public Output[] outputs; // outputs of cell
-	public long energy; // energy of cell, energy got from food
+	public static final float MAX_ENERGY_LIMIT = 1000.0f;
+
+	// this cell belong to frog's which organ
+	public Group group;
+
+	// inputs of cell
+	public Input[] inputs; // 每个细胞有一组输入触突
+
+	// outputs of cell
+	public Output[] outputs; // 每个细胞有一组输出触突
+
+	// energy of cell, energy got from food
+	public float energy; // 每个细胞当前的能量值
 
 }

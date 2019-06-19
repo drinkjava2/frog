@@ -40,7 +40,7 @@ public class Frog {
 
 	public int x; // frog在Env中的x坐标
 	public int y; // frog在Env中的y坐标
-	public long energy = 10000; // 能量为0则死掉
+	 public long frogEngery = 10000; // 能量为0则死掉
 	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
 
 	static Image frogImg;
@@ -55,16 +55,26 @@ public class Frog {
 	public Frog(int x, int y, Egg egg) {
 		this.x = x;
 		this.y = y;
-		for (Organ org : egg.organs)
-			for (Organ newOrgan : org.vary()) {
-				organs.add(newOrgan);
-				newOrgan.init(this);// 每个新器官初始化，如果是Group类，它们会生成许多脑细胞
-			}
+		for (Organ org : egg.organs) {
+			organs.add(org);
+			org.init(this);// 每个新器官初始化，如果是Group类，它们会生成许多脑细胞
+		}
 	}
 
-	public boolean activeOrgan(Env v) {// 每一个步长都会调用Organ的active方法
-		for (Organ o : organs)
+	public boolean active(Env v) {
+		frogEngery-=0.01;
+		if (!alive) {
+			return false;
+		}
+		if (frogEngery < 0) { // 如果能量小于0则死
+			frogEngery-=10;
+			alive = false;
+			return false;
+		}
+
+		for (Organ o : organs) { // 调用每个Organ的active方法
 			o.active(this);
+		}
 		return alive;
 	}
 

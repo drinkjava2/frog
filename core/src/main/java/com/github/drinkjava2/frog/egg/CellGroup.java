@@ -8,19 +8,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.brain;
+package com.github.drinkjava2.frog.egg;
 
-/**
- * Input is the sensor of nerve cell
- * 
- * @author Yong Zhu
- * @since 1.0
- */
-@SuppressWarnings("serial")
-public class Input extends Zone {
-	public Cell cell; // 这个输入触突属于哪个脑细胞
-
-	public Input(Zone z) {
-		super(z);
-	}
+public class CellGroup {
 }

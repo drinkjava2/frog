@@ -56,21 +56,14 @@
  
  
 
- <dependencies>  
- 
-     <!-- For JSON translate -->
-	<dependency>
-    	<groupId>com.alibaba</groupId>
-    	<artifactId>fastjson</artifactId>
-    	<version>1.2.54</version>
-	</dependency>  
-	
-    <dependency>
+ <dependencies> 
+    <!--dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
-    </dependency>  
+    </dependency-->  
+	
  </dependencies>
  
     <build>

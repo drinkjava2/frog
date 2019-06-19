@@ -26,13 +26,12 @@ import com.github.drinkjava2.frog.brain.Zone;
  */
 public class Eye extends Organ {
 	private static final long serialVersionUID = 1L;
-	public boolean isFixed = false; // 如果是固定的，则不参与变异和进化
 
 	@Override
 	public void active(Frog f) {
 		// 第一个眼睛只能观察上、下、左、右四个方向有没有食物
-		float qRadius = radius / 4;
-		float q3Radius = (float) (radius * .75);
+		float qRadius = r / 4;
+		float q3Radius = (float) (r * .75);
 		Zone seeUp = new Zone(x, y + q3Radius, qRadius);
 		Zone seeDown = new Zone(x, y - q3Radius, qRadius);
 		Zone seeLeft = new Zone(x - q3Radius, y, qRadius);
@@ -46,28 +45,28 @@ public class Eye extends Organ {
 
 		int seeDist = 10;
 		for (int i = 1; i < seeDist; i++)
-			if (Env.hasFood(f.x, f.y + i)) {
+			if (Env.foundFood(f.x, f.y + i)) {
 				seeFood = true;
 				foodAtUp = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (Env.hasFood(f.x, f.y - i)) {
+			if (Env.foundFood(f.x, f.y - i)) {
 				seeFood = true;
 				foodAtDown = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (Env.hasFood(f.x - i, f.y)) {
+			if (Env.foundFood(f.x - i, f.y)) {
 				seeFood = true;
 				foodAtLeft = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (Env.hasFood(f.x + i, f.y)) {
+			if (Env.foundFood(f.x + i, f.y)) {
 				seeFood = true;
 				foodAtRight = true;
 				break;
@@ -79,16 +78,16 @@ public class Eye extends Organ {
 					for (Input input : cell.inputs) {
 						if (input.nearby(this)) {
 							if (foodAtUp && input.nearby(seeUp)) {
-								input.cell.energy += 30;
+								input.cell.energy += outputWeight;
 							}
 							if (foodAtDown && input.nearby(seeDown)) {
-								input.cell.energy += 30;
+								input.cell.energy += outputWeight;
 							}
 							if (foodAtLeft && input.nearby(seeLeft)) {
-								input.cell.energy += 30;
+								input.cell.energy += outputWeight;
 							}
 							if (foodAtRight && input.nearby(seeRight)) {
-								input.cell.energy += 30;
+								input.cell.energy += outputWeight;
 							}
 						}
 					}

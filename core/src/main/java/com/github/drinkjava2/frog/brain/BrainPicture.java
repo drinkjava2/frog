@@ -35,30 +35,30 @@ public class BrainPicture extends JPanel {
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 	}
 
-	void drawZone(Graphics g, Zone z) {
+	public void drawZone(Graphics g, Zone z) {
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
 		int y = Math.round(z.y * rate);
-		int radius = Math.round(z.radius * rate);
+		int radius = Math.round(z.r * rate);
 		g.drawRect(x - radius, y - radius, radius * 2, radius * 2);
 	}
 
-	void drawCircle(Graphics g, Zone z) {
+	public void drawCircle(Graphics g, Zone z) {
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
 		int y = Math.round(z.y * rate);
 		g.drawArc(x - 5, y - 5, 10, 10, 0, 360);
 	}
 
-	void fillZone(Graphics g, Zone z) {
+	public void fillZone(Graphics g, Zone z) {
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
 		int y = Math.round(z.y * rate);
-		int radius = Math.round(z.radius * rate);
+		int radius = Math.round(z.r * rate);
 		g.fillRect(x - radius, y - radius, radius * 2, radius * 2);
 	}
 
-	void drawLine(Graphics g, Zone z1, Zone z2) {
+	public void drawLine(Graphics g, Zone z1, Zone z2) {
 		float rate = brainDispWidth / brainWidth;
 		int x1 = Math.round(z1.x * rate);
 		int y1 = Math.round(z1.y * rate);
@@ -67,7 +67,7 @@ public class BrainPicture extends JPanel {
 		g.drawLine(x1, y1, x2, y2);
 	}
 
-	void drawText(Graphics g, Zone z, String text) {
+	public void drawText(Graphics g, Zone z, String text) {
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
 		int y = Math.round(z.y * rate);

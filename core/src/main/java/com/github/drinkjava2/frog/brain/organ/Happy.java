@@ -10,25 +10,30 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.Cell;
+import com.github.drinkjava2.frog.brain.Input;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Eat food at current x, y position
+ * Happy zone active after ate food
  */
-public class Eat extends Organ {// Eat这个类将食物转化为能量，能量小于0，则青蛙死掉
+public class Happy extends Organ { // Happy器官是进食后的产生的快感，痛苦和快感是条件反射形成的前题
 	private static final long serialVersionUID = 1L;
+	public float happy = 0; // happy初始值为0, 进食后将由eat器官增加happy值
 
 	@Override
 	public void active(Frog f) {
-		if (Env.foundAndDeleteFood(f.x, f.y)) {
-			f.frogEngery = f.frogEngery + 50000;// 如果青蛙的坐标与食物重合，吃掉food，能量境加
-
-			// 能量境加青蛙感觉不到，但是Happy区激活青蛙能感觉到，因为Happy区是一个脑器官
-
-			Organ o = f.organs.get(0);
-			((Happy) o).happy += 200; // 找到食物有奖！
+		if (happy > 0) {
+			happy--;
+			for (Cell cell : f.cells) {
+				if (cell.energy > 0)
+					cell.energy--;
+				if (cell.energy < Cell.MAX_ENERGY_LIMIT)
+					for (Input input : cell.inputs)
+						if (input.nearby(this)) // if input zone near by happy zone
+							cell.energy += happy / 10; // 所有的硬编码都是bug，包括这个2和10
+			}
 		}
 	}
 

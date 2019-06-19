@@ -10,8 +10,17 @@
  */
 package com.github.drinkjava2.frog.brain.group;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.BrainPicture;
+import com.github.drinkjava2.frog.brain.Cell;
+import com.github.drinkjava2.frog.brain.Input;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.Output;
+import com.github.drinkjava2.frog.brain.Zone;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * RandomConnectGroup
@@ -26,55 +35,70 @@ import com.github.drinkjava2.frog.brain.Organ;
  */
 public class RandomConnectGroup extends Group {
 	private static final long serialVersionUID = 1L;
-	public boolean isFixed = true; // 如果是固定的，则不参与变异和进化
+
+	public Zone inputZone; // 输入触突区
+	public Zone outputZone; // 输出触突区
+	float inputWeight = 1; // 输入权重
+	float outputWeight = 1; // 输出权重
 
 	@Override
 	public void init(Frog f) {
-		// Brain cells
-		// if (egg.cellGroups != null) {
-		// cellGroups = new RandomConnectGroup[egg.cellGroups.length];
-		// for (int k = 0; k < egg.cellGroups.length; k++) {
-		// RandomConnectGroup g = egg.cellGroups[k];
-		// cellGroups[k] = new RandomConnectGroup(g);
-		// for (int i = 0; i < g.cellQty; i++) {// 开始根据蛋来创建脑细胞
-		// Cell c = new Cell();
-		// c.group = k;
-		// int cellQTY = Math.round(g.inputQtyPerCell);
-		// c.inputs = new Input[cellQTY];
-		// for (int j = 0; j < cellQTY; j++) {
-		// c.inputs[j] = new Input();
-		// c.inputs[j].cell = c;
-		// Zone.copyXY(randomPosInZone(g.groupInputZone), c.inputs[j]);
-		// c.inputs[j].radius = g.cellInputRadius;
-		// }
-		// cellQTY = Math.round(g.outputQtyPerCell);
-		// c.outputs = new Output[cellQTY];
-		// for (int j = 0; j < cellQTY; j++) {
-		// c.outputs[j] = new Output();
-		// c.outputs[j].cell = c;
-		// Zone.copyXY(randomPosInZone(g.groupOutputZone), c.outputs[j]);
-		// c.outputs[j].radius = g.cellOutputRadius;
-		// }
-		// cells.add(c);
-		// }
-		// }
-		// }
+		if (inputZone == null)
+			inputZone = RandomUtils.randomPosInZone(this);
+		if (outputZone == null)
+			outputZone = RandomUtils.randomPosInZone(this);
 
+		Cell c = new Cell();
+
+		Input in = new Input(inputZone);
+		in.cell = c;
+		c.inputs = new Input[] { in };
+
+		Output out = new Output(outputZone);
+		out.cell = c;
+		c.outputs = new Output[] { out };
+
+		c.group = this;
+		f.cells.add(c);
 	}
 
 	@Override
 	public Organ[] vary() {
-		return null;
+		if (fat <= 0)// 如果胖值为0，表示这个组的细胞没有用到，可以小概率丢掉它了
+			if (RandomUtils.percent(50))
+				return new Organ[] {};
+		if (RandomUtils.percent(20)) { // 有20机率权重变大
+			inputWeight = RandomUtils.vary(inputWeight);
+			outputWeight = RandomUtils.vary(outputWeight);
+		}
+		return new Organ[] { this }; // 大部分时间原样返回它的副本就行了，相当于儿子是父亲的克隆
 	}
 
-	// for (RandomConnectGroup group : frog.cellGroups) {
-	// drawLine(g, group.groupInputZone, group.groupOutputZone);
-	// drawZone(g, group.groupInputZone);
-	// fillZone(g, group.groupOutputZone);
-	// if (group.fat > 0) {
-	// g.setColor(Color.BLACK);
-	// drawCircle(g, group.groupOutputZone); // 如果胖了，表示激活过了，下次下蛋少不了这一组
-	// }
-	// }
+	public RandomConnectGroup(float x, float y, float r) {
+		this.x = x;
+		this.y = y;
+		this.r = r;
+		inputZone = RandomUtils.randomPosInZone(this);
+		outputZone = RandomUtils.randomPosInZone(this);
+	}
+
+	public RandomConnectGroup(Zone z) {
+		inputZone = RandomUtils.randomPosInZone(z);
+		outputZone = RandomUtils.randomPosInZone(z);
+	}
+
+	/** Child class can override this method to drawing picture */
+	public void drawOnBrainPicture(BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
+		Graphics g = pic.getGraphics();// border
+		g.setColor(Color.gray); // 缺省是灰色
+		pic.drawZone(g, this);
+		pic.drawLine(g, inputZone, outputZone);
+		pic.drawZone(g, inputZone);
+		pic.fillZone(g, outputZone);
+		if (fat > 0) {
+			g.setColor(Color.red);
+			pic.drawCircle(g, outputZone); // 如果胖了，表示激活过了，下次下蛋少不了这一组
+		}
+	}
 
 }

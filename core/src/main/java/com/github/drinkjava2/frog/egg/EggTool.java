@@ -45,22 +45,21 @@ public class EggTool {
 
 		Frog first = env.frogs.get(0);
 		Frog last = env.frogs.get(env.frogs.size() - 1);
-		
-		System.out.print(
-				"First frog has " + first.organs.size() + " organs, energy=" + first.energy);
-		System.out.println(
-				", Last frog has " + last.organs.size() + " organs, energy=" + last.energy); 
-		
-		for (int i = 0; i < first.organs.size(); i++) {
-			Organ org = first.organs.get(i);
-			System.out.println("Organ(" + i + ")=" + org.name);
-		}
+
+		System.out.print("First frog has " + first.organs.size() + " organs, energy=" + first.frogEngery);
+		System.out.print(", Last frog has " + last.organs.size() + " organs, energy=" + last.frogEngery);
+		if (Env.DEBUG_MODE)
+			for (int i = 0; i < first.organs.size(); i++) {
+				Organ org = first.organs.get(i);
+				System.out.println("Organ(" + i + ")=" + org + ", fat=" + org.fat + ", inputWeight=" + org.inputWeight
+						+ ", outputWeight=" + org.outputWeight);
+			}
 
 		try {
 			List<Egg> newEggs = new ArrayList<>();
 			for (int i = 0; i < Env.EGG_QTY; i++)
 				newEggs.add(new Egg(env.frogs.get(i)));
-			System.out.print("organs =" + newEggs.get(0).organs.size() + ", ");
+			System.out.print(", organs =" + newEggs.get(0).organs.size() + ", ");
 
 			FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "eggs.ser");
 			ObjectOutputStream so = new ObjectOutputStream(fo);
@@ -68,8 +67,8 @@ public class EggTool {
 			so.close();
 
 			env.eggs = newEggs;
-			System.out
-					.println("Saved " + env.eggs.size() + " eggs to file '" + Application.CLASSPATH + "eggs.ser" + "'");
+			System.out.println(
+					", Saved " + env.eggs.size() + " eggs to file '" + Application.CLASSPATH + "eggs.ser" + "'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}
@@ -78,9 +77,9 @@ public class EggTool {
 	private static void sortFrogsOrderByEnergyDesc(Env env) {// 按能量多少给青蛙排序
 		Collections.sort(env.frogs, new Comparator<Frog>() {
 			public int compare(Frog a, Frog b) {
-				if (a.energy > b.energy)
+				if (a.frogEngery > b.frogEngery)
 					return -1;
-				else if (a.energy == b.energy)
+				else if (a.frogEngery == b.frogEngery)
 					return 0;
 				else
 					return 1;
