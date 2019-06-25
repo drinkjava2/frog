@@ -10,6 +10,8 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import com.github.drinkjava2.frog.egg.Zone;
+
 /**
  * Input is the sensor of nerve cell
  * 
@@ -18,9 +20,5 @@ package com.github.drinkjava2.frog.brain;
  */
 @SuppressWarnings("serial")
 public class Input extends Zone {
-	public Cell cell; // 这个输入触突属于哪个脑细胞
-
-	public Input(Zone z) {
-		super(z);
-	}
+	public Cell cell;
 }

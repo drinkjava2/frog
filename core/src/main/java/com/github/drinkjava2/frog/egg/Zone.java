@@ -8,11 +8,11 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.brain;
+package com.github.drinkjava2.frog.egg;
 
 import java.io.Serializable;
 
-import com.github.drinkjava2.frog.Env;
+import com.github.drinkjava2.frog.env.Env;
 
 /**
  * Zone represents a rectangle zone in brain
@@ -22,19 +22,18 @@ import com.github.drinkjava2.frog.Env;
  */
 public class Zone implements Serializable {
 	private static final long serialVersionUID = 1L;
-
 	public float x;
 	public float y;
-	public float r;// r为这个矩形区边长的一半
+	public float radius;// so width of the zone= radius*2
 
 	public Zone() {
-		// 空构造器不能省
+		// 空构造器不能省，FastJSON实例化时要用到
 	}
 
-	public Zone(float x, float y, float r) {// 用x,y,r来构造
+	public Zone(float x, float y, float radius) {
 		this.x = x;
 		this.y = y;
-		this.r = r;
+		this.radius = radius;
 		if (this.x < 0)
 			this.x = 0;
 		if (this.y < 0)
@@ -45,14 +44,14 @@ public class Zone implements Serializable {
 			this.y = Env.FROG_BRAIN_WIDTH;
 	}
 
-	public Zone(Zone z) {// 用另一个Zone来构造
+	public Zone(Zone z) {
 		this.x = z.x;
 		this.y = z.y;
-		this.r = z.r;
+		this.radius = z.radius;
 	}
 
 	public boolean nearby(Zone z) {
-		float dist = r + z.r;
+		float dist = radius + z.radius;
 		return (Math.abs(x - z.x) < dist && Math.abs(y - z.y) < dist);
 	}
 
@@ -68,17 +67,4 @@ public class Zone implements Serializable {
 		to.x = from.x;
 		to.y = from.y;
 	}
-
-	public static void copyXYR(Zone from, Zone to) {
-		to.x = from.x;
-		to.y = from.y;
-		to.r = from.r;
-	}
-
-	public void setXYR(float x, float y, float r) {
-		this.x = x;
-		this.y = y;
-		this.r = r;
-	}
-
 }

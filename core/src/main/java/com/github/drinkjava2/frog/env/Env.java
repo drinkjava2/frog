@@ -1,4 +1,4 @@
-package com.github.drinkjava2.frog;
+package com.github.drinkjava2.frog.env;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,8 +9,9 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
+import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.egg.Egg;
-import com.github.drinkjava2.frog.egg.EggTool;
+import com.github.drinkjava2.frog.util.EggTool;
 
 /**
  * Env is the living space of frog. draw it on JPanel
@@ -21,7 +22,7 @@ import com.github.drinkjava2.frog.egg.EggTool;
 @SuppressWarnings("serial")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 5; // 测试速度，1~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 10; // 测试速度，1~1000,可调, 数值越小，速度越慢
 
 	public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
 
@@ -32,7 +33,7 @@ public class Env extends JPanel {
 	public static final int FROG_BRAIN_DISP_WIDTH = 300; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
-	public static final int STEPS_PER_ROUND = 2000;// 每轮测试步数,可调
+	public static final int STEPS_PER_ROUND = 3000;// 每轮测试步数,可调
 
 	/** Frog's brain width, fixed to 1000 unit */
 	public static final float FROG_BRAIN_WIDTH = 1000; // frog的脑宽度固定为1000,不要随便调整,因为器官的相对位置和大小是按脑大小设定的
@@ -40,14 +41,12 @@ public class Env extends JPanel {
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = false;// 每次运行是否先删除保存的蛋
 
-	public static final boolean DEBUG_MODE = true; // Debug 模式下会打印出更多的调试信息
-
 	static {
 		if (DELETE_EGGS)
 			EggTool.deleteEggs();
 	}
 
-	public static final int FOOD_QTY = 1000; // 食物数量, 可调
+	public static final int FOOD_QTY = 2000; // 食物数量, 可调
 
 	public static final int EGG_QTY = 50; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
@@ -55,7 +54,7 @@ public class Env extends JPanel {
 
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
 
-	private static final boolean[][] foods = new boolean[ENV_WIDTH][ENV_HEIGHT];// 食物数组定义
+	public static final boolean[][] foods = new boolean[ENV_WIDTH][ENV_HEIGHT];// 食物数组定义
 
 	public List<Frog> frogs = new ArrayList<>();
 
@@ -65,26 +64,6 @@ public class Env extends JPanel {
 		super();
 		this.setLayout(null);// 空布局
 		this.setBounds(1, 1, ENV_WIDTH, ENV_HEIGHT);
-	}
-
-	public static boolean insideEnv(int x, int y) {
-		return !(x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT);
-	}
-
-	public static boolean outsideEnv(int x, int y) {
-		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT;
-	}
-
-	public static boolean foundFood(int x, int y) {
-		return !(x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT) && Env.foods[x][y];
-	}
-
-	public static boolean foundAndDeleteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
-		if (foundFood(x, y)) {
-			foods[x][y] = false;
-			return true;
-		}
-		return false;
 	}
 
 	private void rebuildFrogAndFood() {
@@ -129,10 +108,6 @@ public class Env extends JPanel {
 		}
 	}
 
-	public static boolean closeToEdge(Frog f) {// 青蛙靠近边界? 离死不远了
-		return f.x < 20 || f.y < 20 || f.x > (Env.WIDTH - 20) || f.y > (Env.HEIGHT - 20);
-	}
-
 	public void run() throws InterruptedException {
 		EggTool.loadEggs(this); // 从磁盘加载egg，或新建一批egg
 		int round = 1;
@@ -150,7 +125,7 @@ public class Env extends JPanel {
 			for (int i = 0; i < STEPS_PER_ROUND; i++) {
 				if (allDead) {
 					System.out.println("All dead at round:" + i);
-					break; // 青蛙全死光了就直接跳到下一轮,以节省时间
+					break; // 全死光了就直接跳到下一轮,以节省时间
 				}
 				allDead = true;
 				for (Frog frog : frogs)
