@@ -10,12 +10,13 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
+import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Input;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.egg.Zone;
-import com.github.drinkjava2.frog.env.Env;
+import com.github.drinkjava2.frog.brain.Zone;
 
 /**
  * Eye is an organ can see environment, and active brain cells which inputs are
@@ -24,20 +25,45 @@ import com.github.drinkjava2.frog.env.Env;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Eye {
+public class Eye extends Organ {// Eye类需要重构，目前只有4个感光细胞，不够，Eye要改成Group的子类，Eye只负责感光细胞的排列，感光细胞自已负责变异
+	private static final long serialVersionUID = 1L;
 
-	private static boolean hasFood(int x, int y) {
-		return x >= 0 && y >= 0 && x < Env.ENV_WIDTH && y < Env.ENV_HEIGHT && Env.foods[x][y];
+	@Override
+	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Organ类的初始化
+		if (!initilized) {
+			initilized = true;
+			organOutputEnergy = 30;
+		}
 	}
 
-	/** First eye can only see if food nearby at 4 directions */
-	public static void act(Frog f, Organ eye) {// 第一个眼睛只能观察上、下、左、右四个方向有没有食物 
-		float qRadius = eye.radius / 4;
-		float q3Radius = (float) (eye.radius * .75);
-		Zone seeUp = new Zone(eye.x, eye.y + q3Radius, qRadius);
-		Zone seeDown = new Zone(eye.x, eye.y - q3Radius, qRadius);
-		Zone seeLeft = new Zone(eye.x - q3Radius, eye.y, qRadius);
-		Zone seeRight = new Zone(eye.x + q3Radius, eye.y, qRadius);
+	public void drawOnBrainPicture(BrainPicture pic) {// 把自已这个器官在脑图上显示出来
+		super.drawOnBrainPicture(pic);
+		float qRadius = r / 4;
+		float q3Radius = (float) (r * .75);
+		Zone seeUp = new Zone(x, y + q3Radius, qRadius);
+		Zone seeDown = new Zone(x, y - q3Radius, qRadius);
+		Zone seeLeft = new Zone(x - q3Radius, y, qRadius);
+		Zone seeRight = new Zone(x + q3Radius, y, qRadius);
+		pic.drawZone(pic.getGraphics(), seeUp);
+		pic.drawZone(pic.getGraphics(), seeDown);
+		pic.drawZone(pic.getGraphics(), seeLeft);
+		pic.drawZone(pic.getGraphics(), seeRight);
+	}
+
+	@Override
+	public Organ[] vary() {
+		return new Organ[] { this };
+	}
+
+	@Override
+	public void active(Frog f) {
+		// 第一个眼睛只能观察上、下、左、右四个方向有没有食物
+		float qRadius = r / 4;
+		float q3Radius = (float) (r * .75);
+		Zone seeUp = new Zone(x, y + q3Radius, qRadius);
+		Zone seeDown = new Zone(x, y - q3Radius, qRadius);
+		Zone seeLeft = new Zone(x - q3Radius, y, qRadius);
+		Zone seeRight = new Zone(x + q3Radius, y, qRadius);
 
 		boolean seeFood = false;
 		boolean foodAtUp = false;
@@ -47,28 +73,28 @@ public class Eye {
 
 		int seeDist = 10;
 		for (int i = 1; i < seeDist; i++)
-			if (hasFood(f.x, f.y + i)) {
+			if (Env.foundFood(f.x, f.y + i)) {
 				seeFood = true;
 				foodAtUp = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (hasFood(f.x, f.y - i)) {
+			if (Env.foundFood(f.x, f.y - i)) {
 				seeFood = true;
 				foodAtDown = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (hasFood(f.x - i, f.y)) {
+			if (Env.foundFood(f.x - i, f.y)) {
 				seeFood = true;
 				foodAtLeft = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDist; i++)
-			if (hasFood(f.x + i, f.y)) {
+			if (Env.foundFood(f.x + i, f.y)) {
 				seeFood = true;
 				foodAtRight = true;
 				break;
@@ -78,22 +104,23 @@ public class Eye {
 			for (Cell cell : f.cells) {
 				if (cell.energy < 100)
 					for (Input input : cell.inputs) {
-						if (input.nearby(eye)) {
+						if (input.nearby(this)) {
 							if (foodAtUp && input.nearby(seeUp)) {
-								input.cell.energy += 30;
+								input.cell.energy += organOutputEnergy;
 							}
 							if (foodAtDown && input.nearby(seeDown)) {
-								input.cell.energy += 30;
+								input.cell.energy += organOutputEnergy;
 							}
 							if (foodAtLeft && input.nearby(seeLeft)) {
-								input.cell.energy += 30;
+								input.cell.energy += organOutputEnergy;
 							}
 							if (foodAtRight && input.nearby(seeRight)) {
-								input.cell.energy += 30;
+								input.cell.energy += organOutputEnergy;
 							}
 						}
 					}
 			}
+
 	}
 
 }

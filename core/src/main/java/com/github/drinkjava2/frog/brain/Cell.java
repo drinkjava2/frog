@@ -11,15 +11,24 @@
 package com.github.drinkjava2.frog.brain;
 
 /**
- * Cell is a brain nerve cell, this is the basic unit of frog's brain
+ * Cell is the basic unit of frog's brain
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class Cell {
-	public int group; // this cell belong to which group
-	public Input[] inputs; // inputs of cell
-	public Output[] outputs; // outputs of cell
-	public long energy;
+	public static final float MAX_ENERGY_LIMIT = 100.0f;
+
+	// this cell belong to frog's which organ
+	public Organ organ;
+
+	// inputs of cell
+	public Input[] inputs; // 每个细胞有一组输入触突
+
+	// outputs of cell
+	public Output[] outputs; // 每个细胞有一组输出触突
+
+	// energy of cell, energy got from food
+	public float energy; // 每个细胞当前的能量值
 
 }

@@ -8,7 +8,21 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.egg;
+package com.github.drinkjava2.frog.brain.organ;
 
-public class CellGroup {
+import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.Organ;
+
+/**
+ * Move down frog 1 unit if outputs of nerve cells active in this zone
+ */
+public class MoveDown extends Organ {
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public void active(Frog f) {
+		if (outputActive(f))
+			f.y++;
+	}
+
 }

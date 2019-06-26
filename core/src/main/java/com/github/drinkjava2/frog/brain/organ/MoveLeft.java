@@ -8,21 +8,20 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.egg;
+package com.github.drinkjava2.frog.brain.organ;
+
+import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * OrganDesc store info to create Organ
- * 
- * @author Yong Zhu
- * @since 1.0
+ * Move left frog 1 unit if outputs of nerve cells active in this zone
  */
-public class OrganDesc extends Zone {
+public class MoveLeft extends Organ {
 	private static final long serialVersionUID = 1L;
-	public int type;
 
-	public OrganDesc(int type, float x, float y, float radius) {
-		super(x, y, radius);
-		this.type = type;
+	@Override
+	public void active(Frog f) {
+		if (outputActive(f))
+			f.x--;
 	}
-
 }

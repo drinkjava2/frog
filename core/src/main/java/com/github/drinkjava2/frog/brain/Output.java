@@ -10,8 +10,6 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import com.github.drinkjava2.frog.egg.Zone;
-
 /**
  * Output can active other nerve cell's input
  * 
@@ -20,5 +18,9 @@ import com.github.drinkjava2.frog.egg.Zone;
  */
 @SuppressWarnings("serial")
 public class Output extends Zone {
-	public Cell cell;
+	public Cell cell; // 这个输出触突属于哪个脑细胞
+
+	public Output(Zone z) {
+		super(z);
+	}
 }

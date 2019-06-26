@@ -10,142 +10,83 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.organ.Eye;
-import com.github.drinkjava2.frog.egg.OrganDesc;
-import com.github.drinkjava2.frog.egg.Zone;
-import com.github.drinkjava2.frog.env.Env;
 
 /**
- * Organ is a sensor or execute part connected to frog's brain cell, like:
- * 器官，分为输入器官和输出器官两大类，它们在蛋里定义，数量、位置、大小可以随机变异进化，但目前在蛋里用硬编码写死，不允许器官进化,一个眼睛都没搞定，要进化出10个眼睛来会吓死人
+ * Organ is a part of frog, organ can be saved in egg
  * 
- * <pre/>
- *  
- * Sensors:
- * hungry sensor,  eye, ear, smell, happy sensor
- * 
- * Executor:
- *  moves (up/down/left/right), eat ...
- * 
- * </pre>
+ * 器官是脑的一部分，多个器官在脑内可以允许重叠出现在同一位置。
  * 
  * @author Yong Zhu
- * @since 1.0
+ * @since 1.0.4
  */
 public class Organ extends Zone {
 	private static final long serialVersionUID = 1L;
-	public static final int HUNGRY = 0;
-	public static final int UP = 1;
-	public static final int DOWN = 2;
-	public static final int LEFT = 3;
-	public static final int RIGHT = 4;
-	public static final int EAT = 5;
-	public static final int EYE = 6;
+	public String name; // 显示在脑图上的器官名称，可选
+	public long fat = 0; // 如果活跃多，fat值高，则保留（及变异）的可能性大，反之则很可能丢弃掉
+	//public float organWasteEnergy = 0.05f; // 器官在每个测试循环中需要消耗青蛙多少能量，可以通过调节这个参数抑制器官数量无限增长
+	public float organActiveEnergy = 1; // 输出器官激活需要消耗每个脑细胞多少能量
+	public float organOutputEnergy = 2; // 感觉器官激活会给每个脑细胞增加多少能量
+	public boolean initilized; // 通过这个标记判断是否需要手工给定它的参数初值
 
-	public int type;
-
-	public Organ(OrganDesc od) {
-		super(od.x, od.y, od.radius);
-		type = od.type;
+	public boolean allowBorrow() { // 是否允许在精子中将这个器官借出
+		return false;
 	}
 
-	public Organ(int type, float x, float y, float radius) {
-		super(x, y, radius);
-		this.type = type;
+	/** Each loop step call active method, Child class can override this method */
+	public void active(Frog f) { // 每一步都会调用器官的active方法 ，缺省啥也不干
 	}
 
-	public void active(Frog f) {
-		switch (type) {
-		case HUNGRY:
-			hungry(f);
-			break;
-		case UP:
-			up(f);
-			break;
-		case DOWN:
-			down(f);
-			break;
-		case LEFT:
-			left(f);
-			break;
-		case RIGHT:
-			right(f);
-			break;
-		case EAT:
-			eat(f);
-			break;
-		case EYE:
-			eye(f);
-			break;
-		default:
-			break;
-		}
-	}
-
-	public void hungry(Frog f) {
+	/** If active in this organ's zone? */
+	public boolean outputActive(Frog f) { // 如果一个细胞能量>10,且它的输出触突位于这个器官内，则器官被激活
 		for (Cell cell : f.cells) {
-			if (cell.energy > 0)
-				cell.energy--;
-
-			if (f.energy < 10000 && cell.energy < 100)
-				for (Input input : cell.inputs)
-					if (input.nearby(this)) // input zone near by hungry zone
-						cell.energy += 2;
-		}
-	}
-
-	public void up(Frog f) {
-		if (outputActive(f))
-			f.y++;
-	}
-
-	public void down(Frog f) {
-		if (outputActive(f))
-			f.y--;
-	}
-
-	public void left(Frog f) {
-		if (outputActive(f))
-			f.x--;
-	}
-
-	public void right(Frog f) {
-		if (outputActive(f))
-			f.x++;
-	}
-
-	public void eat(Frog f) {
-		int x = f.x;
-		int y = f.y;
-		if (x < 0 || x >= Env.ENV_WIDTH || y < 0 || y >= Env.ENV_HEIGHT) {// 越界者死！
-			f.alive = false;
-			return;
-		}
-
-		if (Env.foods[x][y]) {
-			Env.foods[x][y] = false;
-			f.energy = f.energy + 1000;// 吃掉food，能量境加
-		}
-	}
-
-	public void eye(Frog f) {
-		Eye.act(f, this);
-	}
-
-	// ======public methods========
-
-	public boolean outputActive(Frog f) {
-		for (Cell cell : f.cells) {
-			for (Output output : cell.outputs) { //
-				if (cell.energy > 10 && this.nearby(output)) {
-					f.cellGroups[cell.group].fat++;
-					cell.energy -= 30;
-					return true;
+			if (cell.energy > organActiveEnergy)
+				for (Output output : cell.outputs) { //
+					if (this.nearby(output)) {
+						cell.organ.fat++;
+						cell.energy -= 30;//
+						return true;
+					}
 				}
-			}
 		}
 		return false;
+	}
+
+	/** Set X, Y, Radius, name of current Organ */
+	public Organ setXYRN(float x, float y, float r, String name) {
+		this.setXYR(x, y, r);
+		this.name = name;
+		return this;
+	}
+
+	/** Child class can override this method to drawing picture */
+	public void drawOnBrainPicture(BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
+		Graphics g = pic.getGraphics();// border
+		g.setColor(Color.BLACK); // 缺省是黑色
+		pic.drawZone(g, this);
+		if (this.name != null)
+			pic.drawText(g, this, String.valueOf(this.name));
+	}
+
+	/** Only call once when frog created , Child class can override this method */
+	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Group子类的初始化
+	}
+
+	/** Only call once after organ be created by new() method */
+	public Organ[] vary() { // 在下蛋时每个器官会调用这个方法，缺省返回一个类似自已的副本，子类通常要覆盖这个方法
+		Organ newOrgan = null;
+		try {
+			newOrgan = this.getClass().newInstance();
+		} catch (Exception e) {
+			throw new UnknownError("Can not make new Organ copy for " + this);
+		}
+		copyXYR(this, newOrgan);
+		newOrgan.name = this.name;
+		newOrgan.fat = this.fat;
+		return new Organ[] { newOrgan };
 	}
 
 }
