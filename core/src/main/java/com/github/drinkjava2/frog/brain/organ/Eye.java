@@ -29,15 +29,16 @@ public class Eye extends Organ {// Eye类需要重构，目前只有4个感光�
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Organ类的初始化
+	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次
 		if (!initilized) {
 			initilized = true;
 			organOutputEnergy = 30;
 		}
 	}
 
-	public void drawOnBrainPicture(BrainPicture pic) {// 把自已这个器官在脑图上显示出来
-		super.drawOnBrainPicture(pic);
+	@Override
+	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
+		super.drawOnBrainPicture(f, pic);
 		float qRadius = r / 4;
 		float q3Radius = (float) (r * .75);
 		Zone seeUp = new Zone(x, y + q3Radius, qRadius);

@@ -83,7 +83,7 @@ public class RandomConnectGroup extends Group {
 	}
 
 	@Override
-	public void drawOnBrainPicture(BrainPicture pic) {// 把自已这个器官在脑图上显示出来
+	public void drawOnBrainPicture(Frog f,BrainPicture pic) {// 把自已这个器官在脑图上显示出来
 		Graphics g = pic.getGraphics();// border
 		if (fat <= 0)
 			g.setColor(Color.LIGHT_GRAY); // 没用到? 灰色

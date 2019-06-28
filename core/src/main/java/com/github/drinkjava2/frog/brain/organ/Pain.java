@@ -33,16 +33,16 @@ public class Pain extends Organ { // Pain器官目前激活的条件是离边境
 		}
 	}
 
-//	@Override
-//	public Organ[] vary() {
-//		if (RandomUtils.percent(20)) // 有20机率权重变化
-//			organOutputEnergy = RandomUtils.vary(organOutputEnergy);
-//		return new Organ[] { this };
-//	}
+	// @Override
+	// public Organ[] vary() {
+	// if (RandomUtils.percent(20)) // 有20机率权重变化
+	// organOutputEnergy = RandomUtils.vary(organOutputEnergy);
+	// return new Organ[] { this };
+	// }
 
 	@Override
 	public void active(Frog f) {
-		if (Env.closeToEdge(f)) {
+		if (Env.closeToEdge(f)) {// 如果靠近边界，痛苦信号生成
 			for (Cell cell : f.cells) {
 				if (cell.energy > 0)
 					cell.energy--;

@@ -49,13 +49,12 @@ public class EggTool {
 		if (Env.DEBUG_MODE)
 			for (int i = 0; i < first.organs.size(); i++) {
 				Organ org = first.organs.get(i);
-				System.out.println("Organ(" + i + ")=" + org + ", fat=" + org.fat + ", organWasteEnergy=" + org.organActiveEnergy
-						+ ", outputEnergy=" + org.organOutputEnergy);
+				System.out.println("Organ(" + i + ")=" + org + ", fat=" + org.fat + ", organWasteEnergy="
+						+ org.organActiveEnergy + ", outputEnergy=" + org.organOutputEnergy);
 			}
-		
+
 		System.out.print("First frog has " + first.organs.size() + " organs, energy=" + first.energy);
 		System.out.print(", Last frog has " + last.organs.size() + " organs, energy=" + last.energy);
- 
 
 		try {
 			List<Egg> newEggs = new ArrayList<>();
@@ -90,6 +89,7 @@ public class EggTool {
 	}
 
 	public static void deleteEggs() {
+		System.out.println("Delete exist egg file: '" + Application.CLASSPATH + "eggs.ser'");
 		FrogFileUtils.deleteFile(Application.CLASSPATH + "eggs.ser");
 	}
 

@@ -111,6 +111,6 @@ public class BrainPicture extends JPanel {
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
 		for (Organ organ : frog.organs)
-			organ.drawOnBrainPicture(this); // each organ draw itself
+			organ.drawOnBrainPicture(frog, this); // each organ draw itself
 	}
 }

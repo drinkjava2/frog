@@ -27,7 +27,7 @@ public class Application {
 	}
 	public static JFrame mainFrame = new JFrame();
 	public static Env env = new Env();
-	public static BrainPicture brainStructure = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_WIDTH,
+	public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_WIDTH,
 			Env.FROG_BRAIN_DISP_WIDTH);
 
 	public static void main(String[] args) throws InterruptedException {
@@ -36,7 +36,7 @@ public class Application {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 关闭时退出程序
 		mainFrame.add(env);
 
-		mainFrame.add(brainStructure);
+		mainFrame.add(brainPic);
 
 		JButton button = new JButton("Show first frog's brain");
 		int buttonWidth = 180;
@@ -79,7 +79,6 @@ public class Application {
 		mainFrame.add(stopButton);
 
 		mainFrame.setVisible(true);
-
 		env.run();
 	}
 

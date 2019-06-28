@@ -40,7 +40,7 @@ public class Frog {
 
 	public int x; // frog在Env中的x坐标
 	public int y; // frog在Env中的y坐标
-	public long energy = 10000; // 青蛙的能量为0则死掉
+	public long energy = 1000000; // 青蛙的能量为0则死掉
 	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
 
 	static Image frogImg;
@@ -62,6 +62,8 @@ public class Frog {
 	}
 
 	public boolean active(Env v) {
+		if (Env.outsideEnv(x, y))
+			alive = false;
 		energy -= 20;
 		if (!alive || energy < 0) {// 如果能量小于0则死
 			energy -= 100; // 死掉的青蛙也要消耗能量，保证淘汰出局
@@ -70,7 +72,7 @@ public class Frog {
 		}
 
 		for (Organ o : organs) { // 调用每个Organ的active方法
-			//energy -= o.organWasteEnergy; // 器官不是越多越好，每增加一个器官，要多消耗一点能量，通过这个方法防止器官无限增多
+			// energy -= o.organWasteEnergy; // 器官不是越多越好，每增加一个器官，要多消耗一点能量，通过这个方法防止器官无限增多
 			o.active(this);
 		}
 		return alive;

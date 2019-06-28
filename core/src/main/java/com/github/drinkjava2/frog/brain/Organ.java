@@ -63,7 +63,7 @@ public class Organ extends Zone {
 	}
 
 	/** Child class can override this method to drawing picture */
-	public void drawOnBrainPicture(BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
+	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
 		Graphics g = pic.getGraphics();// border
 		g.setColor(Color.BLACK); // 缺省是黑色
 		pic.drawZone(g, this);
