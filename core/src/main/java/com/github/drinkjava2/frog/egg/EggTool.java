@@ -87,6 +87,23 @@ public class EggTool {
 			}
 		});
 	}
+	
+//	private static void sortFrogsOrderByAteFood(Env env) {// 按吃到食物数量、剩余能量多少给青蛙排序
+//		Collections.sort(env.frogs, new Comparator<Frog>() {
+//			public int compare(Frog a, Frog b) {
+//				if (a.ateFood > b.ateFood)
+//					return -1;
+//				else if (a.ateFood == b.ateFood) {
+//					// if (a.energy > b.energy)
+//					// return -1;
+//					// if (a.energy < b.energy)
+//					// return 1;
+//					return 0;
+//				} else
+//					return 1;
+//			}
+//		});
+//	}
 
 	public static void deleteEggs() {
 		System.out.println("Delete exist egg file: '" + Application.CLASSPATH + "eggs.ser'");

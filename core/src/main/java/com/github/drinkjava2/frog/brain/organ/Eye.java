@@ -10,6 +10,7 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
+import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
@@ -38,6 +39,7 @@ public class Eye extends Organ {// Eye类需要重构，目前只有4个感光�
 
 	@Override
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
+		if(!Application.SHOW_FIRST_FROG_BRAIN)return;
 		super.drawOnBrainPicture(f, pic);
 		float qRadius = r / 4;
 		float q3Radius = (float) (r * .75);

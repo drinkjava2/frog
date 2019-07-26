@@ -70,7 +70,7 @@ public class BrainPicture extends JPanel {
 	public void drawText(Graphics g, Zone z, String text) {
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
-		int y = Math.round(z.y * rate);
+		int y = Math.round(z.y * rate); 
 		g.drawString(text, x - text.length() * 3 - 2, y);
 	}
 

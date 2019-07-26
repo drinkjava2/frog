@@ -22,7 +22,7 @@ import com.github.drinkjava2.frog.egg.EggTool;
 @SuppressWarnings("serial")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static int SHOW_SPEED = 5; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static int SHOW_SPEED = 100; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -155,7 +155,7 @@ public class Env extends JPanel {
 	}
 
 	public static boolean closeToEdge(Frog f) {// 青蛙靠近边界? 离死不远了
-		return f.x < 20 || f.y < 20 || f.x > (Env.WIDTH - 20) || f.y > (Env.HEIGHT - 20);
+		return f.x < 20 || f.y < 20 || f.x > (Env.ENV_WIDTH - 20) || f.y > (Env.ENV_HEIGHT - 20);
 	}
 
 	public void run() throws InterruptedException {
@@ -197,9 +197,11 @@ public class Env extends JPanel {
 					frog.show(g);
 
 				if (firstFrog.alive) { // 开始显示第一个Frog的动态脑图
-					g.setColor(Color.red);
-					g.drawArc(firstFrog.x - 15, firstFrog.y - 15, 30, 30, 0, 360);
-					g.setColor(Color.BLACK);
+					if (Application.SHOW_FIRST_FROG_BRAIN) {
+						g.setColor(Color.red);
+						g.drawArc(firstFrog.x - 15, firstFrog.y - 15, 30, 30, 0, 360);
+						g.setColor(Color.BLACK);
+					}
 					if (DRAW_BRAIN_AFTER_STEPS > 0 && i % DRAW_BRAIN_AFTER_STEPS == 0)
 						Application.brainPic.drawBrainPicture(firstFrog);
 				}
