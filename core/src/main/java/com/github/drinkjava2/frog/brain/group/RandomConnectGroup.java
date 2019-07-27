@@ -11,7 +11,6 @@
 package com.github.drinkjava2.frog.brain.group;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
@@ -49,7 +48,7 @@ public class RandomConnectGroup extends Group {
 	public void initFrog(Frog f) {
 		if (!initilized) {
 			initilized = true;
-			//organWasteEnergy=.05f;
+			// organWasteEnergy=.05f;
 			x = Env.FROG_BRAIN_WIDTH / 2;
 			y = Env.FROG_BRAIN_WIDTH / 2;
 			r = Env.FROG_BRAIN_WIDTH / 2;
@@ -83,19 +82,18 @@ public class RandomConnectGroup extends Group {
 	}
 
 	@Override
-	public void drawOnBrainPicture(Frog f,BrainPicture pic) {// 把自已这个器官在脑图上显示出来
-		Graphics g = pic.getGraphics();// border
+	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
 		if (fat <= 0)
-			g.setColor(Color.LIGHT_GRAY); // 没用到? 灰色
+			pic.setColor(Color.LIGHT_GRAY); // 没用到? 灰色
 		else
-			g.setColor(Color.red); // 用到了?红色
-		pic.drawZone(g, this);
-		pic.drawLine(g, inputZone, outputZone);
-		pic.drawZone(g, inputZone);
-		pic.fillZone(g, outputZone);
+			pic.setColor(Color.red); // 用到了?红色
+		pic.drawLine(inputZone, outputZone);
+		pic.drawZone(this);
+		pic.drawZone(inputZone);
+		pic.fillZone(outputZone);
 		if (fat > 0) {
-			g.setColor(Color.red);
-			pic.drawCircle(g, outputZone); // 如果胖了，表示激活过了，下次下蛋少不了这一组
+			pic.setColor(Color.red);
+			pic.drawCircle(outputZone); // 如果胖了，表示激活过了，下次下蛋少不了这一组
 		}
 	}
 

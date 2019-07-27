@@ -50,10 +50,10 @@ public class NewEye extends Organ {// 这个眼睛有nxn个感光细胞，可以
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				Zone cell = new Zone(x0 + i * 2 * r2 + r2, y0 + j * 2 * r2 + r2, r2);
-				if (Env.foundFoodOrOutEdge(f.x - n / 2 + i, f.y - n / 2 + j))
-					pic.fillZone(pic.getGraphics(), cell);
+				if (Env.foundAnyThing(f.x - n / 2 + i, f.y - n / 2 + j))
+					pic.fillZone(cell);
 				else
-					pic.drawZone(pic.getGraphics(), cell);
+					pic.drawZone(cell);
 			}
 		}
 	}
@@ -77,7 +77,7 @@ public class NewEye extends Organ {// 这个眼睛有nxn个感光细胞，可以
 		float y0 = y - r; // x0,y0是眼睛的左上角
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
-				if (Env.foundFoodOrOutEdge(f.x - n / 2 + i, f.y - n / 2 + j)) {
+				if (Env.foundAnyThing(f.x - n / 2 + i, f.y - n / 2 + j)) {
 					Zone eyeCell = new Zone(x0 + i * 2 * r2 + r2, y0 + j * 2 * r2 + r2, r2);
 					for (Cell cell : f.cells)
 						for (Input input : cell.inputs)

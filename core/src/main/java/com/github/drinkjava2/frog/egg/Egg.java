@@ -42,8 +42,8 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @since 1.0
  */
 public class Egg implements Serializable {
-	// 但为了缩短时间，这个程序随机生成的联结将只落在固定的器官上而不是漫天撒网(见4.12提交)，这是程序的优化，实现的逻辑和随机漫天撒网定是相同的。
-	// 但是这个优化带来的问题是这个硬编码逻辑不能拷贝到将来的分形结构里去，而且下面这个 FIXED_ORGAN_QTY必须每次手工设定
+	// 为了缩短时间，这个程序随机生成的联结将只落在固定的器官上而不是漫天撒网(见4.12提交)，这是程序的优化，实现的逻辑和随机漫天撒网定是相同的。
+	// 但是这个优化带来的问题是这是一个硬编码逻辑，不利于器官的优胜劣汰， 而且下面这个 FIXED_ORGAN_QTY必须每次手工设定
 	public static int FIXED_ORGAN_QTY = 10;
 
 	private static final long serialVersionUID = 1L;
@@ -62,9 +62,9 @@ public class Egg implements Serializable {
 		organs.add(new Eye().setXYRN(100, 300, 100, "Eye"));
 		organs.add(new NewEye().setXYRN(200, 700, 200, "NewEye"));
 		organs.add(new Pain().setXYRN(800, 700, 60, "Pain")); // 痛苦在靠近边界时触发
-		organs.add(new Active().setXYRN(500, 100, 60, "Active")); // 痛苦在靠近边界时触发
+		organs.add(new Active().setXYRN(500, 100, 60, "Active")); // 永远激活
 
-		// Pain对提高找食效率没有帮助，将来要和记忆功能一起加入,我们的目标：不出界，吃光所有食物
+		// 以上为10个, 就是FIXED_ORGAN_QTY值
 
 		organs.add(new Eat().setXYRN(0, 0, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
 

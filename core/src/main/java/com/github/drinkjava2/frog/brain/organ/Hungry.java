@@ -11,10 +11,8 @@
 package com.github.drinkjava2.frog.brain.organ;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 import com.github.drinkjava2.frog.Application;
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cell;
@@ -40,17 +38,16 @@ public class Hungry extends Organ {
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
 		if (!Application.SHOW_FIRST_FROG_BRAIN)
 			return;
-		Graphics g = pic.getGraphics();
 		if (f.energy < 10000) {
-			pic.fillZone(g, this);
+			pic.fillZone(this);
 		} else {
-			g.setColor(Color.white);
-			pic.fillZone(g, this);
-			g.setColor(Color.BLACK);
-			pic.drawZone(g, this);
+			pic.setColor(Color.white);
+			pic.fillZone(this);
+			pic.setColor(Color.BLACK);
+			pic.drawZone(this);
 		}
 		if (this.name != null)
-			pic.drawText(g, this, String.valueOf(this.name));
+			pic.drawText(this, String.valueOf(this.name));
 	}
 
 	@Override

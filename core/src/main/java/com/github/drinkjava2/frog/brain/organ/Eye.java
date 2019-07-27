@@ -39,7 +39,8 @@ public class Eye extends Organ {// Eye类需要重构，目前只有4个感光�
 
 	@Override
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
-		if(!Application.SHOW_FIRST_FROG_BRAIN)return;
+		if (!Application.SHOW_FIRST_FROG_BRAIN)
+			return;
 		super.drawOnBrainPicture(f, pic);
 		float qRadius = r / 4;
 		float q3Radius = (float) (r * .75);
@@ -47,10 +48,10 @@ public class Eye extends Organ {// Eye类需要重构，目前只有4个感光�
 		Zone seeDown = new Zone(x, y - q3Radius, qRadius);
 		Zone seeLeft = new Zone(x - q3Radius, y, qRadius);
 		Zone seeRight = new Zone(x + q3Radius, y, qRadius);
-		pic.drawZone(pic.getGraphics(), seeUp);
-		pic.drawZone(pic.getGraphics(), seeDown);
-		pic.drawZone(pic.getGraphics(), seeLeft);
-		pic.drawZone(pic.getGraphics(), seeRight);
+		pic.drawZone(seeUp);
+		pic.drawZone(seeDown);
+		pic.drawZone(seeLeft);
+		pic.drawZone(seeRight);
 	}
 
 	@Override

@@ -26,6 +26,11 @@ import com.github.drinkjava2.frog.Frog;
 public class BrainPicture extends JPanel {
 	private float brainWidth; // real brain width
 	private int brainDispWidth; // screen display width
+	private Color color = Color.BLACK;
+
+	public void setColor(Color c) {
+		color = c;
+	}
 
 	public BrainPicture(int x, int y, float brainWidth, int brainDispWidth) {
 		super();
@@ -35,7 +40,8 @@ public class BrainPicture extends JPanel {
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 	}
 
-	public void drawZone(Graphics g, Zone z) {
+	public void drawZone( Zone z) {Graphics g = this.getGraphics();
+	g.setColor(color);
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
 		int y = Math.round(z.y * rate);
@@ -43,14 +49,16 @@ public class BrainPicture extends JPanel {
 		g.drawRect(x - radius, y - radius, radius * 2, radius * 2);
 	}
 
-	public void drawCircle(Graphics g, Zone z) {
+	public void drawCircle( Zone z) {Graphics g = this.getGraphics();
+	g.setColor(color);
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
 		int y = Math.round(z.y * rate);
 		g.drawArc(x - 5, y - 5, 10, 10, 0, 360);
 	}
 
-	public void fillZone(Graphics g, Zone z) {
+	public void fillZone( Zone z) {Graphics g = this.getGraphics();
+	g.setColor(color);
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
 		int y = Math.round(z.y * rate);
@@ -58,7 +66,9 @@ public class BrainPicture extends JPanel {
 		g.fillRect(x - radius, y - radius, radius * 2, radius * 2);
 	}
 
-	public void drawLine(Graphics g, Zone z1, Zone z2) {
+	public void drawLine(Zone z1, Zone z2) {
+		Graphics g = this.getGraphics();
+		g.setColor(color);
 		float rate = brainDispWidth / brainWidth;
 		int x1 = Math.round(z1.x * rate);
 		int y1 = Math.round(z1.y * rate);
@@ -67,10 +77,11 @@ public class BrainPicture extends JPanel {
 		g.drawLine(x1, y1, x2, y2);
 	}
 
-	public void drawText(Graphics g, Zone z, String text) {
+	public void drawText( Zone z, String text) {Graphics g = this.getGraphics();
+	g.setColor(color);
 		float rate = brainDispWidth / brainWidth;
 		int x = Math.round(z.x * rate);
-		int y = Math.round(z.y * rate); 
+		int y = Math.round(z.y * rate);
 		g.drawString(text, x - text.length() * 3 - 2, y);
 	}
 
@@ -113,4 +124,5 @@ public class BrainPicture extends JPanel {
 		for (Organ organ : frog.organs)
 			organ.drawOnBrainPicture(frog, this); // each organ draw itself
 	}
+
 }

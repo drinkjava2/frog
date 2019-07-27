@@ -11,7 +11,6 @@
 package com.github.drinkjava2.frog.brain.organ;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
@@ -42,17 +41,16 @@ public class Pain extends Organ { // Pain器官目前激活的条件是离边境
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
 		if (!Application.SHOW_FIRST_FROG_BRAIN)
 			return;
-		Graphics g = pic.getGraphics();
 		if (Env.closeToEdge(f)) {
-			pic.fillZone(g, this);
+			pic.fillZone(this);
 		} else {
-			g.setColor(Color.white);
-			pic.fillZone(g, this);
-			g.setColor(Color.BLACK);
-			pic.drawZone(g, this);
+			pic.setColor(Color.white);
+			pic.fillZone(this);
+			pic.setColor(Color.BLACK);
+			pic.drawZone(this);
 		}
 		if (this.name != null)
-			pic.drawText(g, this, String.valueOf(this.name));
+			pic.drawText(this, String.valueOf(this.name));
 	}
 
 	@Override

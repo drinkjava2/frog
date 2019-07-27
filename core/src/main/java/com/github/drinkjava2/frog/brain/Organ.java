@@ -11,7 +11,6 @@
 package com.github.drinkjava2.frog.brain;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Frog;
@@ -68,11 +67,10 @@ public class Organ extends Zone {
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
 		if (!Application.SHOW_FIRST_FROG_BRAIN)
 			return;
-		Graphics g = pic.getGraphics();// border
-		g.setColor(Color.BLACK); // 缺省是黑色
-		pic.drawZone(g, this);
+		pic.setColor(Color.BLACK); // 缺省是黑色
+		pic.drawZone(this);
 		if (this.name != null)
-			pic.drawText(g, this, String.valueOf(this.name));
+			pic.drawText(this, String.valueOf(this.name));
 	}
 
 	/** Only call once when frog created , Child class can override this method */
