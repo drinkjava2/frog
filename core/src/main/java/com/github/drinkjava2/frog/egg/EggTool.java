@@ -24,6 +24,8 @@ import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.organ.Chance;
+import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.FrogFileUtils;
 
 /**
@@ -53,14 +55,14 @@ public class EggTool {
 						+ org.organActiveEnergy + ", outputEnergy=" + org.organOutputEnergy);
 			}
 
-		System.out.print("First frog has " + first.organs.size() + " organs, energy=" + first.energy);
-		System.out.print(", Last frog has " + last.organs.size() + " organs, energy=" + last.energy);
+		System.out.println("1st frog has " + first.organs.size() + " organs, energy=" + first.energy + ", seeDist="
+				+ ((Eye) first.organs.get(6)).seeDistance + ", chance=" + ((Chance) first.organs.get(10)).percent);
+		System.out.println("Last frog has " + last.organs.size() + " organs, energy=" + last.energy);
 
 		try {
 			List<Egg> newEggs = new ArrayList<>();
 			for (int i = 0; i < Env.EGG_QTY; i++)
 				newEggs.add(new Egg(env.frogs.get(i)));
-			System.out.print(", organs =" + newEggs.get(0).organs.size() + ", ");
 
 			FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "eggs.ser");
 			ObjectOutputStream so = new ObjectOutputStream(fo);
@@ -68,8 +70,8 @@ public class EggTool {
 			so.close();
 
 			env.eggs = newEggs;
-			System.out.println(
-					", Saved " + env.eggs.size() + " eggs to file '" + Application.CLASSPATH + "eggs.ser" + "'");
+			System.out
+					.println("Saved " + env.eggs.size() + " eggs to file '" + Application.CLASSPATH + "eggs.ser" + "'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}
@@ -87,23 +89,24 @@ public class EggTool {
 			}
 		});
 	}
-	
-//	private static void sortFrogsOrderByEnergyDesc(Env env) {// 按吃到食物数量、剩余能量多少给青蛙排序
-//		Collections.sort(env.frogs, new Comparator<Frog>() {
-//			public int compare(Frog a, Frog b) {
-//				if (a.ateFood > b.ateFood)
-//					return -1;
-//				else if (a.ateFood == b.ateFood) {
-//					// if (a.energy > b.energy)
-//					// return -1;
-//					// if (a.energy < b.energy)
-//					// return 1;
-//					return 0;
-//				} else
-//					return 1;
-//			}
-//		});
-//	}
+
+	// private static void sortFrogsOrderByEnergyDesc(Env env) {//
+	// 按吃到食物数量、剩余能量多少给青蛙排序
+	// Collections.sort(env.frogs, new Comparator<Frog>() {
+	// public int compare(Frog a, Frog b) {
+	// if (a.ateFood > b.ateFood)
+	// return -1;
+	// else if (a.ateFood == b.ateFood) {
+	// // if (a.energy > b.energy)
+	// // return -1;
+	// // if (a.energy < b.energy)
+	// // return 1;
+	// return 0;
+	// } else
+	// return 1;
+	// }
+	// });
+	// }
 
 	public static void deleteEggs() {
 		System.out.println("Delete exist egg file: '" + Application.CLASSPATH + "eggs.ser'");

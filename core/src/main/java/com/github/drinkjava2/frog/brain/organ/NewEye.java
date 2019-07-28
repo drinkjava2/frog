@@ -27,9 +27,9 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class NewEye extends Organ {// 这个眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
+public class NewEye extends Organ {// 这个新版的眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
 	private static final long serialVersionUID = 1L;
-	public int n = 3; // 眼睛有n x n个感光细胞，缺省是3x3点阵,会随机自动变异(加1或减1，最小是1)
+	public int n = 3; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
 
 	@Override
 	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Organ类的初始化

@@ -10,8 +10,10 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
+import com.github.drinkjava2.frog.brain.group.RandomConnectGroup;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Env is the living space of frog. draw it on JPanel
@@ -22,7 +24,7 @@ import com.github.drinkjava2.frog.egg.EggTool;
 @SuppressWarnings("serial")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static int SHOW_SPEED = 400; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static int SHOW_SPEED = 20; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -58,9 +60,9 @@ public class Env extends JPanel {
 
 	private static final boolean[][] foods = new boolean[ENV_WIDTH][ENV_HEIGHT];// 食物数组定义
 
-	private static final int TRAP_WIDTH = 0; // 陷阱高, 0~200
+	private static final int TRAP_WIDTH = 350; // 陷阱高, 0~200
 
-	private static final int TRAP_HEIGHT = 0; // 陷阱宽, 0~200
+	private static final int TRAP_HEIGHT = 10; // 陷阱宽, 0~200
 
 	public List<Frog> frogs = new ArrayList<>();
 
@@ -199,6 +201,13 @@ public class Env extends JPanel {
 				for (Frog frog : frogs)
 					if (frog.active(this))
 						allDead = false;
+
+				for (Frog frog : frogs)
+					if (frog.alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
+						RandomConnectGroup newConGrp = new RandomConnectGroup();
+						newConGrp.initFrog(frog);
+						frog.organs.add(newConGrp);
+					}
 
 				if (SHOW_SPEED > 0 && i % SHOW_SPEED != 0) // 画青蛙会拖慢速度
 					continue;

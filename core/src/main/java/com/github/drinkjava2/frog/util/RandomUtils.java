@@ -47,8 +47,8 @@ public class RandomUtils {
 	}
 
 
-	public static boolean percent(int percent) {
-		return rand.nextInt(100) < percent;
+	public static boolean percent(float percent) {
+		return rand.nextFloat() * 100 < percent;
 	}
 	
 	

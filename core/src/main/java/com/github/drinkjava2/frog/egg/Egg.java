@@ -17,8 +17,8 @@ import java.util.List;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.group.Group;
-import com.github.drinkjava2.frog.brain.group.RandomConnectGroup;
 import com.github.drinkjava2.frog.brain.organ.Active;
+import com.github.drinkjava2.frog.brain.organ.Chance;
 import com.github.drinkjava2.frog.brain.organ.Eat;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.brain.organ.Happy;
@@ -43,8 +43,8 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  */
 public class Egg implements Serializable {
 	// 为了缩短时间，这个程序随机生成的联结将只落在固定的器官上而不是漫天撒网(见4.12提交)，这是程序的优化，实现的逻辑和随机漫天撒网定是相同的。
-	// 但是这个优化带来的问题是这是一个硬编码逻辑，不利于器官的优胜劣汰， 而且下面这个 FIXED_ORGAN_QTY必须每次手工设定
-	public static int FIXED_ORGAN_QTY = 10;
+	// 但是这个优化带来的问题是这是一个硬编码逻辑，不利于器官的优胜劣汰， 而且下面这个 FIXED_ORGAN_QTY必须每次手工设定，以后需要重构这块的代码
+	public static int FIXED_ORGAN_QTY = 11;
 
 	private static final long serialVersionUID = 1L;
 
@@ -63,12 +63,12 @@ public class Egg implements Serializable {
 		organs.add(new NewEye().setXYRN(200, 700, 200, "NewEye"));
 		organs.add(new Pain().setXYRN(800, 700, 60, "Pain")); // 痛苦在靠近边界时触发
 		organs.add(new Active().setXYRN(500, 100, 60, "Active")); // 永远激活
+		organs.add(new Chance().setXYRN(650, 100, 60, "Chance")); // 永远激活
 
-		// 以上为10个, 就是FIXED_ORGAN_QTY值
+		// 以上为11个, 就是FIXED_ORGAN_QTY值
 
 		organs.add(new Eat().setXYRN(0, 0, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
 
-		addRandomConnectionGroups();
 	}
 
 	/** Create egg from frog */
@@ -76,12 +76,6 @@ public class Egg implements Serializable {
 		for (Organ organ : frog.organs)
 			for (Organ newOrgan : organ.vary())
 				organs.add(newOrgan);
-		addRandomConnectionGroups();
-	}
-
-	private void addRandomConnectionGroups() {// 每次下蛋时新建5个RandomConnectGroup实例
-		for (int i = 0; i < 5; i++)
-			organs.add(new RandomConnectGroup());
 	}
 
 	/**

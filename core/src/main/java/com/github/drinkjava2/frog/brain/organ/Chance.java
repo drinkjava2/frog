@@ -14,33 +14,48 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Input;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
- * Active always keep active
+ * Chance is a random number generator
  * 
- * 这个器官永远激活
+ * 这个器官是一个随机数发生器，用来打乱青蛙的思维，防止它围着一个食物打转出不来
  */
-public class Active extends Organ {//以前的实验发现添加一个始终激活的区比用Hungry来驱动更能提高找食效率
-
+public class Chance extends Organ { // 至于这个器官能不能被选中，是另外一回事，听天由命了
 	private static final long serialVersionUID = 1L;
+	public int percent; // 初始化的机率为5%
 
 	@Override
 	public void initFrog(Frog f) {
 		if (!initilized) {
 			initilized = true;
-			organOutputEnergy = 2;
+			percent = 5;
 		}
 	}
 
 	@Override
+	public Organ[] vary() {
+		if (RandomUtils.percent(5)) {
+			percent = percent + 1 - 2 * RandomUtils.nextInt(2);
+			if (percent < 1)
+				percent = 1;
+			if (percent > 98)
+				percent = 98;
+		}
+		return new Organ[] { this };
+	}
+
+	@Override
 	public void active(Frog f) {
-		for (Cell cell : f.cells) {
-			if (cell.energy > 0)
-				cell.energy--;
-			if (cell.energy < Cell.MAX_ENERGY_LIMIT)
-				for (Input input : cell.inputs)
-					if (input.nearby(this)) // if input zone near by happy zone
-						cell.energy += organOutputEnergy;
+		if (RandomUtils.percent(percent)) {// 如果靠近边界，痛苦信号生成
+			for (Cell cell : f.cells) {
+				if (cell.energy > 0)
+					cell.energy--;
+				if (cell.energy < Cell.MAX_ENERGY_LIMIT)
+					for (Input input : cell.inputs)
+						if (input.nearby(this)) // if input zone nearby this zone
+							cell.energy += 30;
+			}
 		}
 	}
 
