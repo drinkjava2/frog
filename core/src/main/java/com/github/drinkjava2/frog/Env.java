@@ -24,16 +24,16 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("serial")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static int SHOW_SPEED = 20; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static int SHOW_SPEED = 2; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
-	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
+	public static final boolean DELETE_EGGS = false;// 每次运行是否先删除保存的蛋
 
 	/** Debug mode will print more debug info */
 	public static final boolean DEBUG_MODE = false; // Debug 模式下会打印出更多的调试信息
 
 	/** Draw first frog's brain after some steps */
-	public static int DRAW_BRAIN_AFTER_STEPS = 50; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
+	public static final int DRAW_BRAIN_AFTER_STEPS = 50; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
 
 	/** Environment x width, unit: pixels */
 	public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
@@ -52,7 +52,9 @@ public class Env extends JPanel {
 
 	public static final int FOOD_QTY = 1500; // 食物数量, 可调
 
-	public static final int EGG_QTY = 50; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int EGG_QTY = 3; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+
+	public static final int FROG_PER_EGG = 2; // 每个蛋可以孵出几个青蛙
 
 	private static final Random r = new Random(); // 随机数发生器
 
@@ -122,11 +124,13 @@ public class Env extends JPanel {
 		}
 		Random rand = new Random();
 		for (int i = 0; i < eggs.size(); i++) {// 创建青蛙，每个蛋生成4个蛙，并随机取一个别的蛋作为精子
-			int loop = 4;
-			if (i <= 3)// 0,1,2,3
-				loop = 6;
-			if (i >= (eggs.size() - 4))
-				loop = 2;
+			int loop = FROG_PER_EGG;
+			if (eggs.size() > 20) { //如果数量多，进行一些优化，让排名靠前的Egg多孵出青蛙
+				if (i < FROG_PER_EGG)// 0,1,2,3
+					loop = FROG_PER_EGG + 1;
+				if (i >= (eggs.size() - FROG_PER_EGG))
+					loop = FROG_PER_EGG - 1;
+			}
 			for (int j = 0; j < loop; j++) {
 				Egg zygote = new Egg(eggs.get(i), eggs.get(r.nextInt(eggs.size())));
 				frogs.add(new Frog(rand.nextInt(ENV_WIDTH), rand.nextInt(ENV_HEIGHT), zygote));

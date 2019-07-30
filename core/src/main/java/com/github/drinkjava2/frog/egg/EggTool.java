@@ -135,7 +135,7 @@ public class EggTool {
 			env.eggs = new ArrayList<Egg>();
 			for (int i = 0; i < Env.EGG_QTY; i++)
 				env.eggs.add(new Egg());
-		}
+		} 
 	}
 
 }
