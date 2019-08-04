@@ -22,7 +22,6 @@ import java.util.List;
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.organ.Chance;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.FrogFileUtils;
@@ -47,13 +46,6 @@ public class EggTool {
 		Frog first = Env.frogs.get(0);
 		Frog last = Env.frogs.get(Env.frogs.size() - 1);
 
-		if (Env.DEBUG_MODE)
-			for (int i = 0; i < first.organs.size(); i++) {
-				Organ org = first.organs.get(i);
-				System.out.println("Organ(" + i + ")=" + org + ", fat=" + org.fat + ",  organWasteEnergy="
-						+ org.organActiveEnergy + ", outputEnergy=" + org.organOutputEnergy);
-			}
-
 		try {
 			Env.eggs.clear();
 			for (int i = 0; i < Env.EGG_QTY; i++)
@@ -65,7 +57,7 @@ public class EggTool {
 			System.out.print("\r1st frog has " + first.organs.size() + " organs, energy=" + first.energy + ", seeDist="
 					+ ((Eye) first.organs.get(6)).seeDistance + ", chance=" + ((Chance) first.organs.get(10)).percent);
 			System.out.println(", Last frog has " + last.organs.size() + " organs,  energy=" + last.energy);
-			System.out.println("Saved 1 group eggs to file '" + Application.CLASSPATH + "eggs.ser'");
+			System.out.println("Saved "+Env.eggs.size() +" eggs to file '" + Application.CLASSPATH + "eggs.ser'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}

@@ -22,7 +22,7 @@ public class Eat extends Organ {// Eat这个类将食物转化为能量，能量
 
 	@Override
 	public void active(Frog f) {
-		if (Env.foundAndDeleteFood(f.x, f.y)) {
+		if (Env.foundAndAteFood(f.x, f.y)) {
 			f.ateFood++;
 			// 所有的硬编码都是bug，包括这个1000
 			f.energy += 1000;// 如果青蛙的坐标与食物重合，吃掉food，能量境加
