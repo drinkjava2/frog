@@ -15,12 +15,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
@@ -41,10 +38,10 @@ public class EggTool {
 	/**
 	 * Frogs which have higher energy lay eggs
 	 * 
-	 * 利用Java串行机制存盘。 能量多(也就是吃的更多，更fat)的Frog下蛋并存盘, 以进行下一伦测试，能量少的Frog被淘汰，没有下蛋的资格。
-	 * 用能量的多少来简化生存竟争模拟
+	 * 利用Java串行机制存盘。 能量多(也就是吃的更多)的Frog下蛋并存盘, 以进行下一轮测试，能量少的Frog被淘汰，没有下蛋的资格。
+	 * 用能量的多少来简化生存竟争模拟，每次下蛋数量固定为EGG_QTY个
 	 */
-	public static void layEggs(int foundFound, Map<Float, List<Egg>> resultEggsMap) {
+	public static void layEggs() {
 		sortFrogsOrderByEnergyDesc();
 
 		Frog first = Env.frogs.get(0);
@@ -53,27 +50,22 @@ public class EggTool {
 		if (Env.DEBUG_MODE)
 			for (int i = 0; i < first.organs.size(); i++) {
 				Organ org = first.organs.get(i);
-				System.out.println("Organ(" + i + ")=" + org + ", fat=" + org.fat + ", organWasteEnergy="
+				System.out.println("Organ(" + i + ")=" + org + ", fat=" + org.fat + ",  organWasteEnergy="
 						+ org.organActiveEnergy + ", outputEnergy=" + org.organOutputEnergy);
 			}
 
-		System.out.print("\r1st frog has " + first.organs.size() + " organs, energy=" + first.energy + ", seeDist="
-				+ ((Eye) first.organs.get(6)).seeDistance + ", chance=" + ((Chance) first.organs.get(10)).percent);
-		System.out.println(", Last frog has " + last.organs.size() + " organs, energy=" + last.energy);
-
 		try {
-			List<Egg> newEggs = new ArrayList<>();
+			Env.eggs.clear();
 			for (int i = 0; i < Env.EGG_QTY; i++)
-				newEggs.add(new Egg(Env.frogs.get(i)));
-			resultEggsMap.put(Float.parseFloat(foundFound + "." + resultEggsMap.size()), newEggs);
-			if (resultEggsMap.size() == Env.GROUP_SIZE) {
-				FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "eggs.ser");
-				ObjectOutputStream so = new ObjectOutputStream(fo);
-				so.writeObject(resultEggsMap);
-				so.close();
-				System.out.println("Saved 1 group eggs to file '" + Application.CLASSPATH + "eggs.ser'");
-			} else
-				System.out.println("Stored " + newEggs.size() + " eggs to group in memory.");
+				Env.eggs.add(new Egg(Env.frogs.get(i)));
+			FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "eggs.ser");
+			ObjectOutputStream so = new ObjectOutputStream(fo);
+			so.writeObject(Env.eggs);
+			so.close();
+			System.out.print("\r1st frog has " + first.organs.size() + " organs, energy=" + first.energy + ", seeDist="
+					+ ((Eye) first.organs.get(6)).seeDistance + ", chance=" + ((Chance) first.organs.get(10)).percent);
+			System.out.println(", Last frog has " + last.organs.size() + " organs,  energy=" + last.energy);
+			System.out.println("Saved 1 group eggs to file '" + Application.CLASSPATH + "eggs.ser'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}
@@ -92,24 +84,6 @@ public class EggTool {
 		});
 	}
 
-	// private static void sortFrogsOrderByEnergyDesc(Env env) {//
-	// 按吃到食物数量、剩余能量多少给青蛙排序
-	// Collections.sort(env.frogs, new Comparator<Frog>() {
-	// public int compare(Frog a, Frog b) {
-	// if (a.ateFood > b.ateFood)
-	// return -1;
-	// else if (a.ateFood == b.ateFood) {
-	// // if (a.energy > b.energy)
-	// // return -1;
-	// // if (a.energy < b.energy)
-	// // return 1;
-	// return 0;
-	// } else
-	// return 1;
-	// }
-	// });
-	// }
-
 	public static void deleteEggs() {
 		System.out.println("Delete exist egg file: '" + Application.CLASSPATH + "eggs.ser'");
 		FrogFileUtils.deleteFile(Application.CLASSPATH + "eggs.ser");
@@ -124,25 +98,20 @@ public class EggTool {
 		try {
 			FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "eggs.ser");
 			ObjectInputStream eggsInputStream = new ObjectInputStream(eggsFile);
-			Env.eggsMap = (Map<Float, List<Egg>>) eggsInputStream.readObject();
-			System.out.println("Loaded " + Env.eggsMap.size() + " egg groups from file '" + Application.CLASSPATH
-					+ "eggs.ser" + "'.");
+			Env.eggs = (List<Egg>) eggsInputStream.readObject();
+			System.out.println(
+					"Loaded " + Env.eggs.size() + " eggs from file '" + Application.CLASSPATH + "eggs.ser" + "'.\n");
 			eggsInputStream.close();
 		} catch (Exception e) {
 			errorfound = true;
 		}
 		if (errorfound) {
+			Env.eggs.clear();
+			for (int j = 0; j < Env.EGG_QTY; j++)
+				Env.eggs.add(new Egg());
 			System.out.println("Fail to load egg file at path '" + Application.CLASSPATH + "', created "
-					+ Env.GROUP_SIZE + " egg groups to do test.");
-			Env.eggsMap = new HashMap<Float, List<Egg>>();
+					+ Env.eggs.size() + " eggs to do test.\n");
 		}
-		if (Env.eggsMap.size() < Env.GROUP_SIZE)
-			for (int i = Env.eggsMap.size(); i < Env.GROUP_SIZE; i++) {
-				List<Egg> eggLst = new ArrayList<Egg>();
-				for (int j = 0; j < Env.EGG_QTY; j++)
-					eggLst.add(new Egg());
-				Env.eggsMap.put(Float.parseFloat("0." + i), eggLst);// 0 means current egg' father found 0 food
-			}
 
 	}
 

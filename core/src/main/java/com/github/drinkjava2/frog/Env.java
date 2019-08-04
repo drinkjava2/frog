@@ -5,10 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -24,27 +21,27 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-@SuppressWarnings("serial")
+@SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 800; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 300; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
 
-	public static final int EGG_QTY = 1; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int EGG_QTY = 30; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
-	public static final int FROG_PER_EGG = 1; // 每个蛋可以孵出几个青蛙
+	public static final int FROG_PER_EGG = 3; // 每个蛋可以孵出几个青蛙
 
-	public static final int GROUP_SIZE = 12;// 分组测试，每个组里面有多少轮, 利用分组可以在慢的电脑上每次只跑少量的样本，用时间换空间
+	public static final int SCREEN = 3; // 分几屏测完, 所以每轮待测青蛙总数=EGG_QTY*FROG_PER_EGG*SCREEN
 
-	public static final int PICK_PER_GROUP = 4;// 一组被测试完后，只有总找食最多的若干组被选中参与下一组测试
+	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
 	/** Debug mode will print more debug info */
 	public static final boolean DEBUG_MODE = false; // Debug 模式下会打印出更多的调试信息
 
 	/** Draw first frog's brain after some steps */
-	public static final int DRAW_BRAIN_AFTER_STEPS = 50; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
+	public static int DRAW_BRAIN_AFTER_STEPS = 50; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
 
 	/** Environment x width, unit: pixels */
 	public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
@@ -73,12 +70,12 @@ public class Env extends JPanel {
 
 	private static final int TRAP_HEIGHT = 10; // 陷阱宽, 0~200
 
-	public static List<Frog> frogs = new ArrayList<>();
+	public static List<Frog> frogs = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
-	public static Map<Float, List<Egg>> eggsMap;
+	public static List<Egg> eggs = new ArrayList<>(); // 这里存放从磁盘载入或上轮下的蛋，每个蛋可能生成1~n个青蛙，
 
 	static {
-		System.out.println("唵缚悉波罗摩尼莎诃!"); // 往生咒
+		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
 		if (DELETE_EGGS)
 			EggTool.deleteEggs();
 	}
@@ -122,15 +119,18 @@ public class Env extends JPanel {
 		return false;
 	}
 
-	private void rebuildFrogAndFood(List<Egg> eggs) {
-		frogs.clear();
+	private void rebuildFood() {
 		for (int i = 0; i < ENV_WIDTH; i++) {// 清除食物
-			for (int j = 0; j < ENV_HEIGHT; j++) {
+			for (int j = 0; j < ENV_HEIGHT; j++)
 				foods[i][j] = false;
-			}
 		}
-		Random rand = new Random();
-		for (int i = 0; i < eggs.size(); i++) {// 创建青蛙，每个蛋生成4个蛙，并随机取一个别的蛋作为精子
+		for (int i = 0; i < Env.FOOD_QTY; i++) // 生成食物
+			foods[RandomUtils.nextInt(ENV_WIDTH)][RandomUtils.nextInt(ENV_HEIGHT)] = true;
+	}
+
+	private void rebuildFrogs() {
+		frogs.clear();
+		for (int i = 0; i < eggs.size(); i++) {// 创建青蛙，每个蛋生成n个蛙，并随机取一个别的蛋作为精子
 			int loop = FROG_PER_EGG;
 			if (eggs.size() > 20) { // 如果数量多，进行一些优化，让排名靠前的Egg多孵出青蛙
 				if (i < FROG_PER_EGG)// 0,1,2,3
@@ -140,13 +140,9 @@ public class Env extends JPanel {
 			}
 			for (int j = 0; j < loop; j++) {
 				Egg zygote = new Egg(eggs.get(i), eggs.get(r.nextInt(eggs.size())));
-				frogs.add(new Frog(rand.nextInt(ENV_WIDTH), rand.nextInt(ENV_HEIGHT), zygote));
+				frogs.add(new Frog(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote));
 			}
 		}
-
-		System.out.println("Created " + frogs.size() + " frogs");
-		for (int i = 0; i < Env.FOOD_QTY; i++) // 生成食物
-			foods[rand.nextInt(ENV_WIDTH)][rand.nextInt(ENV_HEIGHT)] = true;
 	}
 
 	private void drawFood(Graphics g) {
@@ -193,47 +189,44 @@ public class Env extends JPanel {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	@SuppressWarnings("unused")
-	public void run() throws InterruptedException {
+	public void run() {
 		EggTool.loadEggs(); // 从磁盘加载egg，或新建一批egg
-		int round = 1;
 		Image buffImg = createImage(this.getWidth(), this.getHeight());
 		Graphics g = buffImg.getGraphics();
-		long t1, t2;// 计时用
+		long time0;// 计时用
+		int round = 1;
 		do {
-			Map<Float, List<Egg>> resultEggsMap = new HashMap<Float, List<Egg>>();
-			for (List<Egg> eggs : eggsMap.values()) {
+			rebuildFrogs();
+			for (int screen = 0; screen < SCREEN; screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
+				time0 = System.currentTimeMillis();
 				if (pause)
 					do {
 						sleep(300);
 					} while (pause);
-				t1 = System.currentTimeMillis();
-				rebuildFrogAndFood(eggs);
+				rebuildFood();
 				boolean allDead = false;
-				Frog firstFrog = frogs.get(0);
+				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN);
 				for (int i = 0; i < STEPS_PER_ROUND; i++) {
-					if (allDead) {
-						System.out.println("All dead at round:" + i);
+					if (allDead)
 						break; // 青蛙全死光了就直接跳到下一轮,以节省时间
-					}
+
 					allDead = true;
-					for (Frog frog : frogs)
-						if (frog.active(this))
+					for (int j = 0; j < FROG_PER_SCREEN; j++) {
+						Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
+						if (f.active(this))
 							allDead = false;
-
-					for (Frog frog : frogs)
-						if (frog.alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
+						if (f.alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
 							RandomConnectGroup newConGrp = new RandomConnectGroup();
-							newConGrp.initFrog(frog);
-							frog.organs.add(newConGrp);
+							newConGrp.initFrog(f);
+							f.organs.add(newConGrp);
 						}
+					}
 
-					if (SHOW_SPEED > 0 && i % SHOW_SPEED != 0) // 画青蛙会拖慢速度
+					if (SHOW_SPEED > 0 && i % SHOW_SPEED != 0) // 用画青蛙的方式来拖慢速度
 						continue;
 
 					if (SHOW_SPEED < 0) // 如果speed小于0，人为加入延迟
@@ -243,8 +236,10 @@ public class Env extends JPanel {
 					g.setColor(Color.white);
 					g.fillRect(0, 0, this.getWidth(), this.getHeight());
 					g.setColor(Color.BLACK);
-					for (Frog frog : frogs)
-						frog.show(g);
+					for (int j = 0; j < FROG_PER_SCREEN; j++) {
+						Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
+						f.show(g);
+					}
 
 					if (firstFrog.alive) { // 开始显示第一个Frog的动态脑图
 						if (Application.SHOW_FIRST_FROG_BRAIN) {
@@ -255,7 +250,6 @@ public class Env extends JPanel {
 						if (DRAW_BRAIN_AFTER_STEPS > 0 && i % DRAW_BRAIN_AFTER_STEPS == 0)
 							Application.brainPic.drawBrainPicture(firstFrog);
 					}
-
 					drawTrap(g);
 					drawFood(g);
 					Graphics g2 = this.getGraphics();
@@ -263,46 +257,13 @@ public class Env extends JPanel {
 
 				}
 				Application.brainPic.drawBrainPicture(firstFrog);
-				EggTool.layEggs(foodFoundAmount(), resultEggsMap);
-				t2 = System.currentTimeMillis();
-				Application.mainFrame.setTitle(new StringBuilder("轮数: ").append(round++).append(", ")
-						.append(foodFoundCountText()).append(", 用时: ").append(t2 - t1).append("ms").toString());
+				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")
+						.append(screen).append(", ").append(foodFoundCountText()).append(", 用时: ")
+						.append(System.currentTimeMillis() - time0).append("ms").toString());
 			}
-			pickFromResultMap(resultEggsMap);
+			round++;
+			EggTool.layEggs();
 		} while (true);
 	}
 
-	private void pickFromResultMap(Map<Float, List<Egg>> resultEggsMap) {// 从测试组里PICK出找食最多的几组，其余的组被淘汰
-		eggsMap.clear();
-		Object[] key = resultEggsMap.keySet().toArray();
-		Arrays.sort(key);
-		for (Object object : key) {
-			System.out.print(object+",");
-		}
-		System.out.println();
-		for (int i = 0; i <PICK_PER_GROUP  ; i++) {
-			System.out.println("i="+i);
-			System.out.println(" key.length="+ key.length);
-			System.out.println("PICK_PER_GROUP="+ PICK_PER_GROUP);
-			System.out.println("GROUP_SIZE="+ GROUP_SIZE);
-			System.out.println("GROUP_SIZE / PICK_PER_GROUP="+ (GROUP_SIZE / PICK_PER_GROUP));
-			for (int j = 0; j < (GROUP_SIZE / PICK_PER_GROUP); j++) { // group 10 / pick 2 =5
-				eggsMap.put(Float.parseFloat("0." + j), resultEggsMap.get(key[resultEggsMap.size()-1-i   ]));
-			}
-		}
-	}
-
-	public static void main(String[] args) {
-		Map<Float, List<Egg>> r = new HashMap<>();
-		r.put(3.1f, null);
-		r.put(12.1f, null);
-		r.put(0.1f, null);
-		r.put(1.1f, null);
-		r.put(10.1f, null);
-		Object[] key = r.keySet().toArray();
-		Arrays.sort(key);
-		for (Object object : key) {
-			System.out.println(object);
-		}
-	}
 }
