@@ -58,7 +58,7 @@ public class Eye extends Organ {// 这个Eye是老版的眼睛，只能看到四
 
 	@Override
 	public Organ[] vary() {
-		if (RandomUtils.percent(5)) {
+		if (RandomUtils.percent(5)) { // 可视距离有5%的机率变异
 			seeDistance = seeDistance + 1 - 2 * RandomUtils.nextInt(2);
 			if (seeDistance < 1)
 				seeDistance = 1;
@@ -78,55 +78,55 @@ public class Eye extends Organ {// 这个Eye是老版的眼睛，只能看到四
 		Zone seeLeft = new Zone(x - q3Radius, y, qRadius);
 		Zone seeRight = new Zone(x + q3Radius, y, qRadius);
 
-		boolean seeFood = false;
-		boolean foodAtUp = false;
-		boolean foodAtDown = false;
-		boolean foodAtLeft = false;
-		boolean foodAtRight = false;
+		boolean seeSomething = false;
+		boolean atUp = false;
+		boolean atDown = false;
+		boolean atLeft = false;
+		boolean atRight = false;
 
 		for (int i = 1; i < seeDistance; i++)
-			if (Env.foundFood(f.x, f.y + i)) {
-				seeFood = true;
-				foodAtUp = true;
+			if (Env.foundAnyThing(f.x, f.y + i)) {
+				seeSomething = true;
+				atUp = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDistance; i++)
-			if (Env.foundFood(f.x, f.y - i)) {
-				seeFood = true;
-				foodAtDown = true;
+			if (Env.foundAnyThing(f.x, f.y - i)) {
+				seeSomething = true;
+				atDown = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDistance; i++)
-			if (Env.foundFood(f.x - i, f.y)) {
-				seeFood = true;
-				foodAtLeft = true;
+			if (Env.foundAnyThing(f.x - i, f.y)) {
+				seeSomething = true;
+				atLeft = true;
 				break;
 			}
 
 		for (int i = 1; i < seeDistance; i++)
-			if (Env.foundFood(f.x + i, f.y)) {
-				seeFood = true;
-				foodAtRight = true;
+			if (Env.foundAnyThing(f.x + i, f.y)) {
+				seeSomething = true;
+				atRight = true;
 				break;
 			}
 
-		if (seeFood)
+		if (seeSomething)
 			for (Cell cell : f.cells) {
 				if (cell.energy < 100)
 					for (Input input : cell.inputs) {
 						if (input.nearby(this)) {
-							if (foodAtUp && input.nearby(seeUp)) {
+							if (atUp && input.nearby(seeUp)) {
 								input.cell.energy += organOutputEnergy;
 							}
-							if (foodAtDown && input.nearby(seeDown)) {
+							if (atDown && input.nearby(seeDown)) {
 								input.cell.energy += organOutputEnergy;
 							}
-							if (foodAtLeft && input.nearby(seeLeft)) {
+							if (atLeft && input.nearby(seeLeft)) {
 								input.cell.energy += organOutputEnergy;
 							}
-							if (foodAtRight && input.nearby(seeRight)) {
+							if (atRight && input.nearby(seeRight)) {
 								input.cell.energy += organOutputEnergy;
 							}
 						}

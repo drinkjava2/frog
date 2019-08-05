@@ -27,16 +27,16 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 800; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 9; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
-	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
+	public static final boolean DELETE_EGGS =false;// 每次运行是否先删除保存的蛋
 
 	public static final int EGG_QTY = 50; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
 	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
 
-	public static final int SCREEN = 1; // 分几屏测完, 所以每轮待测青蛙总数=EGG_QTY*FROG_PER_EGG*SCREEN
+	public static final int SCREEN = 1; // 分几屏测完
 
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
@@ -96,10 +96,6 @@ public class Env extends JPanel {
 		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT;
 	}
 
-	public static boolean foundFood(int x, int y) {// 如果指定点看到食物
-		return !(x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT) && Env.bricks[x][y] == 1;
-	}
-
 	public static boolean closeToEdge(Frog f) {// 青蛙靠近边界? 离死不远了
 		return f.x < 20 || f.y < 20 || f.x > (Env.ENV_WIDTH - 20) || f.y > (Env.ENV_HEIGHT - 20);
 	}
@@ -109,7 +105,7 @@ public class Env extends JPanel {
 	}
 
 	public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
-		if (foundFood(x, y)) {
+		if (insideEnv(x, y) && Env.bricks[x][y] == BRICK_TYPE_FOOD) {
 			bricks[x][y] = 0;
 			return true;
 		}
@@ -141,7 +137,7 @@ public class Env extends JPanel {
 				if (point != 0) {
 					if (point == BRICK_TYPE_FOOD) {
 						g.setColor(Color.BLACK);
-						g.fillRect(x, y, 4, 4);
+						g.fillRoundRect(x, y, 4, 4, 2, 2);
 					} else {
 						g.setColor(Color.LIGHT_GRAY);
 						g.drawLine(x, y, x, y);
