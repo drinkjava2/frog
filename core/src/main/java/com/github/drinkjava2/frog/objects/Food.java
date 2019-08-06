@@ -8,9 +8,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.things;
+package com.github.drinkjava2.frog.objects;
 
-import static com.github.drinkjava2.frog.Env.BRICK_TYPE_FOOD;
 import static com.github.drinkjava2.frog.Env.ENV_HEIGHT;
 import static com.github.drinkjava2.frog.Env.ENV_WIDTH;
 import static com.github.drinkjava2.frog.Env.FOOD_QTY;
@@ -24,25 +23,25 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Food implements Thing {
+public class Food implements Object {
 
 	@Override
 	public void build() {
 		for (int i = 0; i < FOOD_QTY; i++) // 生成食物
-			bricks[RandomUtils.nextInt(ENV_WIDTH)][RandomUtils.nextInt(ENV_HEIGHT)] = BRICK_TYPE_FOOD;
+			bricks[RandomUtils.nextInt(ENV_WIDTH)][RandomUtils.nextInt(ENV_HEIGHT)] = Material.FOOD;
 	}
 
 	@Override
 	public void destory() {
 		for (int i = 0; i < ENV_WIDTH; i++) {// 清除食物
 			for (int j = 0; j < ENV_HEIGHT; j++)
-				if (bricks[i][j] == BRICK_TYPE_FOOD)
+				if (bricks[i][j] == Material.FOOD)
 					bricks[i][j] = 0;
 		}
 	}
 
 	@Override
-	public void active() {
+	public void active(int screen) {
 		// Food do not have any active
 	}
 

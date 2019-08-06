@@ -46,64 +46,70 @@ public class RandomUtils {
 		return randomZoneInZone(f.organs.get(RandomUtils.nextInt(Egg.FIXED_ORGAN_QTY)));
 	}
 
+	/** Return a random zone inside of frog's random organ */
+	public static Zone randomPosMostInNewEye(Frog f) {
+		if (f.organs == null || f.organs.size() == 0)
+			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when frog has no organ");
+		if (RandomUtils.percent(95))
+			return randomZoneInZone(f.organs.get(7));// 这是一个硬编码，大部分新联接建立在newEye中
+		return randomZoneInZone(f.organs.get(RandomUtils.nextInt(Egg.FIXED_ORGAN_QTY)));
+	}
 
 	public static boolean percent(float percent) {
 		return rand.nextFloat() * 100 < percent;
 	}
-	
-	
-//	/** vary a zone position, size a little bit */
-//	public static void varyZone(Zone z) {
-//		int i = rand.nextInt(100);
-//		if (i < 95) // 有95的机率不变异
-//			return;
-//		z.x = varyByRate(z.x, 0.01f);
-//		z.y = varyByRate(z.y, 0.01f);
-//		z.r = varyByRate(z.r, 0.03f);
-//	}
- 
 
-//	public static float varyByRate(float f, float rate) { // 用指定的机率变异
-//		boolean bigger = rand.nextInt(2) > 0;
-//		if (bigger)
-//			f = f + f * rate * rand.nextFloat() + .001f;
-//		else
-//			f = f - f * rate * rand.nextFloat() - .001f;
-//		if (Float.isNaN(f))
-//			f = 0f;
-//		if (f > 1000000f)
-//			f = 1000000f;
-//		else if (f < -1000000f)
-//			f = -1000000f;
-//		return f;
-//	}
+	// /** vary a zone position, size a little bit */
+	// public static void varyZone(Zone z) {
+	// int i = rand.nextInt(100);
+	// if (i < 95) // 有95的机率不变异
+	// return;
+	// z.x = varyByRate(z.x, 0.01f);
+	// z.y = varyByRate(z.y, 0.01f);
+	// z.r = varyByRate(z.r, 0.03f);
+	// }
 
-//	public static float vary(float f) { // 大部分时候不变，有极小机会变异,有极极小机会大变异，有极极极小机会大大大变异
-//		int i = rand.nextInt(100);
-//		if (i < 50) // 有50的机率不变异
-//			return f;
-//		float rate = 0.2f; // 50%机率在0.2倍范围变异
-//		if (i > 80)
-//			rate = 1f; // 有20%的机率在1倍的范围变异
-//		if (i > 90)
-//			rate = 10f; // 有10%的机率在10倍的范围变异
-//		if (i > 95)
-//			rate = 100f; // 有5%的机率在100倍的范围变异
-//		if (i > 98)
-//			rate = 1000f; // 有1%的机率在1000倍的范围变异
-//
-//		boolean bigger = rand.nextInt(2) > 0;
-//		if (bigger)
-//			f = f + f * rate * rand.nextFloat() + .001f;
-//		else
-//			f = f - f * rate * rand.nextFloat() - .001f;
-//		if (Float.isNaN(f))
-//			f = 0f;
-//		if (f > 1000000f)
-//			f = 1000000f;
-//		else if (f < -1000000f)
-//			f = -1000000f;
-//		return f;
-//	}
+	// public static float varyByRate(float f, float rate) { // 用指定的机率变异
+	// boolean bigger = rand.nextInt(2) > 0;
+	// if (bigger)
+	// f = f + f * rate * rand.nextFloat() + .001f;
+	// else
+	// f = f - f * rate * rand.nextFloat() - .001f;
+	// if (Float.isNaN(f))
+	// f = 0f;
+	// if (f > 1000000f)
+	// f = 1000000f;
+	// else if (f < -1000000f)
+	// f = -1000000f;
+	// return f;
+	// }
+
+	// public static float vary(float f) { // 大部分时候不变，有极小机会变异,有极极小机会大变异，有极极极小机会大大大变异
+	// int i = rand.nextInt(100);
+	// if (i < 50) // 有50的机率不变异
+	// return f;
+	// float rate = 0.2f; // 50%机率在0.2倍范围变异
+	// if (i > 80)
+	// rate = 1f; // 有20%的机率在1倍的范围变异
+	// if (i > 90)
+	// rate = 10f; // 有10%的机率在10倍的范围变异
+	// if (i > 95)
+	// rate = 100f; // 有5%的机率在100倍的范围变异
+	// if (i > 98)
+	// rate = 1000f; // 有1%的机率在1000倍的范围变异
+	//
+	// boolean bigger = rand.nextInt(2) > 0;
+	// if (bigger)
+	// f = f + f * rate * rand.nextFloat() + .001f;
+	// else
+	// f = f - f * rate * rand.nextFloat() - .001f;
+	// if (Float.isNaN(f))
+	// f = 0f;
+	// if (f > 1000000f)
+	// f = 1000000f;
+	// else if (f < -1000000f)
+	// f = -1000000f;
+	// return f;
+	// }
 
 }

@@ -6,16 +6,16 @@ import java.awt.Image;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.brain.group.RandomConnectGroup;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
-import com.github.drinkjava2.frog.things.Food;
-import com.github.drinkjava2.frog.things.Thing;
-import com.github.drinkjava2.frog.things.Trap;
+import com.github.drinkjava2.frog.objects.Food;
+import com.github.drinkjava2.frog.objects.Material;
+import com.github.drinkjava2.frog.objects.Object;
+import com.github.drinkjava2.frog.objects.SeeSaw;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -27,16 +27,16 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 9; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
-	public static final boolean DELETE_EGGS =false;// 每次运行是否先删除保存的蛋
+	public static final boolean DELETE_EGGS = false;// 每次运行是否先删除保存的蛋
 
-	public static final int EGG_QTY = 50; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int EGG_QTY = 25; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
 	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
 
-	public static final int SCREEN = 1; // 分几屏测完
+	public static final int SCREEN = 100; // 分几屏测完
 
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
@@ -60,21 +60,15 @@ public class Env extends JPanel {
 
 	public static final int FOOD_QTY = 1500; // 食物数量, 可调
 
-	private static final Random r = new Random(); // 随机数发生器
-
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
 
-	public static final byte[][] bricks = new byte[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，0=无,1=食,2=砖块,3=陷阱...
-
-	public static final byte BRICK_TYPE_FOOD = 1;
-	public static final byte BRICK_TYPE_BRICK = 2;
-	public static final byte BRICK_TYPE_TRAP = 3;
+	public static byte[][] bricks = new byte[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，0=无, 1=食, 其它=其它...
 
 	public static List<Frog> frogs = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放从磁盘载入或上轮下的蛋，每个蛋可能生成1~n个青蛙，
 
-	public static Thing[] things = new Thing[] { new Food(), new Trap() };
+	public static Object[] things = new Object[] { new SeeSaw() };
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -101,11 +95,11 @@ public class Env extends JPanel {
 	}
 
 	public static boolean foundAnyThing(int x, int y) {// 如果指定点看到任意东西或超出边界
-		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT || Env.bricks[x][y] != 0;
+		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT || Env.bricks[x][y] >= Material.VISIBLE;
 	}
 
 	public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
-		if (insideEnv(x, y) && Env.bricks[x][y] == BRICK_TYPE_FOOD) {
+		if (insideEnv(x, y) && Env.bricks[x][y] == Material.FOOD) {
 			bricks[x][y] = 0;
 			return true;
 		}
@@ -123,25 +117,23 @@ public class Env extends JPanel {
 					loop = FROG_PER_EGG - 1;
 			}
 			for (int j = 0; j < loop; j++) {
-				Egg zygote = new Egg(eggs.get(i), eggs.get(r.nextInt(eggs.size())));
+				Egg zygote = new Egg(eggs.get(i), eggs.get(RandomUtils.nextInt(eggs.size())));
 				frogs.add(new Frog(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote));
 			}
 		}
 	}
 
 	private void drawWorld(Graphics g) {
-		byte point;
+		byte brick;
 		for (int x = 0; x < ENV_WIDTH; x++)
 			for (int y = 0; y < ENV_HEIGHT; y++) {
-				point = bricks[x][y];
-				if (point != 0) {
-					if (point == BRICK_TYPE_FOOD) {
-						g.setColor(Color.BLACK);
-						g.fillRoundRect(x, y, 4, 4, 2, 2);
-					} else {
-						g.setColor(Color.LIGHT_GRAY);
-						g.drawLine(x, y, x, y);
-					}
+				brick = bricks[x][y];
+				if (brick != 0) {
+					g.setColor(Material.color(brick));
+					if (brick == Material.FOOD)
+						g.fillRoundRect(x, y, 4, 4, 2, 2); // show food bigger
+					else
+						g.drawLine(x, y, x, y); // only 1 point
 				}
 			}
 		g.setColor(Color.BLACK);
@@ -193,13 +185,13 @@ public class Env extends JPanel {
 					do {
 						sleep(300);
 					} while (pause);
-				for (Thing thing : things) // 创建食物、陷阱等物体
+				for (Object thing : things) // 创建食物、陷阱等物体
 					thing.build();
 				boolean allDead = false;
 				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN);
 				for (int i = 0; i < STEPS_PER_ROUND; i++) {
-					for (Thing thing : things)// 调用食物、陷阱等物体的动作
-						thing.active();
+					for (Object thing : things)// 调用食物、陷阱等物体的动作
+						thing.active(screen);
 					if (allDead)
 						break; // 青蛙全死光了就直接跳到下一轮,以节省时间
 					allDead = true;
@@ -207,7 +199,7 @@ public class Env extends JPanel {
 						Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 						if (f.active(this))
 							allDead = false;
-						if (f.alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
+						if (f.alive && RandomUtils.percent(0.5f)) {// 有很小的机率在青蛙活着时就创建新的器官
 							RandomConnectGroup newConGrp = new RandomConnectGroup();
 							newConGrp.initFrog(f);
 							f.organs.add(newConGrp);
@@ -245,8 +237,9 @@ public class Env extends JPanel {
 				Application.brainPic.drawBrainPicture(firstFrog);
 				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")
 						.append(screen).append(", ").append(foodFoundCountText()).append(", 用时: ")
-						.append(System.currentTimeMillis() - time0).append("ms").toString());
-				for (Thing thing : things)// 去除食物、陷阱等物体
+						.append(System.currentTimeMillis() - time0).append("ms").append(", energy:")
+						.append(firstFrog.energy).toString());
+				for (Object thing : things)// 去除食物、陷阱等物体
 					thing.destory();
 			}
 			round++;

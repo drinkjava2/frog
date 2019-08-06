@@ -8,19 +8,19 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.things;
+package com.github.drinkjava2.frog.objects;
 
 /**
- * Thing means some thing in Env
+ * Object means some thing in Env
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public interface Thing {
+public interface Object {
 
 	public void build();
 
 	public void destory();
 
-	public void active();
+	public void active(int screen);
 }

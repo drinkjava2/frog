@@ -52,7 +52,7 @@ public class RandomConnectGroup extends Group {
 			x = Env.FROG_BRAIN_WIDTH / 2;
 			y = Env.FROG_BRAIN_WIDTH / 2;
 			r = Env.FROG_BRAIN_WIDTH / 2;
-			inputZone = RandomUtils.randomPosInAnyFrogOrgan(f);
+			inputZone = RandomUtils.randomPosMostInNewEye(f);
 			outputZone = RandomUtils.randomPosInAnyFrogOrgan(f);
 		}
 

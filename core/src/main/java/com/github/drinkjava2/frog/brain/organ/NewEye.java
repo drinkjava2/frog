@@ -18,7 +18,6 @@ import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Input;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.Zone;
-import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Eye is an organ can see environment, and active brain cells which inputs are
@@ -29,7 +28,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  */
 public class NewEye extends Organ {// 这个新版的眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
 	private static final long serialVersionUID = 1L;
-	public int n = 3; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
+	public int n = 13; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
 
 	@Override
 	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Organ类的初始化
@@ -60,13 +59,13 @@ public class NewEye extends Organ {// 这个新版的眼睛有nxn个感光细胞
 
 	@Override
 	public Organ[] vary() {
-		if (RandomUtils.percent(50)) {
-			n = n + 1 - 2 * RandomUtils.nextInt(2);
-			if (n < 3)
-				n = 3;
-			if (n > 12)
-				n = 12;
-		}
+//		if (RandomUtils.percent(50)) {
+//			n = n + 1 - 2 * RandomUtils.nextInt(2);
+//			if (n < 3)
+//				n = 3;
+//			if (n > 12)
+//				n = 12;
+//		}
 		return new Organ[] { this };
 	}
 
