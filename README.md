@@ -1,100 +1,111 @@
-## Frog  
-This is an artificial life experiment project. The ultimate goal is to create a ¡°self-conscious performance¡± simulation of the living organism. The technical architecture is based on [an artificial brain model] (an artificial brain model.md) proposed in 2002.    
-When the project never ends, it begins with simulating a simple living body, then a frog, a dog... ending with an artificial brain with a ¡°self-consciousness,¡± or ending with being replaced by a robot. That day.    
-  
-## Origin  
-At present, the progress of artificial intelligence has solved the problem of pattern recognition quite perfectly. Face recognition and speech recognition are no weaker than human level, and this is the most confused piece I felt twenty years ago because of the poor foundation. And the computer at that time was slow. Pattern recognition is solved, and the remaining problems are much simpler. At present, the birth of artificial consciousness is only a shortcoming. It is how to "understand" these recognized contents and form feedback with humans on the basis of recognition. Therefore, the focus of this project is not on pattern recognition. On the basis of the results of pattern recognition, the neural network is trained to form conditioned reflexes, which show the strip reflection behavior of higher animals, and finally the behavior of "having self-awareness". . According to the principle that "consciousness is not a kind of existence, but a phenomenon", if a system exhibits self-awareness in the end, it can be considered as a human being and should acquire human rights. At present, some artificial intelligence research aims to make artificial intelligence solve some complex human social problems such as machine translation, which is a completely wrong goal and cannot be successful, because if a system cannot express self-awareness, it cannot It is impossible to have the ability to solve these problems by communicating with human beings. The phenomenon that is manifested is that "the machine does not make mistakes, and it is a big mistake once it is made." On the other hand, if a system exhibits self-aware behavior, it is fully capable of solving all the world's problems, including improving itself and eliminating humans (because he is the representative of advanced productivity). Therefore, the focus of artificial intelligence research should be on the construction of artificial life and theoretical research, rather than expecting short-term gains. It is dangerous to expect that humans can always enjoy artificial intelligence. The result of pattern recognition and deep learning is just a stumbling block to artificial life and a road sign. The "useful" application of artificial intelligence is probably only a short period of transition. It is not too happy to be too early. It may be too busy to make a wedding dress for the robot. Of course, the results of deep learning will be useful in the future. The organism has never been able to train a skill tens of thousands of times like a computer, reaching unprecedented coverage, even in the robot era, is also a useful technology.    
-To put it simply, the purpose of this project is to test and explore another direction of neural network development, that is, experiment-oriented, to simulate the process of life evolution, in accordance with the three principles of superiority, random variation, and use of retreat. Step by step to build artificial life from low to complex, in addition to the results of pattern recognition can be partially quoted, in principle does not require a lot of mathematical knowledge, because it is driven by experiments, rather than the algorithm to start building neural networks. At present, neural network research focuses on pattern recognition and algorithms, but it does not pay enough attention to the system.  
-  
-From single cell evolution to multi-cell evolution, from frog to human, this is a long, random evolutionary process, but running on a supercomputer may take a few days to get a pretty good brain model. Of course, the faster the computer speed, the larger the capacity, and the more realistic the environment simulation, the more complicated the brain structure formed after the victory and the wrong brain model are naturally eliminated. Starting from the algorithm, or starting from the simulation environment, this is the two major directions for creating artificial life. The first direction may go to a dead end because it does not have algorithmic self-improvement, mutation, and inheritance (encoding compression). The function, when the brain model is complex to a certain extent, may exceed the scope that the human brain can understand. The difficulty in simulating the environment is that the environment itself must be complex and correct. And it must be gradual and synchronized with the evolution of the brain. If a group of frogs are thrown into the monkey's simulated environment, all the frogs will be naturally eliminated, and the project will not be able to proceed. Another difficulty is that the computer must be very fast because it is Simulate parallelism in a serial manner and constantly try to go wrong. The current project only builds a framework, the language is Java, using the Swing mapping environment, constructing a virtual environment, and simulating the succession of a group of paramecium, to obtain an artificial life body with self-evolution function, the specific brain (ie The generation and evolutionary algorithms of computer-generated neural networks need to be added later. Students who are interested in neural networks are welcome to join this experimental project. Let's play together. This project does not require much mathematics and is practiced.  
-  
-## Short-term goals  
-Its first initial goal is to create a real artificial life: paramecium. It must have the following four characteristics:  
-* Brain structure is generated by computer: neural network is generated by computer algorithm, but computer algorithm is limited to simulation environment, instead of directly participating in building neural network, just as nature is only responsible for shooting unqualified life, it never actively participates in design brain.  
-* Brain structure can be inherited: similar to biological DNA, computer-generated brain structure (neural network), can be described by simple algorithm rules, and this algorithm rule can be compressed into shorter fragment storage and participate in the next generation of paramecium Construction.  
-* Brain structure can be mutated: algorithm rules can be mutated, and the next generation of paramecium is generally similar in brain structure to the previous generation, but there are some variations.  
-* Adapt to the environment: Paramecium survives in a simulated virtual environment with minimal changes in the environment, adapts to the environment, and inherits the ability to adapt to this environment from generation to generation.  
-* Use and retreat: This is a hypothesis. For creatures, there is a phenomenon in which many organs are used, which are prone to variability (for example, chewing betel nut often, which is prone to oral cancer). It is reasonable to believe that this is not accidental. Phenomenon, but a useful function of the organism in the process of evolution, in order to adapt to the environment more quickly, and it is likely that this mutation will affect the next generation through genetic cells.  
-  
-## Theory  
-Why is it a computer program? As long as you meet the above four characteristics, you can call it a "real" artificial life? I don't want to say more about it. You can know Baidu's "zhangrex artificial life". There is no such thing, consciousness is just a phenomenon. Wind blowing, tree movement, wind blowing, and dressing are just phenomena. Consciousness is essentially a phenomenon. In other words, as long as it shows the phenomenon of life, it can be called life, whether it is high or low. Wait, no matter what its material basis is. Twenty years ago, I began to think about this issue and put forward the slogan "I think I am not here." Please consider this point carefully. The study of intelligence and consciousness in philosophy and theory is very boring, equivalent to research. Nothing is what it is, no need to entangle in theory and algorithm. Yes, with the artificial neural network model obtained from the simulation environment, we really can't control how its algorithm is generated, but we know that this is in line with the law of nature's creation of life.  
-  
-## Architecture  
-This is a Java project, divided into three modules: Application, Env, and Frog:  
-Application module: Used to start and shut down the basic services of the project. In Windows environment, you can use run.bat to start it and view the demo.  
-Env module: Simulate a biological living area, using different shapes of graphic lattice to express and simulate objects such as food, natural enemies, obstacles, etc. This virtual space is fully controlled by the programmer and will continue to become more and more as Frog's brain evolves. The more complicated.  
-Frog: This is the main body of artificial life. It is now called Frog. It is called the same thing. It mainly has the following organs:  
-* Sports organs: Connected to motor neurons, there are only 4 movements: up, down, left and right.  
-* Eating organs: When Frog coincides with the coordinates of the food, the food will be removed from Env, and the energy value of Frog will be increased accordingly, and Frog's feeding sensory neurons will be activated. The energy will decrease with time, and the energy will be exhausted. death.  
-* Visual Organs: This is part of the brain model. In the experiment, a neuron area in the brain is randomly taken as a visual area.  
-* Brain Organs: This is the problem that programmers have to solve and the ultimate goal we want to achieve. The generation of the brain model is generated by the computer's superiority and cyclic iterative evolution. However, this evolutionary algorithm must be controlled by the programmer, step by step, that is, to prevent the virtual environment from being too complicated, and to avoid the brain model not adapting to the environment. All the living organisms were eliminated, causing the experiment to be interrupted and unable to proceed.  
-  
-## Technical details and ideas  
-* Simulate neural networks with arrays and serial loops to simulate parallel chip operation. Use Frog's energy to measure whether to eliminate it or allow it to produce offspring (the next egg) to participate in the next round of testing, because the purpose of this project is to acquire the agent, which is different from the general life game, not the fittest. Survival is over, but it must complete a set of goals set by the programmer, step by step, until it shows self-awareness.  
-* The brain model generation algorithm is completed by simple neuron connections. In principle, any form of hard coding is allowed (except for pattern recognition), because hard coding may destroy the life characteristic of "random variation".  
-* For the sake of simplicity, it is not considered to introduce GPU graphics chips for acceleration.  
-* Temporarily selected in Java language  
-* Some of the ideas and ideas of Miscellaneous Seven Pull are placed in "Development Ideas.md" and "An Artificial Brain Model.md".  
-  
-## The short-term and long-term goals to be achieved by the project  
-* Initial construction of the brain model and virtual environment [The brain model has just begun to build. The virtual environment is complete, click run.bat to view the demo]  
-* Make the brain model visually responsive, if there is food near it, it will stimulate natural conditioning, move to food, and get a reward for eating [not fully completed]  
-* Introduce off-the-shelf image recognition algorithms to make brain models have image recognition functions, distinguish food, poisons, and natural enemies according to shape [unfinished]  
-* If you eat toxic foods, it will stimulate natural conditioning, get punishment and deduct energy, and the natural pain zone is excited. [undone]  
-* If attacked by natural enemies, it will stimulate natural conditioning, get punishment and deduct energy, and the natural pain area is very excited. [undone]  
-* Training links the combat behavior to the painful excitatory area. [undone]  
-* Training will see the word "hit", which is linked to the action zone and the painful excitement zone. [undone]  
-* Train it to recite the common phrases that may be formed by all the Chinese characters in the 100 words, give it a word, and all the cell regions associated with the word are excited. [undone]  
-* Train it to see the words "food is coming" and come out from the nest to find food. [undone]  
-* Train it to understand "you", "I", "he" text, and only respond to "I" related instructions. [undone]  
-* Train it to recognize numbers and do four arithmetic operations [unfinished]  
-* Train it to recognize circles, rectangles, calculate area, learn to estimate and judge "big" and "small" [unfinished]  
-* Train it to know the coordinates and time, and act according to the instructions. If you see "You go to the upper right corner at 9:00, wait three minutes and then come back", you will follow the instructions. [undone]  
-  
-## Ultimate goal  
-* Expand its input grid and output grid size to expand the number of neurons  
-* Transfer to a super computer, let people communicate with it, enter new graphics and Chinese characters, correct the mistakes it says  
-* Migration to parallel chip hardware  
-  
-## Current progress and achievements  
-2019.03.11 The virtual environment has been built to simulate the inheritance, reproduction, mutation and evolution of lower life. However, it can only move in one direction, which is equivalent to one of the simplest single-celled creatures. It does not have visual ability. Have the ability to actively find food.  
-Run run.bat to view the demo (you need to install Java8 and Maven). Several important parameters in Env.java:  
-* SHOW_SPEED: Adjust the speed of the experiment (1~1000). The smaller the value, the slower.  
-* ENV_WIDTH: size of the virtual environment (100~1000)  
-* EGG_QTY: How many eggs are allowed under Frog each time, and each egg can hatch 4 frogs. Usually the egg lays between 10 and 1000. The eggs preserve the results of our tests. The ultimate goal of the experiment is to get an egg.  
-* FOOD_QTY: The number of foods, the more food, the higher the survival rate of Frog, the batch of Frog with the highest energy ranking can lay eggs, and the rest are eliminated.  
-The following is an animated screenshot of this test, if you are interested, you can try to run it yourself:  
-![result1](https://gitee.com/drinkjava2/frog/raw/master/result1.gif)  
-In addition, the result of each demonstration (egg) will be saved in the root directory of the root, named egg.ser, you can delete this file to start a new test from scratch. Because the brain model has not been built, it can be seen that some frogs run fast, which is the result of natural selection, because eating at the front is much more. This bug will be corrected in the future, so that the most intelligent, predatory Frog wins, rather than letting it run faster.  
-2019.03.21 Added a brain map to improve the random motion mode for the Hungry Zone driver. The brain structure can be visually observed from the brain map for easy debugging.  
-2019.04.01 Improve the display of brain map bugs, add random neurons each time Frog is generated, and simply implement the "egg + sperm -> fertilized eggs" algorithm to promote population diversity.  
-2019-04-12 Adding a simple eye (only four photoreceptors), the result of natural selection is that the eye is selected, but it is shorted to the motion zone, and it is not smart. However, the efficiency of finding food after eyesight has improved significantly, as shown in the following figure:  
-![resut2](https://gitee.com/drinkjava2/frog/raw/master/result2.gif)    
-2019-06-13 Some refactoring cleanups were added, plus two organs, Happy and Pain, which correspond to eating rewards and pain, respectively, which provoke near the border. Observing its performance, the painful effect took effect. Some Frogs did not move forward after they ran to the border, but slid down the border, but the Happy organ did not take effect, which is also obvious, because Happy is a complex eating conditional reflection. Part of the chain, before the introduction of memory organs (algorithms), there is no way to use the reward signal for survival of the fittest. See below:    
-![resut3](https://gitee.com/drinkjava2/frog/raw/master/result3.gif)  
-2019-06-26 The previous version of the food-seeking efficiency is too low, canceled the weight design, and returned to 4.12 to replace the weight with the number of connections, the artificially designed algorithm is still lost to random trial and error.  
-2019-07-28
-The following changes have been made: 1. A trap area trap is added in the middle of the Env area to add interest. The natural selection result is that the frog will automatically bypass the trap area. 2. Add an Active Organ, its role is to remain active, and found to be more efficient than the Hungry organ drive. 3. Add a Chance organ, its role is to introduce random disturbances, breaking the frog sometimes circling around a food is an instable cycle. At present, the reward signal for eating is not used, and it is wasted.
-In addition, the Chance and Eye classes have once again applied the principle of random trial and error to determine the key parameters. The effect is not bad. If you are interested, you can take a look at the source code.
-![resut4](https://gitee.com/drinkjava2/frog/raw/master/result4.gif)
+## Frog | 人工生命 
+(Engish instruction see README_EN.md)
+这是一个人工生命试验项目，最终目标是创建“有自我意识表现”的模拟生命体，技术架构基于02年提出的 [一个人工脑模型](一个人工脑模型.md)。
+这个项目永远没有结束的时候，开始于模拟一个简单的生命体，然后是青蛙、狗......, 结束于有“自我意识表现”的人工脑，或者说，结束于被机器人代替人类的那一天。  
 
-In addition, it is found that the current frog actually has a certain memory ability. The connection itself is a kind of memory, but it has no complicated pattern recognition ability, for example, it can not recognize the picture of a snake. Future work will focus on pattern recognition (of course, random connections may seem useful and may be retained in the future). The basic principle is to refer to the principle of wave propagation and holographic storage mentioned in the note, and reverse imaging in the thinking area. Moreover, the brain may be changed into a three-dimensional structure, and according to the principle of reverse imaging, all input and output organs are moved to the same side of the three-dimensional structure (ie, the thinking area). This will be a very big change. Below I simply drew a 3D diagram to illustrate the principle of pattern recognition and memory in my imagination. As for the wrong, I need to experiment to verify:
-![3d-model](https://gitee.com/drinkjava2/frog/raw/master/3d-model.gif)
-The top layer of this model represents the photoreceptor cells (or any input and output cells) of the eye, and is also the thinking area. Red indicates a long strip of graphics, and blue indicates a triangle graph. If these two graphs appear regularly at the same time, The nodes they share will be large, see the purple nodes. When the red graphic appears alone, the purple node will be strongly activated, and then the signal of the purple node will propagate back, and the triangle will be activated, and vice versa. This explains the principles of pattern recognition and memory (or recall) functions. A node can be shared by multiple photoreceptors, so its storage capacity is very strong. And perhaps this principle is more in line with the biological brain structure. Of course, in actual programming, the virtual neurons do not have to be arranged in a positive-cubic triangle, but may be discharged through indiscriminate discharge. Generally, it is enough to kill the master. In the end, it is necessary to rely on the computer to automatically and randomly discharge, and then use The survival of the fittest to screen. At present, there is a difficulty in how this memory function is imaged in the thinking area in an orderly manner and works in a serial manner. This problem is first put aside.  
+## 缘起 | Origin
+目前人工智能的进展已经比较完美地解决了模式识别这块的难题，人脸识别、语音识别已经不弱于人类的水平，而这是我在二十年前感到最困惑的一块，因为底子差和当时的电脑速度慢。模式识别解决了，剩下的问题就简单多了，目前距离人工意识的诞生只差临门一脚了，就是如何在识别的基础上“理解”这些识别的内容并与人类形成交互的反馈。所以这个项目的重点不在于模式识别，而是在利用模式识别的成果基础上，训练神经网络形成条件反射，表现出高等动物才具有的条形反射行为，最终表现为"拥有自我意识"的行为。根据“意识不是一种存在，而是一种现象”原理，如果最终一个系统表现出具有自我意识的行为，即可认为它也是人，应该获得人权。目前有些人工智能的研究目的是想让人工智能解决一些复杂的人类社会方面的问题如机器翻译等，则是完全错误的目标，不可能成功，因为如果一个系统不能表现出自我意识，它就不能与人类交流，也就不可能具有解决这些问题的能力，表现出来的现象就是通常说的"机器不犯错，一旦犯错就是大错"。另一方面，如果一个系统表现出具有自我意识的行为，它就完全有能力解决世界上所有难题，包括改进它的自身和淘汰人类(因为他是先进生产力的代表）。所以人工智能的研究重点应该放在人工生命的构建和论理研究，而不是期待短期收益，指望人类可以一直享受人工智能的大餐是很危险的。模式识别和深度学习的成果只是人工生命的踮脚石和一块路标而已。人工智能的“有用”的应用，很可能只是短暂的一段过渡期而已，不用高兴得太早，也许都是白忙，给机器人作嫁衣而已，当然，深度学习的成果在将来还是有用的，生物体从来不能象计算机那样对某个技能反复训练上千万次，达到史无前例的覆盖度，既使在机器人时代，也是一个有用的技术。  
+简单来说，这个项目的目的是试验和探索神经网络开发的另一个方向，即以实验为导向，模拟生命进化的过程，按照优胜夯汰、随机变异、用进废退这三大原则,一步一步地搭建出从低等到复杂的人工生命体，除了模式识别的成果可以部分引用，原则上不需要很多的数学知识，因为它是由实验为驱动，而不是由算法着手来搭建神经网络。目前神经网络研究重点在于模式识别和算法，但对系统赋予主动性关注不够。
 
-## License  
-[Apache 2.0] (http://www.apache.org/licenses/LICENSE-2.0)  
+从单细胞进化到多细胞、从青蛙进化到人类，这是一个漫长的、随机的进化过程，但在超级电脑上跑可能只要几天时间，就可能得到一个相当不错的脑模型。当然电脑速度越快、容量越大、环境模拟的越真实，则优胜夯汰后形成的脑结构就越复杂，错的脑模型都被自然淘汰掉了。从算法着手搭建，还是从模拟环境着手自动进化，这是创建人工生命的两个大方向，第一个方向有可能走到死胡同里，因为它不具备算法自改进、变异、遗传(算法的压缩)功能，当脑模型复杂到一定地步，可能会超出人脑能理解的范畴。模拟环境方式的难点则在于环境本身必须足够复杂、正确。而且必须循序渐进，与脑的进化同步，如果把一群青蛙扔到猴子的模拟环境中，则所有青蛙都会被自然淘汰掉，项目就无法进行下去了，另一个困难是电脑必须非常快，因为它是用串行方式模拟并行，不断试错前进的过程。   目前的项目只是搭建了一个框架，语言为Java，利用Swing作图环境，构建一个虚拟环境、并模拟一群草履虫的优胜夯汰，来获取一个具备自进化功能的人工生命体，具体脑(即电脑生成的神经网络)的生成、进化算法还需要以后逐渐加入。欢迎有对神经网络感兴趣的同学加入这个实验项目，大家一起来玩，这个项目不需要多少数学知识，重在实践。  
+
+## 短期目标 | Sort-term Goals  
+目前它的第一个初步目标是：造出一个真正意义上的人工生命：草履虫(备注：基本上已完成)。它必须具备以下前四个特点：   
+* 脑结构由电脑生成：神经网络由电脑算法生成，但是电脑算法仅限于模拟环境，而不是直接参与搭建神经网络，就好象大自然只负责拍死不合格的生命，它从不主动参与设计大脑。  
+* 脑结构可遗传：类似于生物的DNA，电脑生成的脑结构(神经网络)，可通过简单的算法规则描述，并且此算法规则可以压缩成较短的片段存储，并参与到下一代草履虫的构建。  
+* 脑结构可变异：算法规则可以变异，下一代生成的草履虫在脑结构上与上一代总体相似，但存在部分变异。  
+* 适应环境：草履虫能够在模拟的虚拟环境下存活下来，环境有微小的变化，能够自适应环境，并一代代生存将适应这种环境的能力遗传下来。  
+* 用进废退：这是一个假想，对于生物来说，存在这样一种现象，就是用的多的器官，容易发生变异（例如经常嚼槟榔，容易发生口腔癌变）,有理由相信这不是偶然现象，而是生物在进化过程中的一个有用的功能，以便于更快地变异，以适应环境，并很可能这种变异会通过遗传细胞影响到下一代。  
+
+## 理论 | Theory  
+为什么明明是个电脑程序，只要满足上述前四个特点就可以称之为"真正"的人工生命? 这一点我不想多说，大家可以百度一下"zhangrex 人工生命"就知道我的观点了：意识从来就不存在，意识只是一种现象。风吹、树动和风吹、添衣，都只是现象而已，意识本质上是一种现象，换句话说，只要表现出生命现象的事物，就可以称其为生命了，不管它是高等还是低等，不管它的物质存在基础是怎样的。二十年前我就开始思考这个问题，提出了“我思我不在”的口号，请仔细考虑一下这个观点，哲学上、理论上对智能、意识的研究是很无聊的，相当于在研究“无”到底是什么，不必多纠缠在理论和算法上。是的，用模拟环境得到的人工神经网络模型，我们确实无法掌控它的算法是怎样生成的，但是我们知道，这符合大自然创造生命的规律。
+
+## 项目架构 | Architecture 
+这是一个Java项目，分为Application、Env、Frog三个模块: 
+Application模块: 用于项目的启动、关闭等基础服务，Windows环境下可以用run.bat来启动它查看演示。  
+Env模块: 模拟一个生物生存区，用不同形状的图形点阵来表达和模拟食物、天敌、障碍等物体，这个虚拟空间由程序员全权控制，将随着Frog的脑进化而不断变得越来越复杂。  
+Frog: 这是人工生命的主体，目前起名叫青蛙(Frog)，其实叫什么都一样。它主要具备以下器官：
+* 运动器官: 与运动神经元相连，只有4个动作：上下左右。
+* 进食器官：当Frog与食物的坐标重合时，食物会被从Env中删除，并相应增加Frog的能量值，并激活Frog的进食感觉神经元，随时间流逝能量将减少，能量耗尽则Frog死亡。  
+* 视觉器官: 这是脑模型的一部分，在实验中先固定随意取脑内一片神经元区作为视觉区。    
+* 脑器官: 这即是程序员要解决的问题，也是我们要获取的最终目标。脑模型的生成由电脑优胜夯汰、循环迭代进化生成，但这个进化的算法还是必须由程序员来掌控，一步步探索出来，即要防止虚拟环境太复杂，也要避免脑模型不适应环境，生命体全部被淘汰，导致实验中断，无法进行下去。     
+	
+## 技术细节和构思
+* 通过数组来模拟神经网络，用串行的循环来模拟并行芯片运作方式。用Frog的能量多少来衡量是否将它淘汰还是允许它产生后代(下蛋)参与下一轮的测试，因为这个项目的目的是获取智能体，与一般的生命游戏还是有区别的，并不是适者生存就结束了，而是必须完成一系列程序员设定好的目标，一步步进化，直到表现出自我意识现象为止。脑模型的生成算法通过简单的神经元连接完成，原则上不允行出现任何形式的硬编码(除模式识别外)，因为硬编码可能会破坏“随机变异”这一生命特性。为简单起见，暂不考虑引入GPU图形芯片进行加速。
+* 更多的杂乱的一些想法和构思放在“开发思路.md”、“一个人工脑模型.md”等文里。  
+
+## 项目要实现的短期和长远目标  
+* 脑模型和虚拟环境的初步搭建 [脑模型刚开始搭建。虚拟环境已完成，点击run.bat可以查看演示]
+* 使脑模型具有视觉功能,如果有食物在它附近，将激发天生条件反射，向食物移动，并获得进食奖励 [未全部完成]
+* 引入现成的图像识别算法，使脑模型具有图像识别功能，根据形状区分食物、毒物、天敌 [未完成]
+* 如果误食有毒食物，将激发天生条件反射，获得惩罚并扣除能量，天生痛觉区兴奋。[未完成]
+* 如果被天敌攻击，将激发天生条件反射，获得惩罚并扣除能量,天生痛觉区强烈兴奋。[未完成]
+* 训练它将打击行为与痛觉兴奋区发生关联。[未完成]
+* 训练它将看到“打”这个文字，与打击行为和痛觉兴奋区建立即系。[未完成]
+* 训练它背下这100个字中所有汉字可能组成的常用词组，给它一个字，所有与这个字相关的词组细胞区兴奋。[未完成]
+* 训练它一看到“食物来了”文字，就从窝里出来找吃的。[未完成]
+* 训练它理解“你”，“我”、“他”文字，只针对“我”相关的指令作出反应。[未完成]
+* 训练它认识数字，会做四则运算[未完成]
+* 训练它认识圆、矩形、会计算面积,学会估算和判断"大"和"小"[未完成]
+* 训练它认识坐标和时间，并按指令行动，如看到"你在9点走到右上角去，等三分钟后再回来"，将遵从指令行动。[未完成]
+
+## 最终目标
+* 扩大它的输入网格和输出网格规模，扩大神经元数量，
+* 移殖到超级电脑上，由人来同它交流，输入新的图形和汉字，纠正它说的错误的话  
+* 移殖到并行芯片硬件上  
+
+## 目前进展和成绩  
+2019.03.11 虚拟环境已建好，可以模拟低等生命的遗传、繁殖、变异、进化现象，但只能往一个方向运动，相当于一个最简单的单细胞生物，还不具备视觉能力，不具备主动找食能力。   
+运行run.bat可以查看演示（需要安装Java8和Maven）。  
+![result1](https://gitee.com/drinkjava2/frog/raw/master/result1.gif)   
+另外每步演示的结果(egg)会存盘在根目根目录下，名为egg.ser，可以删除这个文件以从头开始新的测试。因为还没涉及脑模型的搭建，可以看到有些青蛙跑得飞快，这是自然选择的结果，因为跑在最前面的吃得多。   
+一些重要的测试参数如显示区大小、是否每次测试要删除保存的蛋等，请参见Env.java中开头的常量设定，可以手工修改进行不同参数的测试。  
+2019.03.21 添加了脑图，改进随机运动模式为Hungry区驱动。从脑图上可以直观地观察脑结构，方便调试。  
+2019.04.01 改进脑图的显示bug, 每一次生成Frog时添加随机神经元，并简单实现"卵+精子->受精卵"算法，以促进种群多样性。  
+2019-04-12 添加一个简单的眼睛(只有四个感光细胞)，自然选择的结果是眼睛被选中，但是和运动区短路了，谈不上智能。但有眼睛后找食效率明显提高了,见下图：  
+![resut2](https://gitee.com/drinkjava2/frog/raw/master/result2.gif)   
+2019-06-13 做了一些重构清理，加上了Happy和Pain两个器官，分别对应进食奖励和痛苦感，后者在靠近边界时激发。观查它的表现，痛苦感生效了，一些Frog跑到边界后就不再前进，而是顺着边界溜下去了，但是Happy器官没有生效，这也很显然，因为Happy属于复杂的进食条件反射链的一部分，在没有记忆器官（算法）引入之前，再怎么优胜劣汰也是没办法用上进食奖励信号的。见下图：  
+![resut3](https://gitee.com/drinkjava2/frog/raw/master/result3.gif)    
+2019-06-26 找食效率太低，又改回到4.12的用连接数量代替权值这个逻辑，人为设计的算法居然比不过随机连接。Pain器官的加入没有提高找食效率，必须与感光细胞合用才能知道是哪个边界，急需引入记忆功能。  
+2019-06-28  为了让青蛙看到边界，又加了个新的眼睛，它是一个可自进化的nxn点阵的眼睛，将来会取代只有四个象素点(但能看得远)的老眼睛。到目前为止，依然还没有进行模式识别和记忆功能开发。另外脑图可以动态显示了，用一个红圈标记出被动态跟踪显示的青蛙。  
+2019-07-28 有以下改动：  1.在Env区中间加了一个陷阱区Trap，以增加趣味性，自然选择的结果是青蛙会自动绕开陷阱区。2.增加一个Active器官，它的作用是一直保持激活，发现比Hungry器官驱动更能提高找食效率。3.增加一个Chance器官,它的作用是引入随机扰动，打破青蛙有时候围着一个食物打转就是吃不着的死循环。目前进食奖励信号没用到，白白浪费了。  
+另外Chance和Eye类里也再次运用了随机试错原理去确定关键参数，效果还不错，有兴趣的可以看一看源码。  
+![resut4](https://gitee.com/drinkjava2/frog/raw/master/result4.gif)   
+另外发现青蛙其实是有记忆能力的，因为连接本身就是一种记忆，只不过它没有复杂的模式识别能力，例如给个蛇的图片它就认不出来。以后的工作将以模式识别为重点(当然随机连接看起来很有用，以后还可能保留)，基本原理是见note中提到的仿照波传播及全息存储原理，在思维区逆向成像。而且脑可能改成三维结构，并根据逆向成像原理，要将所有输入输出器官全移到三维结构的同一侧(即思维区)。这将会是一个非常大的改动，下面我简单画了一个3D示意图来说明我想象中的这个模式识别和记忆的原理，至于对不对还需要实验来验证:  
+![3d-model](https://gitee.com/drinkjava2/frog/raw/master/3d-model.gif)  
+这个模型的最顶层表示眼睛的感光细胞(或任意输入输出细胞)，同时也是思维区，红色表示一个长条的图形，兰色表示一个三角图形，如果这两个图形经常有规律地同时出现，就会把它们共有的节点撑大，见紫色的节点，当红色图形单独出现，就会强烈激活紫色节点，然后紫色节点的信号反向传播，就会激活三角图形，反之亦然。这就同时解释了模式识别和记忆(或者说回忆)功能的的原理。一个节点可以被多个感光细胞共享，所以它的存储能力是很强的。而且可能这个原理比较符合生物脑结构。当然，实际编程时，虚拟神经元不一定要排成正立方三角，而可能通过胡乱排放，大致上过得去就行了，也许能乱拳打死老师傅，最终要靠电脑自动随机的排放，然后用优胜劣汰来筛选。目前有个难点是这个记忆功能在思维区成像是如何有条不紊地大体上按串行进行工作的，这个问题先放一放。  
+2019-08-04 更新了一个分组测试功能，如果测试青蛙数量太多，可以分批来测试，每轮测试最少的青蛙数量可以少到只有一个,这是用时间来换空间。  
+2019-08-05 有了分组测试功能后，顺手加上了一个青蛙走跷跷板自动平衡的演示，它每次只出场一个青蛙, 每轮包括100场测试，大约跑90多轮半个小时(电脑慢)后，出现了下面的画面：  
+![result5](https://gitee.com/drinkjava2/frog/raw/master/result5_seesaw.gif)  
+这个版本的目的是为了增加一点趣味性，显得青蛙还是有点"用处"的，省得让人以为这个项目不务正业，青蛙只会找食。这个版本青蛙的脑结构和找食版的青蛙基本相同，区别只是在于环境不同，也就是说它的表现随着环境而变化，这符合"通用人工智能"的概念，即信号感受器官是统一的(通常是眼睛)，但能根据不同的环境完成不同的任务。走跷跷板演示是最后一个2维脑的版本，今后这个项目将沉寂一段较长时间，我将致力于将青蛙脑重构为3D金字塔形脑结构(见上文)，因为这个项目的缺点已经很明显，它不具备对2维图像的模式识别能力，用随机试错的方式只能处理非常简单的、信号在视网膜的固定区域出现的图像信号。  
+青蛙的找食效率以及走跷跷板平衡的能力都没有优化到顶点，一些构想中的复杂的器官如“与门”、“或门”（不要怀疑大自然能否进化出这些复杂器官)等都没加上，器官的用进废退、奖励信号的利用都没反映，但我认为这些还不关键，目前最急迫的任务应该是先进行3D脑结构建模，让青蛙能具备2维图形的模式识别(和回忆)功能，这个大的架构重构是它能处理复杂图像信息的立足之本，它的图像识别能力和通常的用上千张图片来训练识别一个图片这种工作模式完全不同，它是一种通用的，可自动分类识别所有图像的模式，更符合动物脑的工作模式，记住并回忆出某个图像(或任意输入信号场景的组合)，可能只需要这种场景重复出现过几次即可，它是一种无外界信号判定，自动分类的识别模式。  
+
+如果想要运行这个项目的以前版本，可以结合gitk命令和参考"版本提交记录.md"的介绍，用git reset命令回复到以前任一个版本，例如用:  
+git reset --hard ae34b07e 可以转回到上一个分组测试的找食版本。  
+2019-09-09 开始3D脑的构建，任务又回到原点：找食，从静止的青蛙要能进化到吃光所有食物。目前只是搭建空的开发环境，还未涉及3D脑模型编程。新的工作存放在core3d目录，原有的旧core目录保留，相应地批处理文件也分为普通版run.bat和3d版run3d.bat,蛋文件也分为普通版eggs.ser和3d版eggs3d.ser。  
+
+## 重要参数 | Parameters
+在Env.java类中以下有以下可调整参数，请手工修改这些参数进行不同的测试，前5个参数很重要:
+```
+SHOW_SPEED： 调整实验的速度(1~1000)，值越小则越慢。
+DELETE_EGGS: 每次运行是否先删除保存的蛋,如果设为false，将不删除保存的蛋，会接着上次的测试结果续继运行。 
+EGG_QTY: 每次允许Frog下多少个蛋，通常下蛋取值在10~1000之间。蛋保存着我们测试的结果。实验的最终目标就是获得一批蛋。
+FROG_PER_EGG： 每个蛋可以孵出多少个青蛙。  
+SCREEN： 分屏测试，一轮测试可以分为多个批次进行，这里是屏数。每轮总的青蛙数量=EGG_QTY * FROG_PER_EGG, 每屏青蛙数=总数/SCREEN  
+ENV_WIDTH: 虚拟环境的宽度大小，通常取值100~1000左右
+ENV_HEIGHT: 虚拟环境高度大小，通常取值100~1000左右
+FROG_BRAIN_DISP_WIDTH: Frog的脑图在屏幕上的显示大小,通常取值100~1000左右
+STEPS_PER_ROUND: 每轮测试步数, 每一步相当于脑思考的一桢，所有青蛙的脑神经元被遍历一次。
+FOOD_QTY：食物的数量，食物越多，则Frog的生存率就越高，能量排名靠前的一批Frog可以下蛋，其余的被淘汰。   
+```
   
-## Futures  
-You are welcome to send us a better opinion or join the development team. In particular, students who have access to supercomputers are welcome to join. As the complexity of the virtual environment and the number of neurons increase, the requirements for computer speed will become higher and higher.  
-  
-## Author Other Open Source Projects | Other Projects  
-- [Java Persistence Layer Tool jSqlBox] (https://gitee.com/drinkjava2/jSqlBox)  
-- [Micro IOC/AOP tool jBeanBox] (https://gitee.com/drinkjava2/jBeanBox)  
-- [Front-end SQL tool GoSqlGo] (https://gitee.com/drinkjava2/gosqlgo)  
-- [MyBatis Enhancement Plugin MyFat] (https://gitee.com/drinkjava2/myfat)  
-  
-## Follow me | About Me  
-[Github] (https://github.com/drinkjava2)  
-[Code Cloud] (https://gitee.com/drinkjava2)
-[WeChat] Yong99819981  
+## 版权 | License  
+[Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)  
+
+## 期望 | Futures
+欢迎发issue、评论等方式提出建议或加入开发组。另外本项目开启了捐助模式，金钱就是时间，您的捐助将用于回馈本项目的参与开发者或今后用于发布开发任务。   
+
+## 关注我 | About Me
+[Github](https://github.com/drinkjava2)  
+[码云](https://gitee.com/drinkjava2)   
+微信:yong99819981(如想长期关注本项目、交流信息，或想参与实际编码开发的，请留言加"人工生命群"，如果只想临时私聊也可加我好友后再删掉，我不介意)  

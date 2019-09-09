@@ -15,7 +15,7 @@ import com.github.drinkjava2.frog.egg.EggTool;
 import com.github.drinkjava2.frog.objects.Food;
 import com.github.drinkjava2.frog.objects.Material;
 import com.github.drinkjava2.frog.objects.Object;
-import com.github.drinkjava2.frog.objects.SeeSaw;
+import com.github.drinkjava2.frog.objects.Trap;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -36,7 +36,7 @@ public class Env extends JPanel {
 
 	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
 
-	public static final int SCREEN = 100; // 分几屏测完
+	public static final int SCREEN = 1; // 分几屏测完
 
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
@@ -68,7 +68,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放从磁盘载入或上轮下的蛋，每个蛋可能生成1~n个青蛙，
 
-	public static Object[] things = new Object[] { new SeeSaw() };
+	public static Object[] things = new Object[] { new Food(), new Trap() };
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -148,7 +148,7 @@ public class Env extends JPanel {
 		int leftfood = 0;
 		for (int x = 0; x < ENV_WIDTH; x++)
 			for (int y = 0; y < ENV_HEIGHT; y++)
-				if (bricks[x][y] == 1)
+				if (bricks[x][y] == Material.FOOD)
 					leftfood++;
 		return FOOD_QTY - leftfood;
 	}
@@ -189,6 +189,10 @@ public class Env extends JPanel {
 					thing.build();
 				boolean allDead = false;
 				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN);
+				for (int j = 0; j < FROG_PER_SCREEN; j++) {
+					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
+					f.initOrgans();
+				}
 				for (int i = 0; i < STEPS_PER_ROUND; i++) {
 					for (Object thing : things)// 调用食物、陷阱等物体的动作
 						thing.active(screen);
@@ -199,7 +203,7 @@ public class Env extends JPanel {
 						Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 						if (f.active(this))
 							allDead = false;
-						if (f.alive && RandomUtils.percent(0.5f)) {// 有很小的机率在青蛙活着时就创建新的器官
+						if (f.alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
 							RandomConnectGroup newConGrp = new RandomConnectGroup();
 							newConGrp.initFrog(f);
 							f.organs.add(newConGrp);
@@ -234,11 +238,14 @@ public class Env extends JPanel {
 					Graphics g2 = this.getGraphics();
 					g2.drawImage(buffImg, 0, 0, this);
 				}
+				for (int j = 0; j < FROG_PER_SCREEN; j++) {
+					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
+					f.cells.clear();
+				}
 				Application.brainPic.drawBrainPicture(firstFrog);
 				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")
 						.append(screen).append(", ").append(foodFoundCountText()).append(", 用时: ")
-						.append(System.currentTimeMillis() - time0).append("ms").append(", energy:")
-						.append(firstFrog.energy).toString());
+						.append(System.currentTimeMillis() - time0).append("ms").toString());
 				for (Object thing : things)// 去除食物、陷阱等物体
 					thing.destory();
 			}
