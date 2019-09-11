@@ -26,10 +26,10 @@ public class Material {
 	public static final byte SEESAW_BASE = 1; // 1~9 is invisible to frog
 
 	public static final byte FOOD = VISIBLE + 1;
-	public static final byte SEESAW = VISIBLE + 2; // if <0 will not cause frog die
+	public static final byte SEESAW = VISIBLE + 2;
 
-	public static final byte BRICK = KILLFROG + 1;
-	public static final byte TRAP = KILLFROG + 2;
+	public static final byte BRICK = KILLFROG + 1;// brick will kill frog
+	public static final byte TRAP = KILLFROG + 2; // trap will kill frog
 
 	public static Color color(byte material) {
 		if (material == TRAP)

@@ -17,18 +17,6 @@ import java.util.List;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.group.Group;
-import com.github.drinkjava2.frog.brain.organ.Active;
-import com.github.drinkjava2.frog.brain.organ.Chance;
-import com.github.drinkjava2.frog.brain.organ.Eat;
-import com.github.drinkjava2.frog.brain.organ.Eye;
-import com.github.drinkjava2.frog.brain.organ.Happy;
-import com.github.drinkjava2.frog.brain.organ.Hungry;
-import com.github.drinkjava2.frog.brain.organ.MoveDown;
-import com.github.drinkjava2.frog.brain.organ.MoveLeft;
-import com.github.drinkjava2.frog.brain.organ.MoveRight;
-import com.github.drinkjava2.frog.brain.organ.MoveUp;
-import com.github.drinkjava2.frog.brain.organ.NewEye;
-import com.github.drinkjava2.frog.brain.organ.Pain;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -53,21 +41,7 @@ public class Egg implements Serializable {
 	public List<Group> groups = new ArrayList<>();
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-		organs.add(new Happy().setXYRN(600, 700, 60, "Happy")); // Happy必须第一个加入
-		organs.add(new Hungry().setXYRN(300, 100, 60, "Hungry"));
-		organs.add(new MoveUp().setXYRN(800, 100, 60, "Up"));
-		organs.add(new MoveDown().setXYRN(800, 400, 60, "Down"));
-		organs.add(new MoveLeft().setXYRN(700, 250, 60, "Left"));
-		organs.add(new MoveRight().setXYRN(900, 250, 60, "Right"));
-		organs.add(new Eye().setXYRN(100, 300, 100, "Eye"));
-		organs.add(new NewEye().setXYRN(200, 700, 200, "NewEye"));
-		organs.add(new Pain().setXYRN(800, 700, 60, "Pain")); // 痛苦在靠近边界时触发
-		organs.add(new Active().setXYRN(500, 100, 60, "Active")); // 永远激活
-		organs.add(new Chance().setXYRN(650, 100, 60, "Chance")); // 永远激活
-
-		// 以上为11个, 就是FIXED_ORGAN_QTY值
-
-		organs.add(new Eat().setXYRN(0, 0, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
+	
 
 	}
 

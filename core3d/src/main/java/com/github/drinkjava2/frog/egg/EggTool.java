@@ -22,8 +22,6 @@ import java.util.List;
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.organ.Chance;
-import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.FrogFileUtils;
 
 /**
@@ -54,8 +52,6 @@ public class EggTool {
 			ObjectOutputStream so = new ObjectOutputStream(fo);
 			so.writeObject(Env.eggs);
 			so.close();
-			System.out.print("\r1st frog has " + first.organs.size() + " organs, energy=" + first.energy + ", seeDist="
-					+ ((Eye) first.organs.get(6)).seeDistance + ", chance=" + ((Chance) first.organs.get(10)).percent);
 			System.out.println(", Last frog has " + last.organs.size() + " organs,  energy=" + last.energy);
 			System.out.println("Saved "+Env.eggs.size() +" eggs to file '" + Application.CLASSPATH + "eggs.ser'");
 		} catch (IOException e) {

@@ -12,10 +12,6 @@ package com.github.drinkjava2.frog.util;
 
 import java.util.Random;
 
-import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Zone;
-import com.github.drinkjava2.frog.egg.Egg;
-
 /**
  * Random Utilities used in this project
  * 
@@ -32,28 +28,7 @@ public class RandomUtils {
 	public static float nextFloat() {
 		return rand.nextFloat();
 	}
-
-	/** Return a random zone inside of a zone */
-	public static Zone randomZoneInZone(Zone z) { // 在一个区内随机取一个小小区
-		return new Zone(z.x - z.r + z.r * 2 * rand.nextFloat(), z.y - z.r + z.r * 2 * rand.nextFloat(),
-				z.r * rand.nextFloat() * .04f);
-	}
-
-	/** Return a random zone inside of frog's random organ */
-	public static Zone randomPosInAnyFrogOrgan(Frog f) {
-		if (f.organs == null || f.organs.size() == 0)
-			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when frog has no organ");
-		return randomZoneInZone(f.organs.get(RandomUtils.nextInt(Egg.FIXED_ORGAN_QTY)));
-	}
-
-	/** Return a random zone inside of frog's random organ */
-	public static Zone randomPosMostInNewEye(Frog f) {
-		if (f.organs == null || f.organs.size() == 0)
-			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when frog has no organ");
-		if (RandomUtils.percent(95))
-			return randomZoneInZone(f.organs.get(7));// 这是一个硬编码，大部分新联接建立在newEye中
-		return randomZoneInZone(f.organs.get(RandomUtils.nextInt(Egg.FIXED_ORGAN_QTY)));
-	}
+ 
 
 	public static boolean percent(float percent) {
 		return rand.nextFloat() * 100 < percent;

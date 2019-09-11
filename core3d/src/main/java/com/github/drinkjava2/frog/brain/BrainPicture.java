@@ -23,65 +23,69 @@ import com.github.drinkjava2.frog.Frog;
  * @since 1.0
  */
 @SuppressWarnings("serial")
-public class BrainPicture extends JPanel {
-	private float brainWidth; // real brain width
+public class BrainPicture extends JPanel {//TODO: work on here
 	private int brainDispWidth; // screen display width
+	private float scale;
+	private String view = "TOP"; // can be TOP, FACE, RIGHT, 3 options
 	private Color color = Color.BLACK;
 
 	public void setColor(Color c) {
 		color = c;
 	}
 
+	public void setView(String view) {
+		this.view = view;
+	}
+
 	public BrainPicture(int x, int y, float brainWidth, int brainDispWidth) {
 		super();
 		this.setLayout(null);// 空布局
 		this.brainDispWidth = brainDispWidth;
-		this.brainWidth = brainWidth;
+		scale = brainDispWidth / brainWidth;
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 	}
 
-	public void drawZone( Zone z) {Graphics g = this.getGraphics();
-	g.setColor(color);
-		float rate = brainDispWidth / brainWidth;
-		int x = Math.round(z.x * rate);
-		int y = Math.round(z.y * rate);
-		int radius = Math.round(z.r * rate);
+	public void drawZone(Cube z) {
+		Graphics g = this.getGraphics();
+		g.setColor(color);
+		int x = Math.round(z.x * scale);
+		int y = Math.round(z.y * scale);
+		int radius = Math.round(z.r * scale);
 		g.drawRect(x - radius, y - radius, radius * 2, radius * 2);
 	}
 
-	public void drawCircle( Zone z) {Graphics g = this.getGraphics();
-	g.setColor(color);
-		float rate = brainDispWidth / brainWidth;
-		int x = Math.round(z.x * rate);
-		int y = Math.round(z.y * rate);
+	public void drawCircle(Cube z) {
+		Graphics g = this.getGraphics();
+		g.setColor(color);
+		int x = Math.round(z.x * scale);
+		int y = Math.round(z.y * scale);
 		g.drawArc(x - 5, y - 5, 10, 10, 0, 360);
 	}
 
-	public void fillZone( Zone z) {Graphics g = this.getGraphics();
-	g.setColor(color);
-		float rate = brainDispWidth / brainWidth;
-		int x = Math.round(z.x * rate);
-		int y = Math.round(z.y * rate);
-		int radius = Math.round(z.r * rate);
+	public void fillZone(Cube z) {
+		Graphics g = this.getGraphics();
+		g.setColor(color);
+		int x = Math.round(z.x * scale);
+		int y = Math.round(z.y * scale);
+		int radius = Math.round(z.r * scale);
 		g.fillRect(x - radius, y - radius, radius * 2, radius * 2);
 	}
 
-	public void drawLine(Zone z1, Zone z2) {
+	public void drawLine(Cube c1, Cube c2) {
 		Graphics g = this.getGraphics();
 		g.setColor(color);
-		float rate = brainDispWidth / brainWidth;
-		int x1 = Math.round(z1.x * rate);
-		int y1 = Math.round(z1.y * rate);
-		int x2 = Math.round(z2.x * rate);
-		int y2 = Math.round(z2.y * rate);
+		int x1 = Math.round(c1.x * scale);
+		int y1 = Math.round(c1.y * scale);
+		int x2 = Math.round(c2.x * scale);
+		int y2 = Math.round(c2.y * scale);
 		g.drawLine(x1, y1, x2, y2);
 	}
 
-	public void drawText( Zone z, String text) {Graphics g = this.getGraphics();
-	g.setColor(color);
-		float rate = brainDispWidth / brainWidth;
-		int x = Math.round(z.x * rate);
-		int y = Math.round(z.y * rate);
+	public void drawText(Cube z, String text) {
+		Graphics g = this.getGraphics();
+		g.setColor(color);
+		int x = Math.round(z.x * scale);
+		int y = Math.round(z.y * scale);
 		g.drawString(text, x - text.length() * 3 - 2, y);
 	}
 

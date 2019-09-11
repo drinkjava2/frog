@@ -15,25 +15,27 @@ import java.io.Serializable;
 import com.github.drinkjava2.frog.Env;
 
 /**
- * Zone represents a rectangle zone in brain
+ * Cube represents a cube zone in brain
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Zone implements Serializable {
+public class Cube implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public float x;
 	public float y;
-	public float r;// r为这个矩形区边长的一半
+	public float z;
+	public float r;// r为这个矩形体边长的一半
 
-	public Zone() {
+	public Cube() {
 		// 空构造器不能省
 	}
 
-	public Zone(float x, float y, float r) {// 用x,y,r来构造
+	public Cube(float x, float y, float z, float r) {// 用x,y,z,r来构造
 		this.x = x;
 		this.y = y;
+		this.z = z;
 		this.r = r;
 		if (this.x < 0)
 			this.x = 0;
@@ -43,41 +45,39 @@ public class Zone implements Serializable {
 			this.x = Env.FROG_BRAIN_WIDTH;
 		if (this.y > Env.FROG_BRAIN_WIDTH)
 			this.y = Env.FROG_BRAIN_WIDTH;
+		if (this.z > Env.FROG_BRAIN_WIDTH)
+			this.z = Env.FROG_BRAIN_WIDTH;
 	}
 
-	public Zone(Zone z) {// 用另一个Zone来构造
-		this.x = z.x;
-		this.y = z.y;
-		this.r = z.r;
+	public Cube(Cube c) {// 用另一个Cube来构造
+		this.x = c.x;
+		this.y = c.y;
+		this.z = c.z;
+		this.r = c.r;
 	}
 
-	public boolean nearby(Zone z) {
+	public boolean nearby(Cube z) {
 		float dist = r + z.r;
 		return (Math.abs(x - z.x) < dist && Math.abs(y - z.y) < dist);
 	}
 
-	public int roundX() {
-		return Math.round(x);
-	}
-
-	public int roundY() {
-		return Math.round(y);
-	}
-
-	public static void copyXY(Zone from, Zone to) {
+	public static void copyXYZ(Cube from, Cube to) {
 		to.x = from.x;
 		to.y = from.y;
+		to.z = from.z;
 	}
 
-	public static void copyXYR(Zone from, Zone to) {
+	public static void copyXYZR(Cube from, Cube to) {
 		to.x = from.x;
 		to.y = from.y;
+		to.z = from.z;
 		to.r = from.r;
 	}
 
-	public void setXYR(float x, float y, float r) {
+	public void setXYZR(float x, float y, float z, float r) {
 		this.x = x;
 		this.y = y;
+		this.z = z;
 		this.r = r;
 	}
 

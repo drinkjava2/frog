@@ -23,7 +23,7 @@ import com.github.drinkjava2.frog.Frog;
  * @author Yong Zhu
  * @since 1.0.4
  */
-public class Organ extends Zone {
+public class Organ extends Cube {
 	private static final long serialVersionUID = 1L;
 	public String name; // 显示在脑图上的器官名称，可选
 	public long fat = 0; // 如果活跃多，fat值高，则保留（及变异）的可能性大，反之则很可能丢弃掉
@@ -42,23 +42,10 @@ public class Organ extends Zone {
 	}
 
 	/** If active in this organ's zone? */
-	public boolean outputActive(Frog f) { // 如果一个细胞能量>10,且它的输出触突位于这个器官内，则器官被激活
-		for (Cell cell : f.cells) {
-			if (cell.energy > organActiveEnergy)
-				for (Output output : cell.outputs) { //
-					if (this.nearby(output)) {
-						cell.organ.fat++;
-						cell.energy -= 30;//
-						return true;
-					}
-				}
-		}
-		return false;
-	}
 
 	/** Set X, Y, Radius, name of current Organ */
-	public Organ setXYRN(float x, float y, float r, String name) {
-		this.setXYR(x, y, r);
+	public Organ setXYZRN(float x, float y, float z, float r, String name) {
+		this.setXYZR(x, y, z, r);
 		this.name = name;
 		return this;
 	}
@@ -85,7 +72,7 @@ public class Organ extends Zone {
 		} catch (Exception e) {
 			throw new UnknownError("Can not make new Organ copy for " + this);
 		}
-		copyXYR(this, newOrgan);
+		copyXYZR(this, newOrgan);
 		newOrgan.name = this.name;
 		newOrgan.fat = this.fat;
 		return new Organ[] { newOrgan };

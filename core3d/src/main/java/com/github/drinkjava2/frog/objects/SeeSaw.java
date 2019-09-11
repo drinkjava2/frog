@@ -40,7 +40,7 @@ public class SeeSaw implements Object {
 
 	@Override
 	public void destory() {
-
+		// do nothing
 	}
 
 	@Override

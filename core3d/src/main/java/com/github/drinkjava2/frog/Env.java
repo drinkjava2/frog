@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import com.github.drinkjava2.frog.brain.group.RandomConnectGroup;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
 import com.github.drinkjava2.frog.objects.Food;
@@ -27,10 +26,10 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 500; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 5; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
-	public static final boolean DELETE_EGGS = false;// 每次运行是否先删除保存的蛋
+	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
 
 	public static final int EGG_QTY = 25; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
@@ -203,11 +202,6 @@ public class Env extends JPanel {
 						Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 						if (f.active(this))
 							allDead = false;
-						if (f.alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
-							RandomConnectGroup newConGrp = new RandomConnectGroup();
-							newConGrp.initFrog(f);
-							f.organs.add(newConGrp);
-						}
 					}
 
 					if (SHOW_SPEED > 0 && i % SHOW_SPEED != 0) // 用画青蛙的方式来拖慢速度
