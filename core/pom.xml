@@ -78,6 +78,20 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <useUniqueVersions>false</useUniqueVersions>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.github.drinkjava2.frog.Application</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
        </plugins>       
     </build> 
     
