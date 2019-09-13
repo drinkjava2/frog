@@ -55,9 +55,7 @@ public class Organ extends Cube {
 		if (!Application.SHOW_FIRST_FROG_BRAIN)
 			return;
 		pic.setColor(Color.BLACK); // 缺省是黑色
-		pic.drawZone(this);
-		if (this.name != null)
-			pic.drawText(this, String.valueOf(this.name));
+		pic.drawCube(this);
 	}
 
 	/** Only call once when frog created , Child class can override this method */

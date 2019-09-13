@@ -23,19 +23,14 @@ import com.github.drinkjava2.frog.Frog;
  * @since 1.0
  */
 @SuppressWarnings("serial")
-public class BrainPicture extends JPanel {//TODO: work on here
-	private int brainDispWidth; // screen display width
-	private float scale;
-	private String view = "TOP"; // can be TOP, FACE, RIGHT, 3 options
+public class BrainPicture extends JPanel {// TODO: work on here
+	private int brainDispWidth; // screen display piexls width
+	private float scale; // brain scale
+	private float xAngle; // brain rotate on x axis
+	private float yAngle; // brain rotate on y axis
+	private float zAngle;// brain rotate on z axis
 	private Color color = Color.BLACK;
-
-	public void setColor(Color c) {
-		color = c;
-	}
-
-	public void setView(String view) {
-		this.view = view;
-	}
+	private Graphics g = this.getGraphics();
 
 	public BrainPicture(int x, int y, float brainWidth, int brainDispWidth) {
 		super();
@@ -45,48 +40,41 @@ public class BrainPicture extends JPanel {//TODO: work on here
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 	}
 
-	public void drawZone(Cube z) {
-		Graphics g = this.getGraphics();
-		g.setColor(color);
-		int x = Math.round(z.x * scale);
-		int y = Math.round(z.y * scale);
-		int radius = Math.round(z.r * scale);
-		g.drawRect(x - radius, y - radius, radius * 2, radius * 2);
+	public void drawCube(Cube c) {
+		float x = c.x;
+		float y = c.y;
+		float z = c.z;
+		float r = c.r;
+		drawLine(x - r, y - r, z + r, x - r, y + r, z + r);//画立方体的12条边
+		drawLine(x - r, y + r, z + r, x + r, y + r, z + r);
+		drawLine(x + r, y + r, z + r, x + r, y - r, z + r);
+		drawLine(x + r, y + r, z + r, x - r, y - r, z + r);
+
+		drawLine(x - r, y - r, z - r, x - r, y + r, z - r);
+		drawLine(x - r, y + r, z - r, x + r, y + r, z - r);
+		drawLine(x + r, y + r, z - r, x + r, y - r, z - r);
+		drawLine(x + r, y + r, z - r, x - r, y - r, z - r);
+
+		drawLine(x - r, y - r, z + r, x - r, y - r, z - r);
+		drawLine(x + r, y - r, z + r, x + r, y - r, z - r);
+		drawLine(x + r, y + r, z + r, x + r, y + r, z - r);
+		drawLine(x - r, y + r, z + r, x - r, y + r, z - r);
 	}
 
-	public void drawCircle(Cube z) {
-		Graphics g = this.getGraphics();
+	public void drawLine(float x1, float y1, float z1, float x2, float y2, float z2) {
 		g.setColor(color);
-		int x = Math.round(z.x * scale);
-		int y = Math.round(z.y * scale);
-		g.drawArc(x - 5, y - 5, 10, 10, 0, 360);
+		Double r1=Math.sqrt(x1*x1+y1*y1+z1*z1);
+		Double r2=Math.sqrt(x1*x1+y1*y1+z1*z1);
+		Double newx1=0d;
+		
 	}
 
 	public void fillZone(Cube z) {
-		Graphics g = this.getGraphics();
 		g.setColor(color);
 		int x = Math.round(z.x * scale);
 		int y = Math.round(z.y * scale);
 		int radius = Math.round(z.r * scale);
 		g.fillRect(x - radius, y - radius, radius * 2, radius * 2);
-	}
-
-	public void drawLine(Cube c1, Cube c2) {
-		Graphics g = this.getGraphics();
-		g.setColor(color);
-		int x1 = Math.round(c1.x * scale);
-		int y1 = Math.round(c1.y * scale);
-		int x2 = Math.round(c2.x * scale);
-		int y2 = Math.round(c2.y * scale);
-		g.drawLine(x1, y1, x2, y2);
-	}
-
-	public void drawText(Cube z, String text) {
-		Graphics g = this.getGraphics();
-		g.setColor(color);
-		int x = Math.round(z.x * scale);
-		int y = Math.round(z.y * scale);
-		g.drawString(text, x - text.length() * 3 - 2, y);
 	}
 
 	private static final Color[] rainbow = new Color[] { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
@@ -98,28 +86,9 @@ public class BrainPicture extends JPanel {//TODO: work on here
 		return rainbow[nextColor++];
 	}
 
-	public static Color color(float i) {
-		if (i == 0)
-			return Color.black;
-		if (i == 1)
-			return Color.RED;
-		if (i <= 3)
-			return Color.ORANGE;
-		if (i <= 10)
-			return Color.YELLOW;
-		if (i <= 20)
-			return Color.GREEN;
-		if (i <= 50)
-			return Color.CYAN;
-		if (i <= 100)
-			return Color.BLUE;
-		return Color.MAGENTA;
-	}
-
 	public void drawBrainPicture(Frog frog) {
 		if (!Application.SHOW_FIRST_FROG_BRAIN)
 			return;
-		Graphics g = this.getGraphics();// border
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, brainDispWidth, brainDispWidth);
 		g.setColor(Color.black);
@@ -127,6 +96,47 @@ public class BrainPicture extends JPanel {//TODO: work on here
 
 		for (Organ organ : frog.organs)
 			organ.drawOnBrainPicture(frog, this); // each organ draw itself
+	}
+
+	// getter & setters
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
+	}
+
+	public float getxAngle() {
+		return xAngle;
+	}
+
+	public void setxAngle(float xAngle) {
+		this.xAngle = xAngle;
+	}
+
+	public float getyAngle() {
+		return yAngle;
+	}
+
+	public void setyAngle(float yAngle) {
+		this.yAngle = yAngle;
+	}
+
+	public float getzAngle() {
+		return zAngle;
+	}
+
+	public void setzAngle(float zAngle) {
+		this.zAngle = zAngle;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 }
