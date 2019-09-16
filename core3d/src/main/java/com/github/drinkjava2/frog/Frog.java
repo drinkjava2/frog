@@ -41,7 +41,7 @@ public class Frog {
 
 	public int x; // frog在Env中的x坐标
 	public int y; // frog在Env中的y坐标
-	public long energy = 100000; // 青蛙的能量为0则死掉
+	public long energy = 10000000; // 青蛙的能量为0则死掉
 	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
 	public int ateFood = 0;
 

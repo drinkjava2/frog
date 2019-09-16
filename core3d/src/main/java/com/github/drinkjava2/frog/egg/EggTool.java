@@ -52,8 +52,9 @@ public class EggTool {
 			ObjectOutputStream so = new ObjectOutputStream(fo);
 			so.writeObject(Env.eggs);
 			so.close();
+			System.out.print("Fist frog has " + first.organs.size() + " organs,  energy=" + first.energy);
 			System.out.println(", Last frog has " + last.organs.size() + " organs,  energy=" + last.energy);
-			System.out.println("Saved "+Env.eggs.size() +" eggs to file '" + Application.CLASSPATH + "eggs.ser'");
+			System.out.println("Saved " + Env.eggs.size() + " eggs to file '" + Application.CLASSPATH + "eggs3d.ser'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}

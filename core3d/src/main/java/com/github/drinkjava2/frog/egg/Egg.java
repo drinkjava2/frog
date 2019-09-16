@@ -16,12 +16,13 @@ import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.group.Group;
+import com.github.drinkjava2.frog.brain.organ.BrainFrame;
+import com.github.drinkjava2.frog.brain.organ.PictureEye;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
- * Egg is the static structure description of frog, can save as text file, to
- * build a frog, first need build a egg.<br/>
+ * Egg is the static structure description of frog, can save as file, to build a
+ * frog, first need build a egg.<br/>
  * 
  * 蛋存在的目的是为了以最小的字节数串行化存储Frog,它是Frog的生成算法描述，而不是Frog本身，这样一来Frog就不能"永生"了，因为每一个egg都不等同于
  * 它的母体， 而且每一次测试，大部分条件反射的建立都必须从头开始训练，类似于人类，无论人类社会有多聪明， 婴儿始终是一张白纸，需要花大量的时间从头学习。
@@ -30,19 +31,15 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @since 1.0
  */
 public class Egg implements Serializable {
-	// 为了缩短时间，这个程序随机生成的联结将只落在固定的器官上而不是漫天撒网(见4.12提交)，这是程序的优化，实现的逻辑和随机漫天撒网定是相同的。
-	// 但是这个优化带来的问题是这是一个硬编码逻辑，不利于器官的优胜劣汰， 而且下面这个 FIXED_ORGAN_QTY必须每次手工设定，以后需要重构这块的代码
 	public static int FIXED_ORGAN_QTY = 11;
 
 	private static final long serialVersionUID = 1L;
 
 	public List<Organ> organs = new ArrayList<>();
 
-	public List<Group> groups = new ArrayList<>();
-
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-	
-
+		organs.add(new BrainFrame()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
+		organs.add(new PictureEye()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
 	}
 
 	/** Create egg from frog */

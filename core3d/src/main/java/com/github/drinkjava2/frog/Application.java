@@ -27,7 +27,7 @@ public class Application {
 	}
 	public static JFrame mainFrame = new JFrame();
 	public static Env env = new Env();
-	public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_WIDTH,
+	public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_RADIUS,
 			Env.FROG_BRAIN_DISP_WIDTH);
 
 	public static void main(String[] args) throws InterruptedException {
@@ -38,8 +38,8 @@ public class Application {
 
 		mainFrame.add(brainPic);
 
-		JButton button = new JButton("Show first frog's brain");
-		int buttonWidth = 180;
+		JButton button = new JButton("Show brain");
+		int buttonWidth =100;
 		int buttonHeight = 22;
 		int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
 		button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
@@ -48,13 +48,13 @@ public class Application {
 			public void actionPerformed(ActionEvent arg0) {
 				SHOW_FIRST_FROG_BRAIN = !SHOW_FIRST_FROG_BRAIN;
 				if (SHOW_FIRST_FROG_BRAIN) {
-					button.setText("Hide first frog's brain");
+					button.setText("Hide brain");
 					int y = Env.ENV_HEIGHT + 100;
 					if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
 						y = Env.FROG_BRAIN_DISP_WIDTH + 41;
 					mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
 				} else {
-					button.setText("Show first frog's brain");
+					button.setText("Show brain");
 					mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100);
 				}
 			}

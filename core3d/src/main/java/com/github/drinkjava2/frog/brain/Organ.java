@@ -18,36 +18,26 @@ import com.github.drinkjava2.frog.Frog;
 /**
  * Organ is a part of frog, organ can be saved in egg
  * 
- * 器官是脑的一部分，多个器官在脑内可以允许重叠出现在同一位置。
+ * 器官是脑的一部分，多个器官在脑内可以允许重叠出现在同一位置，器官有小概率随机生成，但大多数时候是稳定的。 有些器官会负
  * 
  * @author Yong Zhu
  * @since 1.0.4
  */
-public class Organ extends Cube {
+public class Organ extends Cuboid {
 	private static final long serialVersionUID = 1L;
-	public String name; // 显示在脑图上的器官名称，可选
 	public long fat = 0; // 如果活跃多，fat值高，则保留（及变异）的可能性大，反之则很可能丢弃掉
-	// public float organWasteEnergy = 0.05f; //
-	// 器官在每个测试循环中需要消耗青蛙多少能量，可以通过调节这个参数抑制器官数量无限增长
-	public float organActiveEnergy = 1; // 输出器官激活需要消耗每个脑细胞多少能量
-	public float organOutputEnergy = 2; // 感觉器官激活会给每个脑细胞增加多少能量
 	public boolean initilized; // 通过这个标记判断是否需要手工给定它的参数初值
 
 	public boolean allowBorrow() { // 是否允许在精子中将这个器官借出
 		return false;
 	}
 
-	/** Each loop step call active method, Child class can override this method */
-	public void active(Frog f) { // 每一步都会调用器官的active方法 ，缺省啥也不干
+	/** Only call once when frog created , Child class can override this method */
+	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于在这一步播种脑细胞
 	}
 
-	/** If active in this organ's zone? */
-
-	/** Set X, Y, Radius, name of current Organ */
-	public Organ setXYZRN(float x, float y, float z, float r, String name) {
-		this.setXYZR(x, y, z, r);
-		this.name = name;
-		return this;
+	/** Each loop step call active method, Child class can override this method */
+	public void active(Frog f) { // 每一步都会调用器官的active方法 ，缺省啥也不干
 	}
 
 	/** Child class can override this method to drawing picture */
@@ -56,10 +46,6 @@ public class Organ extends Cube {
 			return;
 		pic.setColor(Color.BLACK); // 缺省是黑色
 		pic.drawCube(this);
-	}
-
-	/** Only call once when frog created , Child class can override this method */
-	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Group子类的初始化
 	}
 
 	/** Only call once after organ be created by new() method */
@@ -71,7 +57,6 @@ public class Organ extends Cube {
 			throw new UnknownError("Can not make new Organ copy for " + this);
 		}
 		copyXYZR(this, newOrgan);
-		newOrgan.name = this.name;
 		newOrgan.fat = this.fat;
 		return new Organ[] { newOrgan };
 	}

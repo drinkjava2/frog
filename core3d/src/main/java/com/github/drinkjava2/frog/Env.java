@@ -26,7 +26,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 5; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 3; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -35,12 +35,12 @@ public class Env extends JPanel {
 
 	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
 
-	public static final int SCREEN = 1; // 分几屏测完
+	public static final int SCREEN = 4; // 分几屏测完
 
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
 	/** Draw first frog's brain after some steps */
-	public static int DRAW_BRAIN_AFTER_STEPS = 50; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
+	public static int DRAW_BRAIN_AFTER_STEPS = 20; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
 
 	/** Environment x width, unit: pixels */
 	public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
@@ -52,12 +52,12 @@ public class Env extends JPanel {
 	public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
-	public static final int STEPS_PER_ROUND = 2000;// 每轮测试步数,可调
+	public static final int STEPS_PER_ROUND = 50000;// 每轮测试步数,可调
 
-	/** Frog's brain width, fixed to 1000 unit */
-	public static final float FROG_BRAIN_WIDTH = 1000; // frog的脑宽度固定为1000,不要随便调整,因为器官的相对位置和大小是按脑大小设定的
+	/** Frog's brain radius */
+	public static final float FROG_BRAIN_RADIUS = 20; // frog的脑半径先固定为20个单元
 
-	public static final int FOOD_QTY = 1500; // 食物数量, 可调
+	public static final int FOOD_QTY = 100; // 食物数量, 可调
 
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
 
@@ -67,7 +67,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放从磁盘载入或上轮下的蛋，每个蛋可能生成1~n个青蛙，
 
-	public static Object[] things = new Object[] { new Food(), new Trap() };
+	public static Object[] things = new Object[] {  };
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
