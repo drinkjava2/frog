@@ -33,18 +33,15 @@ public class BrainPicture extends JPanel {
 	float scale; // brain scale
 	int xOffset = 0; // brain display x offset compare to screen
 	int yOffset = 0; // brain display y offset compare to screen
-	// float xAngle = (float) (Math.PI / 4); // brain rotate on x axis
-	// float yAngle = (float) (Math.PI / 4); // brain rotate on y axis
-	// float zAngle = (float) (Math.PI / 4);// brain rotate on z axis
-	float xAngle = 0; // brain rotate on x axis
-	float yAngle = 0; // brain rotate on y axis
+	float xAngle = (float) (Math.PI / 4); // brain rotate on x axis
+	float yAngle = -(float) (Math.PI / 8); // brain rotate on y axis
 	float zAngle = 0;// brain rotate on z axis
 
 	public BrainPicture(int x, int y, float brainWidth, int brainDispWidth) {
 		super();
 		this.setLayout(null);// 空布局
 		this.brainDispWidth = brainDispWidth;
-		scale = 0.6f * brainDispWidth / brainWidth;
+		scale = 0.4f * brainDispWidth / brainWidth;
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 		MouseAction act = new MouseAction(this);
 		this.addMouseListener(act);

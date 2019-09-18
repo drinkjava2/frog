@@ -16,8 +16,8 @@ import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.organ.BrainFrame;
-import com.github.drinkjava2.frog.brain.organ.PictureEye;
+import com.github.drinkjava2.frog.brain.organ.Brain;
+import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -38,8 +38,8 @@ public class Egg implements Serializable {
 	public List<Organ> organs = new ArrayList<>();
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-		organs.add(new BrainFrame()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
-		organs.add(new PictureEye()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
+		organs.add(new Brain()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
+		organs.add(new Eye()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
 	}
 
 	/** Create egg from frog */

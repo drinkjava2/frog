@@ -10,27 +10,26 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * PictureEye can only see the picture in env
+ * Eye can only see env material
  * 
  * @author Yong Zhu
  */
-public class PictureEye extends Organ {
+public class Eye extends Organ {
 	private static final long serialVersionUID = 1L;
 
-	public PictureEye() {
-		x = 0;
+	public Eye() {
+		x = 0 - Brain.XR / 2;
 		y = 0;
-		z = Env.FROG_BRAIN_RADIUS / 2 - .5f;
-		xr = Env.FROG_BRAIN_RADIUS / 4;
+		z = Brain.ZR - .5f;
+		xr = Brain.XR / 4;
 		yr = xr;
 		zr = 0.5f;
 	}
 
-	public boolean allowBorrow() { // 是否允许在精子中将这个器官借出
+	public boolean allowBorrow() { // 暂时只有一个眼睛，不允许在精子中将这个器官借出
 		return false;
 	}
 }
