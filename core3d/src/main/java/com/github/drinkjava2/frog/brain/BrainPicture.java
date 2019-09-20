@@ -33,7 +33,7 @@ public class BrainPicture extends JPanel {
 	float scale; // brain scale
 	int xOffset = 0; // brain display x offset compare to screen
 	int yOffset = 0; // brain display y offset compare to screen
-	float xAngle = (float) (Math.PI / 4); // brain rotate on x axis
+	float xAngle = (float) (Math.PI / 2.5); // brain rotate on x axis
 	float yAngle = -(float) (Math.PI / 8); // brain rotate on y axis
 	float zAngle = 0;// brain rotate on z axis
 

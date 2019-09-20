@@ -11,10 +11,8 @@ import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
-import com.github.drinkjava2.frog.objects.Food;
 import com.github.drinkjava2.frog.objects.Material;
 import com.github.drinkjava2.frog.objects.Object;
-import com.github.drinkjava2.frog.objects.Trap;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -67,7 +65,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放从磁盘载入或上轮下的蛋，每个蛋可能生成1~n个青蛙，
 
-	public static Object[] things = new Object[] {  };
+	public static Object[] things = new Object[] {};
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -234,7 +232,7 @@ public class Env extends JPanel {
 				}
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
-					f.cells.clear();
+					f.cubes = new Object[1][1][1];
 				}
 				Application.brainPic.drawBrainPicture(firstFrog);
 				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")
