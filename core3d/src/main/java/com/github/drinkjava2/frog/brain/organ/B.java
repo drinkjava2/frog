@@ -1,5 +1,5 @@
-/* Copyright 2018-2020 the original author or authors.
- *
+/*
+ * Copyright 2018 the original author or authors. 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
@@ -8,32 +8,32 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.objects;
+package com.github.drinkjava2.frog.brain.organ;
+
+import com.github.drinkjava2.frog.Env;
+import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Object means some thing in Env
+ * B means B
  * 
  * @author Yong Zhu
- * @since 1.0
  */
-public class Pictures implements Object {
+public class B extends Organ {
 
-	@Override
-	public void build() {
-		// TODO Auto-generated method stub
-		
+	private static final long serialVersionUID = 1L;
+
+	public B() {
+		x = 30;
+		y = 15;
+		z = Env.FROG_BRAIN_ZSIZE - 1;
+		xe = 3;
+		ye = 3;
+		ze = 1;
 	}
 
 	@Override
-	public void destory() {
-		// TODO Auto-generated method stub
-		
+	public void active(Frog f) {
 	}
 
-	@Override
-	public void active(int screen) {
-		 
-	}
-
-	 
 }

@@ -8,23 +8,32 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.brain;
+package com.github.drinkjava2.frog.brain.organ;
+
+import com.github.drinkjava2.frog.Env;
+import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Point has x, y, z value
+ * A means A
  * 
  * @author Yong Zhu
- * @since 2.0.2
  */
-@SuppressWarnings("all")
-public class Point {
-	public float x;
-	public float y;
-	public float z;
+public class A extends Organ {
 
-	public Point(float x, float y, float z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	private static final long serialVersionUID = 1L;
+
+	public A() {
+		x = 30;
+		y = 10;
+		z = Env.FROG_BRAIN_ZSIZE - 1;
+		xe = 3;
+		ye = 3;
+		ze = 1;
 	}
+
+	@Override
+	public void active(Frog f) {
+	}
+
 }

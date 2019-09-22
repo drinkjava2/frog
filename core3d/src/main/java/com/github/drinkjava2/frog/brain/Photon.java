@@ -13,13 +13,14 @@ package com.github.drinkjava2.frog.brain;
 /**
  * Photon has direction and strength
  * 
- * 用光子来代表信息传递的载体，这是一个矢量，具有方向和能量，能量可以为负值
+ * 用光子来代表信息传递的载体，这是一个矢量，具有方向和能量，能量可以为负值，光子的x,y,z值表示它在每个测试step中将移动多少个脑单位距离
+ * 光子永远在移动，直到被吸收转化为Cell的能量贮存或出界
  * 
  * @author Yong Zhu
  * @since 2.0.2
  */
 public class Photon {
-	public float x;// 用 x,y,z座标来表示矢量的方向，便于今后计算
+	public float x;// 用 x,y,z长度来表示矢量的方向，便于今后计算
 	public float y;
 	public float z;
 	public float energy;

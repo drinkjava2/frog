@@ -15,39 +15,25 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Eye can only see env material
+ * C means C
  * 
  * @author Yong Zhu
  */
-public class Eye extends Organ {//这个眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
+public class C extends Organ {
+
 	private static final long serialVersionUID = 1L;
-	public int n = 13; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
 
-	@Override
-	public void init(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Organ类的初始化
-		if (!initilized) {
-			initilized = true; 
-		}
-	} 
-
-	public Eye() {
-		x = 10;
+	public C() {
+		x = 35;
 		y = 10;
 		z = Env.FROG_BRAIN_ZSIZE - 1;
-		xe = 10;
-		ye = xe;
+		xe = 3;
+		ye = 3;
 		ze = 1;
 	}
 
 	@Override
-	public void active(Frog f) {// 如果看到食物就在视网膜所在位置的cube上产生一些光子
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (Env.foundAnyThing(f.x - n/2 + i, f.y - n /2 + j)) {
-					 
-				}
-			}
-		}
+	public void active(Frog f) {
 	}
 
 }

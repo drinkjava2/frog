@@ -23,6 +23,8 @@ import com.github.drinkjava2.frog.Frog;
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
  * 
+ * 这个类用来画出脑图，这不是一个关键类，对脑的运行逻辑无影响，但有了脑图后可以直观地看出脑的3维结构，进行有针对性的改进
+ * 
  * @author Yong Zhu
  * @since 1.0
  */
@@ -41,7 +43,7 @@ public class BrainPicture extends JPanel {
 		super();
 		this.setLayout(null);// 空布局
 		this.brainDispWidth = brainDispWidth;
-		scale = 0.4f * brainDispWidth / brainWidth;
+		scale = 0.7f * brainDispWidth / brainWidth;
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 		MouseAction act = new MouseAction(this);
 		this.addMouseListener(act);
@@ -53,30 +55,24 @@ public class BrainPicture extends JPanel {
 		float x = c.x;
 		float y = c.y;
 		float z = c.z;
-		float xr = c.xr;
-		float yr = c.yr;
-		float zr = c.zr;
+		float xe = c.xe;
+		float ye = c.ye;
+		float ze = c.ze;
 
-		setColor(Color.BLUE);
-		drawTopViewLine(x - xr, y - yr, z - zr, x - xr, y + yr, z - zr);// 画立方体的下面边
-		drawTopViewLine(x - xr, y + yr, z - zr, x + xr, y + yr, z - zr);
-		drawTopViewLine(x + xr, y + yr, z - zr, x + xr, y - yr, z - zr);
-		drawTopViewLine(x + xr, y - yr, z - zr, x - xr, y - yr, z - zr);
+		drawTopViewLine(x, y, z, x + xe, y, z);// 画立方体的下面边
+		drawTopViewLine(x + xe, y, z, x + xe, y + ye, z);
+		drawTopViewLine(x + xe, y + ye, z, x, y + ye, z);
+		drawTopViewLine(x, y + ye, z, x, y, z);
 
-		setColor(Color.green);
-		drawTopViewLine(x - xr, y - yr, z + zr, x - xr, y - yr, z - zr);// 画立方体的中间边
-		setColor(Color.YELLOW);
-		drawTopViewLine(x + xr, y - yr, z + zr, x + xr, y - yr, z - zr);
-		setColor(Color.YELLOW);
-		drawTopViewLine(x + xr, y + yr, z + zr, x + xr, y + yr, z - zr);
-		setColor(Color.green);
-		drawTopViewLine(x - xr, y + yr, z + zr, x - xr, y + yr, z - zr);
+		drawTopViewLine(x, y, z, x, y, z + ze);// 画立方体的中间边
+		drawTopViewLine(x + xe, y, z, x + xe, y, z + ze);
+		drawTopViewLine(x + xe, y + ye, z, x + xe, y + ye, z + ze);
+		drawTopViewLine(x, y + ye, z, x, y + ye, z + ze);
 
-		setColor(Color.red);
-		drawTopViewLine(x - xr, y - yr, z + zr, x - xr, y + yr, z + zr); // 画立方体的上面边
-		drawTopViewLine(x - xr, y + yr, z + zr, x + xr, y + yr, z + zr);
-		drawTopViewLine(x + xr, y + yr, z + zr, x + xr, y - yr, z + zr);
-		drawTopViewLine(x + xr, y - yr, z + zr, x - xr, y - yr, z + zr);
+		drawTopViewLine(x, y, z + ze, x + xe, y, z + ze);// 画立方体的上面边
+		drawTopViewLine(x + xe, y, z + ze, x + xe, y + ye, z + ze);
+		drawTopViewLine(x + xe, y + ye, z + ze, x, y + ye, z + ze);
+		drawTopViewLine(x, y + ye, z + ze, x, y, z + ze);
 	}
 
 	/*-
@@ -91,8 +87,18 @@ public class BrainPicture extends JPanel {
 		x.cosθ-y.sinθ, x.sinθ+y.consθ, z
 	 -*/
 	private void drawTopViewLine(float px1, float py1, float pz1, float px2, float py2, float pz2) {
-		double x1 = px1 * scale, y1 = py1 * scale, z1 = pz1 * scale, x2 = px2 * scale, y2 = py2 * scale,
-				z2 = pz2 * scale;
+		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
+		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+		double z1 = pz1 - Env.FROG_BRAIN_ZSIZE / 2;
+		double x2 = px2 - Env.FROG_BRAIN_XSIZE / 2;
+		double y2 = -py2 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+		double z2 = pz2 - Env.FROG_BRAIN_ZSIZE / 2;
+		x1 = x1 * scale;
+		y1 = y1 * scale;
+		z1 = z1 * scale;
+		x2 = x2 * scale;
+		y2 = y2 * scale;
+		z2 = z2 * scale;
 		double x, y, z;
 		y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
 		z = y1 * sin(xAngle) + z1 * cos(xAngle);
@@ -145,15 +151,16 @@ public class BrainPicture extends JPanel {
 		if (!Application.SHOW_FIRST_FROG_BRAIN)
 			return;
 		Graphics g = this.getGraphics();
-		g.setColor(Color.WHITE);
+		g.setColor(Color.WHITE);// 先清空旧图
 		g.fillRect(0, 0, brainDispWidth, brainDispWidth);
-		g.setColor(Color.black);
+		g.setColor(Color.black); // 画边框
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-		for (Organ organ : frog.organs)
+		for (Organ organ : frog.organs)// 每个器官负责画出自已在脑图中的位置和形状
 			organ.drawOnBrainPicture(frog, this); // each organ draw itself
 	}
 
+	// getters & setters
 	public float getScale() {
 		return scale;
 	}

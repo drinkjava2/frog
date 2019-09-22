@@ -33,7 +33,7 @@ public class Organ extends Cuboid {
 	}
 
 	/** Only call once when frog created , Child class can override this method */
-	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于在这一步播种脑细胞
+	public void init(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于在这一步播种脑细胞
 	}
 
 	/** Each loop step call active method, Child class can override this method */
@@ -56,7 +56,7 @@ public class Organ extends Cuboid {
 		} catch (Exception e) {
 			throw new UnknownError("Can not make new Organ copy for " + this);
 		}
-		copyXYZR(this, newOrgan);
+		copyXYZE(this, newOrgan);
 		newOrgan.fat = this.fat;
 		return new Organ[] { newOrgan };
 	}

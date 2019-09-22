@@ -7,10 +7,12 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 /**
- * BrainPicture show first frog's brain structure, for debug purpose only
+ * MouseAction
+ * 
+ * 这个类用来处理脑图上的鼠标动作，有平移、旋转、缩放三种
  * 
  * @author Yong Zhu
- * @since 1.0
+ * @since 2.0.2
  */
 public class MouseAction implements MouseListener, MouseWheelListener, MouseMotionListener {
 	private BrainPicture brainPic;
@@ -23,10 +25,10 @@ public class MouseAction implements MouseListener, MouseWheelListener, MouseMoti
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		if (e.getButton() == 1)
+	public void mousePressed(MouseEvent e) {// 记录当前鼠标点
+		if (e.getButton() == 1)// 旋转
 			buttonPressed = 1;
-		else if (e.getButton() == 2)
+		else if (e.getButton() == 2)// 缩放
 			buttonPressed = 2;
 		else
 			buttonPressed = 0;
@@ -40,7 +42,7 @@ public class MouseAction implements MouseListener, MouseWheelListener, MouseMoti
 	}
 
 	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
+	public void mouseWheelMoved(MouseWheelEvent e) {// 缩放
 		if (e.getWheelRotation() < 0)
 			brainPic.scale *= 1.1;
 		else
@@ -48,7 +50,7 @@ public class MouseAction implements MouseListener, MouseWheelListener, MouseMoti
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {// do nothing
+	public void mouseDragged(MouseEvent e) {// 旋转
 		if (buttonPressed == 1) {
 			if (e.getX() > x && e.getY() > y)
 				brainPic.zAngle -= .00f;
@@ -67,7 +69,7 @@ public class MouseAction implements MouseListener, MouseWheelListener, MouseMoti
 			x = e.getX();
 			y = e.getY();
 		}
-		if (buttonPressed == 2) {
+		if (buttonPressed == 2) {// 平移
 			if (e.getX() > x)
 				brainPic.xOffset++;
 			if (e.getX() < x)

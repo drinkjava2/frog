@@ -19,15 +19,14 @@ import java.awt.Color;
  * @since 1.0
  */
 public class Material {
-	public static final byte VISIBLE = 10; // if>=10 will visible to frog
-	public static final byte KILLFROG = 20; // if>=20 will kill frog
-
-	public static final byte NO = 0;
+	public static final byte NO = 0; // nothing
 	public static final byte SEESAW_BASE = 1; // 1~9 is invisible to frog
-
+	
+	public static final byte VISIBLE = 10; // if>=10 will visible to frog
 	public static final byte FOOD = VISIBLE + 1;
 	public static final byte SEESAW = VISIBLE + 2;
 
+	public static final byte KILLFROG = 20; // if>=20 will kill frog
 	public static final byte BRICK = KILLFROG + 1;// brick will kill frog
 	public static final byte TRAP = KILLFROG + 2; // trap will kill frog
 

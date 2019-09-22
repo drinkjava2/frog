@@ -16,7 +16,11 @@ import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.organ.A;
+import com.github.drinkjava2.frog.brain.organ.B;
 import com.github.drinkjava2.frog.brain.organ.Brain;
+import com.github.drinkjava2.frog.brain.organ.C;
+import com.github.drinkjava2.frog.brain.organ.D;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -40,6 +44,11 @@ public class Egg implements Serializable {
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
 		organs.add(new Brain()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
 		organs.add(new Eye()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
+		organs.add(new A());
+		organs.add(new B());
+		organs.add(new C());
+		organs.add(new D());
+
 	}
 
 	/** Create egg from frog */
