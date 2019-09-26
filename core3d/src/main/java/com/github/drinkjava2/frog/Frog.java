@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.github.drinkjava2.frog.brain.Cube;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
@@ -33,7 +34,7 @@ import com.github.drinkjava2.frog.objects.Material;
 public class Frog {
 
 	/** brain cells */
-	public Object[][][] cubes;
+	public Object[][][] cubes = new Cube[Env.FROG_BRAIN_XSIZE][Env.FROG_BRAIN_YSIZE][Env.FROG_BRAIN_ZSIZE];
 
 	/** organs */
 	public List<Organ> organs = new ArrayList<>();

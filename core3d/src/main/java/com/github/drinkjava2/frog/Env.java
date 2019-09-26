@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
+import com.github.drinkjava2.frog.objects.LetterTester;
 import com.github.drinkjava2.frog.objects.Material;
 import com.github.drinkjava2.frog.objects.Object;
 import com.github.drinkjava2.frog.util.RandomUtils;
@@ -51,6 +52,7 @@ public class Env extends JPanel {
 
 	/** Steps of one test round */
 	public static final int STEPS_PER_ROUND = 50000;// 每轮测试步数,可调
+	public static int step;// 当前测试步数
 
 	/** Frog's x radius, brain volume = XSIZE * YSIZE * ZSIZE */
 	public static final int FROG_BRAIN_XSIZE = 50; // frog的脑在X方向长度
@@ -67,7 +69,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放从磁盘载入或上轮下的蛋，每个蛋可能生成1~n个青蛙，
 
-	public static Object[] things = new Object[] {};
+	public static Object[] things = new Object[] {new LetterTester()};
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -192,7 +194,7 @@ public class Env extends JPanel {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 					f.initOrgans();
 				}
-				for (int i = 0; i < STEPS_PER_ROUND; i++) {
+				for (step = 0; step < STEPS_PER_ROUND; step++) {
 					for (Object thing : things)// 调用食物、陷阱等物体的动作
 						thing.active(screen);
 					if (allDead)
@@ -204,7 +206,7 @@ public class Env extends JPanel {
 							allDead = false;
 					}
 
-					if (SHOW_SPEED > 0 && i % SHOW_SPEED != 0) // 用画青蛙的方式来拖慢速度
+					if (SHOW_SPEED > 0 && step % SHOW_SPEED != 0) // 用画青蛙的方式来拖慢速度
 						continue;
 
 					if (SHOW_SPEED < 0) // 如果speed小于0，人为加入延迟
@@ -226,7 +228,7 @@ public class Env extends JPanel {
 							g.drawArc(firstFrog.x - 15, firstFrog.y - 15, 30, 30, 0, 360);
 							g.setColor(Color.BLACK);
 						}
-						if (DRAW_BRAIN_AFTER_STEPS > 0 && i % DRAW_BRAIN_AFTER_STEPS == 0)
+						if (DRAW_BRAIN_AFTER_STEPS > 0 && step % DRAW_BRAIN_AFTER_STEPS == 0)
 							Application.brainPic.drawBrainPicture(firstFrog);
 					}
 					Graphics g2 = this.getGraphics();
@@ -234,7 +236,7 @@ public class Env extends JPanel {
 				}
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
-					f.cubes = new Object[1][1][1];
+					f.cubes = null; //清空frog脑占用的内存
 				}
 				Application.brainPic.drawBrainPicture(firstFrog);
 				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")

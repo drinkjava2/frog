@@ -10,6 +10,12 @@
  */
 package com.github.drinkjava2.frog.objects;
 
+import com.github.drinkjava2.frog.Env;
+import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.organ.Eye;
+import com.github.drinkjava2.frog.util.RandomUtils;
+import com.github.drinkjava2.frog.util.StringPixelUtils;
+
 /**
  * LetterTester used to test A, B , C, D letter recognition
  *
@@ -21,6 +27,12 @@ package com.github.drinkjava2.frog.objects;
  * @since 1.0
  */
 public class LetterTester implements Object {
+	private static final String STR = "ABCD";
+	private boolean[][] c;
+
+	public LetterTester() {
+		c = StringPixelUtils.getSanserif12Pixels(String.valueOf(STR.charAt(RandomUtils.nextInt(4))));
+	}
 
 	@Override
 	public void build() { // do nothing
@@ -32,6 +44,18 @@ public class LetterTester implements Object {
 
 	@Override
 	public void active(int screen) {
+		Frog f = Env.frogs.get(screen);
+		Eye eye = (Eye) f.organs.get(1);
+		if (Env.step < Env.STEPS_PER_ROUND / 2) {
+			for (int y = 0; y < c.length; y++) {
+				boolean[] line = c[y];
+				for (int x = 0; x < line.length; x++)
+					if (c[y][x])
+						f.cubes[x][y][eye.z] = 100;
+			}
+		} else {
+
+		}
 
 	}
 

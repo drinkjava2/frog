@@ -45,7 +45,7 @@ public class Organ extends Cuboid {
 		if (!Application.SHOW_FIRST_FROG_BRAIN)
 			return;
 		pic.setColor(Color.BLACK); // 缺省是黑色
-		pic.drawCube(this);
+		pic.drawCube3D(this);
 	}
 
 	/** Only call once after organ be created by new() method */

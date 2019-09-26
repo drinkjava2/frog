@@ -11,8 +11,6 @@
 package com.github.drinkjava2.frog.brain.organ;
 
 import com.github.drinkjava2.frog.Env;
-import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Cube;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
@@ -41,11 +39,6 @@ public class Brain extends Organ {
 		xe = Env.FROG_BRAIN_XSIZE;
 		ye = Env.FROG_BRAIN_YSIZE;
 		ze = Env.FROG_BRAIN_ZSIZE;
-	}
-
-	@Override
-	public void init(Frog f) {
-		f.cubes = new Cube[Env.FROG_BRAIN_XSIZE][Env.FROG_BRAIN_YSIZE][Env.FROG_BRAIN_ZSIZE];
 	}
 
 }

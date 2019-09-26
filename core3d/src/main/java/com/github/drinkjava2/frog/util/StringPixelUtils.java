@@ -61,7 +61,7 @@ public class StringPixelUtils {
 	}
 
 	public static void main(String[] args) {
-		boolean[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 10, "∮ABCD中国人");
+		boolean[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "Test点阵输出");
 		for (int y = 0; y < c.length; y++) {
 			boolean[] line = c[y];
 			for (int x = 0; x < line.length; x++)
