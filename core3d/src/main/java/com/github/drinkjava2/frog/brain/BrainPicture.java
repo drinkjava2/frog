@@ -51,7 +51,7 @@ public class BrainPicture extends JPanel {
 		this.addMouseMotionListener(act);
 	}
 
-	public void drawCube3D(Cuboid c) {
+	public void drawCuboid(Cuboid c) {// 在脑图上画一个长立方体框架，视角是TopView
 		float x = c.x;
 		float y = c.y;
 		float z = c.z;
@@ -138,7 +138,7 @@ public class BrainPicture extends JPanel {
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
-	/*-   画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 	 -*/
+	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
 	public void drawPoint(float px1, float py1, float pz1) {
 		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
 		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
@@ -178,6 +178,24 @@ public class BrainPicture extends JPanel {
 		return rainbow[nextColor++];
 	}
 
+	public static Color rainboColor(float i) {
+		if (i == 0)
+			return Color.black;
+		if (i == 1)
+			return Color.RED;
+		if (i <= 3)
+			return Color.ORANGE;
+		if (i <= 10)
+			return Color.YELLOW;
+		if (i <= 20)
+			return Color.GREEN;
+		if (i <= 50)
+			return Color.CYAN;
+		if (i <= 100)
+			return Color.BLUE;
+		return Color.MAGENTA;
+	}
+
 	public void drawBrainPicture(Frog frog) {
 		if (!Application.SHOW_FIRST_FROG_BRAIN)
 			return;
@@ -189,11 +207,18 @@ public class BrainPicture extends JPanel {
 
 		for (Organ organ : frog.organs)// 每个器官负责画出自已在脑图中的位置和形状
 			organ.drawOnBrainPicture(frog, this); // each organ draw itself
+		this.setColor(Color.RED);
+		drawLine(0, 0, 0, 1, 0, 0);
+		drawLine(0, 0, 0, 0, 1, 0);
+		drawLine(0, 0, 0, 0, 0, 1);
 
 		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {
 			for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
 				for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
-
+					if (frog.cubes[x][y][z].active > 0) {
+						setColor(rainboColor(frog.cubes[x][y][z].active));
+						drawPoint(x, y, z);
+					}
 				}
 			}
 

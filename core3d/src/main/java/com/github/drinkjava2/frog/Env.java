@@ -34,7 +34,7 @@ public class Env extends JPanel {
 
 	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
 
-	public static final int SCREEN = 4; // 分几屏测完
+	public static final int SCREEN =4; // 分几屏测完
 
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
@@ -48,10 +48,10 @@ public class Env extends JPanel {
 	public static final int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
 
 	/** Frog's brain display width on screen, not important */
-	public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
+	public static final int FROG_BRAIN_DISP_WIDTH = 800; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
-	public static final int STEPS_PER_ROUND = 50000;// 每轮测试步数,可调
+	public static final int STEPS_PER_ROUND = 5000;// 每轮测试步数,可调
 	public static int step;// 当前测试步数
 
 	/** Frog's x radius, brain volume = XSIZE * YSIZE * ZSIZE */
@@ -69,7 +69,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放从磁盘载入或上轮下的蛋，每个蛋可能生成1~n个青蛙，
 
-	public static Object[] things = new Object[] {new LetterTester()};
+	public static Object[] things = new Object[] { new LetterTester() };
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -234,11 +234,11 @@ public class Env extends JPanel {
 					Graphics g2 = this.getGraphics();
 					g2.drawImage(buffImg, 0, 0, this);
 				}
+				Application.brainPic.drawBrainPicture(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
-					f.cubes = null; //清空frog脑占用的内存
+					f.initCubes(); // 清空frog脑占用的内存
 				}
-				Application.brainPic.drawBrainPicture(firstFrog);
 				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")
 						.append(screen).append(", ").append(foodFoundCountText()).append(", 用时: ")
 						.append(System.currentTimeMillis() - time0).append("ms").toString());

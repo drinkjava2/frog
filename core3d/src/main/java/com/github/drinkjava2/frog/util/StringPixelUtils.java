@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * StringPixelUtils used to get pixel array from a given string
  * 
- * 根据给定的字体和字符串，返回它的像素点阵，返回结果是boolean[][]二维数组
+ * 根据给定的字体和字符串，返回它的像素点阵，lettersMap[0][0]是左下角素
  * 
  * @author Yong Zhu
  * @since 2.0.2
@@ -47,28 +47,31 @@ public class StringPixelUtils {
 		g2d.setFont(font);
 		FontMetrics fm = g2d.getFontMetrics();
 		int strHeight = fm.getAscent() + fm.getDescent() - 3;
-		int strWidth = fm.stringWidth(s); 
-		g2d.drawString(s, 0, fm.getAscent() - fm.getLeading() - 1); 
-		boolean[][] b = new boolean[strHeight][strWidth];
+		int strWidth = fm.stringWidth(s);
+		g2d.drawString(s, 0, fm.getAscent() - fm.getLeading() - 1);
+		boolean[][] b = new boolean[strWidth][strHeight];
 		for (int y = 0; y < strHeight; y++)
 			for (int x = 0; x < strWidth; x++)
 				if (bi.getRGB(x, y) == -1)
-					b[y][x] = true;
+					b[x][strHeight-y-1] = true;
 				else
-					b[y][x] = false;
+					b[x][strHeight-y-1] = false;
 		lettersMap.put(key, b);
 		return b;
 	}
 
 	public static void main(String[] args) {
 		boolean[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "Test点阵输出");
-		for (int y = 0; y < c.length; y++) {
-			boolean[] line = c[y];
-			for (int x = 0; x < line.length; x++)
-				if (c[y][x])
+		int w = c.length;
+		int h = c[0].length;
+
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+				if (c[x][h-y-1])
 					System.out.print("*");
 				else
 					System.out.print(" ");
+			}
 			System.out.println();
 		}
 	}

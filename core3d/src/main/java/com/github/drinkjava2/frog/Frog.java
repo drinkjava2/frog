@@ -34,7 +34,7 @@ import com.github.drinkjava2.frog.objects.Material;
 public class Frog {
 
 	/** brain cells */
-	public Object[][][] cubes = new Cube[Env.FROG_BRAIN_XSIZE][Env.FROG_BRAIN_YSIZE][Env.FROG_BRAIN_ZSIZE];
+	public Cube[][][] cubes;
 
 	/** organs */
 	public List<Organ> organs = new ArrayList<>();
@@ -55,10 +55,19 @@ public class Frog {
 	}
 
 	public Frog(int x, int y, Egg egg) {
-		this.x = x;
+		initCubes();
+		this.x = x; // x, y 是虑拟环境的坐标
 		this.y = y;
 		for (Organ org : egg.organs)
 			organs.add(org);
+	}
+
+	public void initCubes() {
+		cubes = new Cube[Env.FROG_BRAIN_XSIZE][Env.FROG_BRAIN_YSIZE][Env.FROG_BRAIN_ZSIZE];
+		for (int a = 0; a < Env.FROG_BRAIN_XSIZE; a++)
+			for (int b = 0; b < Env.FROG_BRAIN_YSIZE; b++)
+				for (int c = 0; c < Env.FROG_BRAIN_ZSIZE; c++)
+					cubes[a][b][c] = new Cube();
 	}
 
 	public void initOrgans() {

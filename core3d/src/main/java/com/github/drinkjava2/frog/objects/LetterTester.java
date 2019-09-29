@@ -32,6 +32,7 @@ public class LetterTester implements Object {
 
 	public LetterTester() {
 		c = StringPixelUtils.getSanserif12Pixels(String.valueOf(STR.charAt(RandomUtils.nextInt(4))));
+		// c = StringPixelUtils.getSanserif12Pixels("A");
 	}
 
 	@Override
@@ -46,16 +47,18 @@ public class LetterTester implements Object {
 	public void active(int screen) {
 		Frog f = Env.frogs.get(screen);
 		Eye eye = (Eye) f.organs.get(1);
-		if (Env.step < Env.STEPS_PER_ROUND / 2) {
-			for (int y = 0; y < c.length; y++) {
-				boolean[] line = c[y];
-				for (int x = 0; x < line.length; x++)
-					if (c[y][x])
-						f.cubes[x][y][eye.z] = 100;
+		int w = c.length;
+		int h = c[0].length;
+		// if (Env.step < Env.STEPS_PER_ROUND / 2) {
+		for (int x = 0; x < w; x++)
+			for (int y = 0; y < h; y++) {
+				if (c[x][y]) {
+					f.cubes[x + eye.x][y + eye.y][eye.z].active = 20;
+				}
 			}
-		} else {
-
-		}
+		// } else {
+		//
+		// }
 
 	}
 

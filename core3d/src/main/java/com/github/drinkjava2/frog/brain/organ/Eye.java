@@ -21,7 +21,7 @@ import com.github.drinkjava2.frog.brain.Organ;
  */
 public class Eye extends Organ {//这个眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
 	private static final long serialVersionUID = 1L;
-	public int n = 13; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
+	public int n = 18; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
 
 	@Override
 	public void init(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Organ类的初始化
@@ -33,7 +33,7 @@ public class Eye extends Organ {//这个眼睛有nxn个感光细胞，可以看�
 	public Eye() {
 		x = 10;
 		y = 10;
-		z = Env.FROG_BRAIN_ZSIZE - 1;
+		z = Env.FROG_BRAIN_ZSIZE-1;
 		xe = 10;
 		ye = xe;
 		ze = 1;
