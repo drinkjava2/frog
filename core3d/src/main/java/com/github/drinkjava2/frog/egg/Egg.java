@@ -48,7 +48,6 @@ public class Egg implements Serializable {
 		organs.add(new B());
 		organs.add(new C());
 		organs.add(new D());
-
 	}
 
 	/** Create egg from frog */

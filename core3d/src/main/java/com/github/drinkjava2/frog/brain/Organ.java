@@ -12,7 +12,7 @@ package com.github.drinkjava2.frog.brain;
 
 import java.awt.Color;
 
-import com.github.drinkjava2.frog.Application;
+import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 
 /**
@@ -42,7 +42,7 @@ public class Organ extends Cuboid {
 
 	/** Child class can override this method to drawing picture */
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
-		if (!Application.SHOW_FIRST_FROG_BRAIN)
+		if (!Env.SHOW_FIRST_FROG_BRAIN)
 			return;
 		pic.setColor(Color.BLACK); // 缺省是黑色
 		pic.drawCuboid(this);

@@ -16,7 +16,6 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 
@@ -33,6 +32,7 @@ public class BrainPicture extends JPanel {
 	Color color = Color.red;
 	int brainDispWidth; // screen display piexls width
 	float scale; // brain scale
+	int pointDia; // point size
 	int xOffset = 0; // brain display x offset compare to screen
 	int yOffset = 0; // brain display y offset compare to screen
 	float xAngle = (float) (Math.PI / 2.5); // brain rotate on x axis
@@ -44,6 +44,7 @@ public class BrainPicture extends JPanel {
 		this.setLayout(null);// 空布局
 		this.brainDispWidth = brainDispWidth;
 		scale = 0.7f * brainDispWidth / brainWidth;
+		pointDia = Math.max(Math.round(scale), 1);
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 		MouseAction act = new MouseAction(this);
 		this.addMouseListener(act);
@@ -139,7 +140,12 @@ public class BrainPicture extends JPanel {
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
-	public void drawPoint(float px1, float py1, float pz1) {
+	public void drawCubeCenter(float x, float y, float z) {
+		drawPoint(x+0.5f, y+0.5f, z+0.5f, pointDia);
+	}
+
+	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
+	public void drawPoint(float px1, float py1, float pz1, int diameter) {
 		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
 		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
 		double z1 = pz1 - Env.FROG_BRAIN_ZSIZE / 2;
@@ -165,8 +171,7 @@ public class BrainPicture extends JPanel {
 		Graphics g = this.getGraphics();
 		g.setColor(color);
 		g.fillOval((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
-				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset, (int) round(scale) + 1,
-				(int) round(scale) + 1);
+				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - diameter/2, diameter, diameter);
 	}
 
 	private static final Color[] rainbow = new Color[] { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
@@ -197,7 +202,7 @@ public class BrainPicture extends JPanel {
 	}
 
 	public void drawBrainPicture(Frog frog) {
-		if (!Application.SHOW_FIRST_FROG_BRAIN)
+		if (!Env.SHOW_FIRST_FROG_BRAIN)
 			return;
 		Graphics g = this.getGraphics();
 		g.setColor(Color.WHITE);// 先清空旧图
@@ -217,7 +222,7 @@ public class BrainPicture extends JPanel {
 				for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
 					if (frog.cubes[x][y][z].active > 0) {
 						setColor(rainboColor(frog.cubes[x][y][z].active));
-						drawPoint(x, y, z);
+						drawCubeCenter(x, y, z);
 					}
 				}
 			}

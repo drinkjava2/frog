@@ -16,8 +16,7 @@ import com.github.drinkjava2.frog.brain.BrainPicture;
  * @since 1.0
  */
 public class Application {
-	/** SHOW first frog's brain structure */
-	public static boolean SHOW_FIRST_FROG_BRAIN = false;
+
 	public static final String CLASSPATH;
 
 	static {
@@ -30,6 +29,19 @@ public class Application {
 	public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_XSIZE,
 			Env.FROG_BRAIN_DISP_WIDTH);
 
+	static private void checkIfShowBrainPicture(JButton button) {
+		if (Env.SHOW_FIRST_FROG_BRAIN) {
+			button.setText("Hide brain");
+			int y = Env.ENV_HEIGHT + 100;
+			if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
+				y = Env.FROG_BRAIN_DISP_WIDTH + 41;
+			mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
+		} else {
+			button.setText("Show brain");
+			mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100);
+		}
+	}
+
 	public static void main(String[] args) throws InterruptedException {
 		mainFrame.setLayout(null);
 		mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100); // 窗口大小
@@ -39,26 +51,20 @@ public class Application {
 		mainFrame.add(brainPic);
 
 		JButton button = new JButton("Show brain");
-		int buttonWidth =100;
+		int buttonWidth = 100;
 		int buttonHeight = 22;
 		int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
 		button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
+
 		ActionListener al = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				SHOW_FIRST_FROG_BRAIN = !SHOW_FIRST_FROG_BRAIN;
-				if (SHOW_FIRST_FROG_BRAIN) {
-					button.setText("Hide brain");
-					int y = Env.ENV_HEIGHT + 100;
-					if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
-						y = Env.FROG_BRAIN_DISP_WIDTH + 41;
-					mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
-				} else {
-					button.setText("Show brain");
-					mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100);
-				}
+				Env.SHOW_FIRST_FROG_BRAIN = !Env.SHOW_FIRST_FROG_BRAIN;
+				checkIfShowBrainPicture(button);
 			}
+
 		};
+		checkIfShowBrainPicture(button);
 		button.addActionListener(al);
 		mainFrame.add(button);
 
