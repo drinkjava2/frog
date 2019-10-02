@@ -27,14 +27,14 @@ import java.util.Map;
  * @since 2.0.2
  */
 public class StringPixelUtils {
-	private static final Map<String, boolean[][]> lettersMap = new HashMap<>();
+	private static final Map<String, byte[][]> lettersMap = new HashMap<>();
 
-	public static boolean[][] getSanserif12Pixels(String s) {
+	public static byte[][] getSanserif12Pixels(String s) {
 		return getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, s);
 	}
 
 	/* 在内存 BufferedImage里输出文本并获取它的像素点 */
-	public static boolean[][] getStringPixels(String fontName, int fontStyle, int fontSize, String s) {
+	public static byte[][] getStringPixels(String fontName, int fontStyle, int fontSize, String s) {
 		String key = new StringBuilder(fontName).append("_").append(fontStyle).append("_").append(fontSize).append("_")
 				.append(s).toString();
 		if (lettersMap.containsKey(key))
@@ -49,25 +49,25 @@ public class StringPixelUtils {
 		int strHeight = fm.getAscent() + fm.getDescent() - 3;
 		int strWidth = fm.stringWidth(s);
 		g2d.drawString(s, 0, fm.getAscent() - fm.getLeading() - 1);
-		boolean[][] b = new boolean[strWidth][strHeight];
+		byte[][] b = new byte[strWidth][strHeight];
 		for (int y = 0; y < strHeight; y++)
 			for (int x = 0; x < strWidth; x++)
 				if (bi.getRGB(x, y) == -1)
-					b[x][strHeight-y-1] = true;
+					b[x][strHeight-y-1] = 1;
 				else
-					b[x][strHeight-y-1] = false;
+					b[x][strHeight-y-1] = 0;
 		lettersMap.put(key, b);
 		return b;
 	}
 
 	public static void main(String[] args) {
-		boolean[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "Test点阵输出");
+		byte[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "Test点阵输出");
 		int w = c.length;
 		int h = c[0].length;
 
 		for (int y = 0; y < h; y++) {
 			for (int x = 0; x < w; x++) {
-				if (c[x][h-y-1])
+				if (c[x][h-y-1]>0)
 					System.out.print("*");
 				else
 					System.out.print(" ");

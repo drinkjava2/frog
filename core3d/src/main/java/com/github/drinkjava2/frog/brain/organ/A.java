@@ -24,7 +24,7 @@ public class A extends Organ {
 	private static final long serialVersionUID = 1L;
 
 	public A() {
-		x = 30;
+		x = 10;
 		y = 10;
 		z = Env.FROG_BRAIN_ZSIZE - 1;
 		xe = 3;

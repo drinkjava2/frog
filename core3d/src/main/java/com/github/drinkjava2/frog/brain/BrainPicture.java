@@ -141,7 +141,7 @@ public class BrainPicture extends JPanel {
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
 	public void drawCubeCenter(float x, float y, float z) {
-		drawPoint(x+0.5f, y+0.5f, z+0.5f, pointDia);
+		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, pointDia);
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
@@ -171,7 +171,7 @@ public class BrainPicture extends JPanel {
 		Graphics g = this.getGraphics();
 		g.setColor(color);
 		g.fillOval((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
-				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - diameter/2, diameter, diameter);
+				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - diameter / 2, diameter, diameter);
 	}
 
 	private static final Color[] rainbow = new Color[] { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
@@ -220,8 +220,8 @@ public class BrainPicture extends JPanel {
 		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {
 			for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
 				for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
-					if (frog.cubes[x][y][z].active > 0) {
-						setColor(rainboColor(frog.cubes[x][y][z].active));
+					if (frog.getCube(x, y, z).getActive() > 0) {
+						setColor(rainboColor(frog.getCube(x, y, z).getActive()));
 						drawCubeCenter(x, y, z);
 					}
 				}

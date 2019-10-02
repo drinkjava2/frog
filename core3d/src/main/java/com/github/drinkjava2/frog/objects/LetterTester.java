@@ -12,7 +12,7 @@ package com.github.drinkjava2.frog.objects;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.RandomUtils;
 import com.github.drinkjava2.frog.util.StringPixelUtils;
 
@@ -28,7 +28,7 @@ import com.github.drinkjava2.frog.util.StringPixelUtils;
  */
 public class LetterTester implements Object {
 	private static final String STR = "ABCD";
-	boolean[][] pixels;
+	byte[][] pixels;
 	String letter;
 
 	@Override
@@ -46,15 +46,8 @@ public class LetterTester implements Object {
 			pixels = StringPixelUtils.getSanserif12Pixels(letter);
 		}
 		Frog f = Env.frogs.get(screen * Env.FROG_PER_SCREEN);
-		Organ eye = f.findOrganByName("eye");
-		int w = pixels.length;
-		int h = pixels[0].length;
-
-		// 在视网膜上产生字母像素点阵，即激活这个脑视网膜所在的cubes区，然后由器官播种出的脑细胞负责将激活能量转为光子输送、存贮到其它位置
-		for (int x = 0; x < w; x++)
-			for (int y = 0; y < h; y++)
-				if (pixels[x][y])
-					f.cubes[x + eye.x][y + eye.y][eye.z].active = 20;
+		Eye eye = f.findOrganByName("eye");
+		eye.seeImage(f, pixels);
 
 		if (Env.step < Env.STEPS_PER_ROUND / 2) {// 前半段同时还要激活与这个字母对应脑区
 			f.activeOrgan(f.findOrganByName(letter), 20);
