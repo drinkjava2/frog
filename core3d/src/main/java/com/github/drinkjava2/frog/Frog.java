@@ -110,7 +110,7 @@ public class Frog {
 		}
 		energy -= 20;
 		for (Organ o : organs) {
-			o.active(this); // 调用每个器官的active方法，如果重写了的话
+			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
 		}
 		return alive;
 	}
