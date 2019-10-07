@@ -45,6 +45,8 @@ public class Eye extends Organ {// 这个眼睛有nxn个感光细胞，可以看
 	 * 接收一个二维数组，激活它视网膜所在的脑空间
 	 */
 	public void seeImage(Frog f, byte[][] pixels) {
+		if (!f.alive)
+			return;
 		int w = pixels.length;
 		int h = pixels[0].length;
 

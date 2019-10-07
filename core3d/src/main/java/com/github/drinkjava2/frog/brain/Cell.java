@@ -17,12 +17,10 @@ package com.github.drinkjava2.frog.brain;
  * @since 1.0
  */
 public class Cell {
-	public static final float MAX_ENERGY_LIMIT = 100.0f;
-
-	// this cell belong to frog's which organ
-	public Organ organ;
+	public byte cellType; // 这个细胞的类型
 
 	// energy of cell, energy got from food
 	public float energy; // 每个细胞当前的能量值
+	public float tire; // 每个细胞的疲劳值
 
 }

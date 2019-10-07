@@ -71,13 +71,13 @@ public class MouseAction implements MouseListener, MouseWheelListener, MouseMoti
 		}
 		if (buttonPressed == 2) {// 平移
 			if (e.getX() > x)
-				brainPic.xOffset++;
+				brainPic.xOffset+=6;
 			if (e.getX() < x)
-				brainPic.xOffset--;
+				brainPic.xOffset-=6;
 			if (e.getY() > y)
-				brainPic.yOffset++;
+				brainPic.yOffset+=6;
 			if (e.getY() < y)
-				brainPic.yOffset--;
+				brainPic.yOffset-=6;
 			x = e.getX();
 			y = e.getY();
 		}

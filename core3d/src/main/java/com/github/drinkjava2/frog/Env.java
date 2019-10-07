@@ -39,7 +39,7 @@ public class Env extends JPanel {
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
 	/** Frog's brain size 青蛙脑空间的大小 */
-	public static final int FROG_BRAIN_XSIZE = 25; // frog的脑在X方向长度
+	public static final int FROG_BRAIN_XSIZE = 30; // frog的脑在X方向长度
 	public static final int FROG_BRAIN_YSIZE = 20; // frog的脑在Y方向长度
 	public static final int FROG_BRAIN_ZSIZE = 20; // frog的脑在Z方向长度
 
@@ -196,7 +196,7 @@ public class Env extends JPanel {
 				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
-					f.initOrgans(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且测完后会清空
+					f.initFrog(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
 				}
 				for (step = 0; step < STEPS_PER_ROUND; step++) {
 					for (Object thing : things)// 调用食物、陷阱等物体的动作

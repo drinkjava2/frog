@@ -23,6 +23,7 @@ import com.github.drinkjava2.frog.brain.Organ;
  * @since 2.0.2
  */
 public class Cone extends Organ {
+	private static final long serialVersionUID = 1L;
 	public float startX; // 这6个变量定义了cone的中心线起点和终点
 	public float startY;
 	public float startZ;
@@ -33,7 +34,7 @@ public class Cone extends Organ {
 	public float startR = 8; // 起点的半径
 	public float endR = 8; // 终点的半径
 
-	public int startType = 0; // 端面类型， 0表示范围一直延长到边界, 1表示是个以startR为半径的球面， 2表示是与中心线垂直的圆面
-	public int endType = 0;
+	public int startType = 0; // 起点端面类型， 0表示范围一直延长到边界, 1表示是个以startR为半径的球面
+	public int endType = 0; // 终点端面类型， 0表示范围一直延长到边界, 1表示是个以startR为半径的球面
 
 }

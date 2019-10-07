@@ -61,14 +61,21 @@ public class Frog {
 			organs.add(org);
 	}
 
-	public void initOrgans() {// 调用每个器官的init方法，通常用于脑细胞的播种
+	public void initFrog() {// 仅在测试之前调用这个方法初始化frog以节约内存，测试完成后要清空cubes释放内存
+		try {
+			cubes = new Cube[Env.FROG_BRAIN_XSIZE][][]; // 为了节约内存，先只初始化三维数组的x维，另两维用到时再分配
+		} catch (OutOfMemoryError e) {
+			System.out.println("OutOfMemoryError found for frog, force it die.");
+			this.alive = false;
+			return;
+		}
 		for (Organ org : organs)
 			org.init(this);
 	}
 
-	/** Find a organ in frog by organ's name */
+	/** Find a organ in frog by organ's class name */
 	@SuppressWarnings("unchecked")
-	public <T extends Organ> T findOrganByName(String organName) {// 根据器官名寻找器官
+	public <T extends Organ> T findOrganByName(String organName) {// 根据器官类名寻找器官，不常用
 		for (Organ o : organs)
 			if (organName.equalsIgnoreCase(o.getClass().getSimpleName()))
 				return (T) o;
@@ -77,6 +84,8 @@ public class Frog {
 
 	/** Active all cubes in organ with given activeValue */
 	public void activeOrgan(Organ o, float active) {// 激活与器官重合的所有脑区
+		if (!alive)
+			return;
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
 				for (int z = o.z; z < o.z + o.ze; z++)
@@ -85,6 +94,8 @@ public class Frog {
 
 	/** Deactivate all cubes in organ with given activeValue */
 	public void deactivateOrgan(Organ o) {// 激活与器官重合的所有脑区
+		if (!alive)
+			return;
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
 				for (int z = o.z; z < o.z + o.ze; z++)
@@ -121,12 +132,23 @@ public class Frog {
 		g.drawImage(frogImg, x - 8, y - 8, 16, 16, null);
 	}
 
-	public Cube getCube(int x, int y, int z) {
-		if (cubes == null)
-			cubes = new Cube[Env.FROG_BRAIN_XSIZE][Env.FROG_BRAIN_YSIZE][Env.FROG_BRAIN_ZSIZE];
-		if (cubes[x][y][z] == null)
-			cubes[x][y][z] = new Cube();
-		return cubes[x][y][z];
+	/** Check if cube exist */
+	public boolean existCube(int x, int y, int z) {// 检查指定坐标Cube是否存在
+		return cubes[x] != null && cubes[x][y] != null && cubes[x][y][z] != null;
+	}
+
+	/** Get a cube in position (x,y,z), if not exist, create a new one */
+	public Cube getCube(int x, int y, int z) {// 获取指定坐标的Cube，如果为空，则在指定位置新建Cube
+		if (cubes[x] == null)
+			cubes[x] = new Cube[Env.FROG_BRAIN_YSIZE][];
+		if (cubes[x][y] == null)
+			cubes[x][y] = new Cube[Env.FROG_BRAIN_ZSIZE];
+		if (cubes[x][y][z] == null) {
+			Cube cube = new Cube();
+			cubes[x][y][z] = cube;
+			return cube;
+		} else
+			return cubes[x][y][z];
 	}
 
 }

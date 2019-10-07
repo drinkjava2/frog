@@ -26,23 +26,17 @@ public class Cube {
 	/** Activity of current cube */
 	private float active = 0; // 这个立方体的激活程度，允许是负值,它反映了在这个小立方体里所有光子的能量汇总值
 
-	/**
-	 * Fat of brain nerve cell <br/>
-	 * 处理的光子信号越多，这个立方体会越肥，肥度大有两个作用：它对信号的处理会有增强效应 2.它会使脑细胞播种器官产生更多的变异，如数量、分布范围增加。
-	 */
-	private float fat = 0;
-
 	private Cell[] cells = null;
 
 	private Photon[] photons = null;
 
-	public Cell[] getCells() {// 为了节约内存，仅在防问cells时创建它的实例
+	public Cell[] getCells() {// 为了节约内存，仅在访问cells时创建它的实例
 		if (cells == null)
 			cells = new Cell[] {};
 		return cells;
 	}
 
-	public Photon[] getPhotons() {// 为了节约内存，仅在防问photons时创建它的实例
+	public Photon[] getPhotons() {// 为了节约内存，仅在访问photons时创建它的实例
 		if (photons == null)
 			photons = new Photon[] {};
 		return photons;
@@ -76,14 +70,6 @@ public class Cube {
 
 	public void setActive(float active) {
 		this.active = active;
-	}
-
-	public float getFat() {
-		return fat;
-	}
-
-	public void setFat(float fat) {
-		this.fat = fat;
 	}
 
 }
