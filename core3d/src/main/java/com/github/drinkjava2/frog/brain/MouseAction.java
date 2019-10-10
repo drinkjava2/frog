@@ -43,10 +43,15 @@ public class MouseAction implements MouseListener, MouseWheelListener, MouseMoti
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {// 缩放
-		if (e.getWheelRotation() < 0)
+		if (e.getWheelRotation() < 0) {
 			brainPic.scale *= 1.1;
-		else
+			brainPic.xOffset *= 1.1;
+			brainPic.yOffset *= 1.1;
+		} else {
 			brainPic.scale /= 1.1;
+			brainPic.xOffset /= 1.1;
+			brainPic.yOffset /= 1.1;
+		}
 	}
 
 	@Override
@@ -71,13 +76,13 @@ public class MouseAction implements MouseListener, MouseWheelListener, MouseMoti
 		}
 		if (buttonPressed == 2) {// 平移
 			if (e.getX() > x)
-				brainPic.xOffset+=6;
+				brainPic.xOffset += 6;
 			if (e.getX() < x)
-				brainPic.xOffset-=6;
+				brainPic.xOffset -= 6;
 			if (e.getY() > y)
-				brainPic.yOffset+=6;
+				brainPic.yOffset += 6;
 			if (e.getY() < y)
-				brainPic.yOffset-=6;
+				brainPic.yOffset -= 6;
 			x = e.getX();
 			y = e.getY();
 		}

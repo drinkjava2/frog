@@ -32,7 +32,6 @@ public class BrainPicture extends JPanel {
 	Color color = Color.red;
 	int brainDispWidth; // screen display piexls width
 	float scale; // brain scale
-	int pointDia; // point size
 	int xOffset = 0; // brain display x offset compare to screen
 	int yOffset = 0; // brain display y offset compare to screen
 	float xAngle = (float) (Math.PI / 2.5); // brain rotate on x axis
@@ -44,7 +43,6 @@ public class BrainPicture extends JPanel {
 		this.setLayout(null);// 空布局
 		this.brainDispWidth = brainDispWidth;
 		scale = 0.7f * brainDispWidth / brainWidth;
-		pointDia = Math.max(Math.round(scale), 1);
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 		MouseAction act = new MouseAction(this);
 		this.addMouseListener(act);
@@ -141,7 +139,7 @@ public class BrainPicture extends JPanel {
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
 	public void drawCubeCenter(float x, float y, float z) {
-		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, pointDia);
+		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
@@ -183,7 +181,7 @@ public class BrainPicture extends JPanel {
 		return rainbow[nextColor++];
 	}
 
-	public static Color rainboColor(float i) {
+	public static Color rainbowColor(float i) {
 		if (i == 0)
 			return Color.black;
 		if (i == 1)
@@ -224,8 +222,8 @@ public class BrainPicture extends JPanel {
 				for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
 					if (f.cubes[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
-							if (f.existCube(x, y, z)) {
-								setColor(rainboColor(f.getCube(x, y, z).getActive()));
+							if (f.existCube(x, y, z) && f.getCube(x, y, z).getActive()>0) {
+								setColor(rainbowColor(f.getCube(x, y, z).getActive()));
 								drawCubeCenter(x, y, z);
 							}
 						}

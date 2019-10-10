@@ -53,21 +53,22 @@ public class StringPixelUtils {
 		for (int y = 0; y < strHeight; y++)
 			for (int x = 0; x < strWidth; x++)
 				if (bi.getRGB(x, y) == -1)
-					b[x][strHeight-y-1] = 1;
+					b[x][strHeight - y - 1] = 1;
 				else
-					b[x][strHeight-y-1] = 0;
+					b[x][strHeight - y - 1] = 0;
 		lettersMap.put(key, b);
 		return b;
 	}
 
+	/*- 这个是测试输出，平时不需要用 
 	public static void main(String[] args) {
 		byte[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "Test点阵输出");
 		int w = c.length;
 		int h = c[0].length;
-
+	
 		for (int y = 0; y < h; y++) {
 			for (int x = 0; x < w; x++) {
-				if (c[x][h-y-1]>0)
+				if (c[x][h - y - 1] > 0)
 					System.out.print("*");
 				else
 					System.out.print(" ");
@@ -75,4 +76,5 @@ public class StringPixelUtils {
 			System.out.println();
 		}
 	}
+	*/
 }

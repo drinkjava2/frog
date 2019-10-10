@@ -10,21 +10,20 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import java.io.Serializable;
+
 /**
- * Cell is the basic unit of frog's brain
+ * Synapse can be input, output, side synapse
  * 
- * Cell这个类只保存很少的信息，而不是直接定义成对象，这样可方便它的参数变异。它的触突分布参数、对信号(即光子)的处理行为由CellTemplate
- * 中的type来完成。 Cell的排布由器官来完成，一个器官通常会撒布一群相同类型的细胞。
+ * 触突
  * 
  * @author Yong Zhu
  * @since 2.0.2
  */
-public class Cell {
-	public int type; // 这个细胞的类型，见CellTemplate类中的type
-
-	// energy of cell, energy got from food
-	public float energy; // 每个细胞当前的能量值
-
-	public float tire; // 每个细胞的疲劳值，只取决于最近的激活频率
-
+public class Synapse implements Serializable {
+	private static final long serialVersionUID = 1L;
+	public int x; // 这个触突相对于细胞的x偏移坐标
+	public int y;// 这个触突相对于细胞的y偏移坐标
+	public int z;// 这个触突相对于细胞的z偏移坐标
+	public int r; // 这个触突的作用范围
 }
