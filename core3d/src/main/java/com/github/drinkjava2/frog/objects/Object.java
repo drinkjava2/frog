@@ -18,9 +18,9 @@ package com.github.drinkjava2.frog.objects;
  */
 public interface Object {
 
-	public void build();
+	public void build(); // 在Env中创建本身物体，指改变Env.bricks数组元素为本身物体的组成材料。只在每屏测试前调用一次
 
-	public void destory();
+	public void destory();// 从Env中清除本身物体，只在每屏测试完成后调用一次
 
-	public void active(int screen);
+	public void active(int screen); // 每个步长都会调用一次这个方法
 }

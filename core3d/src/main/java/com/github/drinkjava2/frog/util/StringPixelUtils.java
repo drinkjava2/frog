@@ -41,7 +41,7 @@ public class StringPixelUtils {
 			return lettersMap.get(key);
 		Font font = new Font(fontName, fontStyle, fontSize);
 
-		BufferedImage bi = new BufferedImage(fontSize * 8, fontSize * 50, BufferedImage.TYPE_INT_RGB);
+		BufferedImage bi = new BufferedImage(fontSize * 10, fontSize * 50, BufferedImage.TYPE_INT_RGB);
 		Graphics g = bi.getGraphics();
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setFont(font);

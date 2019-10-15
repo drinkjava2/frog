@@ -15,6 +15,7 @@ import com.github.drinkjava2.frog.objects.LetterTester;
 import com.github.drinkjava2.frog.objects.Material;
 import com.github.drinkjava2.frog.objects.Object;
 import com.github.drinkjava2.frog.util.RandomUtils;
+import com.github.drinkjava2.frog.util.StringPixelUtils;
 
 /**
  * Env is the living space of frog. draw it on JPanel
@@ -38,7 +39,7 @@ public class Env extends JPanel {
 
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
-	/** Frog's brain size 青蛙脑空间的大小 */
+	/** Frog's brain size is a 3D array of Cube */ // 脑空间是个三维Cube数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
 	public static final int FROG_BRAIN_XSIZE = 30; // frog的脑在X方向长度
 	public static final int FROG_BRAIN_YSIZE = 20; // frog的脑在Y方向长度
 	public static final int FROG_BRAIN_ZSIZE = 20; // frog的脑在Z方向长度
@@ -67,15 +68,15 @@ public class Env extends JPanel {
 	// 以下是程序内部变量，不要手工修改它们
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
 
-	public static byte[][] bricks = new byte[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，0=无, 1=食, 其它=其它...
+	public static byte[][] bricks = new byte[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，见Material.java
 
 	public static List<Frog> frogs = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
-	public static List<Egg> eggs = new ArrayList<>(); // 这里存放从磁盘载入或上轮下的蛋，每个蛋可能生成1~n个青蛙，
+	public static List<Egg> eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
 	public static Object[] things = new Object[] { new LetterTester() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
-	static {
+	static { 
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
 		if (DELETE_EGGS)
 			EggTool.deleteEggs();

@@ -10,25 +10,16 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Organ;
 
 /**
  * Eye can only see env material
  * 
  * @author Yong Zhu
  */
-public class Eye extends Organ {// 这个眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
+public class Eye extends FixedOrgan {// 这个眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
 	private static final long serialVersionUID = 1L;
 	public int n = 18; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
-
-	@Override
-	public void init(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Organ类的初始化
-		if (!initilized) {
-			initilized = true;
-		}
-	}
 
 	public Eye() {
 		x = 0;
@@ -44,7 +35,7 @@ public class Eye extends Organ {// 这个眼睛有nxn个感光细胞，可以看
 	 * 
 	 * 接收一个二维数组，激活它视网膜所在的脑空间
 	 */
-	public void seeImage(Frog f, byte[][] pixels) {
+	public void seeImage(Frog f, byte[][] pixels) {// 外界可以直接调用这个方法，硬塞一个象素图到视网膜上
 		if (!f.alive)
 			return;
 		int w = pixels.length;
@@ -58,14 +49,8 @@ public class Eye extends Organ {// 这个眼睛有nxn个感光细胞，可以看
 	}
 
 	@Override
-	public void active(Frog f) {// 如果看到食物就在视网膜所在位置的cube上产生一些光子
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (Env.foundAnyThing(f.x - n / 2 + i, f.y - n / 2 + j)) {
-
-				}
-			}
-		}
+	public void active(Frog f) {// 这个是正常眼睛激活应该重写的方法，应该根据frog附件环境，激活脑内对应的cubes区
+		// 暂空，因为在做字母测试，已经由外界直接塞字母的象素图到视网膜上了
 	}
 
 }

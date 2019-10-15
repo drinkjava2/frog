@@ -19,15 +19,18 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.github.drinkjava2.frog.brain.Cube;
-import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.Cuboid;
+import com.github.drinkjava2.frog.brain.organ.FixedOrgan;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
 
 /**
  * Frog = organs + cubes <br/>
- * cubes = brain cells + photon
+ * cubes = brain cells + photon <br/>
+ * organs = cell parameters + cell actions
  * 
  * 青蛙由器官组成，器官中的Group类会播种出各种脑细胞填充在一个cubes三维数组代表的空间中，每个cube里可以存在多个脑细胞和光子，光子是信息的载体，永远不停留。
+ * 
  * 
  * @author Yong Zhu
  * @since 1.0
@@ -37,7 +40,7 @@ public class Frog {
 	public Cube[][][] cubes;
 
 	/** organs */
-	public List<Organ> organs = new ArrayList<>();
+	public List<FixedOrgan> organs = new ArrayList<>();
 
 	public int x; // frog在Env中的x坐标
 	public int y; // frog在Env中的y坐标
@@ -57,7 +60,7 @@ public class Frog {
 	public Frog(int x, int y, Egg egg) {
 		this.x = x; // x, y 是虑拟环境的坐标
 		this.y = y;
-		for (Organ org : egg.organs)
+		for (FixedOrgan org : egg.organs)
 			organs.add(org);
 	}
 
@@ -69,41 +72,31 @@ public class Frog {
 			this.alive = false;
 			return;
 		}
-		for (Organ org : organs)
+		for (FixedOrgan org : organs)
 			org.init(this);
 	}
 
 	/** Find a organ in frog by organ's class name */
 	@SuppressWarnings("unchecked")
-	public <T extends Organ> T findOrganByName(String organName) {// 根据器官类名寻找器官，不常用
-		for (Organ o : organs)
+	public <T extends FixedOrgan> T findOrganByName(String organName) {// 根据器官类名寻找器官，不常用
+		for (FixedOrgan o : organs)
 			if (organName.equalsIgnoreCase(o.getClass().getSimpleName()))
 				return (T) o;
 		return null;
 	}
 
 	/** Active all cubes in organ with given activeValue */
-	public void activeOrgan(Organ o, float active) {// 激活与器官重合的所有脑区
+	public void setCuboidVales(Cuboid o, float active) {// 激活长方体区域内的所有脑区
 		if (!alive)
 			return;
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
 				for (int z = o.z; z < o.z + o.ze; z++)
 					getCube(x, y, z).setActive(active);
-	}
-
-	/** Deactivate all cubes in organ with given activeValue */
-	public void deactivateOrgan(Organ o) {// 激活与器官重合的所有脑区
-		if (!alive)
-			return;
-		for (int x = o.x; x < o.x + o.xe; x++)
-			for (int y = o.y; y < o.y + o.ye; y++)
-				for (int z = o.z; z < o.z + o.ze; z++)
-					getCube(x, y, z).setActive(0);
-	}
+	} 
 
 	/** Calculate organ activity by add all organ cubes' active value together */
-	public float getOrganActivity(Organ o) {// 遍历所有器官所在cube，将它们的激活值汇总返回
+	public float getCuboidTotalValues(Cuboid o) {// 遍历长方体区域所在cube，将它们的激活值汇总返回
 		float activity = 0;
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
@@ -120,7 +113,7 @@ public class Frog {
 			return false;
 		}
 		energy -= 20;
-		for (Organ o : organs) {
+		for (FixedOrgan o : organs) {
 			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
 		}
 		return alive;

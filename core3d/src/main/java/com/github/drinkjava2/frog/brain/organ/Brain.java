@@ -11,7 +11,6 @@
 package com.github.drinkjava2.frog.brain.organ;
 
 import com.github.drinkjava2.frog.Env;
-import com.github.drinkjava2.frog.brain.Organ;
 
 /**
  * Brain one used to define the brain position and size
@@ -27,9 +26,11 @@ import com.github.drinkjava2.frog.brain.Organ;
  * 同时到达一个神经元时，神经元被多个信号同时增强，形成驻点。有些神经元的策略是如果驻点太肥就被穿透，存放不了这么多能量，光子传向下一个cell寻求处理。
  * 所有驻点随时间减肥，以倒指数形式直到归0,这是信息的遗忘。 信息不是由一两个神经元存贮，而是由无数的驻点来存贮。 光子可以是负能量值。
  * 
+ * 脑细胞不是放在Brain这个对象里，而是直接放在frog里，这是简化，例如frog.cubes写起来比frog.brain.cubes要短
+ * 
  * @author Yong Zhu
  */
-public class Brain extends Organ {
+public class Brain extends FixedOrgan {
 	private static final long serialVersionUID = 1L;
 
 	public Brain() {

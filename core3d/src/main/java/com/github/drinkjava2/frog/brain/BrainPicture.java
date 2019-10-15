@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.organ.FixedOrgan;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
@@ -210,7 +211,7 @@ public class BrainPicture extends JPanel {
 		g.setColor(Color.black); // 画边框
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-		for (Organ organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
+		for (FixedOrgan organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
 			organ.drawOnBrainPicture(f, this); // each organ draw itself
 		this.setColor(Color.RED);
 		drawLine(0, 0, 0, 1, 0, 0);
