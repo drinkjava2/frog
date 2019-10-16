@@ -19,6 +19,7 @@ import com.github.drinkjava2.frog.brain.organ.Brain;
 import com.github.drinkjava2.frog.brain.organ.Ear;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.brain.organ.FixedOrgan;
+import com.github.drinkjava2.frog.brain.organ.Organ;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -36,7 +37,7 @@ public class Egg implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public List<FixedOrgan> organs = new ArrayList<>();
+	public List<Organ> organs = new ArrayList<>();
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
 		organs.add(new Brain()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
@@ -46,8 +47,8 @@ public class Egg implements Serializable {
 
 	/** Create egg from frog */
 	public Egg(Frog frog) { // 青蛙下蛋，每个青蛙的器官会创建自已的副本或变异，可以是0或多个
-		for (FixedOrgan organ : frog.organs)
-			for (FixedOrgan newOrgan : organ.vary())
+		for (Organ organ : frog.organs)
+			for (Organ newOrgan : organ.vary())
 				organs.add(newOrgan);
 	}
 
@@ -59,13 +60,13 @@ public class Egg implements Serializable {
 	 */
 	public Egg(Egg x, Egg y) {
 		// x里原来的organ
-		for (FixedOrgan organ : x.organs)
+		for (Organ organ : x.organs)
 			organs.add(organ);
 
 		// 从y里借一个organ
 		int yOrganSize = y.organs.size();
 		if (yOrganSize > 0) {
-			FixedOrgan o = y.organs.get(RandomUtils.nextInt(yOrganSize));
+			Organ o = y.organs.get(RandomUtils.nextInt(yOrganSize));
 			if (o.allowBorrow())
 				organs.add(o);
 		}

@@ -28,7 +28,7 @@ public class Photon {
 	public Photon() { // 缺省构造器
 	}
 
-	public Photon(float x, float y, float z, float energy) { // 缺省构造器
+	public Photon(float x, float y, float z, float energy) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

@@ -24,7 +24,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 2.0.1
  */
-public class SeeSaw implements Object {
+public class SeeSaw implements EnvObject {
 	private static final int LEGNTH = 300;
 	private static final int CENTER_X = Env.ENV_WIDTH / 2;
 	private static final int CENTER_Y = Env.ENV_HEIGHT / 2;

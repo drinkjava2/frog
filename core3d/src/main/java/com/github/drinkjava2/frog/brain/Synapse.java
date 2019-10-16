@@ -22,8 +22,8 @@ import java.io.Serializable;
  */
 public class Synapse implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public int x; // 这个触突相对于细胞的x偏移坐标
-	public int y;// 这个触突相对于细胞的y偏移坐标
-	public int z;// 这个触突相对于细胞的z偏移坐标
-	public int r; // 这个触突的作用范围
+	public float x; // 这个触突相对于细胞的x偏移坐标
+	public float y;// 这个触突相对于细胞的y偏移坐标
+	public float z;// 这个触突相对于细胞的z偏移坐标
+	public float r; // 这个触突的作用范围
 }

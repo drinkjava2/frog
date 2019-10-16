@@ -13,7 +13,7 @@ import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
 import com.github.drinkjava2.frog.objects.LetterTester;
 import com.github.drinkjava2.frog.objects.Material;
-import com.github.drinkjava2.frog.objects.Object;
+import com.github.drinkjava2.frog.objects.EnvObject;
 import com.github.drinkjava2.frog.util.RandomUtils;
 import com.github.drinkjava2.frog.util.StringPixelUtils;
 
@@ -74,7 +74,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-	public static Object[] things = new Object[] { new LetterTester() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+	public static EnvObject[] things = new EnvObject[] { new LetterTester() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
 	static { 
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -191,7 +191,7 @@ public class Env extends JPanel {
 					do {
 						sleep(300);
 					} while (pause);
-				for (Object thing : things) // 创建食物、陷阱等物体
+				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
 				boolean allDead = false;
 				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN);
@@ -200,7 +200,7 @@ public class Env extends JPanel {
 					f.initFrog(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
 				}
 				for (step = 0; step < STEPS_PER_ROUND; step++) {
-					for (Object thing : things)// 调用食物、陷阱等物体的动作
+					for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
 						thing.active(screen);
 					if (allDead)
 						break; // 青蛙全死光了就直接跳到下一轮,以节省时间
@@ -247,7 +247,7 @@ public class Env extends JPanel {
 				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")
 						.append(screen).append(", ").append(foodFoundCountText()).append(", 用时: ")
 						.append(System.currentTimeMillis() - time0).append("ms").toString());
-				for (Object thing : things)// 去除食物、陷阱等物体
+				for (EnvObject thing : things)// 去除食物、陷阱等物体
 					thing.destory();
 			}
 			round++;

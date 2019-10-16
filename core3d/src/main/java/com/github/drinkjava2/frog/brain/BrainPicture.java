@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.organ.FixedOrgan;
+import com.github.drinkjava2.frog.brain.organ.Organ;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
@@ -138,7 +138,7 @@ public class BrainPicture extends JPanel {
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
-	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
+	/** 画出Cube的中心点 */
 	public void drawCubeCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
 	}
@@ -200,7 +200,7 @@ public class BrainPicture extends JPanel {
 		return Color.MAGENTA;
 	}
 
-	public void drawBrainPicture(Frog f) {
+	public void drawBrainPicture(Frog f) {//在这个方法里进行青蛙三维脑结构的绘制
 		if (!f.alive)
 			return;
 		if (!Env.SHOW_FIRST_FROG_BRAIN)
@@ -211,7 +211,7 @@ public class BrainPicture extends JPanel {
 		g.setColor(Color.black); // 画边框
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-		for (FixedOrgan organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
+		for (Organ organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
 			organ.drawOnBrainPicture(f, this); // each organ draw itself
 		this.setColor(Color.RED);
 		drawLine(0, 0, 0, 1, 0, 0);

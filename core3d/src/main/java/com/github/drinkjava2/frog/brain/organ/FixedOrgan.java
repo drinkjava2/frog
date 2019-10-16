@@ -18,7 +18,7 @@ import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cuboid;
 
 /**
- * FixedOrgan is fixed organ usually located on brain surface
+ * FixedOrgan is usually located on brain surface do information input or output
  * 
  * 固定器官通常位于脑的表面，用来进行输入、输出动作，眼睛、移动等都属于固定器官，在项目前期，固定器官通常由手工来指定它的位置和尺寸
  * 固定只是相对的，固定器官在项目后期也会参与变异和淘汰，另外，固定器官与它是否在脑的表面没关系，也允许出现在脑内，例如耳朵也可以放在脑内感受声音

@@ -27,7 +27,7 @@ import com.github.drinkjava2.frog.util.StringPixelUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class LetterTester implements Object {
+public class LetterTester implements EnvObject {
 	private static final String STR = "ABCD";
 	byte[][] pixels;
 	String letter;
@@ -46,19 +46,19 @@ public class LetterTester implements Object {
 			letter = String.valueOf(STR.charAt(RandomUtils.nextInt(4)));
 			pixels = StringPixelUtils.getSanserif12Pixels(letter);
 		}
-		Frog f = Env.frogs.get(screen * Env.FROG_PER_SCREEN);
-		Eye eye = f.findOrganByName("eye");
-		eye.seeImage(f, pixels);
+		Frog firstFrog = Env.frogs.get(screen * Env.FROG_PER_SCREEN);
+		Eye eye = firstFrog.findOrganByName("eye");
+		eye.seeImage(firstFrog, pixels);
 
-		Ear ear = f.findOrganByName("ear");
+		Ear ear = firstFrog.findOrganByName("ear");
 
 		if (Env.step < Env.STEPS_PER_ROUND / 2) {// 前半段同时还要激活与这个字母对应脑区(听觉输入区)
-			ear.hearSound(f, letter);
+			ear.hearSound(firstFrog, letter);
 		} else if (Env.step == Env.STEPS_PER_ROUND / 2) {// 在中段取消字母对应脑区的激活
-			ear.hearNothing(f);
+			ear.hearNothing(firstFrog);
 		} else if (Env.step > Env.STEPS_PER_ROUND / 2) {// 后半段要检测这个字母区是否能收到光子信号
-			if (f.getCuboidTotalValues(ear.getCuboidByStr(letter)) > 0)
-				f.energy += 100;
+			if (firstFrog.getCuboidTotalValues(ear.getCuboidByStr(letter)) > 0)
+				firstFrog.energy += 100;
 			//TODO： 然后还要检测其它的区必须没有这个字母的区活跃
 		}
 	}

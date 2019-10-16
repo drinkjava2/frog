@@ -23,7 +23,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Food implements Object {
+public class Food implements EnvObject {
 
 	@Override
 	public void build() {

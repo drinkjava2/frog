@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import com.github.drinkjava2.frog.brain.Cube;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.organ.FixedOrgan;
+import com.github.drinkjava2.frog.brain.organ.Organ;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
 
@@ -40,7 +41,7 @@ public class Frog {
 	public Cube[][][] cubes;
 
 	/** organs */
-	public List<FixedOrgan> organs = new ArrayList<>();
+	public List<Organ> organs = new ArrayList<>();
 
 	public int x; // frog在Env中的x坐标
 	public int y; // frog在Env中的y坐标
@@ -60,7 +61,7 @@ public class Frog {
 	public Frog(int x, int y, Egg egg) {
 		this.x = x; // x, y 是虑拟环境的坐标
 		this.y = y;
-		for (FixedOrgan org : egg.organs)
+		for (Organ org : egg.organs)
 			organs.add(org);
 	}
 
@@ -72,14 +73,14 @@ public class Frog {
 			this.alive = false;
 			return;
 		}
-		for (FixedOrgan org : organs)
+		for (Organ org : organs)
 			org.init(this);
 	}
 
 	/** Find a organ in frog by organ's class name */
 	@SuppressWarnings("unchecked")
 	public <T extends FixedOrgan> T findOrganByName(String organName) {// 根据器官类名寻找器官，不常用
-		for (FixedOrgan o : organs)
+		for (Organ o : organs)
 			if (organName.equalsIgnoreCase(o.getClass().getSimpleName()))
 				return (T) o;
 		return null;
@@ -113,7 +114,7 @@ public class Frog {
 			return false;
 		}
 		energy -= 20;
-		for (FixedOrgan o : organs) {
+		for (Organ o : organs) {
 			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
 		}
 		return alive;

@@ -11,12 +11,12 @@
 package com.github.drinkjava2.frog.objects;
 
 /**
- * Object means some thing in Env
+ * EnvObject means some virtual object in Env
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public interface Object {
+public interface EnvObject {
 
 	public void build(); // 在Env中创建本身物体，指改变Env.bricks数组元素为本身物体的组成材料。只在每屏测试前调用一次
 
