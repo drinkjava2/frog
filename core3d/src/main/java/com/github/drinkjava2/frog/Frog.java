@@ -20,7 +20,6 @@ import javax.imageio.ImageIO;
 
 import com.github.drinkjava2.frog.brain.Cube;
 import com.github.drinkjava2.frog.brain.Cuboid;
-import com.github.drinkjava2.frog.brain.organ.FixedOrgan;
 import com.github.drinkjava2.frog.brain.organ.Organ;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
@@ -79,7 +78,7 @@ public class Frog {
 
 	/** Find a organ in frog by organ's class name */
 	@SuppressWarnings("unchecked")
-	public <T extends FixedOrgan> T findOrganByName(String organName) {// 根据器官类名寻找器官，不常用
+	public <T extends Organ> T findOrganByName(String organName) {// 根据器官类名寻找器官，不常用
 		for (Organ o : organs)
 			if (organName.equalsIgnoreCase(o.getClass().getSimpleName()))
 				return (T) o;

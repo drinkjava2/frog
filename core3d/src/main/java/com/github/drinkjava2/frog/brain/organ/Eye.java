@@ -11,23 +11,19 @@
 package com.github.drinkjava2.frog.brain.organ;
 
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.Cuboid;
 
 /**
  * Eye can only see env material
  * 
  * @author Yong Zhu
  */
-public class Eye extends FixedOrgan {// 这个眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
+public class Eye extends Organ {// 眼睛是长方体，所以它的cuboid不为空
 	private static final long serialVersionUID = 1L;
 	public int n = 18; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
 
 	public Eye() {
-		x = 0;
-		y = 5;
-		z = 5;
-		xe = 1;
-		ye = 10;
-		ze = 10;
+		this.cuboid = new Cuboid(0, 5, 5, 1, 10, 10);
 	}
 
 	/**
@@ -45,12 +41,7 @@ public class Eye extends FixedOrgan {// 这个眼睛有nxn个感光细胞，可�
 		for (int px = 0; px < w; px++)
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
-					f.getCube(0, this.y + this.ye - px, this.z + py).setActive(20);
-	}
-
-	@Override
-	public void active(Frog f) {// 这个是正常眼睛激活应该重写的方法，应该根据frog附件环境，激活脑内对应的cubes区
-		// 暂空，因为在做字母测试，已经由外界直接塞字母的象素图到视网膜上了
+					f.getCube(0, this.cuboid.y + this.cuboid.ye - px, this.cuboid.z + py).setActive(20);
 	}
 
 }

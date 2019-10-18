@@ -200,7 +200,9 @@ public class BrainPicture extends JPanel {
 		return Color.MAGENTA;
 	}
 
-	public void drawBrainPicture(Frog f) {//在这个方法里进行青蛙三维脑结构的绘制
+	private static Cuboid brain = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
+
+	public void drawBrainPicture(Frog f) {// 在这个方法里进行青蛙三维脑结构的绘制
 		if (!f.alive)
 			return;
 		if (!Env.SHOW_FIRST_FROG_BRAIN)
@@ -210,6 +212,8 @@ public class BrainPicture extends JPanel {
 		g.fillRect(0, 0, brainDispWidth, brainDispWidth);
 		g.setColor(Color.black); // 画边框
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
+
+		drawCuboid(brain);// 先把脑的框架画出来
 
 		for (Organ organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
 			organ.drawOnBrainPicture(f, this); // each organ draw itself
@@ -223,7 +227,7 @@ public class BrainPicture extends JPanel {
 				for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
 					if (f.cubes[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
-							if (f.existCube(x, y, z) && f.getCube(x, y, z).getActive()>0) {
+							if (f.existCube(x, y, z) && f.getCube(x, y, z).getActive() > 0) {
 								setColor(rainbowColor(f.getCube(x, y, z).getActive()));
 								drawCubeCenter(x, y, z);
 							}

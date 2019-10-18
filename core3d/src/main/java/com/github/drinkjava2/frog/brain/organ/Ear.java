@@ -20,27 +20,21 @@ import com.github.drinkjava2.frog.brain.Cuboid;
  * 
  * @author Yong Zhu
  */
-public class Ear extends FixedOrgan {// 这个眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
+public class Ear extends Organ {// 耳朵也是长方体，所以它的cuboid不为空
 	private static final long serialVersionUID = 1L;
 	public int n = 18; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
-	public Cuboid a = new Cuboid(x = 10, y = 10, z = Env.FROG_BRAIN_ZSIZE - 1, xe = 3, ye = 3, ze = 1);
-	public Cuboid b = new Cuboid(x = 10, y = 15, z = Env.FROG_BRAIN_ZSIZE - 1, xe = 3, ye = 3, ze = 1);
-	public Cuboid c = new Cuboid(x = 15, y = 10, z = Env.FROG_BRAIN_ZSIZE - 1, xe = 3, ye = 3, ze = 1);
-	public Cuboid d = new Cuboid(x = 15, y = 15, z = Env.FROG_BRAIN_ZSIZE - 1, xe = 3, ye = 3, ze = 1);
+	public Cuboid a = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
+	public Cuboid b = new Cuboid(10, 15, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
+	public Cuboid c = new Cuboid(15, 10, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
+	public Cuboid d = new Cuboid(15, 15, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
 
 	public Ear() {
-		x = 10; // x,y,z是器官长方体左下角坐标
-		y = 10;
-		z = Env.FROG_BRAIN_ZSIZE - 1;
-		xe = 8; // xe和ye是边长
-		ye = 8;
-		ze = 1;
+		this.cuboid = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 8, 8, 1);
 	}
 
-	@Override
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
 		super.drawOnBrainPicture(f, pic);
-		pic.drawCuboid(a);// 调用drawCuboid方法显示在脑图上
+		pic.drawCuboid(a);// 显示abcd位置在脑图上
 		pic.drawCuboid(b);
 		pic.drawCuboid(c);
 		pic.drawCuboid(d);
@@ -69,11 +63,6 @@ public class Ear extends FixedOrgan {// 这个眼睛有nxn个感光细胞，可�
 		if ("D".equalsIgnoreCase(s))
 			return d;
 		return null;
-	}
-
-	@Override
-	public void active(Frog f) {
-
 	}
 
 }

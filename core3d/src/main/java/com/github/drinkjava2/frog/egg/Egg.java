@@ -15,10 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.organ.Brain;
 import com.github.drinkjava2.frog.brain.organ.Ear;
 import com.github.drinkjava2.frog.brain.organ.Eye;
-import com.github.drinkjava2.frog.brain.organ.FixedOrgan;
 import com.github.drinkjava2.frog.brain.organ.Organ;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -40,7 +38,6 @@ public class Egg implements Serializable {
 	public List<Organ> organs = new ArrayList<>();
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-		organs.add(new Brain()); // BrainCube是固有的，用来画一个脑的立方，什么都不做
 		organs.add(new Eye()); // 眼是手工创建的，必有
 		organs.add(new Ear()); // 耳是手工创建的，这个是用来测试ABCD字母识别的
 	}
@@ -67,7 +64,7 @@ public class Egg implements Serializable {
 		int yOrganSize = y.organs.size();
 		if (yOrganSize > 0) {
 			Organ o = y.organs.get(RandomUtils.nextInt(yOrganSize));
-			if (o.allowBorrow())
+			if (o.allowBorrow)
 				organs.add(o);
 		}
 	}
