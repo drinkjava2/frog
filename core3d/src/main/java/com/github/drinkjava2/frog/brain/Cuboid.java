@@ -15,6 +15,8 @@ import java.io.Serializable;
 /**
  * Cuboid represents a rectangular prism zone in brain
  * 
+ * Cuboid是一个长方体，通常用来表示脑内器官的形状。另一个功能类似的形装是Cone锥形体。
+ * 
  * @author Yong Zhu
  * @since 1.0
  */

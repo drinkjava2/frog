@@ -16,6 +16,7 @@ import java.io.Serializable;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
+import com.github.drinkjava2.frog.brain.Cone;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Synapse;
 
@@ -25,7 +26,7 @@ import com.github.drinkjava2.frog.brain.Synapse;
  * cell parameters are randomly created
  * 
  * 器官是脑的一部分，多个器官在脑内可以允许部分或完全重叠出现在同一脑内位置，器官都是可以变异的, 器官负责在青蛙脑生成时播种脑细胞
- * 器官是可串行化的，所有锥器官都会保存在蛋里面
+ * 器官是可串行化的，所有器官都会保存在蛋里面
  * 
  * 器官是一种外形为锥圆柱体的脑内区，它的作用是在它的形状范围内播种脑细胞， 这是第一个也是最重要的脑细胞播种器官，它的数
  * 量、形状、大小、角度、位置、神经元分布方式，以及神经元的内部参数可以随机生成和变异, 并由生存竟争来淘汰筛选。
@@ -52,34 +53,21 @@ import com.github.drinkjava2.frog.brain.Synapse;
  * @author Yong Zhu
  * @since 1.0.4
  */
-public class Organ implements Serializable {
+public class Organ implements Serializable, Cloneable {// 因为要保存在蛋文件里，所以必须支持串行化
 	private static final long serialVersionUID = 1L;
 
 	public float fat = 0;// 细胞活跃多，则fat值大，在一屏测试完成后，如果fat值很低，则这个器官被丢弃的可能性加大
-
-	// 注意从这行开始，以下所有参数都参与变异和生存竟争，随机有大概率小变异，有小概率大变异，有极小概率极大变异
-
-	// ==============以下这些参数用来定义器官的尺寸、位置、神经元分布密度等参数,在播种时要用到================
-	public Cuboid cuboid = null; // 如果器官是方形的，则这个属性非空
 	public boolean allowBorrow;// 是否允许在精子中将这个器官借出
+	public boolean allowVary;// 是否允许变异，有一些器官是手工创建的，在项目初级阶段禁止它们参与变异和生存竟争。
 
-	public float startX; // 这6个变量定义了器官的中心线起点和终点,器官不能拐弯，但拐弯可以用多个器官首尾相接演化出来
-	public float startY;
-	public float startZ;
-	public float endX; // 如果恰好终点和起点重合，相当于器官是一个球状体
-	public float endY;
-	public float endZ;
+	// 本行以下参数受变异和生存竟争影响，随机有大概率小变异，小概率大变异，极小概率极大变异
 
-	public float startRadius = 8; // 起点的半径，为了简化编程，通常是矩形，因为圆形计算麻烦
-	public float endRadius = 8; // 终点的半径
+	/** If cuboid is not null, then ignore cone setting */
+	public Cuboid cuboid; // 如果器官是长方体形状，则这个属性非空。器官的形状暂时只能是长方体或锥体
 
-	public int startType = 0; // 起点端面类型， 0表示范围一直延长到边界, 1表示是个以startR为半径的球面
-	public int endType = 0; // 终点端面类型， 0表示范围一直延长到边界, 1表示是个以endR为半径的球面
+	public Cone cone;// 如果器官是锥体，则这个属性非空
 
-	public float startDensity = 1; // 起点附近的脑细胞播种密度，单位是 细胞数/每cube，通常取值0~1之间
-	public float endDensity = 1; // 终点附近的脑细胞播种密度
-
-	// ===============以下这些参数用来定义神经元自身的参数===============
+	public float cellDensity = 1; // 细胞播种密度，目前只有均匀播种这一个方案
 
 	public int type; // 脑细胞类型, 不同类型细胞对同一个参数的解释行为可能不同，或根本不会用到某个参数, 这个字段如果变异，将完全改变器官的行为
 
@@ -99,27 +87,28 @@ public class Organ implements Serializable {
 
 	public float dropRate;// 是一个介于0~1的值，反映了细胞存的能量下降速率，在每一步长中细胞能量都以这个速率损失，可以参考遗忘曲线
 
-	// =====注意以下三个字段可以让细胞具备一些无状态的触突，详见与Cell类中动态触突的对比 =====
+	// =====注意以下三个字段可以让细胞具备一些无状态的触突，这个不占内存，但缺点是不灵活，不智能，详见与Cell类中动态触突的对比 =====
 	public Synapse[] inputs; // 输入触突，位置是相对细胞而言的
 	public Synapse[] sides; // 侧面（通常是抑制，是负光子输出)输出触突，从脉冲神经网络学习到有这种侧向抑制
 	public Synapse[] outputs; // 输出触突
 
 	/** Only call once after organ be created by new() method */
 	public Organ[] vary() { // 器官的变异，返回本身或变异后的一个或多个类似自已的器官放在一个数组里返回
-		// Organ newOrgan = null;
-		// try {
-		// newOrgan = (Organ) this.clone();
-		// } catch (Exception e) {
-		// throw new UnknownError("Can not make new Organ copy for " + this);
-		// }
-		// // TODO:这里要添加器官变异的具体代码，所有器官都共用同一个变异规则
-		// return new Organ[] { newOrgan };
-		return new Organ[] { this };
+		if (!allowVary)
+			return new Organ[] { this };// 如果不允许变异，器官就把自身返回，存放在蛋里
+		Organ newOrgan = null;
+		try {
+			newOrgan = (Organ) this.clone();// 克隆这个方法名符其实
+		} catch (Exception e) {
+			throw new UnknownError("Can not make new Organ copy for " + this);
+		}
+		// TODO:这里要添加新器官变异的具体代码，所有器官都共用同一个变异规则，变异包括数量增减、形状及位置、各种可变异参数等
+		return new Organ[] { newOrgan };
 	}
 
 	/** Only call once when frog created , Child class can override this method */
 	public void init(Frog f) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
-		// TODO:这里要添加器官播种脑细胞的具体代码，所有器官都共用同一个播种规则
+		// TODO:这里要添加器官播种脑细胞的具体代码，所有器官都共用同一个方法
 	}
 
 	/** each step will call Organ's active methodd */
