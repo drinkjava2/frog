@@ -10,8 +10,6 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import com.github.drinkjava2.frog.brain.organ.Organ;
-
 /**
  * Cell is the basic unit of frog's brain
  * 

@@ -12,18 +12,22 @@ package com.github.drinkjava2.frog.brain.organ;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cuboid;
+import com.github.drinkjava2.frog.brain.Organ;
 
 /**
  * Eye can only see env material
  * 
  * @author Yong Zhu
  */
-public class Eye extends Organ {// 眼睛是长方体，所以它的cuboid不为空
+public class Eye extends Organ {// 眼睛是长方体
 	private static final long serialVersionUID = 1L;
 	public int n = 18; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
 
 	public Eye() {
-		this.cuboid = new Cuboid(0, 5, 5, 1, 10, 10);
+		this.shape = new Cuboid(0, 5, 5, 1, 10, 10);
+		this.organName = "eye";
+		this.allowVary = false;
+		this.allowBorrow = false;
 	}
 
 	/**
@@ -36,12 +40,13 @@ public class Eye extends Organ {// 眼睛是长方体，所以它的cuboid不为
 			return;
 		int w = pixels.length;
 		int h = pixels[0].length;
+		Cuboid c = (Cuboid) shape;
 
-		// 在视网膜上产生字母像素点阵，即激活这个脑视网膜所在的cubes区，然后由器官播种出的脑细胞负责将激活能量转为光子输送、存贮到其它位置
+		// 在视网膜上产生字母像素点阵，即激活这个脑视网膜所在的rooms区，然后由器官播种出的脑细胞负责将激活能量转为光子输送、存贮到其它位置
 		for (int px = 0; px < w; px++)
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
-					f.getCube(0, this.cuboid.y + this.cuboid.ye - px, this.cuboid.z + py).setActive(20);
+					f.getRoom(0, c.y + c.ye - px, c.z + py).setActive(20);
 	}
 
 }

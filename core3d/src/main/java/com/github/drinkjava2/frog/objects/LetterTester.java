@@ -46,8 +46,8 @@ public class LetterTester implements EnvObject {
 			letter = String.valueOf(STR.charAt(RandomUtils.nextInt(4)));
 			pixels = StringPixelUtils.getSanserif12Pixels(letter);
 		}
-		Frog firstFrog = Env.frogs.get(screen * Env.FROG_PER_SCREEN);
-		Eye eye = firstFrog.findOrganByName("eye");
+		Frog firstFrog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); 
+		Eye eye = firstFrog.findOrganByName("eye"); 
 		eye.seeImage(firstFrog, pixels);
 
 		Ear ear = firstFrog.findOrganByName("ear");

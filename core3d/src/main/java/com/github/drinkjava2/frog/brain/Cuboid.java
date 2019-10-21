@@ -10,17 +10,16 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import java.io.Serializable;
-
 /**
- * Cuboid represents a rectangular prism zone in brain
+ * Cuboid represents a rectangular prism 3d zone in brain
  * 
  * Cuboid是一个长方体，通常用来表示脑内器官的形状。另一个功能类似的形装是Cone锥形体。
  * 
  * @author Yong Zhu
- * @since 1.0
+ * @since 2.0.2
  */
-public class Cuboid implements Serializable {
+@SuppressWarnings("all")
+public class Cuboid implements Shape {
 	private static final long serialVersionUID = 1L;
 
 	public int x;// x,y,z是长方体的左下角坐标
@@ -43,7 +42,7 @@ public class Cuboid implements Serializable {
 		this.ze = ze;
 	}
 
-	public Cuboid(Cuboid c) {// 用另一个Cube来构造
+	public Cuboid(Cuboid c) {// 用另一个Cuboid来构造
 		this.x = c.x;
 		this.y = c.y;
 		this.z = c.z;
@@ -52,19 +51,8 @@ public class Cuboid implements Serializable {
 		this.ze = c.ze;
 	}
 
-	public static void copyXYZ(Cuboid from, Cuboid to) {
-		to.x = from.x;
-		to.y = from.y;
-		to.z = from.z;
+	@Override
+	public void drawOnBrainPicture(BrainPicture pic) {
+		pic.drawCuboid(this);
 	}
-
-	public static void copyXYZE(Cuboid from, Cuboid to) {
-		to.x = from.x;
-		to.y = from.y;
-		to.z = from.z;
-		to.xe = from.xe;
-		to.xe = from.xe;
-		to.xe = from.xe;
-	}
-
 }

@@ -14,13 +14,17 @@ import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cuboid;
+import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Eye can only see env material
+ * Ear can accept letter information input
+ * 耳朵可以接收外界的语音信号输入，开始阶段一个字母对应一个活跃区，以后会改成用声母+韵母或Unicode内码的编码来表示语音信号
  * 
  * @author Yong Zhu
+ * @since 2.0.2
  */
-public class Ear extends Organ {// 耳朵也是长方体，所以它的cuboid不为空
+@SuppressWarnings("all")
+public class Ear extends Organ {// 耳朵也是长方体，我为什么要用也?
 	private static final long serialVersionUID = 1L;
 	public int n = 18; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
 	public Cuboid a = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
@@ -29,7 +33,10 @@ public class Ear extends Organ {// 耳朵也是长方体，所以它的cuboid不
 	public Cuboid d = new Cuboid(15, 15, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
 
 	public Ear() {
-		this.cuboid = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 8, 8, 1);
+		this.shape = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 8, 8, 1);
+		this.organName = "ear";
+		this.allowVary = false;
+		this.allowBorrow=false;
 	}
 
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法

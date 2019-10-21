@@ -1,12 +1,15 @@
 package com.github.drinkjava2.frog.brain;
 
+import static java.awt.Color.BLACK;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.CYAN;
 import static java.awt.Color.GREEN;
 import static java.awt.Color.MAGENTA;
 import static java.awt.Color.ORANGE;
 import static java.awt.Color.RED;
+import static java.awt.Color.WHITE;
 import static java.awt.Color.YELLOW;
+//import static java.awt.BLUE; 
 import static java.lang.Math.cos;
 import static java.lang.Math.round;
 import static java.lang.Math.sin;
@@ -18,7 +21,6 @@ import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.organ.Organ;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
@@ -28,9 +30,9 @@ import com.github.drinkjava2.frog.brain.organ.Organ;
  * @author Yong Zhu
  * @since 1.0
  */
-@SuppressWarnings("serial")
+@SuppressWarnings("all")
 public class BrainPicture extends JPanel {
-	Color color = Color.red;
+	Color picColor = RED;
 	int brainDispWidth; // screen display piexls width
 	float scale; // brain scale
 	int xOffset = 0; // brain display x offset compare to screen
@@ -73,6 +75,11 @@ public class BrainPicture extends JPanel {
 		drawLine(x + xe, y, z + ze, x + xe, y + ye, z + ze);
 		drawLine(x + xe, y + ye, z + ze, x, y + ye, z + ze);
 		drawLine(x, y + ye, z + ze, x, y, z + ze);
+	}
+
+	public void drawCone(Cone c) {// 在脑图上画一个锥体，视角是TopView
+		drawLine(c.x1, c.y1, c.z1, c.x2, c.y2, c.z2);// 画锥体的中心线 
+		//TODO：画出锥体的上下面
 	}
 
 	/*-
@@ -131,15 +138,15 @@ public class BrainPicture extends JPanel {
 		y2 = y;
 
 		Graphics g = this.getGraphics();
-		g.setColor(color);
+		g.setColor(picColor);
 		g.drawLine((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset,
 				(int) round(x2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
-	/** 画出Cube的中心点 */
-	public void drawCubeCenter(float x, float y, float z) {
+	/** 画出Room的中心点 */
+	public void drawRoomCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
 	}
 
@@ -168,7 +175,7 @@ public class BrainPicture extends JPanel {
 		y1 = y;
 
 		Graphics g = this.getGraphics();
-		g.setColor(color);
+		g.setColor(picColor);
 		g.fillOval((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - diameter / 2, diameter, diameter);
 	}
@@ -184,20 +191,20 @@ public class BrainPicture extends JPanel {
 
 	public static Color rainbowColor(float i) {
 		if (i == 0)
-			return Color.black;
+			return BLACK;
 		if (i == 1)
-			return Color.RED;
+			return RED;
 		if (i <= 3)
-			return Color.ORANGE;
+			return ORANGE;
 		if (i <= 10)
-			return Color.YELLOW;
+			return YELLOW;
 		if (i <= 20)
-			return Color.GREEN;
+			return GREEN;
 		if (i <= 50)
-			return Color.CYAN;
+			return CYAN;
 		if (i <= 100)
-			return Color.BLUE;
-		return Color.MAGENTA;
+			return BLUE;
+		return MAGENTA;
 	}
 
 	private static Cuboid brain = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
@@ -208,28 +215,28 @@ public class BrainPicture extends JPanel {
 		if (!Env.SHOW_FIRST_FROG_BRAIN)
 			return;
 		Graphics g = this.getGraphics();
-		g.setColor(Color.WHITE);// 先清空旧图
+		g.setColor(WHITE);// 先清空旧图
 		g.fillRect(0, 0, brainDispWidth, brainDispWidth);
-		g.setColor(Color.black); // 画边框
+		g.setColor(BLACK); // 画边框
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
-
+		setPicColor(BLACK);
 		drawCuboid(brain);// 先把脑的框架画出来
 
 		for (Organ organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
 			organ.drawOnBrainPicture(f, this); // each organ draw itself
-		this.setColor(Color.RED);
+		setPicColor(RED);
 		drawLine(0, 0, 0, 1, 0, 0);
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
 
 		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {
-			if (f.cubes[x] != null)
+			if (f.rooms[x] != null)
 				for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
-					if (f.cubes[x][y] != null)
+					if (f.rooms[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
-							if (f.existCube(x, y, z) && f.getCube(x, y, z).getActive() > 0) {
-								setColor(rainbowColor(f.getCube(x, y, z).getActive()));
-								drawCubeCenter(x, y, z);
+							if (f.existRoom(x, y, z) && f.getRoom(x, y, z).getActive() > 0) {
+								setPicColor(rainbowColor(f.getRoom(x, y, z).getActive()));
+								drawRoomCenter(x, y, z);
 							}
 						}
 				}
@@ -270,8 +277,8 @@ public class BrainPicture extends JPanel {
 		this.zAngle = zAngle;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
+	public void setPicColor(Color color) {
+		this.picColor = color;
 	}
 
 	public int getxOffset() {

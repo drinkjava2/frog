@@ -10,34 +10,33 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import java.io.Serializable;
-
 /**
- * Cone represents a cone zone in brain
+ * Cone represents a cone 3d zone in brain
  * 
- * Cone是一个锥形体，通常用来表示脑内器官的形状。另一个类似的常用形状是Cuboid长方体.
+ * Cone是一个锥形体(圆锥或棱锥)，通常用来表示脑内器官的形状。另一个常用形状是Cuboid长方体.
  * 
  * @author Yong Zhu
- * @since 1.0
+ * @since 2.0.2
  */
-public class Cone implements Serializable {
+@SuppressWarnings("all")
+public class Cone implements Shape {
 	private static final long serialVersionUID = 1L;
 
-	public float x1; // 这6个变量定义了Cone的中心线起点和终点,器官不能拐弯，但拐弯可以用多个立方锥体器官首尾相接演化出来
-	public float y1;
-	public float z1;
-	public float x2;
-	public float y2;
-	public float z2;
+	public int x1; // 这6个变量定义了Cone的中心线起点和终点,器官不能拐弯，但拐弯可以用一个锥体分成两个首尾相接的锥体再进一步变异演化出来
+	public int y1;
+	public int z1;
+	public int x2;
+	public int y2;
+	public int z2;
 
-	public float r1 = 8; // 起点的半径，为了简化编程，通常是是指起点矩形边长的一半，因为圆形计算麻烦
-	public float r2 = 8; // 终点的半径
+	public int r1 = 8; // 起点的半径，为了简化编程，通常是是指起点矩形边长的一半，因为圆形计算麻烦
+	public int r2 = 8; // 终点的半径
 
 	public Cone() {
 		// 空构造器不能省
 	}
 
-	public Cone(float x1, float y1, float z1, float x2, float y2, float z2, float r1, float r2) {// 用x,y,z,r来构造
+	public Cone(int x1, int y1, int z1, int x2, int y2, int z2, int r1, int r2) {// 用x,y,z,r来构造
 		this.x1 = x1;
 		this.y1 = y1;
 		this.z1 = z1;
@@ -46,6 +45,11 @@ public class Cone implements Serializable {
 		this.z2 = z2;
 		this.r1 = r1;
 		this.r2 = r2;
+	}
+
+	@Override
+	public void drawOnBrainPicture(BrainPicture pic) {
+		pic.drawCone(this);
 	}
 
 }

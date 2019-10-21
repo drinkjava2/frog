@@ -13,17 +13,17 @@ package com.github.drinkjava2.frog.brain;
 import java.util.Arrays;
 
 /**
- * Cube include 0~n cells and 0~n photons
+ * Room is the smallest unit of brain space, a room can have 0~n cells and 0~n
+ * photons
  * 
- * Cube是脑的空间单位，是一个正立方体，里面可以存放多个脑细胞(Cell)和光子(Photon)
- * Cube和Cuboid的区别是，Cube是脑的最小空间单元，作为脑细胞存放和光子传播的介质，简化计算，而Cuboid通常是一个长方体，用来描述器官的大小和位置,
- * 器官的大小和位置是可以变异的
+ * Room是脑的最小空间单元，里面可以存放多个脑细胞(Cell)和光子(Photon)，脑是由frog中的rooms三维数组组成，但不是每一维都初始化过
+ * 以前Room名为Cube, 现改名为Room
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Cube {
-	/** Activity of current cube */
+public class Room {
+	/** Activity of current room */
 	private float active = 0; // 这个立方体的激活程度，允许是负值,它反映了在这个小立方体里所有光子的能量汇总值
 
 	private Cell[] cells = null;

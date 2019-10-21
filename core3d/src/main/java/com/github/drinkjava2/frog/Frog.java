@@ -18,26 +18,25 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.github.drinkjava2.frog.brain.Cube;
 import com.github.drinkjava2.frog.brain.Cuboid;
-import com.github.drinkjava2.frog.brain.organ.Organ;
+import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.Room;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
 
 /**
- * Frog = organs + cubes <br/>
- * cubes = brain cells + photon <br/>
+ * Frog = organs + rooms <br/>
+ * rooms = brain cells + photons <br/>
  * organs = cell parameters + cell actions
  * 
- * 青蛙由器官组成，器官中的Group类会播种出各种脑细胞填充在一个cubes三维数组代表的空间中，每个cube里可以存在多个脑细胞和光子，光子是信息的载体，永远不停留。
- * 
+ * 青蛙脑由器官播种出的细胞组成，器官Organ会播种出各种脑细胞填充在一个rooms三维数组代表的空间中，每个room里可以存在多个脑细胞和光子，光子是信息的载体，永远不停留。
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class Frog {
-	/** brain cells */
-	public Cube[][][] cubes;
+	/** brain rooms */
+	public Room[][][] rooms;// 一开始不要初始化，只在调用getRoom方法时才初始化相关维以节约内存
 
 	/** organs */
 	public List<Organ> organs = new ArrayList<>();
@@ -64,9 +63,9 @@ public class Frog {
 			organs.add(org);
 	}
 
-	public void initFrog() {// 仅在测试之前调用这个方法初始化frog以节约内存，测试完成后要清空cubes释放内存
+	public void initFrog() {// 仅在测试之前调用这个方法初始化frog以节约内存，测试完成后要清空units释放内存
 		try {
-			cubes = new Cube[Env.FROG_BRAIN_XSIZE][][]; // 为了节约内存，先只初始化三维数组的x维，另两维用到时再分配
+			rooms = new Room[Env.FROG_BRAIN_XSIZE][][]; // 为了节约内存，先只初始化三维数组的x维，另两维用到时再分配
 		} catch (OutOfMemoryError e) {
 			System.out.println("OutOfMemoryError found for frog, force it die.");
 			this.alive = false;
@@ -76,32 +75,32 @@ public class Frog {
 			org.init(this);
 	}
 
-	/** Find a organ in frog by organ's class name */
+	/** Find a organ in frog by organ's name */
 	@SuppressWarnings("unchecked")
-	public <T extends Organ> T findOrganByName(String organName) {// 根据器官类名寻找器官，不常用
+	public <T extends Organ> T findOrganByName(String organName) {// 根据器官名寻找器官，但不是每个器官都有名字
 		for (Organ o : organs)
-			if (organName.equalsIgnoreCase(o.getClass().getSimpleName()))
+			if (o.organName != null && organName.equalsIgnoreCase(o.organName))
 				return (T) o;
 		return null;
 	}
 
-	/** Active all cubes in organ with given activeValue */
+	/** Set with given activeValue */
 	public void setCuboidVales(Cuboid o, float active) {// 激活长方体区域内的所有脑区
 		if (!alive)
 			return;
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
 				for (int z = o.z; z < o.z + o.ze; z++)
-					getCube(x, y, z).setActive(active);
-	} 
+					getRoom(x, y, z).setActive(active);
+	}
 
-	/** Calculate organ activity by add all organ cubes' active value together */
-	public float getCuboidTotalValues(Cuboid o) {// 遍历长方体区域所在cube，将它们的激活值汇总返回
+	/** Calculate organ activity by add all organ rooms' active value together */
+	public float getCuboidTotalValues(Cuboid o) {// 遍历长方体区域所在room，将它们的激活值汇总返回
 		float activity = 0;
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
 				for (int z = o.z; z < o.z + o.ze; z++)
-					activity += this.getCube(x, y, z).getActive();
+					activity += this.getRoom(x, y, z).getActive();
 		return activity;
 	}
 
@@ -125,23 +124,23 @@ public class Frog {
 		g.drawImage(frogImg, x - 8, y - 8, 16, 16, null);
 	}
 
-	/** Check if cube exist */
-	public boolean existCube(int x, int y, int z) {// 检查指定坐标Cube是否存在
-		return cubes[x] != null && cubes[x][y] != null && cubes[x][y][z] != null;
+	/** Check if room exist */
+	public boolean existRoom(int x, int y, int z) {// 检查指定坐标room是否存在
+		return rooms[x] != null && rooms[x][y] != null && rooms[x][y][z] != null;
 	}
 
-	/** Get a cube in position (x,y,z), if not exist, create a new one */
-	public Cube getCube(int x, int y, int z) {// 获取指定坐标的Cube，如果为空，则在指定位置新建Cube
-		if (cubes[x] == null)
-			cubes[x] = new Cube[Env.FROG_BRAIN_YSIZE][];
-		if (cubes[x][y] == null)
-			cubes[x][y] = new Cube[Env.FROG_BRAIN_ZSIZE];
-		if (cubes[x][y][z] == null) {
-			Cube cube = new Cube();
-			cubes[x][y][z] = cube;
-			return cube;
+	/** Get a room in position (x,y,z), if not exist, create a new one */
+	public Room getRoom(int x, int y, int z) {// 获取指定坐标的Room，如果为空，则在指定位置新建Room
+		if (rooms[x] == null)
+			rooms[x] = new Room[Env.FROG_BRAIN_YSIZE][];
+		if (rooms[x][y] == null)
+			rooms[x][y] = new Room[Env.FROG_BRAIN_ZSIZE];
+		if (rooms[x][y][z] == null) {
+			Room unit = new Room();
+			rooms[x][y][z] = unit;
+			return unit;
 		} else
-			return cubes[x][y][z];
+			return rooms[x][y][z];
 	}
 
 }
