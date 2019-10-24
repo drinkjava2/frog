@@ -24,7 +24,7 @@ import java.util.Arrays;
  */
 public class Room {
 	/** Activity of current room */
-	private float active = 0; // 这个立方体的激活程度，允许是负值,它反映了在这个小立方体里所有光子的能量汇总值
+	private float active = 0; // 这个立方体的激活程度，允许是负值,它反映了在这个小立方体里所有光子的能量汇总值,room总是随时间自动衰减
 
 	private Cell[] cells = null;
 

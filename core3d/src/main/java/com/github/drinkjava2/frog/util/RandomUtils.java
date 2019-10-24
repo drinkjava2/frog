@@ -81,20 +81,48 @@ public class RandomUtils {
 		return c;
 	}
 
-	public static int vary(int i) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		return i;
+	public static int vary(int v, int percet) {
+		if (percent(percet))
+			return vary(v);
+		return v;
 	}
 
-	public static float vary(float f) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		return f;
+	public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+		if (percent(40))
+			v *= .98 + .04 * nextFloat(); // 0.98~1.02
+		if (percent(10))
+			v *= .95 + .103 * nextFloat(); // 0.95~1.053
+		else if (percent(5))
+			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
+		else if (percent(1))
+			v *= .05 + 1.5 * nextFloat(); // 0.5~2
+		return v;
+	}
+
+	public static float vary(float v, int percet) {
+		if (percent(percet))
+			return vary(v);
+		return v;
+	}
+
+	public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+		if (percent(40))
+			v *= .98 + .04 * nextFloat(); // 0.98~1.02
+		if (percent(10))
+			v *= .95 + .103 * nextFloat(); // 0.95~1.053
+		else if (percent(5))
+			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
+		else if (percent(1))
+			v *= .05 + 1.5 * nextFloat(); // 0.5~2
+		return v;
 	}
 
 	public static Shape vary(Shape shape) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		return shape;
+		return shape; // TODO shape的变异
 	}
 
 	public static Synapse[] vary(Synapse[] synapses) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		return synapses;
+		return synapses; // TODO synapses的变异
 	}
 
 }

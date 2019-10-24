@@ -53,18 +53,29 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 public class Organ implements Serializable, Cloneable {// 因为要保存在蛋文件里，所以必须支持串行化
 	private static final long serialVersionUID = 1L;
 
-	public float fat = 0;// 细胞活跃多，则fat值大，如果fat值很低，则这个器官被丢弃的可能性加大，这个值很重要，它使得孤岛器官不存在,保证所有器官都相连
+	private static int i = 0;// 以下是各种器官类型，每个神经元都属于一个器官，每个器官都有一个type类型参数
+	public static final int EYE = i++;// 眼细胞，会根据room激活度产生发散到各个方向的光子
+	public static final int EAR = i++;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活room
+	public static final int CORE = i++; // 什么触突都没有，光溜溜的细胞，但它也有可能根据r半径来中转光子
+	public static final int DYNAMIC = i++; // 只有动态触突的细胞，它忽略静态触突参数
+	public static final int STATIC = i++; // 只有静态触突的细胞，它忽略动态触突参数
+	public static final int MIX = i++; // 同时具有静态和动态触突的细胞
+	public static final int TYPE_QTY = i;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
+
+	public float fat = 0;// 细胞活跃多，则fat值大，如果fat值很低，则这个器官被丢弃的可能性加大，这个值很重要，它使得孤岛器官被淘汰
 	public boolean allowVary;// 是否允许变异，有一些器官是手工创建的，在项目初级阶段禁止它们参与变异和生存竟争。
 	public boolean allowBorrow;// 是否允许在精子中将这个器官借出，有一些器官是手工创建的，在项目初级阶段禁止它们借出
 	public String organName;// 器官的名字，通常只有手工创建的器官才有名字，可以用frog.findOrganByName来查找到这个器官
 
 	// ======= 本行以下所有参数受变异和生存竟争影响 =============
 
-	public int type; // 器官类型, 这是个最重要参数，它决定器官的播种行为、脑细胞的形状及行为, 这个字段如果变异，将极大地改变器官的性质
+	public int type; // 器官类型，见上面的常量定义，这个字段通常很稳定。一旦变异，将从根本上改变器官的播种行为和神经元的行为
 
-	public Shape shape; // 器官的形状
+	public Shape shape; // 器官的形状，不同的形状要写出不同的播种行为
 
-	public float cellDistance; // 细胞播种间隔，它决定了播种密度。目前只有均匀播种这一个方案
+	public float cellDistance; // 细胞播种间隔，每隔多少个room放一个细胞
+
+	public float centerDensityRate; // 中心相对于边沿的细胞播种密度比，为1时为均匀分布
 
 	public int synapsesLimit;// 细胞允许创建动态触突的数量上限，详见Cell类的synapses字段
 
@@ -80,7 +91,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	public float radius;// 细胞即使没有触突，也可以处理光子，这个radius是细胞的管辖半径，但处理信号角度只限于穿透和反射或6个正方向
 
-	public float dropRate;// 是一个介于0~1的值，反映了细胞存的能量下降速率，在每一步长中细胞能量都以这个速率损失，可以参考遗忘曲线
+	public float dropRate;// 是一个介于0~1的值，反映了细胞存贮能量的下降速率，在每一步长中细胞能量都以这个速率损失，可以参考遗忘曲线
 
 	// =====注意以下三个字段可以让细胞具备一些无状态的触突，这个不占内存，但缺点是不灵活，不智能，详见与Cell类中动态触突的对比 =====
 	public Synapse[] inputs; // 输入触突，位置是相对细胞而言的
@@ -92,6 +103,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 		allowBorrow = true;
 		type = 0;
 		cellDistance = 1;
+		centerDensityRate = 1;
 		synapsesLimit = 10;
 		energyLimit = 100;
 		outputRate = 30;
@@ -109,9 +121,11 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public Organ[] vary(Frog f) { // 器官变异，仅会在青蛙下蛋时即new Egg(frog)中被调用一次，返回本身或变异后的一个或一组类似器官返回
 		if (!allowVary)
 			return new Organ[] { this };// 如果不允许变异，器官就把自身返回，存放在蛋里
-		type = RandomUtils.vary(type);// 随机有大概率小变异，小概率大变异，极小概率极大变异
+		// 各参数 随机有大概率小变异，小概率大变异，极小概率极大变异
+		type = RandomUtils.vary(type, 10);// 这个type通常不允许变，所以只给它10%的机率去变, 也就是说在正常变异概率上再乘以10%的变异可能性
 		shape = RandomUtils.vary(shape);
 		cellDistance = RandomUtils.vary(cellDistance);
+		centerDensityRate = RandomUtils.vary(centerDensityRate);
 		synapsesLimit = RandomUtils.vary(synapsesLimit);
 		energyLimit = RandomUtils.vary(energyLimit);
 		outputRate = RandomUtils.vary(outputRate);
@@ -128,12 +142,11 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	/** Only call once when frog created , Child class can override this method */
 	public void init(Frog f) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
-		// 这里是各种形状器官播种脑细胞的具体代码,目前只有长方体和锥体两种形状
-
+		// 这里是器官播种脑细胞的具体代码,对于手工生成的器官，可以重写这个方法，对于自动生成的器官，必须根据type和shape等来播种，要写死在这里
 	}
 
 	/** each step will call Organ's active methodd */
-	public void active(Frog f) { // 每一步测试都会调用active方法，通常用于手动生成的器官
+	public void active(Frog f) { // 每一步测试都会调用active方法，通常用于手动生成的器官，自动生成的器官其行为仅由脑细胞来决定
 		// do nothing
 	}
 

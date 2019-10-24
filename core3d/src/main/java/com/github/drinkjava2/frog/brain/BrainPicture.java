@@ -79,7 +79,7 @@ public class BrainPicture extends JPanel {
 
 	public void drawCone(Cone c) {// 在脑图上画一个锥体，视角是TopView
 		drawLine(c.x1, c.y1, c.z1, c.x2, c.y2, c.z2);// 画锥体的中心线 
-		//TODO：画出锥体的上下面
+		//TODO 画出锥体的上下面
 	}
 
 	/*-
