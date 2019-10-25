@@ -30,11 +30,15 @@ package com.github.drinkjava2.frog.brain;
  */
 public class Cell {// Cell是脑神经元，将来脑里会有上亿个脑细胞，为节约内存，不重要的、与细胞状态无关的参数都存放在Organ类中去了。
 
-	/** energy of cell, energy got from food */
-	public float energy; // 每个细胞当前的能量值
+	public Cell() {
+	}
 
-	/** tire value of cell */
-	public float tire; // 每个细胞的疲劳值，只取决于最近的激活频率
+	public Cell(Organ organ) {
+		this.organ = organ;
+	}
+
+	/** energy of cell, energy got from food */
+	public float energy = 0; // 每个细胞当前的能量值
 
 	/** Organ index in egg */
 	public Organ organ; // 细胞属于哪个器官

@@ -152,6 +152,8 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	/** Child class can override this method to drawing picture */
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) { // 把器官的轮廓显示在脑图上
+		if (shape == null)
+			return;// 如果没有形状，就不画
 		if (!Env.SHOW_FIRST_FROG_BRAIN || !f.alive) // 如果不允许画或青蛙死了，就直接返回
 			return;
 		pic.setPicColor(Color.LIGHT_GRAY); // 缺省是黑色

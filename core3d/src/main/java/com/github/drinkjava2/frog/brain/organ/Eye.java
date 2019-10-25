@@ -32,6 +32,7 @@ public class Eye extends Organ {// 眼睛是长方体
 	public void init(Frog f) { // 重写父类方法，播种视网膜细胞
 		// 视网膜细胞的作用是将当前room的激活值换算成多个方向发散的光子信号
 		// TODO 播种视网膜细胞
+		//这里将播种固定触突细胞，每个细胞有多个发散固定触突，用来模拟波信号的发散。
 	}
 
 	/** each step will call Organ's active methodd */
