@@ -53,14 +53,14 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 public class Organ implements Serializable, Cloneable {// 因为要保存在蛋文件里，所以必须支持串行化
 	private static final long serialVersionUID = 1L;
 
-	private static int i = 0;// 以下是各种器官类型，每个神经元都属于一个器官，每个器官都有一个type类型参数
-	public static final int EYE = i++;// 眼细胞，会根据room激活度产生发散到各个方向的光子
-	public static final int EAR = i++;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活room
-	public static final int CORE = i++; // 什么触突都没有，光溜溜的细胞，但它也有可能根据r半径来中转光子
-	public static final int DYNAMIC = i++; // 只有动态触突的细胞，它忽略静态触突参数
-	public static final int STATIC = i++; // 只有静态触突的细胞，它忽略动态触突参数
-	public static final int MIX = i++; // 同时具有静态和动态触突的细胞
-	public static final int TYPE_QTY = i;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
+	// 以下是各种器官类型，每个神经元都属于一个器官，每个器官都有一个type类型参数
+	public static final int EYE = 1;// 眼细胞，会根据room激活度产生发散到各个方向的光子
+	public static final int EAR = 2;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活room
+	public static final int CORE = 3; // 什么触突都没有，光溜溜的细胞，但它也有可能根据r半径来中转光子
+	public static final int DYNAMIC = 4; // 只有动态触突的细胞，它忽略静态触突参数
+	public static final int STATIC = 5; // 只有静态触突的细胞，它忽略动态触突参数
+	public static final int MIX = 6; // 同时具有静态和动态触突的细胞
+	public static final int TYPE_QTY = 7;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
 
 	public float fat = 0;// 细胞活跃多，则fat值大，如果fat值很低，则这个器官被丢弃的可能性加大，这个值很重要，它使得孤岛器官被淘汰
 	public boolean allowVary;// 是否允许变异，有一些器官是手工创建的，在项目初级阶段禁止它们参与变异和生存竟争。

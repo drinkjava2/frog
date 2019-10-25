@@ -57,7 +57,7 @@ public class LetterTester implements EnvObject {
 		} else if (Env.step == Env.STEPS_PER_ROUND / 2) {// 在中段取消字母对应脑区的激活
 			ear.hearNothing(firstFrog);
 		} else if (Env.step > Env.STEPS_PER_ROUND / 2) {// 后半段要检测这个字母区是否能收到光子信号
-			if (firstFrog.getCuboidTotalValues(ear.getCuboidByStr(letter)) > 0)
+			if (firstFrog.getCuboidActiveTotalValue(ear.getCuboidByStr(letter)) > 0)
 				firstFrog.energy += 100;
 			//TODO 然后还要检测其它的区必须没有这个字母的区活跃
 		}

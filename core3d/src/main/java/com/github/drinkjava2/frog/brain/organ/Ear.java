@@ -36,7 +36,7 @@ public class Ear extends Organ {// 耳朵也是长方体，我为什么要用也
 		this.shape = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 8, 8, 1);
 		this.organName = "ear";
 		this.allowVary = false;
-		this.allowBorrow=false;
+		this.allowBorrow = false;
 	}
 
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
@@ -45,6 +45,10 @@ public class Ear extends Organ {// 耳朵也是长方体，我为什么要用也
 		pic.drawCuboid(b);
 		pic.drawCuboid(c);
 		pic.drawCuboid(d);
+	}
+
+	public void init(Frog f) { // 重写父类方法，播种听力输入细胞，它会将听力区的激活转变成固定向下发散的多个光子，摸拟波源
+		shape.fillCells(f, this);
 	}
 
 	/** 给这个耳朵听到一个字母，激活它的听觉输入区, 注意听觉输入区并不等于脑内虚拟听觉成像区，但是第一版...先共用一个区吧 */

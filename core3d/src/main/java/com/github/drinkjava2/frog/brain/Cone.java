@@ -10,6 +10,8 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import com.github.drinkjava2.frog.Frog;
+
 /**
  * Cone represents a cone 3d zone in brain
  * 
@@ -50,6 +52,11 @@ public class Cone implements Shape {
 	@Override
 	public void drawOnBrainPicture(BrainPicture pic) {
 		pic.drawCone(this);
+	}
+
+	@Override
+	public void fillCells(Frog f, Organ o) {
+		// TODO 待添加Cone形器官播种脑细胞的代码
 	}
 
 }

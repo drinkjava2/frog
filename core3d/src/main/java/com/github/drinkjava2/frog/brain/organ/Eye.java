@@ -20,7 +20,7 @@ import com.github.drinkjava2.frog.brain.Organ;
  * @author Yong Zhu
  */
 public class Eye extends Organ {// 眼睛是长方体
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
 
 	public Eye() {
 		this.shape = new Cuboid(0, 5, 5, 1, 10, 10);
@@ -29,10 +29,8 @@ public class Eye extends Organ {// 眼睛是长方体
 		this.allowBorrow = false;
 	}
 
-	public void init(Frog f) { // 重写父类方法，播种视网膜细胞
-		// 视网膜细胞的作用是将当前room的激活值换算成多个方向发散的光子信号
-		// TODO 播种视网膜细胞
-		//这里将播种固定触突细胞，每个细胞有多个发散固定触突，用来模拟波信号的发散。
+	public void init(Frog f) { // 重写父类方法，播种视网膜细胞，它会将视网膜的激活转变成固定向右发散的多个光子，摸拟波源
+		shape.fillCells(f, this);
 	}
 
 	/** each step will call Organ's active methodd */

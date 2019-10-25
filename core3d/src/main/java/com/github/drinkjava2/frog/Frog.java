@@ -95,7 +95,7 @@ public class Frog {
 	}
 
 	/** Calculate organ activity by add all organ rooms' active value together */
-	public float getCuboidTotalValues(Cuboid o) {// 遍历长方体区域所在room，将它们的激活值汇总返回
+	public float getCuboidActiveTotalValue(Cuboid o) {// 遍历长方体区域所在room，将它们的激活值汇总返回
 		float activity = 0;
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
@@ -112,9 +112,15 @@ public class Frog {
 			return false;
 		}
 		energy -= 20;
-		for (Organ o : organs) {
+		for (Organ o : organs)
 			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
-		}
+
+		// 这里是最关键的脑细胞主循环，脑细胞负责捕获和发出光子，光子则沿它的矢量方向每次自动走一格，如果下一格是真空(即数组room元素未初始化）会继续走下去并衰减(为减少运算)，直到能量为0
+		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++)
+			for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
+				for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
+					//TODO 脑细胞主循环
+				}
 		return alive;
 	}
 

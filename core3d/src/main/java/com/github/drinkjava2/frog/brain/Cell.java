@@ -30,10 +30,7 @@ package com.github.drinkjava2.frog.brain;
  */
 public class Cell {// Cell是脑神经元，将来脑里会有上亿个脑细胞，为节约内存，不重要的、与细胞状态无关的参数都存放在Organ类中去了。
 
-	public Cell() {
-	}
-
-	public Cell(Organ organ) {
+	public Cell(Organ organ) {// Cell不保存在蛋里，不需要定义空构造器
 		this.organ = organ;
 	}
 
