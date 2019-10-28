@@ -17,6 +17,7 @@ import java.util.List;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.organ.Ear;
+import com.github.drinkjava2.frog.brain.organ.Ether;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -38,7 +39,7 @@ public class Egg implements Serializable {
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
 		organs.add(new Eye()); // 眼是手工创建的，必有
 		organs.add(new Ear()); // 耳是手工创建的，这个是用来测试ABCD字母识别的
-		organs.add(Organ.randomCuboidOrgan());
+		organs.add(new Ether()); // 耳是手工创建的，这个是用来测试ABCD字母识别的
 	}
 
 	/** Create egg from frog */
@@ -61,17 +62,17 @@ public class Egg implements Serializable {
 		if (RandomUtils.percent(70)) // 70%的情况下不作为, x就是受精卵
 			return;
 		// 从y里借一个organ，替换掉原来位置的organ，相当于DNA级别的片段切换，它要求一个随机位置的Organ都允许替换allowBorrow
-		int yOrganSize = y.organs.size();
-		if (yOrganSize > 0) {
-			int i = RandomUtils.nextInt(yOrganSize);
-			Organ o = y.organs.get(i);
-			if (o.allowBorrow) {
-				if (organs.size() > i && organs.get(i).allowBorrow)
-					organs.set(i, o);// 用y里的organ替换掉x里的organ,模拟受精
-			}
-		}
-		if (RandomUtils.percent(50))// 有50%的机率随机会产生新的器官
-			organs.add(Organ.randomCuboidOrgan());
+		// int yOrganSize = y.organs.size();
+		// if (yOrganSize > 0) {
+		// int i = RandomUtils.nextInt(yOrganSize);
+		// Organ o = y.organs.get(i);
+		// if (o.allowBorrow) {
+		// if (organs.size() > i && organs.get(i).allowBorrow)
+		// organs.set(i, o);// 用y里的organ替换掉x里的organ,模拟受精
+		// }
+		// }
+		// if (RandomUtils.percent(50))// 有50%的机率随机会产生新的器官
+		// organs.add(Organ.randomCuboidOrgan());
 		if (RandomUtils.percent(organs.size())) {// 器官会随机丢失，并且机率与器官数量成正比,防止器官无限增长
 			int i = RandomUtils.nextInt(organs.size());
 			if (organs.get(i).allowBorrow)

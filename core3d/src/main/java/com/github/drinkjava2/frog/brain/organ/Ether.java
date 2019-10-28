@@ -12,7 +12,6 @@ package com.github.drinkjava2.frog.brain.organ;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 
@@ -42,12 +41,8 @@ public class Ether extends Organ {
 		this.allowBorrow = false;
 	}
 
-	public void init(Frog f) { // 重写父类方法，均匀播种脑细胞
-		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++)
-			for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++)
-				for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
-					f.getRoom(x, y, z).addCell(new Cell(this));
-				}
+	public void init(Frog f) {
+		this.shape.fillCells(f, this); // 先均匀播种脑细胞试试
 	}
 
 }

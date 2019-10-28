@@ -89,9 +89,12 @@ public class Frog {
 		if (!alive)
 			return;
 		for (int x = o.x; x < o.x + o.xe; x++)
-			for (int y = o.y; y < o.y + o.ye; y++)
-				for (int z = o.z; z < o.z + o.ze; z++)
-					getRoom(x, y, z).setActive(active);
+			if (rooms[x] != null)
+				for (int y = o.y; y < o.y + o.ye; y++)
+					if (rooms[x][y] != null)
+						for (int z = o.z; z < o.z + o.ze; z++)
+							if (rooms[x][y][z] != null)
+								getRoom(x, y, z).setActive(active);
 	}
 
 	/** Calculate organ activity by add all organ rooms' active value together */
@@ -115,12 +118,16 @@ public class Frog {
 		for (Organ o : organs)
 			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
 
-		// 这里是最关键的脑细胞主循环，脑细胞负责捕获和发出光子，光子则沿它的矢量方向每次自动走一格，如果下一格是真空(即数组room元素未初始化）会继续走下去并衰减(为减少运算)，直到能量为0
+		// 这里是最关键的脑细胞主循环，脑细胞负责捕获和发送光子，光子则沿它的矢量方向每次自动走一格，如果下一格是真空(即room未初始化）会继续走下去并衰减直到为0(为减少运算)
 		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++)
-			for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
-				for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
-					//TODO 脑细胞主循环
-				}
+			if (rooms[i] != null)
+				for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
+					if (rooms[i][j] != null)
+						for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
+							Room room = rooms[i][j][k];
+							if (room != null)
+								room.execute();//调用room的方法来进行这个运算
+						}
 		return alive;
 	}
 

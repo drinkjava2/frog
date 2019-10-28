@@ -64,6 +64,11 @@ public class Room {
 		photons[cells.length - 1] = p;
 	}
 
+	/** Move photons and call cell's execute method */
+	public void execute() {// 主运行方法，进行实际的光子移动和脑细经元的活动
+		// 细胞的作用是将光子往外赶，如果没有细胞，光子自已也会沿旧的方向走一格
+	}
+
 	public float getActive() {
 		return active;
 	}
