@@ -126,7 +126,7 @@ public class Frog {
 						for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
 							Room room = rooms[i][j][k];
 							if (room != null)
-								room.execute();//调用room的方法来进行这个运算
+								room.execute(this, i, j, k);// 调用room的方法来进行这个运算
 						}
 		return alive;
 	}

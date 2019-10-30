@@ -12,6 +12,8 @@ package com.github.drinkjava2.frog.brain;
 
 import java.util.Arrays;
 
+import com.github.drinkjava2.frog.Frog;
+
 /**
  * Room is the smallest unit of brain space, a room can have 0~n cells and 0~n
  * photons
@@ -65,8 +67,9 @@ public class Room {
 	}
 
 	/** Move photons and call cell's execute method */
-	public void execute() {// 主运行方法，进行实际的光子移动和脑细经元的活动
-		// 细胞的作用是将光子往外赶，如果没有细胞，光子自已也会沿旧的方向走一格
+	public void execute(Frog f, int x, int y, int z) {// 主运行方法，进行实际的光子移动和脑细经元的活动
+		for (Cell cell : cells) //cell会生成或处理掉所在room的光子
+			CellActions.act(f, this, cell, x, y, z);
 	}
 
 	public float getActive() {
