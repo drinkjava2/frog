@@ -37,10 +37,15 @@ public class CellActions {
 	 * 多对一，聚合，入射光子被触突捕获
 	 */
 	public static void act(Frog f, Room room, Cell cell, int x, int y, int z) {
-		int type=cell.organ.type;
-		switch (type) { //添加细胞的行为，这是硬编码
-		case Organ.EYE:
-			
+		int type = cell.organ.type;
+		switch (type) { // 添加细胞的行为，这是硬编码
+		case Organ.EYE: //如果是视网膜细胞，它的行为是将Room的激活能量转化为向右的多个光子发散出去，模拟波源
+
+			break;
+		case Organ.EAR: //如果是听力细胞，它的行为是将Room的激活能量转化为向下的多个光子发散出去，模拟波源
+
+			break;
+		case Organ.DYNAMIC://如果是动态细胞，它的行为是。。。比较复杂，一言难尽。
 
 			break;
 		default:

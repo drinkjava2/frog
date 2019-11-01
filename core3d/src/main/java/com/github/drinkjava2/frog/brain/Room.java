@@ -53,23 +53,46 @@ public class Room {
 
 	public void addPhoton(Photon p) {// 每个方格空间可以存在多个光子
 		if (photons == null)
-			photons = new Photon[] {};
-		for (Photon old : photons)
-			if (old.energy < 0.01 && p.energy > -0.01) {// 如果能量没有了，用新的代替空位
-				old.x = p.x;
-				old.y = p.y;
-				old.z = p.z;
-				old.energy = p.energy;
-				return;
+			photons = new Photon[] {};// 创建数组
+		else
+			for (int i = 0; i < cells.length; i++) { // 找空位插入
+				if (photons[i] == null || photons[i].energy < 0.1) {
+					photons[i] = p;
+					return; // 如找到就插入，返回
+				}
 			}
 		photons = Arrays.copyOf(photons, photons.length + 1);// 否则追加新光子到未尾
 		photons[cells.length - 1] = p;
 	}
 
+	public void removePhoton(int i) {// 删第几个光子
+		photons[i] = null;
+	}
+
+	/** Photon always walk */
+	public void photonWalk(Frog f, Photon p) { // 光子如果没有被处理，它自已会走到下一格，如果下一格为空，继续走
+		if (p.energy < 0.1)
+			return;// 能量小的光子直接扔掉
+		p.x += p.mx;
+		p.y += p.my;
+		p.z += p.mz;
+
+	}
+
 	/** Move photons and call cell's execute method */
-	public void execute(Frog f, int x, int y, int z) {// 主运行方法，进行实际的光子移动和脑细经元的活动
-		for (Cell cell : cells) //cell会生成或处理掉所在room的光子
-			CellActions.act(f, this, cell, x, y, z);
+	public void execute(Frog f, int x, int y, int z) {// 主运行方法，进行实际的脑细经元的行为和光子移动
+		if (cells != null)
+			for (Cell cell : cells) // cell会生成或处理掉所在room的光子
+				CellActions.act(f, this, cell, x, y, z);
+		// 剩下的，或由细胞新产生的光子，自已会走到下一格，别忘了，光子是会走的，而且是直线传播
+		if (photons != null)
+			for (int i = 0; i < photons.length; i++) {
+				Photon p = photons[i];
+				if (p == null)
+					return;
+				photons[i] = null;// 原来位置的光子先清除
+				photonWalk(f, p); //TODO: 写到这里
+			}
 	}
 
 	public float getActive() {
