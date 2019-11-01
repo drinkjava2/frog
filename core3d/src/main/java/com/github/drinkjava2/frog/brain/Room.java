@@ -26,7 +26,7 @@ import com.github.drinkjava2.frog.Frog;
  */
 public class Room {
 	/** Activity of current room */
-	private float active = 0; // 这个立方体的激活程度，允许是负值,它反映了在这个小立方体里所有光子的能量汇总值,room总是随时间自动衰减
+	private float active = 0; // 这个Room的激活程度，允许是负值,它反映了在这个小立方体里所有光子的能量汇总值,room总是随时间自动衰减
 
 	private Cell[] cells = null;
 
@@ -70,13 +70,17 @@ public class Room {
 	}
 
 	/** Photon always walk */
-	public void photonWalk(Frog f, Photon p) { // 光子如果没有被处理，它自已会走到下一格，如果下一格为空，继续走
+	public void photonWalk(Frog f, Photon p) { // 光子如果没有被处理，它自已会走到下一格，如果下一格为空，继续走,直到能量耗尽或出界
 		if (p.energy < 0.1)
 			return;// 能量小的光子直接扔掉
 		p.x += p.mx;
 		p.y += p.my;
 		p.z += p.mz;
-
+		int rx = Math.round(p.x);
+		int ry = Math.round(p.y);
+		int rz = Math.round(p.z);
+		if (f.existRoom(rx, ry, rz))
+			;
 	}
 
 	/** Move photons and call cell's execute method */
@@ -89,9 +93,9 @@ public class Room {
 			for (int i = 0; i < photons.length; i++) {
 				Photon p = photons[i];
 				if (p == null)
-					return;
+					continue;
 				photons[i] = null;// 原来位置的光子先清除
-				photonWalk(f, p); //TODO: 写到这里
+				photonWalk(f, p); // TODO: 写到这里
 			}
 	}
 
