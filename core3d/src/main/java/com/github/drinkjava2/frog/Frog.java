@@ -94,7 +94,7 @@ public class Frog {
 					if (rooms[x][y] != null)
 						for (int z = o.z; z < o.z + o.ze; z++)
 							if (rooms[x][y][z] != null)
-								getRoom(x, y, z).setActive(active);
+								getOrCreateRoom(x, y, z).setActive(active);
 	}
 
 	/** Calculate organ activity by add all organ rooms' active value together */
@@ -103,7 +103,7 @@ public class Frog {
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
 				for (int z = o.z; z < o.z + o.ze; z++)
-					activity += this.getRoom(x, y, z).getActive();
+					activity += this.getOrCreateRoom(x, y, z).getActive();
 		return activity;
 	}
 
@@ -138,12 +138,14 @@ public class Frog {
 	}
 
 	/** Check if room exist */
-	public boolean existRoom(int x, int y, int z) {// 检查指定坐标room是否存在
-		return rooms[x] != null && rooms[x][y] != null && rooms[x][y][z] != null;
+	public Room getRoom(int x, int y, int z) {// 返回指定脑ssf坐标的room ，如果不存在，返回null
+		if (rooms[x] == null || rooms[x][y] == null)
+			return null;
+		return rooms[x][y][z];
 	}
 
 	/** Get a room in position (x,y,z), if not exist, create a new one */
-	public Room getRoom(int x, int y, int z) {// 获取指定坐标的Room，如果为空，则在指定位置新建Room
+	public Room getOrCreateRoom(int x, int y, int z) {// 获取指定坐标的Room，如果为空，则在指定位置新建Room
 		if (rooms[x] == null)
 			rooms[x] = new Room[Env.FROG_BRAIN_YSIZE][];
 		if (rooms[x][y] == null)

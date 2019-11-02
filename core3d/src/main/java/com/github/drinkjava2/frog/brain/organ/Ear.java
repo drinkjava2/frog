@@ -33,6 +33,7 @@ public class Ear extends Organ {// 耳朵也是长方体，我为什么要用也
 
 	public Ear() {
 		this.shape = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 8, 8, 1);//手工固定耳区的大小
+		this.type=Organ.EYE;
 		this.organName = "ear";
 		this.allowVary = false;
 		this.allowBorrow = false;

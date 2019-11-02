@@ -24,6 +24,7 @@ public class Eye extends Organ {// 眼睛是长方体
 
 	public Eye() {
 		this.shape = new Cuboid(0, 5, 5, 1, 10, 10);
+		this.type=Organ.EYE;
 		this.organName = "eye";
 		this.allowVary = false;
 		this.allowBorrow = false;
@@ -54,7 +55,7 @@ public class Eye extends Organ {// 眼睛是长方体
 		for (int px = 0; px < w; px++)
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
-					f.getRoom(0, c.y + c.ye - px, c.z + py).setActive(100);
+					f.getOrCreateRoom(0, c.y + c.ye - px, c.z + py).setActive(100);
 	}
 
 }

@@ -37,15 +37,24 @@ public class CellActions {
 	 * 多对一，聚合，入射光子被触突捕获
 	 */
 	public static void act(Frog f, Room room, Cell cell, int x, int y, int z) {
+		System.out.println("cell.organ.type:"+cell.organ.type);
 		int type = cell.organ.type;
 		switch (type) { // 添加细胞的行为，这是硬编码
-		case Organ.EYE: //如果是视网膜细胞，它的行为是将Room的激活能量转化为向右的多个光子发散出去，模拟波源
+		case Organ.EYE: // 如果是视网膜细胞，它的行为是将Room的激活能量转化为向右的多个光子发散出去，模拟波源
+			if (room.getActive() > 0) {
+				System.out.println("xx");
+				room.setActive(0);
+				for (float yy = -0.5f; yy <= 0.5f; yy++) {// 形成一个扇面向右发送
+					for (float zz = -0.5f; zz <= 5f; zz++) {
+						room.addPhoton(new Photon(x, y, z, 1, yy, zz, 10));
+					}
+				}
+			}
+			break;
+		case Organ.EAR: // 如果是听力细胞，它的行为是将Room的激活能量转化为向下的多个光子发散出去，模拟波源
 
 			break;
-		case Organ.EAR: //如果是听力细胞，它的行为是将Room的激活能量转化为向下的多个光子发散出去，模拟波源
-
-			break;
-		case Organ.DYNAMIC://如果是动态细胞，它的行为是。。。比较复杂，一言难尽。
+		case Organ.DYNAMIC:// 如果是动态细胞，它的行为是。。。比较复杂，一言难尽。
 
 			break;
 		default:

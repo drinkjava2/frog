@@ -32,6 +32,8 @@ public class Room {
 
 	private Photon[] photons = null;
 
+	private int photonQty = 0;
+
 	public Cell[] getCells() {// 为了节约内存，仅在访问cells时创建它的实例
 		if (cells == null)
 			cells = new Cell[] {};
@@ -44,7 +46,7 @@ public class Room {
 		return photons;
 	}
 
-	public void addCell(Cell cell) {// 每个方格空间可以存在多个脑细胞
+	public void addCell(Cell cell) {// 每个方格空间可以存在多个脑细胞，这个方法通常只在青蛙初始化器官时调用
 		if (cells == null)
 			cells = new Cell[] {};
 		cells = Arrays.copyOf(cells, cells.length + 1);
@@ -52,35 +54,49 @@ public class Room {
 	}
 
 	public void addPhoton(Photon p) {// 每个方格空间可以存在多个光子
+		if (p == null || p.energy < 0.1)
+			return;
+		photonQty++;
 		if (photons == null)
 			photons = new Photon[] {};// 创建数组
 		else
-			for (int i = 0; i < cells.length; i++) { // 找空位插入
+			for (int i = 0; i < photons.length; i++) { // 找空位插入
 				if (photons[i] == null || photons[i].energy < 0.1) {
 					photons[i] = p;
 					return; // 如找到就插入，返回
 				}
 			}
 		photons = Arrays.copyOf(photons, photons.length + 1);// 否则追加新光子到未尾
-		photons[cells.length - 1] = p;
+		photons[photons.length - 1] = p;
 	}
 
 	public void removePhoton(int i) {// 删第几个光子
-		photons[i] = null;
+		if (photons[i] != null) {
+			photons[i] = null;
+			photonQty--;
+		}
 	}
 
 	/** Photon always walk */
-	public void photonWalk(Frog f, Photon p) { // 光子如果没有被处理，它自已会走到下一格，如果下一格为空，继续走,直到能量耗尽或出界
+	public void photonWalk(Frog f, Photon p) { // 光子自已会走到下一格，如果下一格为空，继续走,直到能量耗尽或出界
 		if (p.energy < 0.1)
 			return;// 能量小的光子直接扔掉
+		if (p.outBrainBound())
+			return; //// 出界的光子直接扔掉
 		p.x += p.mx;
 		p.y += p.my;
 		p.z += p.mz;
 		int rx = Math.round(p.x);
 		int ry = Math.round(p.y);
 		int rz = Math.round(p.z);
-		if (f.existRoom(rx, ry, rz))
-			;
+		
+		Room room = f.getRoom(rx, ry, rz);
+		if (room != null) {
+			room.addPhoton(p);
+		} else {
+			p.energy *= .95;//
+			photonWalk(f, p);// 递归，一直走下去，直到遇到room或出界
+		}
 	}
 
 	/** Move photons and call cell's execute method */
@@ -88,23 +104,27 @@ public class Room {
 		if (cells != null)
 			for (Cell cell : cells) // cell会生成或处理掉所在room的光子
 				CellActions.act(f, this, cell, x, y, z);
-		// 剩下的，或由细胞新产生的光子，自已会走到下一格，别忘了，光子是会走的，而且是直线传播
+		// 剩下的，或由细胞新产生的光子，自已会走到下一格，光子自己是会走的，而且是直线传播
 		if (photons != null)
 			for (int i = 0; i < photons.length; i++) {
 				Photon p = photons[i];
 				if (p == null)
 					continue;
-				photons[i] = null;// 原来位置的光子先清除
-				photonWalk(f, p); // TODO: 写到这里
+				removePhoton(i);// 原来的位置的先清除，设为null
+				photonWalk(f, p); // 让光子自已往下走
 			}
 	}
 
-	public float getActive() {
+	public float getActive() {// 获取room的激活度
 		return active;
 	}
 
-	public void setActive(float active) {
+	public void setActive(float active) {// 设room的激活度
 		this.active = active;
+	}
+
+	public int getPhotonQty() {// 获取room里的总光子数
+		return photonQty;
 	}
 
 }

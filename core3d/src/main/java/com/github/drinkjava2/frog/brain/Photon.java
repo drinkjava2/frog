@@ -10,6 +10,8 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import com.github.drinkjava2.frog.Env;
+
 /**
  * Photon has direction and strength
  * 
@@ -39,6 +41,12 @@ public class Photon {
 		this.my = my;
 		this.mz = mz;
 		this.energy = energy;
+	}
+
+	/** Check if x,y,z out of frog's brain bound */
+	public boolean outBrainBound() {// 检查指定坐标是否超出frog脑空间界限
+		return x < 0 || x >= Env.FROG_BRAIN_XSIZE || y < 0 || y >= Env.FROG_BRAIN_YSIZE || z < 0
+				|| z >= Env.FROG_BRAIN_ZSIZE;
 	}
 
 }

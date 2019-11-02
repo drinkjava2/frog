@@ -78,8 +78,8 @@ public class BrainPicture extends JPanel {
 	}
 
 	public void drawCone(Cone c) {// 在脑图上画一个锥体，视角是TopView
-		drawLine(c.x1, c.y1, c.z1, c.x2, c.y2, c.z2);// 画锥体的中心线 
-		//TODO 画出锥体的上下面
+		drawLine(c.x1, c.y1, c.z1, c.x2, c.y2, c.z2);// 画锥体的中心线
+		// TODO 画出锥体的上下面
 	}
 
 	/*-
@@ -148,6 +148,11 @@ public class BrainPicture extends JPanel {
 	/** 画出Room的中心点 */
 	public void drawRoomCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
+	}
+
+	/** 画出Room的中心小点 */
+	public void drawRoomSmallCenter(float x, float y, float z) {
+		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .2)));
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
@@ -229,14 +234,20 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
 
-		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {
+		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {// 开始画整个脑空间的光子和激活点阵图
 			if (f.rooms[x] != null)
 				for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
 					if (f.rooms[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
-							if (f.existRoom(x, y, z) && f.getRoom(x, y, z).getActive() > 0) {
-								setPicColor(rainbowColor(f.getRoom(x, y, z).getActive()));
-								drawRoomCenter(x, y, z);
+							Room room = f.getRoom(x, y, z);
+							if (room != null) {
+								if (room.getActive() > 0) {
+									setPicColor(rainbowColor(room.getActive()));
+									drawRoomCenter(x, y, z);
+								} else if (room.getPhotonQty() > 0) {
+									setPicColor(rainbowColor(room.getPhotonQty()));
+									drawRoomSmallCenter(x, y, z);
+								}
 							}
 						}
 				}
