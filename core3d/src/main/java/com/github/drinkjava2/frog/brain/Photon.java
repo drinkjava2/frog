@@ -29,11 +29,13 @@ public class Photon {
 	public float my;
 	public float mz;
 	public float energy;
+	public int color;// 每个光子都有自已的颜色，与产生光子的器官的颜色来决定,颜色不重要，但能方便观察
+	public int activeNo;// 每一轮循环都有一个编号，光子走一格后就加上这个编号，同一个循环如果遇到相同编号的光子就不跳过，防止光子被一直赶着走多步
 
 	public Photon() { // 缺省构造器
 	}
 
-	public Photon(float x, float y, float z, float mx, float my, float mz, float energy) {
+	public Photon(int color, float x, float y, float z, float mx, float my, float mz, float energy) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -41,6 +43,7 @@ public class Photon {
 		this.my = my;
 		this.mz = mz;
 		this.energy = energy;
+		this.color = color;
 	}
 
 	/** Check if x,y,z out of frog's brain bound */

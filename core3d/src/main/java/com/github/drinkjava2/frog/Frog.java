@@ -107,7 +107,10 @@ public class Frog {
 		return activity;
 	}
 
+	private int activeNo = 0;
+
 	public boolean active(Env v) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
+		activeNo++;
 		// 如果能量小于0、出界、与非食物的点重合则判死
 		if (!alive || energy < 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILLFROG) {
 			energy -= 100; // 死掉的青蛙也要消耗能量，确保淘汰出局
@@ -119,14 +122,15 @@ public class Frog {
 			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
 
 		// 这里是最关键的脑细胞主循环，脑细胞负责捕获和发送光子，光子则沿它的矢量方向每次自动走一格，如果下一格是真空(即room未初始化）会继续走下去并衰减直到为0(为减少运算)
+
 		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++)
 			if (rooms[i] != null)
 				for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
 					if (rooms[i][j] != null)
 						for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
 							Room room = rooms[i][j][k];
-							if (room != null)
-								room.execute(this, i, j, k);// 调用room的方法来进行这个运算
+							if (room != null && room.getCells() != null)
+								room.execute(this, activeNo, i, j, k);// 调用room的方法来进行这个运算
 						}
 		return alive;
 	}
@@ -150,12 +154,17 @@ public class Frog {
 			rooms[x] = new Room[Env.FROG_BRAIN_YSIZE][];
 		if (rooms[x][y] == null)
 			rooms[x][y] = new Room[Env.FROG_BRAIN_ZSIZE];
-		if (rooms[x][y][z] == null) {
-			Room unit = new Room();
-			rooms[x][y][z] = unit;
-			return unit;
-		} else
-			return rooms[x][y][z];
+		Room room = rooms[x][y][z];
+		if (room == null) {
+			room = new Room();
+			rooms[x][y][z] = room;
+		}
+		return room;
 	}
 
+	/** Check if x,y,z out of frog's brain bound */
+	public static boolean outBrainBound(int x, int y, int z) {// 检查指定坐标是否超出frog脑空间界限
+		return x < 0 || x >= Env.FROG_BRAIN_XSIZE || y < 0 || y >= Env.FROG_BRAIN_YSIZE || z < 0
+				|| z >= Env.FROG_BRAIN_ZSIZE;
+	}
 }

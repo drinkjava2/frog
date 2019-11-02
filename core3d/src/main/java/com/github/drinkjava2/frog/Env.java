@@ -26,7 +26,7 @@ import com.github.drinkjava2.frog.util.StringPixelUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 10; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -42,7 +42,7 @@ public class Env extends JPanel {
 	/** Frog's brain size is a 3D array of Room */ // 脑空间是个三维Room数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
 	public static final int FROG_BRAIN_XSIZE = 30; // frog的脑在X方向长度
 	public static final int FROG_BRAIN_YSIZE = 20; // frog的脑在Y方向长度
-	public static final int FROG_BRAIN_ZSIZE = 20; // frog的脑在Z方向长度
+	public static final int FROG_BRAIN_ZSIZE = 25; // frog的脑在Z方向长度
 
 	/** SHOW first frog's brain structure */
 	public static boolean SHOW_FIRST_FROG_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -76,7 +76,7 @@ public class Env extends JPanel {
 
 	public static EnvObject[] things = new EnvObject[] { new LetterTester() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
-	static { 
+	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
 		if (DELETE_EGGS)
 			EggTool.deleteEggs();

@@ -61,6 +61,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public static final int STATIC = 5; // 只有静态触突的细胞，它忽略动态触突参数
 	public static final int MIX = 6; // 同时具有静态和动态触突的细胞
 	public static final int TYPE_QTY = 7;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
+	public int color = 1;// 这个不重要，表示它生成的光子的显示在脑图中的颜色号，见ColorUtils
 
 	public float fat = 0;// 细胞活跃多，则fat值大，如果fat值很低，则这个器官被丢弃的可能性加大，这个值很重要，它使得孤岛器官被淘汰
 	public boolean allowVary;// 是否允许变异，有一些器官是手工创建的，在项目初级阶段禁止它们参与变异和生存竟争。
@@ -98,7 +99,6 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public Synapse[] sides; // 侧面（通常是抑制，是负光子输出)输出触突，从脉冲神经网络学习到有这种侧向抑制
 	public Synapse[] outputs; // 输出触突
 
- 
 	public Organ() {// 缺省构造器，生成具有缺省参数但没有形状的器官
 		allowVary = true;
 		allowBorrow = true;
@@ -143,7 +143,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	/** Only call once when frog created , Child class can override this method */
 	public void init(Frog f) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
-		//TODO 这里是器官播种脑细胞的具体代码,对于手工生成的器官，可以重写这个方法，对于自动生成的器官，必须根据type和shape等来播种，要写死在这里
+		// TODO 这里是器官播种脑细胞的具体代码,对于手工生成的器官，可以重写这个方法，对于自动生成的器官，必须根据type和shape等来播种，要写死在这里
 	}
 
 	/** each step will call Organ's active methodd */

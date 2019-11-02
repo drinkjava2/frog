@@ -32,6 +32,8 @@ public class Room {
 
 	private Photon[] photons = null;
 
+	private int color;// Room的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
+
 	private int photonQty = 0;
 
 	public Cell[] getCells() {// 为了节约内存，仅在访问cells时创建它的实例
@@ -53,10 +55,12 @@ public class Room {
 		cells[cells.length - 1] = cell;
 	}
 
-	public void addPhoton(Photon p) {// 每个方格空间可以存在多个光子
+	public void addPhoton(Photon p) {// 每个room空间可以存在多个光子
+		p.energy*=.75;
 		if (p == null || p.energy < 0.1)
 			return;
 		photonQty++;
+		color = p.color; // Room的颜色取最后一次被添加的光子的颜色
 		if (photons == null)
 			photons = new Photon[] {};// 创建数组
 		else
@@ -89,7 +93,8 @@ public class Room {
 		int rx = Math.round(p.x);
 		int ry = Math.round(p.y);
 		int rz = Math.round(p.z);
-		
+		if (Frog.outBrainBound(rx, ry, rz))
+			return;// 出界直接扔掉
 		Room room = f.getRoom(rx, ry, rz);
 		if (room != null) {
 			room.addPhoton(p);
@@ -100,7 +105,7 @@ public class Room {
 	}
 
 	/** Move photons and call cell's execute method */
-	public void execute(Frog f, int x, int y, int z) {// 主运行方法，进行实际的脑细经元的行为和光子移动
+	public void execute(Frog f, int activeNo, int x, int y, int z) {// 主运行方法，进行实际的脑细经元的行为和光子移动
 		if (cells != null)
 			for (Cell cell : cells) // cell会生成或处理掉所在room的光子
 				CellActions.act(f, this, cell, x, y, z);
@@ -108,8 +113,9 @@ public class Room {
 		if (photons != null)
 			for (int i = 0; i < photons.length; i++) {
 				Photon p = photons[i];
-				if (p == null)
+				if (p == null || p.activeNo == activeNo)// 同一轮的不再走了
 					continue;
+				p.activeNo = activeNo;
 				removePhoton(i);// 原来的位置的先清除，设为null
 				photonWalk(f, p); // 让光子自已往下走
 			}
@@ -125,6 +131,14 @@ public class Room {
 
 	public int getPhotonQty() {// 获取room里的总光子数
 		return photonQty;
+	}
+
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
 	}
 
 }

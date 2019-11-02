@@ -26,17 +26,18 @@ import com.github.drinkjava2.frog.brain.Organ;
 @SuppressWarnings("all")
 public class Ear extends Organ {// 耳朵也是长方体，我为什么要用也?
 	private static final long serialVersionUID = 1L; 
-	public Cuboid a = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
-	public Cuboid b = new Cuboid(10, 15, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
-	public Cuboid c = new Cuboid(15, 10, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
-	public Cuboid d = new Cuboid(15, 15, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
+	public Cuboid a = new Cuboid(15, 10, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
+	public Cuboid b = new Cuboid(15, 15, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
+	public Cuboid c = new Cuboid(20, 10, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
+	public Cuboid d = new Cuboid(20, 15, Env.FROG_BRAIN_ZSIZE - 1, 3, 3, 1);
 
 	public Ear() {
-		this.shape = new Cuboid(10, 10, Env.FROG_BRAIN_ZSIZE - 1, 8, 8, 1);//手工固定耳区的大小
-		this.type=Organ.EYE;
+		this.shape = new Cuboid(15, 10, Env.FROG_BRAIN_ZSIZE - 1, 8, 8, 1);//手工固定耳区的大小
+		this.type=Organ.EAR;
 		this.organName = "ear";
 		this.allowVary = false;
 		this.allowBorrow = false;
+		this.color = 5;//blue
 	}
 
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法

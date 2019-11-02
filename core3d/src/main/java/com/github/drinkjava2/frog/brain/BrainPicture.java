@@ -1,14 +1,8 @@
 package com.github.drinkjava2.frog.brain;
 
 import static java.awt.Color.BLACK;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.CYAN;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.MAGENTA;
-import static java.awt.Color.ORANGE;
 import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
-import static java.awt.Color.YELLOW;
 //import static java.awt.BLUE; 
 import static java.lang.Math.cos;
 import static java.lang.Math.round;
@@ -21,6 +15,7 @@ import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.util.ColorUtils;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
@@ -152,7 +147,7 @@ public class BrainPicture extends JPanel {
 
 	/** 画出Room的中心小点 */
 	public void drawRoomSmallCenter(float x, float y, float z) {
-		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .2)));
+		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .15)));
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
@@ -185,33 +180,6 @@ public class BrainPicture extends JPanel {
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - diameter / 2, diameter, diameter);
 	}
 
-	private static final Color[] rainbow = new Color[] { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
-	private static int nextColor = 0;
-
-	public static Color nextRainbowColor() {
-		if (nextColor == rainbow.length)
-			nextColor = 0;
-		return rainbow[nextColor++];
-	}
-
-	public static Color rainbowColor(float i) {
-		if (i == 0)
-			return BLACK;
-		if (i == 1)
-			return RED;
-		if (i <= 3)
-			return ORANGE;
-		if (i <= 10)
-			return YELLOW;
-		if (i <= 20)
-			return GREEN;
-		if (i <= 50)
-			return CYAN;
-		if (i <= 100)
-			return BLUE;
-		return MAGENTA;
-	}
-
 	private static Cuboid brain = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
 
 	public void drawBrainPicture(Frog f) {// 在这个方法里进行青蛙三维脑结构的绘制
@@ -242,10 +210,10 @@ public class BrainPicture extends JPanel {
 							Room room = f.getRoom(x, y, z);
 							if (room != null) {
 								if (room.getActive() > 0) {
-									setPicColor(rainbowColor(room.getActive()));
+									setPicColor(ColorUtils.rainbowColor(room.getActive()));
 									drawRoomCenter(x, y, z);
 								} else if (room.getPhotonQty() > 0) {
-									setPicColor(rainbowColor(room.getPhotonQty()));
+									setPicColor(ColorUtils.colorByCode(room.getColor()));
 									drawRoomSmallCenter(x, y, z);
 								}
 							}

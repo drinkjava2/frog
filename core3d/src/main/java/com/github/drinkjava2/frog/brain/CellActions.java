@@ -11,6 +11,7 @@
 package com.github.drinkjava2.frog.brain;
 
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * CellActions have many cell action stored
@@ -37,21 +38,25 @@ public class CellActions {
 	 * 多对一，聚合，入射光子被触突捕获
 	 */
 	public static void act(Frog f, Room room, Cell cell, int x, int y, int z) {
-		System.out.println("cell.organ.type:"+cell.organ.type);
-		int type = cell.organ.type;
-		switch (type) { // 添加细胞的行为，这是硬编码
+		Organ o = cell.organ;
+		switch (o.type) { // 添加细胞的行为，这是硬编码
 		case Organ.EYE: // 如果是视网膜细胞，它的行为是将Room的激活能量转化为向右的多个光子发散出去，模拟波源
-			if (room.getActive() > 0) {
-				System.out.println("xx");
-				room.setActive(0);
-				for (float yy = -0.5f; yy <= 0.5f; yy++) {// 形成一个扇面向右发送
-					for (float zz = -0.5f; zz <= 5f; zz++) {
-						room.addPhoton(new Photon(x, y, z, 1, yy, zz, 10));
+			if (room.getActive() > 0 && RandomUtils.percent(30)) {
+				for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
+					for (float zz = -0.3f; zz <= 0.3f; zz += 0.1) {
+						room.addPhoton(new Photon(o.color, x, y, z, 1.0f, yy, zz, 100f));
 					}
 				}
 			}
 			break;
 		case Organ.EAR: // 如果是听力细胞，它的行为是将Room的激活能量转化为向下的多个光子发散出去，模拟波源
+			if (room.getActive() > 0 && RandomUtils.percent(30)) {
+				for (float xx = -0.3f; xx <= 0.3f; xx += 0.1) {// 形成一个扇面向下发送
+					for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {
+						room.addPhoton(new Photon(o.color, x, y, z, xx, yy, -1, 100f));
+					}
+				}
+			}
 
 			break;
 		case Organ.DYNAMIC:// 如果是动态细胞，它的行为是。。。比较复杂，一言难尽。
