@@ -56,7 +56,7 @@ public class Room {
 	}
 
 	public void addPhoton(Photon p) {// 每个room空间可以存在多个光子
-		p.energy*=.75;
+		p.energy *= .78;
 		if (p == null || p.energy < 0.1)
 			return;
 		photonQty++;
@@ -99,7 +99,7 @@ public class Room {
 		if (room != null) {
 			room.addPhoton(p);
 		} else {
-			p.energy *= .95;//
+			//p.energy *= .6;// 真空中也要乘一个衰减系数，防止它走太远，占用计算资源
 			photonWalk(f, p);// 递归，一直走下去，直到遇到room或出界
 		}
 	}

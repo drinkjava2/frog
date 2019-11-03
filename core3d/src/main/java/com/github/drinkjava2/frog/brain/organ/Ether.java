@@ -11,7 +11,6 @@
 package com.github.drinkjava2.frog.brain.organ;
 
 import com.github.drinkjava2.frog.Env;
-import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 
@@ -35,14 +34,12 @@ public class Ether extends Organ {
 	public Ether() {
 		super();
 		this.shape = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
+		// this.shape = new Cuboid(10, 5, 5, Env.FROG_BRAIN_XSIZE/2,
+		// Env.FROG_BRAIN_YSIZE/2+3 , Env.FROG_BRAIN_ZSIZE/2);
 		this.organName = "Ether";
-		this.type = Organ.DYNAMIC;
-		this.allowVary = false;
-		this.allowBorrow = false;
-	}
-
-	public void init(Frog f) {
-		this.shape.fillCells(f, this); // 先均匀播种脑细胞试试
+		this.type = Organ.DYNAMIC; // DYNAMIC就是动态触突细胞
+		this.allowVary = false;// 不允许变异
+		this.allowBorrow = false;// 不允许借出
 	}
 
 }

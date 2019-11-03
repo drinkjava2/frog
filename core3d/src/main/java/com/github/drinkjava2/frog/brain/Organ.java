@@ -143,7 +143,9 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	/** Only call once when frog created , Child class can override this method */
 	public void init(Frog f) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
-		// TODO 这里是器官播种脑细胞的具体代码,对于手工生成的器官，可以重写这个方法，对于自动生成的器官，必须根据type和shape等来播种，要写死在这里
+		// 里是器官播种脑细胞的具体代码,对于手工生成的器官，也可以重写这个方法，对于自动生成的器官，必须根据type和shape等来播种，要写死在这里
+		if (shape != null)
+			shape.fillCells(f, this); // 先均匀播种脑细胞试试
 	}
 
 	/** each step will call Organ's active methodd */
@@ -157,7 +159,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 			return;// 如果没有形状，就不画
 		if (!Env.SHOW_FIRST_FROG_BRAIN || !f.alive) // 如果不允许画或青蛙死了，就直接返回
 			return;
-		pic.setPicColor(Color.LIGHT_GRAY); // 缺省是黑色
+		pic.setPicColor(Color.LIGHT_GRAY); // 缺省是灰色
 		shape.drawOnBrainPicture(pic);
 	}
 

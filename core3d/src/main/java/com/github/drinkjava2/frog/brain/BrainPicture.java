@@ -140,12 +140,12 @@ public class BrainPicture extends JPanel {
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
-	/** 画出Room的中心点 */
+	/** 画出Room的中心点，通常用来显示器官的激活区 */
 	public void drawRoomCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
 	}
 
-	/** 画出Room的中心小点 */
+	/** 画出Room的中心小点，通常用来显示光子 */
 	public void drawRoomSmallCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .15)));
 	}

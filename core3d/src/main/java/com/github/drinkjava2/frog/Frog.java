@@ -150,6 +150,8 @@ public class Frog {
 
 	/** Get a room in position (x,y,z), if not exist, create a new one */
 	public Room getOrCreateRoom(int x, int y, int z) {// 获取指定坐标的Room，如果为空，则在指定位置新建Room
+		if (outBrainBound(x, y, z))
+			return null;
 		if (rooms[x] == null)
 			rooms[x] = new Room[Env.FROG_BRAIN_YSIZE][];
 		if (rooms[x][y] == null)

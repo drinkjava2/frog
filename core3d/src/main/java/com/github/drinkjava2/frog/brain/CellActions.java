@@ -51,8 +51,8 @@ public class CellActions {
 			break;
 		case Organ.EAR: // 如果是听力细胞，它的行为是将Room的激活能量转化为向下的多个光子发散出去，模拟波源
 			if (room.getActive() > 0 && RandomUtils.percent(30)) {
-				for (float xx = -0.3f; xx <= 0.3f; xx += 0.1) {// 形成一个扇面向下发送
-					for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {
+				for (float xx = -0.3f; xx <= 0.3f; xx += 0.13) {// 形成一个扇面向下发送
+					for (float yy = -0.3f; yy <= 0.3f; yy += 0.13) {
 						room.addPhoton(new Photon(o.color, x, y, z, xx, yy, -1, 100f));
 					}
 				}
