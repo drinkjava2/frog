@@ -24,7 +24,9 @@ import com.github.drinkjava2.frog.Frog;
  */
 public interface Shape extends Serializable {
 	/* Draw self on brain picture */
-	public void drawOnBrainPicture(BrainPicture pic); //把自己在脑图上画出来
-	
-	public void fillCells(Frog f, Organ o); //根据给定organ的参数，在shape所代表的脑区内播种脑细胞
+	public void drawOnBrainPicture(BrainPicture pic); // 把自己在脑图上画出来
+
+	public void fillCells(Frog f, Organ o); // 根据给定organ的参数，在shape所代表的脑区内播种脑细胞
+
+	public void createRooms(Frog f, Organ o); // 根据给定organ的参数，在shape所代表的脑区内仅创建空的Room对象
 }

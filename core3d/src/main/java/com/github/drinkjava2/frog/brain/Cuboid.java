@@ -69,4 +69,10 @@ public class Cuboid implements Shape {
 				}
 	}
 
+	public void createRooms(Frog f, Organ o) {
+		for (int i = x; i < x + xe; i++)
+			for (int j = y; j < y + ye; j++)
+				for (int k = z; k < z + ze; k++)
+					f.getOrCreateRoom(i, j, k);
+	}
 }

@@ -99,7 +99,7 @@ public class Room {
 		if (room != null) {
 			room.addPhoton(p);
 		} else {
-			//p.energy *= .6;// 真空中也要乘一个衰减系数，防止它走太远，占用计算资源
+			// p.energy *= .6;// 真空中也要乘一个衰减系数，防止它走太远，占用计算资源
 			photonWalk(f, p);// 递归，一直走下去，直到遇到room或出界
 		}
 	}
@@ -107,16 +107,16 @@ public class Room {
 	/** Move photons and call cell's execute method */
 	public void execute(Frog f, int activeNo, int x, int y, int z) {// 主运行方法，进行实际的脑细经元的行为和光子移动
 		if (cells != null)
-			for (Cell cell : cells) // cell会生成或处理掉所在room的光子
-				CellActions.act(f, this, cell, x, y, z);
-		// 剩下的，或由细胞新产生的光子，自已会走到下一格，光子自己是会走的，而且是直线传播
+			for (Cell cell : cells)
+				CellActions.act(f, activeNo, this, cell, x, y, z); // 调用每个细胞的act方法，处理掉所在room的光子
+		// 剩下的光子自已会走到下一格，光子自己是会走的，而且是直线传播
 		if (photons != null)
 			for (int i = 0; i < photons.length; i++) {
 				Photon p = photons[i];
-				if (p == null || p.activeNo == activeNo)// 同一轮的不再走了
+				if (p == null || p.activeNo == activeNo)// 同一轮新产生的光子或处理过的光子不再走了
 					continue;
 				p.activeNo = activeNo;
-				removePhoton(i);// 原来的位置的先清除，设为null
+				removePhoton(i);// 原来的位置的先清除，去除它的Java对象引用
 				photonWalk(f, p); // 让光子自已往下走
 			}
 	}

@@ -10,6 +10,8 @@ import static java.lang.Math.sin;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
@@ -21,19 +23,22 @@ import com.github.drinkjava2.frog.util.ColorUtils;
  * BrainPicture show first frog's brain structure, for debug purpose only
  * 
  * 这个类用来画出脑图，这不是一个关键类，对脑的运行逻辑无影响，但有了脑图后可以直观地看出脑的3维结构，进行有针对性的改进
+ * 可以用鼠标进行平移、缩放、旋转，以及t、f、l、r,x五个键来选择顶视、前视、左视、右视、斜视这5个方向的视图
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 @SuppressWarnings("all")
 public class BrainPicture extends JPanel {
+	private static final float d90 = (float) (Math.PI / 2);
+
 	Color picColor = RED;
 	int brainDispWidth; // screen display piexls width
 	float scale; // brain scale
 	int xOffset = 0; // brain display x offset compare to screen
 	int yOffset = 0; // brain display y offset compare to screen
-	float xAngle = (float) (Math.PI / 2.5); // brain rotate on x axis
-	float yAngle = -(float) (Math.PI / 8); // brain rotate on y axis
+	float xAngle = d90 * .8f; // brain rotate on x axis
+	float yAngle = d90 / 4; // brain rotate on y axis
 	float zAngle = 0;// brain rotate on z axis
 
 	public BrainPicture(int x, int y, float brainWidth, int brainDispWidth) {
@@ -43,9 +48,42 @@ public class BrainPicture extends JPanel {
 		scale = 0.7f * brainDispWidth / brainWidth;
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 		MouseAction act = new MouseAction(this);
-		this.addMouseListener(act);
-		this.addMouseWheelListener(act);
-		this.addMouseMotionListener(act);
+		this.addMouseListener(act); // 添加鼠标动作监听
+		this.addMouseWheelListener(act);// 添加鼠标滚轮动作监听
+		this.addMouseMotionListener(act);// 添加鼠标移动动作监听
+		this.setFocusable(true);
+		addKeyListener(new KeyAdapter() {// 处理t,f,l,r，x键盘命令
+			public void keyPressed(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				case 'T':// 顶视
+					xAngle = 0;
+					yAngle = 0;
+					zAngle = 0;
+					break;
+				case 'F':// 前视
+					xAngle = d90;
+					yAngle = 0;
+					zAngle = 0;
+					break;
+				case 'L':// 左视
+					xAngle = d90;
+					yAngle = d90;
+					zAngle = 0;
+					break;
+				case 'R':// 右视
+					xAngle = d90;
+					yAngle = -d90;
+					zAngle = 0;
+					break;
+				case 'X':// 斜视
+					xAngle = d90 * .8f;
+					yAngle = d90 / 4;
+					zAngle = 0;
+					break;
+				default:
+				}
+			}
+		});
 	}
 
 	public void drawCuboid(Cuboid c) {// 在脑图上画一个长立方体框架，视角是TopView
