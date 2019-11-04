@@ -10,23 +10,19 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import java.io.Serializable;
-
-import com.github.drinkjava2.frog.Frog;
-
 /**
- * Shape represents a 3d zone in brain
+ * Action is the action of cell, one cell can have multiple actions
  * 
- * Shape用来表示脑内器官的形状,一个器官只能有一个shape
+ * Action是细胞的行为，一个细胞Cell可以拥用多个action
  * 
  * @author Yong Zhu
  * @since 2.0.2
  */
-public interface Shape extends Serializable {
-	/* Draw self on brain picture */
-	public void drawOnBrainPicture(BrainPicture pic); // 把自己在脑图上画出来
+public class Action { 
+	public Organ organ; // 细胞属于哪个器官
 
-	public void fillCellsWithAction(Frog f, Organ o); // 根据给定organ的参数，在shape所代表的脑区内添加脑细胞并加入对应细胞的行为
+	public Action(Organ organ) {// Action不保存在蛋里，不需要定义空构造器
+		this.organ = organ;
+	}
 
-	public void createCells(Frog f, Organ o); // 在organ所代表的脑区内仅创建空的Cell对象
 }

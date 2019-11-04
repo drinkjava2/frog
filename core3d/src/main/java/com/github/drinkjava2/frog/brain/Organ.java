@@ -55,8 +55,8 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	// 以下是各种器官类型，每个神经元都属于一个器官，每个器官都有一个type类型参数
 	public static final int EMPTY = 0;// 空细胞，不处理光子
-	public static final int EYE = 1;// 眼细胞，会根据room激活度产生发散到各个方向的光子
-	public static final int EAR = 2;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活room
+	public static final int EYE = 1;// 眼细胞，会根据cell激活度产生发散到各个方向的光子
+	public static final int EAR = 2;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活cell
 	public static final int CORE = 3; // 什么触突都没有，光溜溜的细胞，但它也有可能根据r半径来中转光子
 	public static final int DYNAMIC = 4; // 只有动态触突的细胞，它忽略静态触突参数
 	public static final int STATIC = 5; // 只有静态触突的细胞，它忽略动态触突参数
@@ -75,7 +75,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	public Shape shape; // 器官的形状，不同的形状要写出不同的播种行为
 
-	public float cellDistance; // 细胞播种间隔，每隔多少个room放一个细胞
+	public float cellDistance; // 细胞播种间隔，每隔多少个cell放一个action
 
 	public float centerDensityRate; // 中心相对于边沿的细胞播种密度比，为1时为均匀分布
 
@@ -146,7 +146,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public void init(Frog f) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
 		// 里是器官播种脑细胞的具体代码,对于手工生成的器官，也可以重写这个方法，对于自动生成的器官，必须根据type和shape等来播种，要写死在这里
 		if (shape != null)
-			shape.fillCells(f, this); // 先均匀播种脑细胞试试
+			shape.fillCellsWithAction(f, this); // 先均匀播种脑细胞试试
 	}
 
 	/** each step will call Organ's active methodd */

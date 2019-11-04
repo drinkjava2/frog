@@ -43,11 +43,11 @@ public class Eye extends Organ {// 眼睛是长方体
 		int h = pixels[0].length;
 		Cuboid c = (Cuboid) shape;
 
-		// 在视网膜上产生字母像素点阵，即激活这个脑视网膜所在的rooms区，然后由器官播种出的脑细胞负责将激活能量转为光子输送、存贮到其它位置
+		// 在视网膜上产生字母像素点阵，即激活这个脑视网膜所在的cells区，然后由器官播种出的脑细胞负责将激活能量转为光子输送、存贮到其它位置
 		for (int px = 0; px < w; px++)
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
-					f.getOrCreateRoom(0, c.y + c.ye - px, c.z + py).setActive(100);
+					f.getOrCreateCell(0, c.y + c.ye - px, c.z + py).setActive(100);
 	}
 
 }

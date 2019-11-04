@@ -178,13 +178,13 @@ public class BrainPicture extends JPanel {
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
-	/** 画出Room的中心点，通常用来显示器官的激活区 */
-	public void drawRoomCenter(float x, float y, float z) {
+	/** 画出cell的中心点，通常用来显示器官的激活区 */
+	public void drawCellCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
 	}
 
-	/** 画出Room的中心小点，通常用来显示光子 */
-	public void drawRoomSmallCenter(float x, float y, float z) {
+	/** 画出cell的中心小点，通常用来显示光子 */
+	public void drawCellSmallCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .15)));
 	}
 
@@ -241,18 +241,18 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 0, 0, 1);
 
 		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {// 开始画整个脑空间的光子和激活点阵图
-			if (f.rooms[x] != null)
+			if (f.cells[x] != null)
 				for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
-					if (f.rooms[x][y] != null)
+					if (f.cells[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
-							Room room = f.getRoom(x, y, z);
-							if (room != null) {
-								if (room.getActive() > 0) {
-									setPicColor(ColorUtils.rainbowColor(room.getActive()));
-									drawRoomCenter(x, y, z);
-								} else if (room.getPhotonQty() > 0) {
-									setPicColor(ColorUtils.colorByCode(room.getColor()));
-									drawRoomSmallCenter(x, y, z);
+							Cell cell = f.getCell(x, y, z);
+							if (cell != null) {
+								if (cell.getActive() > 0) {
+									setPicColor(ColorUtils.rainbowColor(cell.getActive()));
+									drawCellCenter(x, y, z);
+								} else if (cell.getPhotonQty() > 0) {
+									setPicColor(ColorUtils.colorByCode(cell.getColor()));
+									drawCellSmallCenter(x, y, z);
 								}
 							}
 						}

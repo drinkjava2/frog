@@ -15,7 +15,7 @@ import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Dynamic organ fill rooms with dynamic type cells
+ * Dynamic organ fill cells with dynamic type action
  * 
  * Dynamic均匀地在所属器官内部播种类型为dynamic的脑细胞，也就是说细胞的所有触突是动态生成的，这是个临时
  * 器官，试图模拟出波的驻点逆向成像，不清楚在没有引入更复杂的器官之前，是否仅凭单一的动态细胞加上其内部神经元参数的调整就可以形成复杂的网络，完成

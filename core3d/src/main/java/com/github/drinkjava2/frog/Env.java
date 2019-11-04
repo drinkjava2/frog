@@ -38,7 +38,7 @@ public class Env extends JPanel {
 
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
-	/** Frog's brain size is a 3D array of Room */ // 脑空间是个三维Room数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
+	/** Frog's brain size is a 3D array of Cell */ // 脑空间是个三维Cell数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
 	public static final int FROG_BRAIN_XSIZE = 30; // frog的脑在X方向长度
 	public static final int FROG_BRAIN_YSIZE = 20; // frog的脑在Y方向长度
 	public static final int FROG_BRAIN_ZSIZE = 25; // frog的脑在Z方向长度
@@ -241,7 +241,7 @@ public class Env extends JPanel {
 				Application.brainPic.drawBrainPicture(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
-					f.rooms = null; // 清空frog脑细胞所占用的内存
+					f.cells = null; // 清空frog脑细胞所占用的内存
 				}
 				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")
 						.append(screen).append(", ").append(foodFoundCountText()).append(", 用时: ")

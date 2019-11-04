@@ -37,23 +37,23 @@ public class CellActions {
 	 * 一对多，拆分，入射光子被拆分成多个光子，发散角与器官相关 
 	 * 多对一，聚合，入射光子被触突捕获
 	 */
-	public static void act(Frog f, int actionNo, Room room, Cell cell, int x, int y, int z) {
-		Organ o = cell.organ;
+	public static void act(Frog f, int actionNo, Cell cell, Action action, int x, int y, int z) {
+		Organ o = action.organ;
 		switch (o.type) { // 添加细胞的行为，这是硬编码
-		case Organ.EYE: // 如果是视网膜细胞，它的行为是将Room的激活能量转化为向右的多个光子发散出去，模拟波源
-			if (room.getActive() > 0 && RandomUtils.percent(30)) {
+		case Organ.EYE: // 如果是视网膜细胞，它的行为是将Cell的激活值转化为向右的多个光子发散出去，模拟波源
+			if (cell.getActive() > 0 && RandomUtils.percent(30)) {
 				for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
 					for (float zz = -0.3f; zz <= 0.3f; zz += 0.1) {
-						room.addPhoton(new Photon(o.color, x, y, z, 1.0f, yy, zz, 100f));
+						cell.addPhoton(new Photon(o.color, x, y, z, 1.0f, yy, zz, 100f));
 					}
 				}
 			}
 			break;
-		case Organ.EAR: // 如果是听力细胞，它的行为是将Room的激活能量转化为向下的多个光子发散出去，模拟波源
-			if (room.getActive() > 0 && RandomUtils.percent(30)) {
+		case Organ.EAR: // 如果是听力细胞，它的行为是将cell的激活能量转化为向下的多个光子发散出去，模拟波源
+			if (cell.getActive() > 0 && RandomUtils.percent(30)) {
 				for (float xx = -0.3f; xx <= 0.3f; xx += 0.13) {// 形成一个扇面向下发送
 					for (float yy = -0.3f; yy <= 0.3f; yy += 0.13) {
-						room.addPhoton(new Photon(o.color, x, y, z, xx, yy, -1, 100f));
+						cell.addPhoton(new Photon(o.color, x, y, z, xx, yy, -1, 100f));
 					}
 				}
 			}
