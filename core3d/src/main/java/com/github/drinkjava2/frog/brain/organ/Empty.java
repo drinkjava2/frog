@@ -11,12 +11,11 @@
 package com.github.drinkjava2.frog.brain.organ;
 
 import com.github.drinkjava2.frog.Env;
-import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Empty is a special organ has no cell, only used as media for photon
+ * Empty is a special organ has no action, only used as media for photon
  * 
  * Empty这个器官唯一目的只是充当光子媒介初始化cell单元格数组，否则光子如果没遇到cell会一直走下出，从脑图上就观察不到光子了
  * 
@@ -32,11 +31,6 @@ public class Empty extends Organ {
 		this.type = Organ.EMPTY; // Empty这个器官并不播种cell,它存在的唯一目的只是充当光子媒介，否则光子会一直走下去消失
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
-	}
-
-	@Override
-	public void init(Frog f) {// 覆盖父类方法，不添加cell的action，只是创建空的cell
-		shape.createCells(f, this);
 	}
 
 }

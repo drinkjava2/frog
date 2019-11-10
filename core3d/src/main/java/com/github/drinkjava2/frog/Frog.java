@@ -18,9 +18,11 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.github.drinkjava2.frog.brain.Cell;
+import com.github.drinkjava2.frog.brain.CellActions;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.Cell;
+import com.github.drinkjava2.frog.brain.Photon;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
 
@@ -71,8 +73,9 @@ public class Frog {
 			this.alive = false;
 			return;
 		}
-		for (Organ org : organs)
-			org.init(this);
+		for (int i = 0; i < organs.size(); i++) {
+			organs.get(i).init(this, i);
+		}
 	}
 
 	/** Find a organ in frog by organ's name */
@@ -129,8 +132,21 @@ public class Frog {
 					if (cells[i][j] != null)
 						for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
 							Cell cell = cells[i][j][k];
-							if (cell != null && cell.getActions() != null)
-								cell.execute(this, activeNo, i, j, k);// 调用cell的方法来进行这个运算
+							if (cell != null) {
+								if (cell.organs != null)
+									for (int orgNo : cell.organs)
+										CellActions.act(this, activeNo, orgNo, cell, i, j, k); // 调用每个细胞的act方法
+								if (cell.photons != null) {
+									for (int ii = 0; ii < cell.photons.length; ii++) {
+										Photon p = cell.photons[ii];
+										if (p == null || p.activeNo == activeNo)// 同一轮新产生的光子或处理过的光子不再走了
+											continue;
+										p.activeNo = activeNo;
+										cell.removePhoton(ii);// 原来的位置的先清除，去除它的Java对象引用
+										cell.photonWalk(this, p); // 让光子自已往下走
+									}
+								}
+							}
 						}
 		return alive;
 	}
@@ -169,4 +185,5 @@ public class Frog {
 		return x < 0 || x >= Env.FROG_BRAIN_XSIZE || y < 0 || y >= Env.FROG_BRAIN_YSIZE || z < 0
 				|| z >= Env.FROG_BRAIN_ZSIZE;
 	}
+
 }

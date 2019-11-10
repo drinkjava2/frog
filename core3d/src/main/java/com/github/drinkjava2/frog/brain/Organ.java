@@ -32,20 +32,20 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * 自变异，就有可能形成弯的传导路径或更复杂的网络结构。看起来复杂，但大自然可以做到比这更复杂的进化逻辑，先假设大自然是万能的，只要是有用的
  * 变异逻辑，就有可能出现。
  * 
- * 器官描述细胞的形状和行为，其中触突数量和参数是有可能随机变异的。行为则是硬编码不可以变异，模拟单个神经元的逻辑，不同的细胞有不同的
+ * 器官描述细胞的形状和行为，其中洞数量和参数是有可能随机变异的。行为则是硬编码不可以变异，模拟单个神经元的逻辑，不同的细胞有不同的
  * 行为，通过type来区分，虽然行为不可以变异，但是可以写出尽可能多种不同的行为（貌似神经元的活动也只有有限的几种)，由生存竟争来筛选。
  * 
  * 器官通常是单例，每个脑细胞都指向某个器官单例，器官这个单例参与神经活动时是无状态的，有状态的神经元的参数是保存在Cell中而不是器官中,这种设计是为了减少
  * Cell的内存占用
  * 
  * 信息（光子）的逻辑：
- * 能量上限很低的细胞，相当于信息的中转站，来多少光子就转发多少光子;能量上限高的细胞，可以起到记忆作用，它的原理是多个触突、反复累集的光子能量，
- * 可以在收到某个方向光子的信号后短暂释放，以这个细胞中为心形成一个新的波源，波的发散方向就是触突的分布方向，只有位于波的驻点位置的细胞才会吸收和释放更多
+ * 能量上限很低的细胞，相当于信息的中转站，来多少光子就转发多少光子;能量上限高的细胞，可以起到记忆作用，它的原理是多个洞、反复累集的光子能量，
+ * 可以在收到某个方向光子的信号后短暂释放，以这个细胞中为心形成一个新的波源，波的发散方向就是洞的分布方向，只有位于波的驻点位置的细胞才会吸收和释放更多
  * 能量,光子总是直线传播，不在合适交点(波的驻点)位置的细胞吸收不到能量。
  * 
- * 光子自带传播方向，并在每个测试步长中自动走一格，为什么还需要脑细胞的静态触突和动态触突？<br/>
- * 因为光子只能直线传播，而触突具有分发、产生、收集、改变光子方向、远距传输光子等作用，能增加脑的复杂，在器官中的触突是无状态的，只能进行简单的信号传导、发
- * 散、会聚等处理,而cell中根据光子的方向动态生成的触突更是智能的基石，它能将有关联关系的 重复光子信号从海量的自然界噪声信号中分离保存下来。
+ * 光子自带传播方向，并在每个测试步长中自动走一格，为什么还需要脑细胞的静态洞和动态洞？<br/>
+ * 因为光子只能直线传播，而洞具有分发、收集、改变光子方向等作用，能增加脑的复杂，在器官中的洞是无状态的，只能进行简单的信号传导、发
+ * 散、会聚等处理,而cell中根据光子的方向动态生成的洞是智能的基石，它能将有关联关系的 重复光子信号从海量的自然界噪声信号中抽取出来产生关联。
  * 
  * @author Yong Zhu
  * @since 1.0.4
@@ -57,13 +57,12 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public static final int EMPTY = 0;// 空细胞，不处理光子
 	public static final int EYE = 1;// 眼细胞，会根据cell激活度产生发散到各个方向的光子
 	public static final int EAR = 2;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活cell
-	public static final int CORE = 3; // 什么触突都没有，光溜溜的细胞，但它也有可能根据r半径来中转光子
-	public static final int DYNAMIC = 4; // 只有动态触突的细胞，它忽略静态触突参数
-	public static final int STATIC = 5; // 只有静态触突的细胞，它忽略动态触突参数
-	public static final int MIX = 6; // 同时具有静态和动态触突的细胞
-	public static final int TYPE_QTY = 7;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
-	public int color = 1;// 这个不重要，表示它生成的光子的显示在脑图中的颜色号，见ColorUtils
+	public static final int DYNAMIC = 3; // 只有动态洞的细胞，它忽略静态洞参数
+	public static final int STATIC = 4; // 只有静态洞的细胞，它忽略动态洞参数
+	public static final int MIX = 5; // 同时具有静态和动态洞的细胞
+	public static final int TYPE_QTY = 6;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
 
+	public int color = 1;// 这个不重要，表示它生成的光子的显示在脑图中的颜色号，见ColorUtils
 	public float fat = 0;// 细胞活跃多，则fat值大，如果fat值很低，则这个器官被丢弃的可能性加大，这个值很重要，它使得孤岛器官被淘汰
 	public boolean allowVary;// 是否允许变异，有一些器官是手工创建的，在项目初级阶段禁止它们参与变异和生存竟争。
 	public boolean allowBorrow;// 是否允许在精子中将这个器官借出，有一些器官是手工创建的，在项目初级阶段禁止它们借出
@@ -79,7 +78,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	public float centerDensityRate; // 中心相对于边沿的细胞播种密度比，为1时为均匀分布
 
-	public int synapsesLimit;// 细胞允许创建动态触突的数量上限，详见Cell类的synapses字段
+	public int holeLimit;// 细胞允许创建动态洞的数量上限，详见Cell类的holes.字段
 
 	public float energyLimit;// 细胞能量上限，当能量超过能存贮的上限，多余的光子能量将不被细胞吸收，直接煙灭或以光子的形式转发出去
 
@@ -91,14 +90,12 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	public float inputDoor;// 接收阀值，接收的能量小于这个阀值时，细胞不会吸收这份能量，直接煙灭或以光子的形式转发出去
 
-	public float radius;// 细胞即使没有触突，也可以处理光子，这个radius是细胞的管辖半径，但处理信号角度只限于穿透和反射或6个正方向
+	public float radius;// 细胞即使没有洞，也可以处理光子，这个radius是细胞的管辖半径，但处理信号角度只限于穿透和反射或6个正方向
 
 	public float dropRate;// 是一个介于0~1的值，反映了细胞存贮能量的下降速率，在每一步长中细胞能量都以这个速率损失，可以参考遗忘曲线
 
-	// =====注意以下三个字段可以让细胞具备一些无状态的触突，这个不占内存，但缺点是不灵活，不智能，详见与Cell类中动态触突的对比 =====
-	public Synapse[] inputs; // 输入触突，位置是相对细胞而言的
-	public Synapse[] sides; // 侧面（通常是抑制，是负光子输出)输出触突，从脉冲神经网络学习到有这种侧向抑制
-	public Synapse[] outputs; // 输出触突
+	// =====注意以下三个字段可以让细胞具备一些固定角度的洞，这个不占内存，但缺点是不灵活，不智能，详见与Cell类中动态洞的对比 =====
+	public Hole[] holes; // 输出洞
 
 	public Organ() {// 缺省构造器，生成具有缺省参数但没有形状的器官
 		allowVary = true;
@@ -106,7 +103,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 		type = 0;
 		cellDistance = 1;
 		centerDensityRate = 1;
-		synapsesLimit = 10;
+		holeLimit = 10;
 		energyLimit = 100;
 		outputRate = 30;
 		outputDoor = 30;
@@ -114,9 +111,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 		inputDoor = 5;
 		radius = 1;
 		dropRate = 95;
-		inputs = null;
-		sides = null;
-		outputs = null;
+		holes = null;
 	}
 
 	/** Only call once after organ be created */
@@ -128,7 +123,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 		shape = RandomUtils.vary(shape);
 		cellDistance = RandomUtils.vary(cellDistance);
 		centerDensityRate = RandomUtils.vary(centerDensityRate);
-		synapsesLimit = RandomUtils.vary(synapsesLimit);
+		holeLimit = RandomUtils.vary(holeLimit);
 		energyLimit = RandomUtils.vary(energyLimit);
 		outputRate = RandomUtils.vary(outputRate);
 		outputDoor = RandomUtils.vary(outputDoor);
@@ -136,17 +131,15 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 		inputDoor = RandomUtils.vary(inputDoor);
 		radius = RandomUtils.vary(radius);
 		dropRate = RandomUtils.vary(dropRate);
-		inputs = RandomUtils.vary(inputs);
-		sides = RandomUtils.vary(sides);
-		outputs = RandomUtils.vary(outputs);
+		holes = RandomUtils.vary(holes);
 		return new Organ[] { this };
 	}
 
 	/** Only call once when frog created , Child class can override this method */
-	public void init(Frog f) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
+	public void init(Frog f, int oIndex) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
 		// 里是器官播种脑细胞的具体代码,对于手工生成的器官，也可以重写这个方法，对于自动生成的器官，必须根据type和shape等来播种，要写死在这里
 		if (shape != null)
-			shape.fillCellsWithAction(f, this); // 先均匀播种脑细胞试试
+			shape.createCellsRegOrgan(f, oIndex); // 先均匀播种脑细胞试试
 	}
 
 	/** each step will call Organ's active methodd */

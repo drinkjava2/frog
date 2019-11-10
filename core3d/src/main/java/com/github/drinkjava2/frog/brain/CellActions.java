@@ -30,16 +30,18 @@ public class CellActions {
 	 * 编码，所以要准备多套不同的行为（可以参考动物脑细胞的活动逻辑)，然后抛给电脑去随机筛选，不怕多。
 	 * 
 	 * 举例来说，以下是一些假想中的脑细胞行为：
-	 * 一对一，穿透，光子会穿过细胞，细胞起到中继站的作用，如果没有细胞中继，光子在真空中传播(即三维数组的当前坐标没有初始化，为空值)会迅速衰减
+	 * 一对一，穿透，光子会穿过细胞，细胞起到中继站的作用，如果没有细胞中继，光子在真空中传播(即三维数组的当前坐标没有初始化)会迅速衰减
 	 * 一对一，转向，光子传播角度被改变成另一个绝对角度发出
 	 * 一对一，转向，光子传播角度被改变成与器官有关的角度发出，可以模拟光线的发散(如视网膜细胞)和聚焦(如脑内成像，即沿光线发散的逆路径)
 	 * 一对多，拆分，入射光子被拆分成多个光子，以一定的发散角发出，通常发散光子的总能量小于入射+细胞输出能量之和
 	 * 一对多，拆分，入射光子被拆分成多个光子，发散角与器官相关 
 	 * 多对一，聚合，入射光子被触突捕获
 	 */
-	public static void act(Frog f, int actionNo, Cell cell, Action action, int x, int y, int z) {
-		Organ o = action.organ;
+	public static void act(Frog f, int activeNo, int orgNo, Cell cell, int x, int y, int z) {
+		Organ o = f.organs.get(orgNo);
 		switch (o.type) { // 添加细胞的行为，这是硬编码
+		case Organ.EMPTY: // 如果是WALK细胞，它的行为是让每个光子穿过这个细胞走到下一格，保持直线运动不变
+			break;
 		case Organ.EYE: // 如果是视网膜细胞，它的行为是将Cell的激活值转化为向右的多个光子发散出去，模拟波源
 			if (cell.getActive() > 0 && RandomUtils.percent(30)) {
 				for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
@@ -57,10 +59,6 @@ public class CellActions {
 					}
 				}
 			}
-
-			break;
-		case Organ.DYNAMIC:// 如果是动态细胞，它的行为是。。。比较复杂，一言难尽。
-
 			break;
 		default:
 			break;

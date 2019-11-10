@@ -19,8 +19,8 @@ import java.util.Random;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.brain.Cone;
 import com.github.drinkjava2.frog.brain.Cuboid;
+import com.github.drinkjava2.frog.brain.Hole;
 import com.github.drinkjava2.frog.brain.Shape;
-import com.github.drinkjava2.frog.brain.Synapse;
 
 /**
  * Random Utilities used in this project
@@ -29,6 +29,10 @@ import com.github.drinkjava2.frog.brain.Synapse;
  * @since 1.0
  */
 public class RandomUtils {
+
+	private RandomUtils() {
+	}
+
 	private static final Random rand = new Random();
 
 	public static int nextInt(int i) {
@@ -121,8 +125,8 @@ public class RandomUtils {
 		return shape; // TODO shape的变异
 	}
 
-	public static Synapse[] vary(Synapse[] synapses) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		return synapses; // TODO synapses的变异
+	public static Hole[] vary(Hole[] holes) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+		return holes; // TODO holes的变异
 	}
 
 }

@@ -59,17 +59,17 @@ public class Cuboid implements Shape {
 	}
 
 	@Override
-	public void fillCellsWithAction(Frog f, Organ o) {
-		for (int i = x; i < x + xe; i++)// 这是具体的播种脑细胞代码，先忽略密度分布等参数
+	public void createCellsRegOrgan(Frog f, int o) {// 创建Cell并登记Organ， 先忽略密度分布等参数
+		for (int i = x; i < x + xe; i++)
 			for (int j = y; j < y + ye; j++)
 				for (int k = z; k < z + ze; k++) {
 					Cell cell = f.getOrCreateCell(i, j, k);
 					if (cell != null)
-						cell.addAction(new Action(o));
+						cell.regOrgan(o);
 				}
 	}
 
-	public void createCells(Frog f, Organ o) {
+	public void createCells(Frog f) {// 创建Cell， 先忽略密度分布等参数
 		for (int i = x; i < x + xe; i++)
 			for (int j = y; j < y + ye; j++)
 				for (int k = z; k < z + ze; k++)

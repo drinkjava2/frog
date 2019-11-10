@@ -13,17 +13,17 @@ package com.github.drinkjava2.frog.brain;
 import java.io.Serializable;
 
 /**
- * Synapse can be input, output, side synapse
+ * Hole can be input, output, side synapse
  * 
- * 触突
+ * 以前叫突触，现在改名叫洞，更形象一点，每个光子传来就好象在果冻上砸出个洞。管它符不符合生物脑突触这个形象，张牙舞爪的神经元变成了千创百孔的果冻，先乱试一通再说。
  * 
  * @author Yong Zhu
  * @since 2.0.2
  */
-public class Synapse implements Serializable {
+public class Hole implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public float x; // 这个触突相对于细胞的x偏移坐标
-	public float y;// 这个触突相对于细胞的y偏移坐标
-	public float z;// 这个触突相对于细胞的z偏移坐标
-	public float r; // 这个触突的作用范围
+	public float x; // x,y,z分别是 这个洞角度在三个轴上的投影
+	public float y;
+	public float z;
+	public float size;// 洞的大小，同一个方向砸来的光子越多，洞就越大
 }

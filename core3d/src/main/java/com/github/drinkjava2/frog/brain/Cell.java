@@ -25,33 +25,21 @@ import com.github.drinkjava2.frog.Frog;
  */
 public class Cell {
 	/** Active of current cell */
-	private float active = 0; // 这个cell的激活程度，允许是负值,它反映了在这个小立方体里所有光子的能量汇总值
+	private float active = 0; // 这个cell的激活程度，允许是负值,它反映了在这个cell里所有光子的能量汇总值
 
-	private Action[] actions = null;
+	public int[] organs = null; //// 每个Cell可以被多个Organ登记，这里保存organ在蛋里的序号
 
-	private Photon[] photons = null;
+	public Photon[] photons = null;// 光子
 
 	private int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
 
 	private int photonQty = 0;
 
-	public Action[] getActions() {// 为了节约内存，仅在访问actions时创建它的实例
-		if (actions == null)
-			actions = new Action[] {};
-		return actions;
-	}
-
-	public Photon[] getPhotons() {// 为了节约内存，仅在访问photons时创建它的实例
-		if (photons == null)
-			photons = new Photon[] {};
-		return photons;
-	}
-
-	public void addAction(Action cell) {// 每个Cell可以存在多个行为，通常只在青蛙初始化器官时调用这个方法
-		if (actions == null)
-			actions = new Action[] {};
-		actions = Arrays.copyOf(actions, actions.length + 1);
-		actions[actions.length - 1] = cell;
+	public void regOrgan(int action) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
+		if (organs == null)
+			organs = new int[] {};
+		organs = Arrays.copyOf(organs, organs.length + 1);
+		organs[organs.length - 1] = action;
 	}
 
 	public void addPhoton(Photon p) {// 每个cell空间可以存在多个光子
@@ -103,23 +91,6 @@ public class Cell {
 			// p.energy *= .6;// 真空中也要乘一个衰减系数，防止它走太远，占用计算资源
 			photonWalk(f, p);// 递归，一直走下去，直到遇到cell或出界
 		}
-	}
-
-	/** Move photons and call cell's execute method */
-	public void execute(Frog f, int activeNo, int x, int y, int z) {// 主运行方法，进行实际的脑细经元的行为和光子移动
-		if (actions != null)
-			for (Action action : actions)
-				CellActions.act(f, activeNo, this, action, x, y, z); // 调用每个细胞的act方法，处理掉所在cell的光子
-		// 剩下的光子自已会走到下一格，光子自己是会走的，而且是直线传播
-		if (photons != null)
-			for (int i = 0; i < photons.length; i++) {
-				Photon p = photons[i];
-				if (p == null || p.activeNo == activeNo)// 同一轮新产生的光子或处理过的光子不再走了
-					continue;
-				p.activeNo = activeNo;
-				removePhoton(i);// 原来的位置的先清除，去除它的Java对象引用
-				photonWalk(f, p); // 让光子自已往下走
-			}
 	}
 
 	public float getActive() {// 获取cell的激活度

@@ -36,6 +36,7 @@ public class Application {
 			if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
 				y = Env.FROG_BRAIN_DISP_WIDTH + 41;
 			mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
+			brainPic.requestFocus();
 		} else {
 			button.setText("Show brain");
 			mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100);
@@ -78,6 +79,7 @@ public class Application {
 					stopButton.setText("Resume");
 				} else {
 					stopButton.setText("Pause");
+					brainPic.requestFocus();
 				}
 			}
 		};
