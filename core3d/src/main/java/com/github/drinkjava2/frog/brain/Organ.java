@@ -68,15 +68,15 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public boolean allowBorrow;// 是否允许在精子中将这个器官借出，有一些器官是手工创建的，在项目初级阶段禁止它们借出
 	public String organName;// 器官的名字，通常只有手工创建的器官才有名字，可以用frog.findOrganByName来查找到这个器官
 
-	// ======= 本行以下所有参数受变异和生存竟争影响 =============
+	// ======= 本行以下是一些假设的参数，受变异和生存竟争影响 ，并通过大样本数、随机变异、生存竟争来进行多参数的优化选择 ========
 
 	public int type; // 器官类型，见上面的常量定义，这个字段通常很稳定。一旦变异，将从根本上改变器官的播种行为和神经元的行为
 
 	public Shape shape; // 器官的形状，不同的形状要写出不同的播种行为
 
-	public float cellDistance; // 细胞播种间隔，每隔多少个cell放一个action
+	public float cellDistance; // 细胞播种间隔，每隔多少个cell进行器官行为的播种
 
-	public float centerDensityRate; // 中心相对于边沿的细胞播种密度比，为1时为均匀分布
+	public float centerDensityRate; // 中心相对于边沿的播种密度比，为1时为均匀分布
 
 	public int holeLimit;// 细胞允许创建动态洞的数量上限，详见Cell类的holes.字段
 

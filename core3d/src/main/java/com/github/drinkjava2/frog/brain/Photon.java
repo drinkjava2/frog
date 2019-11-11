@@ -31,6 +31,7 @@ public class Photon {
 	public float energy;
 	public int color;// 每个光子都有自已的颜色，由产生光子的器官的颜色来决定,颜色不重要，但能方便观察
 	public int activeNo;// 每一轮循环都有一个编号，光子走一格后就加上这个编号，同一个循环如果遇到相同编号的光子就跳过，防止光子被一直赶着走
+	public boolean goBack = false; // 是否是往回走的光子，这种光子不参与撞出新的光子
 
 	public Photon() { // 缺省构造器
 	}

@@ -15,6 +15,7 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.util.ColorUtils;
 
 /**
  * Ear can accept letter information input
@@ -37,7 +38,7 @@ public class Ear extends Organ {// 耳朵也是长方体，我为什么要用也
 		this.organName = "ear";
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
-		this.color = 5;// blue， see ColorUtils
+		this.color = ColorUtils.BLUE;
 	}
 
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法

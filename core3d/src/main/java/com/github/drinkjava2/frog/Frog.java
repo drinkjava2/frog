@@ -97,7 +97,7 @@ public class Frog {
 					if (cells[x][y] != null)
 						for (int z = o.z; z < o.z + o.ze; z++)
 							if (cells[x][y][z] != null)
-								getOrCreateCell(x, y, z).setActive(active);
+								getOrCreateCell(x, y, z).setEnergy(active);
 	}
 
 	/** Calculate organ activity by add all organ cells' active value together */
@@ -106,7 +106,7 @@ public class Frog {
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
 				for (int z = o.z; z < o.z + o.ze; z++)
-					activity += this.getOrCreateCell(x, y, z).getActive();
+					activity += this.getOrCreateCell(x, y, z).getEnergy();
 		return activity;
 	}
 
@@ -135,13 +135,13 @@ public class Frog {
 							if (cell != null) {
 								if (cell.organs != null)
 									for (int orgNo : cell.organs)
-										CellActions.act(this, activeNo, orgNo, cell, i, j, k); // 调用每个细胞的act方法
+										CellActions.act(activeNo, organs.get(orgNo), cell, i, j, k); // 调用每个细胞的act方法
 								if (cell.photons != null) {
 									for (int ii = 0; ii < cell.photons.length; ii++) {
 										Photon p = cell.photons[ii];
 										if (p == null || p.activeNo == activeNo)// 同一轮新产生的光子或处理过的光子不再走了
 											continue;
-										p.activeNo = activeNo;
+										p.activeNo = activeNo; 
 										cell.removePhoton(ii);// 原来的位置的先清除，去除它的Java对象引用
 										cell.photonWalk(this, p); // 让光子自已往下走
 									}

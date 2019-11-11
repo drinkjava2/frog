@@ -46,20 +46,20 @@ public class LetterTester implements EnvObject {
 			letter = String.valueOf(STR.charAt(RandomUtils.nextInt(4)));
 			pixels = StringPixelUtils.getSanserif12Pixels(letter);
 		}
-		Frog firstFrog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); 
-		Eye eye = firstFrog.findOrganByName("eye"); 
+		Frog firstFrog = Env.frogs.get(screen * Env.FROG_PER_SCREEN);
+		Eye eye = firstFrog.findOrganByName("eye");
 		eye.seeImage(firstFrog, pixels);
 
 		Ear ear = firstFrog.findOrganByName("ear");
 
-		if (Env.step < Env.STEPS_PER_ROUND / 5*4) {// 前半段同时还要激活与这个字母对应脑区(听觉输入区)
+		if (Env.step < Env.STEPS_PER_ROUND / 2) {// 前半段同时还要激活与这个字母对应脑区(听觉输入区)
 			ear.hearSound(firstFrog, letter);
-		} else if (Env.step == Env.STEPS_PER_ROUND / 5*4) {// 在中段取消字母对应脑区的激活
+		} else if (Env.step == Env.STEPS_PER_ROUND / 2) {// 在中段取消字母对应脑区的激活
 			ear.hearNothing(firstFrog);
-		} else if (Env.step > Env.STEPS_PER_ROUND / 5*4) {// 后半段要检测这个字母区是否能收到光子信号
+		} else if (Env.step > Env.STEPS_PER_ROUND / 2) {// 后半段要检测这个字母区是否能收到光子信号
 			if (firstFrog.getCuboidActiveTotalValue(ear.getCuboidByStr(letter)) > 0)
 				firstFrog.energy += 100;
-			//TODO 然后还要检测其它的区必须没有这个字母的区活跃
+			// TODO 然后还要检测其它的区必须没有这个字母的区活跃，可以算术平均数或总激活能量来比较
 		}
 	}
 

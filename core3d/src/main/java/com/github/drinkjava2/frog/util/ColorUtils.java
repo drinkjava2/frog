@@ -10,15 +10,6 @@
  */
 package com.github.drinkjava2.frog.util;
 
-import static java.awt.Color.BLACK;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.CYAN;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.MAGENTA;
-import static java.awt.Color.ORANGE;
-import static java.awt.Color.RED;
-import static java.awt.Color.YELLOW;
-
 import java.awt.Color;
 
 /**
@@ -28,7 +19,18 @@ import java.awt.Color;
  * @since 1.0
  */
 public class ColorUtils {
-	private static final Color[] rainbow = new Color[] { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
+	public static final int RED = 0;
+	public static final int ORANGE = 1;
+	public static final int YELLOW = 2;
+	public static final int GREEN = 3;
+	public static final int CYAN = 4;
+	public static final int BLUE = 5;
+	public static final int MAGENTA = 6;
+	public static final int GRAY = 7;
+
+	private static final Color[] rainbow = new Color[] { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN,
+			Color.BLUE, Color.MAGENTA,Color.GRAY };
+
 	private static int nextColor = 0;
 
 	private ColorUtils() {// default private constr
@@ -45,24 +47,24 @@ public class ColorUtils {
 	}
 
 	public static Color colorByCode(int i) {// 数值取模后返回一个固定彩虹色
-		return rainbow[i % 7];
+		return rainbow[i % rainbow.length];
 	}
 
 	public static Color rainbowColor(float i) { // 根据数值大小范围，在8种彩虹色中取值
 		if (i == 0)
-			return BLACK;
+			return Color.BLACK;
 		if (i == 1)
-			return RED;
+			return Color.RED;
 		if (i <= 3)
-			return ORANGE;
+			return Color.ORANGE;
 		if (i <= 10)
-			return YELLOW;
+			return Color.YELLOW;
 		if (i <= 20)
-			return GREEN;
+			return Color.GREEN;
 		if (i <= 50)
-			return CYAN;
+			return Color.CYAN;
 		if (i <= 100)
-			return BLUE;
-		return MAGENTA;
+			return Color.BLUE;
+		return Color.MAGENTA;
 	}
 }

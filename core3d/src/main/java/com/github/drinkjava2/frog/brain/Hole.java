@@ -22,8 +22,38 @@ import java.io.Serializable;
  */
 public class Hole implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public float x; // x,y,z分别是 这个洞角度在三个轴上的投影
+	public float x;// x,y,z 是 洞的中心坐标点，这个是脑内的绝对坐标
 	public float y;
 	public float z;
-	public float size;// 洞的大小，同一个方向砸来的光子越多，洞就越大
+	public float mx; // mx,my,mz分别是光子砸出这个洞时的光子每单元移动方向在三个轴上的投影
+	public float my;
+	public float mz;
+	public float size;// 洞的大小，同一个方向砸来的光子越多，能量越大，洞就越大
+
+	public Hole(Photon p) {
+		this.x = p.x;
+		this.y = p.y;
+		this.z = p.z;
+		this.mx = p.mx;
+		this.my = p.my;
+		this.mz = p.mz;
+		this.size = p.energy;
+	}
+
+	public float angleCompare(Photon p) {// 比较洞与光子之间的角度差值
+		return Math.abs(p.mx - mx) + Math.abs(p.my - my) + Math.abs(p.mz - mz);
+	}
+
+	public boolean ifParallel(Photon p) {// 如果光子运动方向与洞平行
+		return (p.mx - mx < 0.0001 && p.my - my < 0.0001 && p.mz - mz < 0.0001)
+				|| (p.mx + mx < 0.0001 && p.my + my < 0.0001 && p.mz + mz < 0.0001);
+	}
+
+	public boolean ifSameWay(Photon p) {// 如果光子运动方向与洞同向
+		return p.mx - mx < 0.0001 && p.my - my < 0.0001 && p.mz - mz < 0.0001;
+	}
+
+	public boolean ifReverseWay(Photon p) {// 如果光子运动方向与洞反向
+		return p.mx + mx < 0.0001 && p.my + my < 0.0001 && p.mz + mz < 0.0001;
+	}
 }

@@ -13,23 +13,34 @@ package com.github.drinkjava2.frog.brain;
 import java.util.Arrays;
 
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.util.ColorUtils;
 
 /**
  * Cell is the smallest unit of brain space, a Cell can have many actions and
  * photons
  * 
- * Cell是脑的最小空间单元，可以存在多个行为(Action)和光子(Photon)，脑是由frog中的cells三维数组组成，但不是每一维都初始化过
+ * Cell是脑的最小空间单元，可以存在多个行为(由organs中的器官代号来表示)和光子(Photon)，脑是由frog中的cells三维数组组成，但不是每一维都初始化过
+ * 
+ * 可以把具备动态触突的神经元比作一个果冻，光子来了,在上面撞了一个坑（hole)并损失能量，如果来的多，或者速度快(能量大)，一部分的光子就被
+ * 从果冻的另一头撞出去了(光直线传播，寻找下一个神经元，增加信息存储单元，实现体全息存贮)。如果在另一个角度又来了新的光子，同样的过程在发生，只不过在撞击的
+ * 过程中，以前被撞出的坑里有可能被撞出光子来，沿着撞击坑的路径直线逆向返回（即波的逆向成像，两个撞击事件，在神经元级别就被关联起来，关联的相关度取决于它们
+ * 撞击坑的大小)，原来的坑越多大，则被撞出来的机率就越大(短期发生的事最先被回忆出来)，随时间流逝，撞击坑也会自动回复(动态触突消失，脑神经又可以接收新的信
+ * 息了)。如果反复地有光子撞击在同一个坑，这个坑就会变大，这个修复的过程会变慢，坑变大了后果就是，即使只有轻微的撞击，也可以很容易将大坑里的光子撞出来（即记忆
+ * 曲线，复习的效果优于单次长时间学习)。在某些位置，撞击太频繁、太强烈,不是在果冻上撞出坑，而是撞出一条通路，光子可以微损耗地通过，就形成了一个个传导通
+ * 道(神经纤维)，直到光子被某个果冻拦截为止。
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class Cell {
 	/** Active of current cell */
-	private float active = 0; // 这个cell的激活程度，允许是负值,它反映了在这个cell里所有光子的能量汇总值
+	private float energy = 0; // 这个cell的激活能量，允许是负值（但暂时只用到正值),它反映了在这个cell里所有光子的能量汇总值
 
 	public int[] organs = null; //// 每个Cell可以被多个Organ登记，这里保存organ在蛋里的序号
 
 	public Photon[] photons = null;// 光子
+
+	public Hole[] holes = null;// 洞（即动态突触），洞由光子产生，洞由时间抹平
 
 	private int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
 
@@ -42,25 +53,80 @@ public class Cell {
 		organs[organs.length - 1] = action;
 	}
 
-	public void addPhoton(Photon p) {// 每个cell空间可以存在多个光子
+	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
 		if (p == null)
 			return;
-		p.energy *= .78;
+		energy += p.energy;
+		if (energy > 100000)
+			energy = 100000;
+		p.energy *= .99;
 		if (p.energy < 0.1)
 			return;
 		photonQty++;
 		color = p.color; // Cell的颜色取最后一次被添加的光子的颜色
-		if (photons == null)
-			photons = new Photon[] {};// 创建数组
-		else
-			for (int i = 0; i < photons.length; i++) { // 找空位插入
+		if (photons == null) {
+			photons = new Photon[] { p };// 创建数组
+			digHole(p);
+			return;
+		} else
+			for (int i = 0; i < photons.length; i++) { // 找空位插入,尽量重复利用内存
 				if (photons[i] == null || photons[i].energy < 0.1) {
 					photons[i] = p;
+					digHole(p);
 					return; // 如找到就插入，返回
 				}
 			}
 		photons = Arrays.copyOf(photons, photons.length + 1);// 否则追加新光子到未尾
 		photons[photons.length - 1] = p;
+		digHole(p);
+	}
+
+	public void digHole(Photon p) {// 根据光子来把洞挖大一点，在挖洞的同时，有可能把别的洞中撞出光子来，反向的洞撞出光子的机率更大，有点象碰球的动量守恒
+		if (p == null || p.goBack)
+			return;
+		if (holes == null) {// 如果没有坑，就新挖一个
+			holes = new Hole[] { new Hole(p) };
+			return;
+		}
+
+		for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子会在不同向的坑上撞出新的光子
+			Hole h = holes[i];
+			if (h != null) {
+				float angle = h.angleCompare(p);
+				if (angle > .9f && energy > 100) {
+					Photon back = new Photon(ColorUtils.RED, h.x, h.y, h.z, -h.mx, -h.my, -h.mz, energy + h.size);
+					back.goBack = true;
+					addPhoton(back);
+					energy -= 100f;
+				}
+			}
+		}
+
+		// 否则不光要扩坑或新挖坑，还要利用这个光子在旧坑里撞出新的光子来
+		boolean foundHole = false;
+		for (int i = 0; i < holes.length; i++) { // 先看看已存在的洞是不是与光子同向，是的话就把洞挖大一点
+			Hole h = holes[i];
+			if (h != null && h.ifSameWay(p)) {
+				foundHole = true;
+				h.size *= 1.2f;
+				if (h.size > 10000)
+					h.size = 10000;
+			}
+		}
+		if (!foundHole)// 如果没找到现在的坑，就在旧坑快平复的地方就地重新开一个洞，以重复利用内存
+			for (int i = 0; i < holes.length; i++) {
+				Hole h = holes[i];
+				if (h == null || h.size < 1) {
+					foundHole = true;
+					holes[i] = new Hole(p);
+					return;
+				}
+			}
+		if (!foundHole) {// 如果还没有找到旧坑，只好挖一个新坑到未尾
+			holes = Arrays.copyOf(holes, holes.length + 1);
+			holes[holes.length - 1] = new Hole(p);
+		}
+
 	}
 
 	public void removePhoton(int i) {// 删第几个光子
@@ -93,12 +159,12 @@ public class Cell {
 		}
 	}
 
-	public float getActive() {// 获取cell的激活度
-		return active;
+	public float getEnergy() {// 获取cell的能量
+		return energy;
 	}
 
-	public void setActive(float active) {// 设cell的激活度
-		this.active = active;
+	public void setEnergy(float energy) {// 设cell的能量
+		this.energy = energy;
 	}
 
 	public int getPhotonQty() {// 获取cell里的总光子数

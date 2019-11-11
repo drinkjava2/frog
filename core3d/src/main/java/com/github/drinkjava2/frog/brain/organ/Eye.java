@@ -13,6 +13,7 @@ package com.github.drinkjava2.frog.brain.organ;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.util.ColorUtils;
 
 /**
  * Eye can only see env material
@@ -28,7 +29,7 @@ public class Eye extends Organ {// 眼睛是长方体
 		this.organName = "eye";
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
-		this.color = 0;// red, see ColorUtils
+		this.color = ColorUtils.GRAY;
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class Eye extends Organ {// 眼睛是长方体
 		for (int px = 0; px < w; px++)
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
-					f.getOrCreateCell(0, c.y + c.ye - px, c.z + py).setActive(100);
+					f.getOrCreateCell(0, c.y + c.ye - px, c.z + py).setEnergy(100);
 	}
 
 }

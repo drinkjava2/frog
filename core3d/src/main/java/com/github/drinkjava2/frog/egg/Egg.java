@@ -18,7 +18,6 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.organ.Ear;
 import com.github.drinkjava2.frog.brain.organ.Empty;
-import com.github.drinkjava2.frog.brain.organ.Dynamic;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -40,7 +39,6 @@ public class Egg implements Serializable {
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
 		organs.add(new Eye()); // 眼是手工创建的，必有
 		organs.add(new Ear()); // 耳是手工创建的，这个是用来测试ABCD字母识别的
-		organs.add(new Dynamic()); // Dynamic具有动态触突
 		organs.add(new Empty()); // Empty什么都不干，只用来作光子媒介
 	}
 

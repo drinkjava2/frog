@@ -10,7 +10,6 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -37,25 +36,24 @@ public class CellActions {
 	 * 一对多，拆分，入射光子被拆分成多个光子，发散角与器官相关 
 	 * 多对一，聚合，入射光子被触突捕获
 	 */
-	public static void act(Frog f, int activeNo, int orgNo, Cell cell, int x, int y, int z) {
-		Organ o = f.organs.get(orgNo);
+	public static void act(int activeNo, Organ o, Cell cell, int x, int y, int z) {
 		switch (o.type) { // 添加细胞的行为，这是硬编码
 		case Organ.EMPTY: // 如果是WALK细胞，它的行为是让每个光子穿过这个细胞走到下一格，保持直线运动不变
 			break;
 		case Organ.EYE: // 如果是视网膜细胞，它的行为是将Cell的激活值转化为向右的多个光子发散出去，模拟波源
-			if (cell.getActive() > 0 && RandomUtils.percent(30)) {
+			if (cell.getEnergy() > 0 && RandomUtils.percent(90)) {
 				for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
 					for (float zz = -0.3f; zz <= 0.3f; zz += 0.1) {
-						cell.addPhoton(new Photon(o.color, x, y, z, 1.0f, yy, zz, 100f));
+						cell.addPhoton(new Photon(o.color, x, y, z, 1.0f, yy, zz, 10000f));
 					}
 				}
 			}
 			break;
 		case Organ.EAR: // 如果是听力细胞，它的行为是将cell的激活能量转化为向下的多个光子发散出去，模拟波源
-			if (cell.getActive() > 0 && RandomUtils.percent(30)) {
+			if (cell.getEnergy() > 0 && RandomUtils.percent(90)) {
 				for (float xx = -0.3f; xx <= 0.3f; xx += 0.13) {// 形成一个扇面向下发送
 					for (float yy = -0.3f; yy <= 0.3f; yy += 0.13) {
-						cell.addPhoton(new Photon(o.color, x, y, z, xx, yy, -1, 100f));
+						cell.addPhoton(new Photon(o.color, x, y, z, xx, yy, -1, 10000f));
 					}
 				}
 			}

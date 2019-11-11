@@ -178,8 +178,8 @@ public class BrainPicture extends JPanel {
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
-	/** 画出cell的中心点，通常用来显示器官的激活区 */
-	public void drawCellCenter(float x, float y, float z) {
+	/** 画出cell的中心大点，通常用来显示器官的边界激活点 */
+	public void drawCellBigCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
 	}
 
@@ -246,11 +246,16 @@ public class BrainPicture extends JPanel {
 					if (f.cells[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
 							Cell cell = f.getCell(x, y, z);
-							if (cell != null) {
-								if (cell.getActive() > 0) {
-									setPicColor(ColorUtils.rainbowColor(cell.getActive()));
-									drawCellCenter(x, y, z);
-								} else if (cell.getPhotonQty() > 0) {
+							if (cell != null && cell.getEnergy() > 0) {// 只显示激活点
+								if (x == 0) {// 如果在左边，显示红色大圆
+									setPicColor(Color.BLACK);
+									drawCellBigCenter(x, y, z);
+								} else if (z == Env.FROG_BRAIN_ZSIZE - 1) {// 如果在顶上边，显示兰色大圆
+									setPicColor(Color.BLUE);
+									drawCellBigCenter(x, y, z);
+								}
+
+								if (cell.getPhotonQty() > 0) {// 如果在内部，只显示有光子的cell
 									setPicColor(ColorUtils.colorByCode(cell.getColor()));
 									drawCellSmallCenter(x, y, z);
 								}
