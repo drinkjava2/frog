@@ -24,7 +24,7 @@ public class Eye extends Organ {// 眼睛是长方体
 	private static final long serialVersionUID = 1L;
 
 	public Eye() {
-		this.shape = new Cuboid(0, 5, 5, 1, 11, 11);
+		this.shape = new Cuboid(0, 5, 5, 1, 13, 13);
 		this.type = Organ.EYE;
 		this.organName = "eye";
 		this.allowVary = false;// 不允许变异
@@ -53,7 +53,7 @@ public class Eye extends Organ {// 眼睛是长方体
 		for (int px = 0; px < w; px++)
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
-					f.getOrCreateCell(0, c.y + c.ye - px, c.z + py).setEnergy(100);
+					f.getOrCreateCell(0, c.y + c.ye - px-1, c.z + py).setEnergy(100);
 	}
 
 }

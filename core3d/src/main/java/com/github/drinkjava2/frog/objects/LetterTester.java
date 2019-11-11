@@ -46,12 +46,13 @@ public class LetterTester implements EnvObject {
 		}
 		Frog frog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); // 这个测试只针对每屏的第一只青蛙，因为脑图固定只显示第一只青蛙
 		Eye eye = frog.findOrganByName("eye");
-		eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(letter));
+		 
 
 		Ear ear = frog.findOrganByName("ear");
 
 		if (Env.step < Env.STEPS_PER_ROUND / 4) {// 前半段同时还要激活与这个字母对应脑区(听觉输入区)
 			ear.hearSound(frog, letter);
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(letter));
 		} else if (Env.step > Env.STEPS_PER_ROUND / 4 && Env.step < Env.STEPS_PER_ROUND / 4 * 3) {// 在中段取消听力和视力的激活
 			ear.hearNothing(frog);
 			eye.seeNothing(frog);
