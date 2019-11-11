@@ -56,10 +56,12 @@ public class Cell {
 	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
 		if (p == null)
 			return;
-		energy += p.energy;
-		if (energy > 100000)
-			energy = 100000;
-		p.energy *= .99;
+		if (p.goBack && p.x < 3)
+			return;// 这是个临时限制，防止反向的光子落到视网膜上
+		energy += p.energy * .3;
+		if (energy > 100)
+			energy = 100;
+		p.energy *= .7;
 		if (p.energy < 0.1)
 			return;
 		photonQty++;
@@ -93,11 +95,11 @@ public class Cell {
 			Hole h = holes[i];
 			if (h != null) {
 				float angle = h.angleCompare(p);
-				if (angle > .9f && energy > 100) {
-					Photon back = new Photon(ColorUtils.RED, h.x, h.y, h.z, -h.mx, -h.my, -h.mz, energy + h.size);
+				if (angle > .9f && energy > 90) {
+					Photon back = new Photon(ColorUtils.RED, h.x, h.y, h.z, -h.mx, -h.my, -h.mz, 90);
 					back.goBack = true;
 					addPhoton(back);
-					energy -= 100f;
+					energy -= 90;
 				}
 			}
 		}

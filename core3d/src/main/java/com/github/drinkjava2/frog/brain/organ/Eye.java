@@ -24,12 +24,17 @@ public class Eye extends Organ {// 眼睛是长方体
 	private static final long serialVersionUID = 1L;
 
 	public Eye() {
-		this.shape = new Cuboid(0, 5, 5, 1, 10, 10);
+		this.shape = new Cuboid(0, 5, 5, 1, 11, 11);
 		this.type = Organ.EYE;
 		this.organName = "eye";
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
 		this.color = ColorUtils.GRAY;
+	}
+
+	/** Clear image on retina */
+	public void seeNothing(Frog f) {// 外界可以直接调用这个方法，清除视网膜图像
+		f.setCuboidVales((Cuboid) shape, 0);
 	}
 
 	/**

@@ -29,7 +29,6 @@ import com.github.drinkjava2.frog.util.StringPixelUtils;
  */
 public class LetterTester implements EnvObject {
 	private static final String STR = "ABCD";
-	byte[][] pixels;
 	String letter;
 
 	@Override
@@ -44,23 +43,29 @@ public class LetterTester implements EnvObject {
 	public void active(int screen) {
 		if (Env.step == 0) { // 每当开始新一屏测试时，重选一个随机字符
 			letter = String.valueOf(STR.charAt(RandomUtils.nextInt(4)));
-			pixels = StringPixelUtils.getSanserif12Pixels(letter);
 		}
-		Frog firstFrog = Env.frogs.get(screen * Env.FROG_PER_SCREEN);
-		Eye eye = firstFrog.findOrganByName("eye");
-		eye.seeImage(firstFrog, pixels);
+		Frog frog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); // 这个测试只针对每屏的第一只青蛙，因为脑图固定只显示第一只青蛙
+		Eye eye = frog.findOrganByName("eye");
+		eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(letter));
 
-		Ear ear = firstFrog.findOrganByName("ear");
+		Ear ear = frog.findOrganByName("ear");
 
-		if (Env.step < Env.STEPS_PER_ROUND / 2) {// 前半段同时还要激活与这个字母对应脑区(听觉输入区)
-			ear.hearSound(firstFrog, letter);
-		} else if (Env.step == Env.STEPS_PER_ROUND / 2) {// 在中段取消字母对应脑区的激活
-			ear.hearNothing(firstFrog);
-		} else if (Env.step > Env.STEPS_PER_ROUND / 2) {// 后半段要检测这个字母区是否能收到光子信号
-			if (firstFrog.getCuboidActiveTotalValue(ear.getCuboidByStr(letter)) > 0)
-				firstFrog.energy += 100;
+		if (Env.step < Env.STEPS_PER_ROUND / 4) {// 前半段同时还要激活与这个字母对应脑区(听觉输入区)
+			ear.hearSound(frog, letter);
+		} else if (Env.step > Env.STEPS_PER_ROUND / 4 && Env.step < Env.STEPS_PER_ROUND / 4 * 3) {// 在中段取消听力和视力的激活
+			ear.hearNothing(frog);
+			eye.seeNothing(frog);
+		} else if (Env.step > Env.STEPS_PER_ROUND / 4 * 3) {// 后半段只激活视力
+			ear.hearNothing(frog);
+			eye.seeNothing(frog);
+			// ear.hearSound(frog, letter);
+			eye.seeImage(frog, StringPixelUtils.getSanserifItalic10Pixels(letter));
+
 			// TODO 然后还要检测其它的区必须没有这个字母的区活跃，可以算术平均数或总激活能量来比较
+			// if (firstFrog.getCuboidActiveTotalValue(ear.getCuboidByStr(letter)) > 0)
+			// firstFrog.energy += 100;
 		}
+
 	}
 
 }

@@ -32,6 +32,10 @@ public class StringPixelUtils {
 	public static byte[][] getSanserif12Pixels(String s) {
 		return getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, s);
 	}
+	
+	public static byte[][] getSanserifItalic10Pixels(String s) {
+		return getStringPixels(Font.SANS_SERIF, Font.ITALIC, 10, s);
+	}
 
 	/* 在内存 BufferedImage里输出文本并获取它的像素点 */
 	public static byte[][] getStringPixels(String fontName, int fontStyle, int fontSize, String s) {

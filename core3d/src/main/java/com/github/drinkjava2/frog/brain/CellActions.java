@@ -44,7 +44,7 @@ public class CellActions {
 			if (cell.getEnergy() > 0 && RandomUtils.percent(90)) {
 				for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
 					for (float zz = -0.3f; zz <= 0.3f; zz += 0.1) {
-						cell.addPhoton(new Photon(o.color, x, y, z, 1.0f, yy, zz, 10000f));
+						cell.addPhoton(new Photon(o.color, x, y, z, 1.0f, yy, zz, 100f));
 					}
 				}
 			}
@@ -53,7 +53,7 @@ public class CellActions {
 			if (cell.getEnergy() > 0 && RandomUtils.percent(90)) {
 				for (float xx = -0.3f; xx <= 0.3f; xx += 0.13) {// 形成一个扇面向下发送
 					for (float yy = -0.3f; yy <= 0.3f; yy += 0.13) {
-						cell.addPhoton(new Photon(o.color, x, y, z, xx, yy, -1, 10000f));
+						cell.addPhoton(new Photon(o.color, x, y, z, xx, yy, -1, 100f));
 					}
 				}
 			}
