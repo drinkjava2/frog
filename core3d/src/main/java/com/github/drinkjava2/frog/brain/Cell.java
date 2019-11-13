@@ -12,6 +12,7 @@ package com.github.drinkjava2.frog.brain;
 
 import java.util.Arrays;
 
+import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.util.ColorUtils;
 
@@ -58,6 +59,9 @@ public class Cell {
 			return;
 		if (p.goBack && p.x < 3)
 			return;// 这是个临时限制，防止反向的光子落到视网膜上
+		if (p.goBack && p.z > Env.FROG_BRAIN_ZSIZE - 2)
+			return;// 这是个临时限制，防止反向的光子落到耳朵上
+
 		energy += p.energy * .3;
 		if (energy > 100)
 			energy = 100;
@@ -103,8 +107,7 @@ public class Cell {
 				}
 			}
 		}
-
-		// 否则不光要扩坑或新挖坑，还要利用这个光子在旧坑里撞出新的光子来
+ 
 		boolean foundHole = false;
 		for (int i = 0; i < holes.length; i++) { // 先看看已存在的洞是不是与光子同向，是的话就把洞挖大一点
 			Hole h = holes[i];

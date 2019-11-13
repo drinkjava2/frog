@@ -46,25 +46,26 @@ public class LetterTester implements EnvObject {
 		}
 		Frog frog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); // 这个测试只针对每屏的第一只青蛙，因为脑图固定只显示第一只青蛙
 		Eye eye = frog.findOrganByName("eye");
-		 
 
 		Ear ear = frog.findOrganByName("ear");
 
-		if (Env.step < Env.STEPS_PER_ROUND / 4) {// 前半段同时还要激活与这个字母对应脑区(听觉输入区)
-			ear.hearSound(frog, letter);
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(letter));
-		} else if (Env.step > Env.STEPS_PER_ROUND / 4 && Env.step < Env.STEPS_PER_ROUND / 4 * 3) {// 在中段取消听力和视力的激活
+		if (Env.step < Env.STEPS_PER_ROUND / 8 * 1) { // 看到和听到字母C
+			ear.hearSound(frog, "A");
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("A"));
+		} else if (Env.step > Env.STEPS_PER_ROUND / 8 && Env.step < Env.STEPS_PER_ROUND / 8 * 2) {// 清除
 			ear.hearNothing(frog);
 			eye.seeNothing(frog);
-		} else if (Env.step > Env.STEPS_PER_ROUND / 4 * 3) {// 后半段只激活视力
+		} else if (Env.step > Env.STEPS_PER_ROUND / 8 * 2 && Env.step < Env.STEPS_PER_ROUND / 8 * 3) {// 看到和听到字母A
+			ear.hearSound(frog, "C");
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("C"));
+		} else if (Env.step > Env.STEPS_PER_ROUND / 8 * 3 && Env.step < Env.STEPS_PER_ROUND / 8 * 5) {// 清除
 			ear.hearNothing(frog);
 			eye.seeNothing(frog);
-			// ear.hearSound(frog, letter);
-			eye.seeImage(frog, StringPixelUtils.getSanserifItalic10Pixels(letter));
-
-			// TODO 然后还要检测其它的区必须没有这个字母的区活跃，可以算术平均数或总激活能量来比较
-			// if (firstFrog.getCuboidActiveTotalValue(ear.getCuboidByStr(letter)) > 0)
-			// firstFrog.energy += 100;
+		} else if (Env.step > Env.STEPS_PER_ROUND / 8 * 5 && Env.step < Env.STEPS_PER_ROUND / 8 * 6) {// 只看到字母C，应该只激活一个区
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("C"));
+		} else if (Env.step == Env.STEPS_PER_ROUND / 8 * 6) {// 只看到字母C，应该只激活一个区
+			ear.hearNothing(frog);
+			eye.seeNothing(frog);
 		}
 
 	}
