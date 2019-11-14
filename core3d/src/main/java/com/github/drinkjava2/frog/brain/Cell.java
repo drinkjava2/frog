@@ -18,17 +18,15 @@ import com.github.drinkjava2.frog.util.ColorUtils;
 
 /**
  * Cell is the smallest unit of brain space, a Cell can have many actions and
- * photons
+ * photons and holes and relations
  * 
- * Cell是脑的最小空间单元，可以存在多个行为(由organs中的器官代号来表示)和光子(Photon)，脑是由frog中的cells三维数组组成，但不是每一维都初始化过
+ * Cell是脑的最小空间单元，可以存在多个行为(由organs中的器官代号来表示)和光子(Photon)和洞（Hole)和关联(Relation)，脑是由frog中的cells三维数组组
+ * 成，但不是每一维都初始化过。
  * 
  * 可以把具备动态触突的神经元比作一个果冻，光子来了,在上面撞了一个坑（hole)并损失能量，如果来的多，或者速度快(能量大)，一部分的光子就被
  * 从果冻的另一头撞出去了(光直线传播，寻找下一个神经元，增加信息存储单元，实现体全息存贮)。如果在另一个角度又来了新的光子，同样的过程在发生，只不过在撞击的
- * 过程中，以前被撞出的坑里有可能被撞出光子来，沿着撞击坑的路径直线逆向返回（即波的逆向成像，两个撞击事件，在神经元级别就被关联起来，关联的相关度取决于它们
- * 撞击坑的大小)，原来的坑越多大，则被撞出来的机率就越大(短期发生的事最先被回忆出来)，随时间流逝，撞击坑也会自动回复(动态触突消失，脑神经又可以接收新的信
- * 息了)。如果反复地有光子撞击在同一个坑，这个坑就会变大，这个修复的过程会变慢，坑变大了后果就是，即使只有轻微的撞击，也可以很容易将大坑里的光子撞出来（即记忆
- * 曲线，复习的效果优于单次长时间学习)。在某些位置，撞击太频繁、太强烈,不是在果冻上撞出坑，而是撞出一条通路，光子可以微损耗地通过，就形成了一个个传导通
- * 道(神经纤维)，直到光子被某个果冻拦截为止。
+ * 过程中，以前被撞出的坑里有可能被撞出光子来，沿着撞击坑的路径直线逆向返回（即波的逆向成像，两个撞击事件,如果在短期内同时发生，或长期反复发生，就形成比较稳
+ * 定的关联
  * 
  * @author Yong Zhu
  * @since 1.0
@@ -42,8 +40,8 @@ public class Cell {
 	public Photon[] photons = null;// 光子
 
 	public Hole[] holes = null;// 洞（即动态突触），洞由光子产生，洞由时间抹平
-	
-	public int[] relations = null;// 洞的关联关系
+
+	public Relation[] relations = null;// 洞的关联关系
 
 	private int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
 
@@ -89,51 +87,82 @@ public class Cell {
 		digHole(p);
 	}
 
-	public void digHole(Photon p) {// 根据光子来把洞挖大一点，在挖洞的同时，有可能把别的洞中撞出光子来，反向的洞撞出光子的机率更大，有点象碰球的动量守恒
-		if (p == null || p.goBack)
+	public void digHole(Photon p) {// 根据光子来把洞挖大一点，同时，如果有洞和它年龄相近，将把它们绑定起来，如果已有绑定的洞，有可能在撞出的洞里撞出光子来
+		if (p == null || p.goBack)// 反向的光子不参与挖坑
 			return;
 		if (holes == null) {// 如果没有坑，就新挖一个
-			holes = new Hole[] { new Hole(p) };
+			holes = new Hole[] { new Hole(p) }; // 新挖的坑不参与绑定
 			return;
 		}
 
-		for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子会在不同向的坑上撞出新的光子
-			Hole h = holes[i];
-			if (h != null) {
-				float angle = h.angleCompare(p);
-				if (angle > .9f && energy > 90) {
-					Photon back = new Photon(ColorUtils.RED, h.x, h.y, h.z, -h.mx, -h.my, -h.mz, 90);
-					back.goBack = true;
-					addPhoton(back);
-					energy -= 90;
-				}
+		if (energy > 90)
+			for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子，注意只针对绑定的坑
+				Hole h = holes[i];
+				if (h != null && h.ifSameWay(p))
+					createBackPhoton(h);
 			}
-		}
- 
-		boolean foundHole = false;
+
+		Hole found = null;
 		for (int i = 0; i < holes.length; i++) { // 先看看已存在的洞是不是与光子同向，是的话就把洞挖大一点
 			Hole h = holes[i];
 			if (h != null && h.ifSameWay(p)) {
-				foundHole = true;
+				found = h;
 				h.size *= 1.2f;
 				if (h.size > 10000)
 					h.size = 10000;
+				break;
 			}
 		}
-		if (!foundHole)// 如果没找到现在的坑，就在旧坑快平复的地方就地重新开一个洞，以重复利用内存
-			for (int i = 0; i < holes.length; i++) {
-				Hole h = holes[i];
-				if (h == null || h.size < 1) {
-					foundHole = true;
-					holes[i] = new Hole(p);
-					return;
+
+		if (found != null) { // 如果第二次扩洞，这时可以考虑把这个洞和其它洞关联起来了
+			for (Hole hole : holes) {
+				if (hole != found || hole.age < 5) {// TODO: 要改成年龄越大，关联机率越小，而不是固定的5步之内
+					bind(found, hole);
 				}
 			}
-		if (!foundHole) {// 如果还没有找到旧坑，只好挖一个新坑到未尾
+		}
+
+		if (found == null) {// 如果还没有找到旧坑，只好挖一个新坑到未尾
 			holes = Arrays.copyOf(holes, holes.length + 1);
 			holes[holes.length - 1] = new Hole(p);
 		}
+	}
 
+	private void createBackPhoton(Hole h) { // 根据给定的洞，把所有与它绑定的洞上撞出光子来
+		if (relations == null)
+			return;
+		for (Relation r : relations) {
+			if (energy < 90)
+				return;
+			Hole f = null;
+			if (h.equals(r.h1))
+				f = r.h2;// h2与h是一对绑定的
+			else if (h.equals(r.h2))
+				f = r.h1; // h1与h是一对绑定的
+			if (f != null) {
+				Photon back = new Photon(ColorUtils.RED, f.x, f.y, f.z, -f.mx, -f.my, -f.mz, 90);// 生成反向的光子
+				back.goBack = true;
+				addPhoton(back);
+				energy -= 90;
+			}
+		}
+	}
+
+	public void bind(Hole a, Hole b) {// 将两个坑绑定，以后只要有一个坑激活，另一个坑也会产生出光子
+		if (relations == null) {
+			relations = new Relation[] { new Relation(a, b) };
+			return;
+		}
+		for (Relation r : relations) {// 先看看是不是已绑过,绑过就把强度乘1.5
+			if ((r.h1 == a && r.h2 == b) || (r.h2 == a && r.h1 == b)) {
+				r.strength *= 1.5;
+				if (r.strength > 100000) // TODO: strength要有遗忘机制
+					r.strength = 100000;
+				return;
+			}
+		}
+		relations = Arrays.copyOf(relations, relations.length + 1);
+		relations[relations.length - 1] = new Relation(a, b);
 	}
 
 	public void removePhoton(int i) {// 删第几个光子

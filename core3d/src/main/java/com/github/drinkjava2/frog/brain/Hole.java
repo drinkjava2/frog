@@ -10,8 +10,6 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import java.io.Serializable;
-
 /**
  * Hole can be input, output, side synapse
  * 
@@ -20,8 +18,7 @@ import java.io.Serializable;
  * @author Yong Zhu
  * @since 2.0.2
  */
-public class Hole implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Hole {
 	public float x;// x,y,z 是 洞的中心坐标点，这个是脑内的绝对坐标
 	public float y;
 	public float z;
@@ -29,7 +26,7 @@ public class Hole implements Serializable {
 	public float my;
 	public float mz;
 	public float size;// 洞的大小，同一个方向砸来的光子越多，能量越大，洞就越大
-	public int age;// 洞的年龄,一直在增长，但当光子从同一个地方发过来，洞的年龄就归0
+	public int age;// 洞的年龄,一直在增长，但当洞光子砸进来或被激活产生光子时，洞的年龄就归0
 
 	public Hole(Photon p) {
 		this.x = p.x;
@@ -45,16 +42,8 @@ public class Hole implements Serializable {
 		return Math.abs(p.mx - mx) + Math.abs(p.my - my) + Math.abs(p.mz - mz);
 	}
 
-	public boolean ifParallel(Photon p) {// 如果光子运动方向与洞平行
-		return (p.mx - mx < 0.0001 && p.my - my < 0.0001 && p.mz - mz < 0.0001)
-				|| (p.mx + mx < 0.0001 && p.my + my < 0.0001 && p.mz + mz < 0.0001);
-	}
-
 	public boolean ifSameWay(Photon p) {// 如果光子运动方向与洞同向
-		return p.mx - mx < 0.0001 && p.my - my < 0.0001 && p.mz - mz < 0.0001;
+		return p.mx - mx < 0.1 && p.my - my < 0.1 && p.mz - mz < 0.1;
 	}
 
-	public boolean ifReverseWay(Photon p) {// 如果光子运动方向与洞反向
-		return p.mx + mx < 0.0001 && p.my + my < 0.0001 && p.mz + mz < 0.0001;
-	}
 }

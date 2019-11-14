@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.CellActions;
 import com.github.drinkjava2.frog.brain.Cuboid;
+import com.github.drinkjava2.frog.brain.Hole;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.Photon;
 import com.github.drinkjava2.frog.egg.Egg;
@@ -125,7 +126,6 @@ public class Frog {
 			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
 
 		// 这里是最关键的脑细胞主循环，脑细胞负责捕获和发送光子，光子则沿它的矢量方向每次自动走一格，如果下一格是真空(即cell未初始化）会继续走下去并衰减直到为0(为减少运算)
-
 		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++)
 			if (cells[i] != null)
 				for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
@@ -141,11 +141,17 @@ public class Frog {
 										Photon p = cell.photons[ii];
 										if (p == null || p.activeNo == activeNo)// 同一轮新产生的光子或处理过的光子不再走了
 											continue;
-										p.activeNo = activeNo; 
+										p.activeNo = activeNo;
 										cell.removePhoton(ii);// 原来的位置的先清除，去除它的Java对象引用
 										cell.photonWalk(this, p); // 让光子自已往下走
 									}
 								}
+								if (cell.holes != null)
+									for (Hole h : cell.holes) {// 洞的年龄增加，只有年龄很接近的洞才会产生绑定
+										h.age++;
+										if (h.age > 100000)
+											h.age = 100000;
+									}
 							}
 						}
 		return alive;

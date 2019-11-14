@@ -62,8 +62,8 @@ public class LetterTester implements EnvObject {
 			ear.hearNothing(frog);
 			eye.seeNothing(frog);
 		} else if (Env.step > Env.STEPS_PER_ROUND / 8 * 5 && Env.step < Env.STEPS_PER_ROUND / 8 * 6) {// 只看到字母C，应该只激活一个区
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("C"));
-		} else if (Env.step == Env.STEPS_PER_ROUND / 8 * 6) {// 只看到字母C，应该只激活一个区
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("A"));
+		} else if (Env.step == Env.STEPS_PER_ROUND / 8 * 6) {// 只看到字母A，应该只激活一个区
 			ear.hearNothing(frog);
 			eye.seeNothing(frog);
 		}
