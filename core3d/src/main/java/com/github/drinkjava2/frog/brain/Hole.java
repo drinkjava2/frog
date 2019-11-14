@@ -29,6 +29,7 @@ public class Hole implements Serializable {
 	public float my;
 	public float mz;
 	public float size;// 洞的大小，同一个方向砸来的光子越多，能量越大，洞就越大
+	public int age;// 洞的年龄,一直在增长，但当光子从同一个地方发过来，洞的年龄就归0
 
 	public Hole(Photon p) {
 		this.x = p.x;

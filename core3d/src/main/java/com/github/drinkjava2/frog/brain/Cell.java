@@ -42,6 +42,8 @@ public class Cell {
 	public Photon[] photons = null;// 光子
 
 	public Hole[] holes = null;// 洞（即动态突触），洞由光子产生，洞由时间抹平
+	
+	public int[] relations = null;// 洞的关联关系
 
 	private int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
 
