@@ -59,7 +59,7 @@ public class Env extends JPanel {
 	public static final int FROG_BRAIN_DISP_WIDTH = 600; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
-	public static final int STEPS_PER_ROUND = 800;// 每轮测试步数,可调
+	public static final int STEPS_PER_ROUND = 700;// 每轮测试步数,可调
 	public static int step;// 当前测试步数
 
 	public static final int FOOD_QTY = 100; // 食物数量, 可调
@@ -168,6 +168,13 @@ public class Env extends JPanel {
 				.append(foodFound * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound).toString();
 	}
 
+	public static void checkIfPause() {
+		if (pause)
+			do {
+				sleep(300);
+			} while (pause);
+	}
+
 	public static void sleep(long millis) {
 		try {
 			Thread.sleep(millis);
@@ -185,11 +192,8 @@ public class Env extends JPanel {
 		do {
 			rebuildFrogs();
 			for (int screen = 0; screen < SCREEN; screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
-				time0 = System.currentTimeMillis();
-				if (pause)
-					do {
-						sleep(300);
-					} while (pause);
+				checkIfPause();
+				time0 = System.currentTimeMillis(); 
 				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
 				boolean allDead = false;

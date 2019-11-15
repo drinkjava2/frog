@@ -12,6 +12,7 @@ package com.github.drinkjava2.frog.objects;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.organ.Ear;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.RandomUtils;
@@ -49,21 +50,20 @@ public class LetterTester implements EnvObject {
 
 		Ear ear = frog.findOrganByName("ear");
 
-		if (Env.step < Env.STEPS_PER_ROUND / 8 * 1) { // 看到和听到字母C
-			ear.hearSound(frog, "A");
+		if (Env.step < 100) {
+			BrainPicture.drawString("只看到字母A", 10, 20);
+			BrainPicture.drawString("这个地方有问题，相同波源不应该有红点(反向光子）产生才对", 10, 35);
+			// ear.hearSound(frog, "A");
 			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("A"));
-		} else if (Env.step > Env.STEPS_PER_ROUND / 8 && Env.step < Env.STEPS_PER_ROUND / 8 * 2) {// 清除
-			ear.hearNothing(frog);
-			eye.seeNothing(frog);
-		} else if (Env.step > Env.STEPS_PER_ROUND / 8 * 2 && Env.step < Env.STEPS_PER_ROUND / 8 * 3) {// 看到和听到字母A
+		} else if (Env.step > 200 && Env.step < 300) {
+			BrainPicture.drawString("只听到字母C", 10, 20);
+			BrainPicture.drawString("这个地方有问题，不应该有红点(反向光子）产生才对", 10, 35);
 			ear.hearSound(frog, "C");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("C"));
-		} else if (Env.step > Env.STEPS_PER_ROUND / 8 * 3 && Env.step < Env.STEPS_PER_ROUND / 8 * 5) {// 清除
-			ear.hearNothing(frog);
-			eye.seeNothing(frog);
-		} else if (Env.step > Env.STEPS_PER_ROUND / 8 * 5 && Env.step < Env.STEPS_PER_ROUND / 8 * 6) {// 只看到字母C，应该只激活一个区
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("A"));
-		} else if (Env.step == Env.STEPS_PER_ROUND / 8 * 6) {// 只看到字母A，应该只激活一个区
+			// eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("C")); 
+		} else if (Env.step > 400 && Env.step < 500) {
+			BrainPicture.drawString("只看到字母D", 10, 20);
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("D"));// 应该只激活一个区
+		} else {
 			ear.hearNothing(frog);
 			eye.seeNothing(frog);
 		}

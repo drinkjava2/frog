@@ -126,7 +126,8 @@ public class Frog {
 			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
 
 		// 这里是最关键的脑细胞主循环，脑细胞负责捕获和发送光子，光子则沿它的矢量方向每次自动走一格，如果下一格是真空(即cell未初始化）会继续走下去并衰减直到为0(为减少运算)
-		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++)
+		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++) {
+			Env.checkIfPause();
 			if (cells[i] != null)
 				for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
 					if (cells[i][j] != null)
@@ -149,11 +150,10 @@ public class Frog {
 								if (cell.holes != null)
 									for (Hole h : cell.holes) {// 洞的年龄增加，只有年龄很接近的洞才会产生绑定
 										h.age++;
-										if (h.age > 100000)
-											h.age = 100000;
 									}
 							}
 						}
+		}
 		return alive;
 	}
 

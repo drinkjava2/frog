@@ -57,9 +57,9 @@ public class Cell {
 	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
 		if (p == null)
 			return;
-		if (p.goBack && p.x < 3)
+		if (p.organNo == 0 && p.x < 3)
 			return;// 这是个临时限制，防止反向的光子落到视网膜上
-		if (p.goBack && p.z > Env.FROG_BRAIN_ZSIZE - 2)
+		if (p.organNo == 0 && p.z > Env.FROG_BRAIN_ZSIZE - 2)
 			return;// 这是个临时限制，防止反向的光子落到耳朵上
 
 		energy += p.energy * .3;
@@ -88,7 +88,7 @@ public class Cell {
 	}
 
 	public void digHole(Photon p) {// 根据光子来把洞挖大一点，同时，如果有洞和它年龄相近，将把它们绑定起来，如果已有绑定的洞，有可能在撞出的洞里撞出光子来
-		if (p == null || p.goBack)// 反向的光子不参与挖坑
+		if (p == null || p.organNo == 0)// 反向的光子不参与挖坑
 			return;
 		if (holes == null) {// 如果没有坑，就新挖一个
 			holes = new Hole[] { new Hole(p) }; // 新挖的坑不参与绑定
@@ -110,13 +110,14 @@ public class Cell {
 				h.size *= 1.2f;
 				if (h.size > 10000)
 					h.size = 10000;
+				h.age = 0;// 一杆进洞，光子把这个洞的年龄重置为0
 				break;
 			}
 		}
 
-		if (found != null) { // 如果第二次扩洞，这时可以考虑把这个洞和其它洞关联起来了
+		if (found != null && found.angleCompare(p) > 0.5) { // 如果第二次扩洞，且光子与洞不平行，这时可以把这个洞和其它洞关联起来了
 			for (Hole hole : holes) {
-				if (hole != found || hole.age < 5) {// TODO: 要改成年龄越大，关联机率越小，而不是固定的5步之内
+				if (hole != found || (Math.abs(found.age - hole.age) < 5)) {// TODO: 要改成年龄差越大，关联机率越小，而不是固定的步数之内
 					bind(found, hole);
 				}
 			}
@@ -140,8 +141,7 @@ public class Cell {
 			else if (h.equals(r.h2))
 				f = r.h1; // h1与h是一对绑定的
 			if (f != null) {
-				Photon back = new Photon(ColorUtils.RED, f.x, f.y, f.z, -f.mx, -f.my, -f.mz, 90);// 生成反向的光子
-				back.goBack = true;
+				Photon back = new Photon(0, ColorUtils.RED, f.x, f.y, f.z, -f.mx, -f.my, -f.mz, 90);// 生成反向的光子
 				addPhoton(back);
 				energy -= 90;
 			}

@@ -27,6 +27,7 @@ public class Hole {
 	public float mz;
 	public float size;// 洞的大小，同一个方向砸来的光子越多，能量越大，洞就越大
 	public int age;// 洞的年龄,一直在增长，但当洞光子砸进来或被激活产生光子时，洞的年龄就归0
+	public int organNo;// 这里记录第一个撞出来这个洞的产子是由哪个器官产生出来的
 
 	public Hole(Photon p) {
 		this.x = p.x;
@@ -36,14 +37,23 @@ public class Hole {
 		this.my = p.my;
 		this.mz = p.mz;
 		this.size = p.energy;
+		this.organNo = p.organNo;
+	}
+
+	public float angleCompare(Hole p) {// 比较洞与光子之间的角度差值
+		return Math.abs(p.mx - mx) + Math.abs(p.my - my) + Math.abs(p.mz - mz);
 	}
 
 	public float angleCompare(Photon p) {// 比较洞与光子之间的角度差值
 		return Math.abs(p.mx - mx) + Math.abs(p.my - my) + Math.abs(p.mz - mz);
 	}
 
-	public boolean ifSameWay(Photon p) {// 如果光子运动方向与洞同向
-		return p.mx - mx < 0.1 && p.my - my < 0.1 && p.mz - mz < 0.1;
+	public boolean ifSameWay(Photon p) {// 如果光子运动方向与洞完全同向,实际上也就是说从同一个波源发出来的
+		return p.mx - mx < 0.001 && p.my - my < 0.001 && p.mz - mz < 0.001;
+	}
+
+	public boolean ifSimilarWay(Photon p) {// 如果光子运动方向与洞近似相同
+		return p.mx - mx < 0.2 && p.my - my < 0.2 && p.mz - mz < 0.2;
 	}
 
 }

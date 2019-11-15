@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
+import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.util.ColorUtils;
@@ -264,6 +265,10 @@ public class BrainPicture extends JPanel {
 				}
 
 		}
+	}
+
+	public static void drawString(String str, int x, int y) {
+		Application.brainPic.getGraphics().drawString(str, x, y);
 	}
 
 	// getters & setters
