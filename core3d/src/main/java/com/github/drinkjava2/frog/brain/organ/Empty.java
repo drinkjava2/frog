@@ -26,7 +26,7 @@ public class Empty extends Organ {
 
 	public Empty() {
 		super();
-		this.shape = new Cuboid(6, 2, 2, Env.FROG_BRAIN_XSIZE-7, Env.FROG_BRAIN_YSIZE-4, Env.FROG_BRAIN_ZSIZE-4);
+		this.shape = new Cuboid(6, 2, 2, Env.FROG_BRAIN_XSIZE-7, Env.FROG_BRAIN_YSIZE-3, Env.FROG_BRAIN_ZSIZE-4);
 		this.organName = "Empty";
 		this.type = Organ.EMPTY; // Empty这个器官并不播种cell,它存在的唯一目的只是充当光子媒介，否则光子会一直走下去消失
 		this.allowVary = false;// 不允许变异

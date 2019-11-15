@@ -105,19 +105,18 @@ public class Cell {
 		Hole found = null;
 		for (int i = 0; i < holes.length; i++) { // 先看看已存在的洞是不是与光子同向，是的话就把洞挖大一点
 			Hole h = holes[i];
-			if (h != null && h.ifSameWay(p)) {
+			if (h != null && h.ifSameWay(p)) { // 找到了与入射光子同向的洞,实际上就是同一个波源发来的
 				found = h;
 				h.size *= 1.2f;
 				if (h.size > 10000)
-					h.size = 10000;
-				h.age = 0;// 一杆进洞，光子把这个洞的年龄重置为0
+					h.size = 10000; 
 				break;
 			}
 		}
 
-		if (found != null && found.angleCompare(p) > 0.5) { // 如果第二次扩洞，且光子与洞不平行，这时可以把这个洞和其它洞关联起来了
+		if (found != null) { // 如果第二次扩洞，且光子和洞不是同一个器官产生的，这时可以把这个洞和其它洞关联起来了
 			for (Hole hole : holes) {
-				if (hole != found || (Math.abs(found.age - hole.age) < 5)) {// TODO: 要改成年龄差越大，关联机率越小，而不是固定的步数之内
+				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 5)) {// TODO:不应用固定值
 					bind(found, hole);
 				}
 			}

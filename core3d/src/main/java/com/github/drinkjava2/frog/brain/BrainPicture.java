@@ -185,6 +185,11 @@ public class BrainPicture extends JPanel {
 	}
 
 	/** 画出cell的中心小点，通常用来显示光子 */
+	public void drawCellMiddleCenter(float x, float y, float z) {
+		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .4)));
+	}
+	
+	/** 画出cell的中心小点，通常用来显示光子 */
 	public void drawCellSmallCenter(float x, float y, float z) {
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .15)));
 	}
@@ -248,7 +253,7 @@ public class BrainPicture extends JPanel {
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
 							Cell cell = f.getCell(x, y, z);
 							if (cell != null && cell.getEnergy() > 0) {// 只显示激活点
-								if (x == 0) {// 如果在左边，显示红色大圆
+								if (x == 0) {// 如果在左边，显示黑色大圆
 									setPicColor(Color.BLACK);
 									drawCellBigCenter(x, y, z);
 								} else if (z == Env.FROG_BRAIN_ZSIZE - 1) {// 如果在顶上边，显示兰色大圆
@@ -258,7 +263,10 @@ public class BrainPicture extends JPanel {
 
 								if (cell.getPhotonQty() > 0) {// 如果在内部，只显示有光子的cell
 									setPicColor(ColorUtils.colorByCode(cell.getColor()));
-									drawCellSmallCenter(x, y, z);
+									if (x == 6 || z== Env.FROG_BRAIN_ZSIZE-3)
+										drawCellMiddleCenter(x, y, z);
+									else
+										drawCellSmallCenter(x, y, z);
 								}
 							}
 						}
