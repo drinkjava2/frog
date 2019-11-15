@@ -51,16 +51,16 @@ public class LetterTester implements EnvObject {
 		Ear ear = frog.findOrganByName("ear");
 
 		if (Env.step < 100) {
-			BrainPicture.drawString("训练A", 10, 20);
+			BrainPicture.setNote("第1个字母训练");
 			ear.hearSound(frog, "A");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("A"));
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("O"));
 		} else if (Env.step > 200 && Env.step < 300) {
-			BrainPicture.drawString("训练C", 10, 20);
+			BrainPicture.setNote("第2个字母训练");
 			ear.hearSound(frog, "C");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("C"));
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("I"));
 		} else if (Env.step > 400 && Env.step < 500) {
-			BrainPicture.drawString("只看到字母C", 10, 20);
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("C"));
+			BrainPicture.setNote("只看到第3个字母");
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("I"));
 		} else {
 			ear.hearNothing(frog);
 			eye.seeNothing(frog);

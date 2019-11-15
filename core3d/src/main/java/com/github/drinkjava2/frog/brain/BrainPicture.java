@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -41,6 +42,12 @@ public class BrainPicture extends JPanel {
 	float xAngle = d90 * .8f; // brain rotate on x axis
 	float yAngle = d90 / 4; // brain rotate on y axis
 	float zAngle = 0;// brain rotate on z axis
+	int xMask = 0;// x Mask
+	int yMask = 0;// y Mask
+	BufferedImage buffImg;
+	Graphics g;
+	String note;
+	public KeyAdapter keyAdapter;
 
 	public BrainPicture(int x, int y, float brainWidth, int brainDispWidth) {
 		super();
@@ -48,14 +55,36 @@ public class BrainPicture extends JPanel {
 		this.brainDispWidth = brainDispWidth;
 		scale = 0.7f * brainDispWidth / brainWidth;
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
+		buffImg = new BufferedImage(Env.FROG_BRAIN_DISP_WIDTH, Env.FROG_BRAIN_DISP_WIDTH, BufferedImage.TYPE_INT_RGB);
+		g = buffImg.getGraphics();
 		MouseAction act = new MouseAction(this);
 		this.addMouseListener(act); // 添加鼠标动作监听
 		this.addMouseWheelListener(act);// 添加鼠标滚轮动作监听
 		this.addMouseMotionListener(act);// 添加鼠标移动动作监听
-		this.setFocusable(true);
-		addKeyListener(new KeyAdapter() {// 处理t,f,l,r，x键盘命令
+ 
+		keyAdapter = new KeyAdapter() {// 处理t,f,l,r，x键盘命令
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP:// Y切面向上
+					yMask++;
+					if (yMask > Env.FROG_BRAIN_YSIZE)
+						yMask = Env.FROG_BRAIN_YSIZE;
+					break;
+				case KeyEvent.VK_DOWN:// Y切面向下
+					yMask--;
+					if (yMask < 0)
+						yMask = 0;
+					break;
+				case KeyEvent.VK_LEFT:// x切面向左
+					xMask--;
+					if (xMask < 0)
+						xMask = 0;
+					break;
+				case KeyEvent.VK_RIGHT:// x切面向右
+					xMask++;
+					if (xMask > Env.FROG_BRAIN_XSIZE)
+						xMask = Env.FROG_BRAIN_XSIZE;
+					break;
 				case 'T':// 顶视
 					xAngle = 0;
 					yAngle = 0;
@@ -84,7 +113,9 @@ public class BrainPicture extends JPanel {
 				default:
 				}
 			}
-		});
+		};
+		addKeyListener(keyAdapter);
+		this.setFocusable(true);
 	}
 
 	public void drawCuboid(Cuboid c) {// 在脑图上画一个长立方体框架，视角是TopView
@@ -171,7 +202,6 @@ public class BrainPicture extends JPanel {
 		x2 = x;
 		y2 = y;
 
-		Graphics g = this.getGraphics();
 		g.setColor(picColor);
 		g.drawLine((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset,
@@ -181,17 +211,23 @@ public class BrainPicture extends JPanel {
 
 	/** 画出cell的中心大点，通常用来显示器官的边界激活点 */
 	public void drawCellBigCenter(float x, float y, float z) {
+		if (x < xMask || y < yMask)
+			return;
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
 	}
 
 	/** 画出cell的中心小点，通常用来显示光子 */
 	public void drawCellMiddleCenter(float x, float y, float z) {
-		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .4)));
+		if (x < xMask || y < yMask)
+			return;
+		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .45)));
 	}
-	
+
 	/** 画出cell的中心小点，通常用来显示光子 */
 	public void drawCellSmallCenter(float x, float y, float z) {
-		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .15)));
+		if (x < xMask || y < yMask)
+			return;
+		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .20)));
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
@@ -218,7 +254,6 @@ public class BrainPicture extends JPanel {
 		x1 = x;
 		y1 = y;
 
-		Graphics g = this.getGraphics();
 		g.setColor(picColor);
 		g.fillOval((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - diameter / 2, diameter, diameter);
@@ -231,7 +266,6 @@ public class BrainPicture extends JPanel {
 			return;
 		if (!Env.SHOW_FIRST_FROG_BRAIN)
 			return;
-		Graphics g = this.getGraphics();
 		g.setColor(WHITE);// 先清空旧图
 		g.fillRect(0, 0, brainDispWidth, brainDispWidth);
 		g.setColor(BLACK); // 画边框
@@ -263,7 +297,7 @@ public class BrainPicture extends JPanel {
 
 								if (cell.getPhotonQty() > 0) {// 如果在内部，只显示有光子的cell
 									setPicColor(ColorUtils.colorByCode(cell.getColor()));
-									if (x == 6 || z== Env.FROG_BRAIN_ZSIZE-3)
+									if (x == xMask || y == yMask)
 										drawCellMiddleCenter(x, y, z);
 									else
 										drawCellSmallCenter(x, y, z);
@@ -271,12 +305,17 @@ public class BrainPicture extends JPanel {
 							}
 						}
 				}
-
 		}
+		g.setColor(Color.black);
+		if (note != null)
+			g.drawString(note, 10, 15);
+		Graphics g2 = this.getGraphics(); // 这两行是将缓存中的图像写到屏幕上
+		g2.drawImage(buffImg, 0, 0, this);
+
 	}
 
-	public static void drawString(String str, int x, int y) {
-		Application.brainPic.getGraphics().drawString(str, x, y);
+	public static void setNote(String note) {
+		Application.brainPic.note = note;
 	}
 
 	// getters & setters

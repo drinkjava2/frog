@@ -127,7 +127,7 @@ public class Frog {
 
 		// 这里是最关键的脑细胞主循环，脑细胞负责捕获和发送光子，光子则沿它的矢量方向每次自动走一格，如果下一格是真空(即cell未初始化）会继续走下去并衰减直到为0(为减少运算)
 		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++) {
-			Env.checkIfPause();
+			Env.checkIfPause(this);
 			if (cells[i] != null)
 				for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
 					if (cells[i][j] != null)

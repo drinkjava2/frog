@@ -25,7 +25,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = -80; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -47,7 +47,7 @@ public class Env extends JPanel {
 	public static boolean SHOW_FIRST_FROG_BRAIN = true; // 是否显示脑图在Env区的右侧
 
 	/** Draw first frog's brain after some steps */
-	public static int DRAW_BRAIN_AFTER_STEPS = 20; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
+	public static int DRAW_BRAIN_AFTER_STEPS = 1; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
 
 	/** Environment x width, unit: pixels */
 	public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
@@ -56,7 +56,7 @@ public class Env extends JPanel {
 	public static final int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
 
 	/** Frog's brain display width on screen, not important */
-	public static final int FROG_BRAIN_DISP_WIDTH = 600; // Frog的脑图在屏幕上的显示大小,可调
+	public static final int FROG_BRAIN_DISP_WIDTH = 450; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
 	public static final int STEPS_PER_ROUND = 700;// 每轮测试步数,可调
@@ -168,10 +168,14 @@ public class Env extends JPanel {
 				.append(foodFound * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound).toString();
 	}
 
-	public static void checkIfPause() {
+	public static void checkIfPause(Frog f) {
 		if (pause)
 			do {
-				sleep(300);
+				if (f != null) {
+					Application.brainPic.drawBrainPicture(f);
+					Application.brainPic.requestFocus();
+				}
+				sleep(100);
 			} while (pause);
 	}
 
@@ -192,16 +196,17 @@ public class Env extends JPanel {
 		do {
 			rebuildFrogs();
 			for (int screen = 0; screen < SCREEN; screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
-				checkIfPause();
-				time0 = System.currentTimeMillis(); 
+				time0 = System.currentTimeMillis();
 				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
 				boolean allDead = false;
 				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN);
+				checkIfPause(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 					f.initFrog(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
 				}
+
 				for (step = 0; step < STEPS_PER_ROUND; step++) {
 					for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
 						thing.active(screen);

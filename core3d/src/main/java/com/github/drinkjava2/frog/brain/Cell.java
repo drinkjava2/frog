@@ -65,7 +65,7 @@ public class Cell {
 		energy += p.energy * .3;
 		if (energy > 100)
 			energy = 100;
-		p.energy *= .7;
+		//p.energy *= .7;
 		if (p.energy < 0.1)
 			return;
 		photonQty++;
