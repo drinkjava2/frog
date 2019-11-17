@@ -15,7 +15,6 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.organ.Ear;
 import com.github.drinkjava2.frog.brain.organ.Eye;
-import com.github.drinkjava2.frog.util.PixelsUtils;
 import com.github.drinkjava2.frog.util.RandomUtils;
 import com.github.drinkjava2.frog.util.StringPixelUtils;
 
@@ -51,38 +50,34 @@ public class LetterTester implements EnvObject {
 
 		Ear ear = frog.findOrganByName("ear");
 
-		if (step(0)) {
-			BrainPicture.setNote(Env.step + " 第1个字母训练");
+		if (next50(1)) {
+			BrainPicture.setNote( "第1个字训练");
 			ear.hearSound(frog, "A");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("1"));
-		} else if (step(150)) {
-			BrainPicture.setNote(Env.step + " 第2个字母训练");
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("一"));
+		} else if (next50(50)) {
+			BrainPicture.setNote(" 第2个字训练");
 			ear.hearSound(frog, "C");
-			byte[][] pic = StringPixelUtils.getSanserif12Pixels("2");
-			pic = PixelsUtils.offset(pic, 5, 0);
-			eye.seeImage(frog, pic);
-		} else if (step(300)) {
-			BrainPicture.setNote(Env.step + " 只看到第3个字母");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("1"));
-		} else if (step(450)) {
-			BrainPicture.setNote(Env.step + " 只看到第4个字母");
-			byte[][] pic = StringPixelUtils.getSanserif12Pixels("3");
-			pic = PixelsUtils.offset(pic, 5, 0);
-			eye.seeImage(frog, pic);
-		} else if (step(600)) {
-			BrainPicture.setNote(Env.step + " 只看到第5个字母");
-			byte[][] pic = StringPixelUtils.getSanserif12Pixels("2");
-			pic = PixelsUtils.offset(pic, 5, 0);
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("二"));
+		} else if (next50(100)) {
+			BrainPicture.setNote("只看到第3个字");
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("一"));
+		} else if (next50(150)) {
+			BrainPicture.setNote("只看到第4个字");
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("二"));
+		} else if (next50(200)) {
+			BrainPicture.setNote("看到第5个字");
+			byte[][] pic = StringPixelUtils.getSanserif12Pixels("三");
 			eye.seeImage(frog, pic);
 		} else {
+			BrainPicture.setNote(null);
 			ear.hearNothing(frog);
 			eye.seeNothing(frog);
 		}
 
 	}
 
-	private static boolean step(int i) {
-		return Env.step > i && Env.step < i + 100;
+	private static boolean next50(int i) {
+		return Env.step > i && Env.step < i + 25;
 	}
 
 }

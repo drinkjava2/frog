@@ -25,7 +25,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = -10; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -56,10 +56,10 @@ public class Env extends JPanel {
 	public static final int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
 
 	/** Frog's brain display width on screen, not important */
-	public static final int FROG_BRAIN_DISP_WIDTH = 600; // Frog的脑图在屏幕上的显示大小,可调
+	public static final int FROG_BRAIN_DISP_WIDTH = 500; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
-	public static final int STEPS_PER_ROUND = 700;// 每轮测试步数,可调
+	public static final int STEPS_PER_ROUND = 500;// 每轮测试步数,可调
 	public static int step;// 当前测试步数
 
 	public static final int FOOD_QTY = 100; // 食物数量, 可调

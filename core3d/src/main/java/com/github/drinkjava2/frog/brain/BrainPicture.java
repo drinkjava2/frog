@@ -311,7 +311,7 @@ public class BrainPicture extends JPanel {
 		}
 		g.setColor(Color.black);
 		if (note != null)
-			g.drawString(note, 10, 15);
+			g.drawString(note, 30, 55);
 		Graphics g2 = this.getGraphics(); // 这两行是将缓存中的图像写到屏幕上
 		g2.drawImage(buffImg, 0, 0, this);
 

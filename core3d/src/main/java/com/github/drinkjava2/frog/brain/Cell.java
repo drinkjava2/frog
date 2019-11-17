@@ -98,7 +98,7 @@ public class Cell {
 		if (energy > 90)
 			for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子，注意只针对绑定的坑
 				Hole h = holes[i];
-				if (h != null && h.ifSameWay(p)) {
+				if (h != null && h.ifSimilarWay(p)) {
 					createBackPhoton(h);
 				}
 			}
@@ -117,7 +117,7 @@ public class Cell {
 
 		if (found != null) { // 如果第二次扩洞，且光子和洞不是同一个器官产生的，这时可以把这个洞和其它洞关联起来了
 			for (Hole hole : holes) {
-				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 10)) {// TODO:不应用固定值
+				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 9)) {// TODO:不应用固定值
 					bind(found, hole);
 				}
 			}
