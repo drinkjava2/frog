@@ -62,12 +62,12 @@ public class Cell {
 		if (p.organNo == 0 && p.z > Env.FROG_BRAIN_ZSIZE - 2)
 			return;// 这是个临时限制，防止反向的光子落到耳朵上
 
-		energy += p.energy * .3;
-		if (energy > 100)
-			energy = 100;
-		//p.energy *= .7;
-		if (p.energy < 0.1)
-			return;
+		energy += 1000;
+		if (energy > 10000)
+			energy = 10000;
+		// //p.energy *= .7;
+		// if (p.energy < 0.1)
+		// return;
 		photonQty++;
 		color = p.color; // Cell的颜色取最后一次被添加的光子的颜色
 		if (photons == null) {
@@ -98,8 +98,9 @@ public class Cell {
 		if (energy > 90)
 			for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子，注意只针对绑定的坑
 				Hole h = holes[i];
-				if (h != null && h.ifSameWay(p))
+				if (h != null && h.ifSameWay(p)) {
 					createBackPhoton(h);
+				}
 			}
 
 		Hole found = null;
@@ -109,14 +110,14 @@ public class Cell {
 				found = h;
 				h.size *= 1.2f;
 				if (h.size > 10000)
-					h.size = 10000; 
+					h.size = 10000;
 				break;
 			}
 		}
 
 		if (found != null) { // 如果第二次扩洞，且光子和洞不是同一个器官产生的，这时可以把这个洞和其它洞关联起来了
 			for (Hole hole : holes) {
-				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 5)) {// TODO:不应用固定值
+				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 10)) {// TODO:不应用固定值
 					bind(found, hole);
 				}
 			}
@@ -142,7 +143,7 @@ public class Cell {
 			if (f != null) {
 				Photon back = new Photon(0, ColorUtils.RED, f.x, f.y, f.z, -f.mx, -f.my, -f.mz, 90);// 生成反向的光子
 				addPhoton(back);
-				energy -= 90;
+				// energy -= 90;
 			}
 		}
 	}

@@ -25,12 +25,12 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = -80; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = -10; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
 
-	public static final int EGG_QTY = 25; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int EGG_QTY = 3; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
 	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
 
@@ -56,7 +56,7 @@ public class Env extends JPanel {
 	public static final int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
 
 	/** Frog's brain display width on screen, not important */
-	public static final int FROG_BRAIN_DISP_WIDTH = 450; // Frog的脑图在屏幕上的显示大小,可调
+	public static final int FROG_BRAIN_DISP_WIDTH = 600; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
 	public static final int STEPS_PER_ROUND = 700;// 每轮测试步数,可调
@@ -77,8 +77,10 @@ public class Env extends JPanel {
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
+		System.out.println("脑图快捷键： T:顶视  F：前视  L:左视  R:右视  X:斜视  方向键：剖视  空格:暂停  鼠标：缩放旋转平移");
 		if (DELETE_EGGS)
 			EggTool.deleteEggs();
+
 	}
 
 	public Env() {

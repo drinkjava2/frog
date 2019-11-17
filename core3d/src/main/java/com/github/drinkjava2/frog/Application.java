@@ -28,6 +28,7 @@ public class Application {
 	public static Env env = new Env();
 	public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_XSIZE,
 			Env.FROG_BRAIN_DISP_WIDTH);
+	public static ActionListener pauseAction;
 
 	static private void checkIfShowBrainPicture(JButton button) {
 		if (Env.SHOW_FIRST_FROG_BRAIN) {
@@ -71,7 +72,7 @@ public class Application {
 
 		JButton stopButton = new JButton("Pause");
 		stopButton.setBounds(buttonXpos, Env.ENV_HEIGHT + 35, buttonWidth, buttonHeight);
-		ActionListener a2 = new ActionListener() {
+		pauseAction = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Env.pause = !Env.pause;
@@ -83,7 +84,7 @@ public class Application {
 				}
 			}
 		};
-		stopButton.addActionListener(a2);
+		stopButton.addActionListener(pauseAction);
 		mainFrame.add(stopButton);
 
 		mainFrame.setVisible(true);

@@ -53,7 +53,6 @@ public class Eye extends Organ {// 眼睛是长方体
 		for (int px = 0; px < w; px++)
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
-					f.getOrCreateCell(0, c.y + c.ye - px-1, c.z + py).setEnergy(100);
+					f.getOrCreateCell(0, c.y + c.ye - px - 1, c.z + py).setEnergy(100);
 	}
-
 }

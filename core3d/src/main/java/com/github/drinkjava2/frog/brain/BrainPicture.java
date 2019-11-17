@@ -61,7 +61,7 @@ public class BrainPicture extends JPanel {
 		this.addMouseListener(act); // 添加鼠标动作监听
 		this.addMouseWheelListener(act);// 添加鼠标滚轮动作监听
 		this.addMouseMotionListener(act);// 添加鼠标移动动作监听
- 
+
 		keyAdapter = new KeyAdapter() {// 处理t,f,l,r，x键盘命令
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyCode()) {
@@ -84,6 +84,9 @@ public class BrainPicture extends JPanel {
 					xMask++;
 					if (xMask > Env.FROG_BRAIN_XSIZE)
 						xMask = Env.FROG_BRAIN_XSIZE;
+					break;
+				case ' ':// 暂停切换
+					Application.pauseAction.actionPerformed(null);
 					break;
 				case 'T':// 顶视
 					xAngle = 0;
@@ -211,21 +214,21 @@ public class BrainPicture extends JPanel {
 
 	/** 画出cell的中心大点，通常用来显示器官的边界激活点 */
 	public void drawCellBigCenter(float x, float y, float z) {
-		if (x < xMask || y < yMask)
+		if (x > 0 && (x < xMask || y < yMask))
 			return;
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
 	}
 
 	/** 画出cell的中心小点，通常用来显示光子 */
 	public void drawCellMiddleCenter(float x, float y, float z) {
-		if (x < xMask || y < yMask)
+		if (x > 0 && (x < xMask || y < yMask))
 			return;
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .45)));
 	}
 
 	/** 画出cell的中心小点，通常用来显示光子 */
 	public void drawCellSmallCenter(float x, float y, float z) {
-		if (x < xMask || y < yMask)
+		if (x > 0 && (x < xMask || y < yMask))
 			return;
 		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .20)));
 	}

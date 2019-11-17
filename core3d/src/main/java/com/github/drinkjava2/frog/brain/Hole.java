@@ -49,11 +49,11 @@ public class Hole {
 	}
 
 	public boolean ifSameWay(Photon p) {// 如果光子运动方向与洞完全同向,实际上也就是说从同一个波源发出来的
-		return p.mx - mx < 0.0001 && p.my - my < 0.0001 && p.mz - mz < 0.0001;
+		return Math.abs(p.mx - mx) < 0.1 && Math.abs(p.my - my) < 0.1 && Math.abs(p.mz - mz) < 0.1;
 	}
 
 	public boolean ifSimilarWay(Photon p) {// 如果光子运动方向与洞近似相同
-		return p.mx - mx < 0.2 && p.my - my < 0.2 && p.mz - mz < 0.2;
+		return Math.abs(p.mx - mx) < 0.2 && Math.abs(p.my - my) < 0.2 && Math.abs(p.mz - mz) < 0.2;
 	}
 
 }
