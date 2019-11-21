@@ -13,22 +13,21 @@ package com.github.drinkjava2.frog.objects;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
-import com.github.drinkjava2.frog.brain.organ.Ear;
+import com.github.drinkjava2.frog.brain.Cell;
+import com.github.drinkjava2.frog.brain.organ.BigEar;
 import com.github.drinkjava2.frog.brain.organ.Eye;
-import com.github.drinkjava2.frog.util.RandomUtils;
 import com.github.drinkjava2.frog.util.StringPixelUtils;
 
 /**
  * ChineseTester used to test test recognition
  *
- * 这是一个临时类，用来测试大耳朵对编码后的汉字的模式识别及汉字的逆向成像
+ * 这是一个临时类，用来测试大耳朵对编码后的汉字的模式识别及汉字的逆向成像，大耳朵相对于小耳朵来说，分辨率更高，所有声音都分为声母和韵母两个音编码
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class BigEarTester implements EnvObject {
-	private static final String STR = "我们要让小青蛙学习床前明月光疑是地上霜";
-	String letter;
+	private static final String STR = "床前明月光疑是地上霜";
 
 	@Override
 	public void build() { // do nothing
@@ -40,36 +39,31 @@ public class BigEarTester implements EnvObject {
 
 	@Override
 	public void active(int screen) {
-		if (Env.step == 0) { // 每当开始新一屏测试时，重选一个随机字符
-			letter = String.valueOf(STR.charAt(RandomUtils.nextInt(4)));
-		}
 		Frog frog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); // 这个测试只针对每屏的第一只青蛙，因为脑图固定只显示第一只青蛙
-		Eye eye = frog.findOrganByName("eye");
+		Eye eye = frog.findOrganByName("Eye");
+		BigEar ear = frog.findOrganByName("BigEar");
+		int index = Env.step / 30;
+		if (Env.step % 30 == 0)
+			frog.deleteAllPhotons();
 
-		Ear ear = frog.findOrganByName("ear");
-
-		if (next50(1)) {
-			BrainPicture.setNote("第1个字训练");
-			ear.hearSound(frog, "A");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("一"));
-		} else if (next50(50)) {
-			BrainPicture.setNote(" 第2个字训练");
-			ear.hearSound(frog, "C");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("二"));
-		} else if (next50(100)) {
-			BrainPicture.setNote("只看到第3个字");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("一"));
-		} else if (next50(150)) {
-			BrainPicture.setNote("只看到第4个字");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("二"));
-		} else if (next50(200)) {
-			BrainPicture.setNote("看到第5个字");
-			byte[][] pic = StringPixelUtils.getSanserif12Pixels("三");
-			eye.seeImage(frog, pic);
+		if (index < STR.length()) {
+			Cell.blockBackEarPhoton = true;
+			Cell.blockBackEyePhoton = true;
+			BrainPicture.setNote("第" + (index + 1) + "个字训练");
+			int firstCode = index / 5;
+			int secondCode = index % 5;
+			ear.hearSound(frog, firstCode, secondCode);
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index, index + 1)));
 		} else {
-			BrainPicture.setNote(null);
-			ear.hearNothing(frog);
-			eye.seeNothing(frog);
+			Cell.blockBackEarPhoton = false;
+			int index2 = index % 10;
+			BrainPicture.setNote("第" + (index2 + 1) + "个字识别");
+			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index2, index2 + 1)));
+			if (Env.step % 30 > 28) {
+				int[] result = ear.readcode(frog);
+				System.out.println(result[0] + "," + result[1]);
+				frog.deleteAllPhotons();
+			}
 		}
 
 	}

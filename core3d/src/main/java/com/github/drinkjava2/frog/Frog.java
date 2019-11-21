@@ -192,4 +192,19 @@ public class Frog {
 				|| z >= Env.FROG_BRAIN_ZSIZE;
 	}
 
+	public void deleteAllPhotons() {// for test purpose, delete all photons in all cells
+		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++) {
+			if (cells[i] != null)
+				for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
+					if (cells[i][j] != null)
+						for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
+							Cell cell = cells[i][j][k];
+							if (cell != null) {
+								cell.deleteAllPhotons();
+								cell.setEnergy(0);
+							}
+						}
+		}
+	}
+
 }

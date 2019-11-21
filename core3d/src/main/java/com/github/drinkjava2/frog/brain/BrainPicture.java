@@ -289,11 +289,11 @@ public class BrainPicture extends JPanel {
 					if (f.cells[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
 							Cell cell = f.getCell(x, y, z);
-							if (cell != null && cell.getEnergy() > 0) {// 只显示激活点
-								if (x == 0) {// 如果在左边，显示黑色大圆
+							if (cell != null) {// 只显示激活点
+								if (x == 0 && cell.getEnergy() > 0) {// 如果在左边，显示黑色大圆
 									setPicColor(Color.BLACK);
 									drawCellBigCenter(x, y, z);
-								} else if (z == Env.FROG_BRAIN_ZSIZE - 1) {// 如果在顶上边，显示兰色大圆
+								} else if (z == Env.FROG_BRAIN_ZSIZE - 1 && cell.getEnergy() > 0) {// 如果在顶上边，显示兰色大圆
 									setPicColor(Color.BLUE);
 									drawCellBigCenter(x, y, z);
 								}

@@ -9,8 +9,10 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import com.github.drinkjava2.frog.brain.organ.BigEar;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
+import com.github.drinkjava2.frog.objects.BigEarTester;
 import com.github.drinkjava2.frog.objects.EnvObject;
 import com.github.drinkjava2.frog.objects.LetterTester;
 import com.github.drinkjava2.frog.objects.Material;
@@ -59,7 +61,7 @@ public class Env extends JPanel {
 	public static final int FROG_BRAIN_DISP_WIDTH = 500; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
-	public static final int STEPS_PER_ROUND = 500;// 每轮测试步数,可调
+	public static final int STEPS_PER_ROUND = 25*30;// 每轮测试步数,可调
 	public static int step;// 当前测试步数
 
 	public static final int FOOD_QTY = 100; // 食物数量, 可调
@@ -73,7 +75,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-	public static EnvObject[] things = new EnvObject[] { new LetterTester() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+	public static EnvObject[] things = new EnvObject[] { new BigEarTester() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8

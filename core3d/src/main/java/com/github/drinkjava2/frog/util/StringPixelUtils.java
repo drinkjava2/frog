@@ -29,6 +29,10 @@ import java.util.Map;
 public class StringPixelUtils {
 	private static final Map<String, byte[][]> lettersMap = new HashMap<>();
 
+	public static byte[][] getSanserif10Pixels(String s) {
+		return getStringPixels(Font.SANS_SERIF, Font.PLAIN, 10, s);
+	}
+	
 	public static byte[][] getSanserif12Pixels(String s) {
 		return getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, s);
 	}

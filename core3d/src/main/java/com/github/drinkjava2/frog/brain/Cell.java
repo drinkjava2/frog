@@ -54,17 +54,18 @@ public class Cell {
 		organs[organs.length - 1] = action;
 	}
 
+	public static boolean blockBackEyePhoton = true;
+	public static boolean blockBackEarPhoton = true;
+
 	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
 		if (p == null)
 			return;
-		if (p.organNo == 0 && p.x < 3)
+		if (blockBackEyePhoton && p.organNo == 0 && p.x < 3)
 			return;// 这是个临时限制，防止反向的光子落到视网膜上
-		if (p.organNo == 0 && p.z > Env.FROG_BRAIN_ZSIZE - 2)
+		if (blockBackEarPhoton && p.organNo == 0 && p.z > Env.FROG_BRAIN_ZSIZE - 2)
 			return;// 这是个临时限制，防止反向的光子落到耳朵上
 
-		energy += 1000;
-		if (energy > 10000)
-			energy = 10000;
+		energy += 100; 
 		// //p.energy *= .7;
 		// if (p.energy < 0.1)
 		// return;
@@ -195,6 +196,11 @@ public class Cell {
 		}
 	}
 
+	public void deleteAllPhotons() {
+		photons = null;
+		photonQty = 0;
+	}
+
 	public float getEnergy() {// 获取cell的能量
 		return energy;
 	}
@@ -213,6 +219,10 @@ public class Cell {
 
 	public void setColor(int color) {
 		this.color = color;
+	}
+
+	public void setPhotonQty(int photonQty) {
+		this.photonQty = photonQty;
 	}
 
 }

@@ -46,12 +46,12 @@ public class LetterTester implements EnvObject {
 			letter = String.valueOf(STR.charAt(RandomUtils.nextInt(4)));
 		}
 		Frog frog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); // 这个测试只针对每屏的第一只青蛙，因为脑图固定只显示第一只青蛙
-		Eye eye = frog.findOrganByName("eye");
+		Eye eye = frog.findOrganByName("Eye");
 
-		Ear ear = frog.findOrganByName("ear");
+		Ear ear = frog.findOrganByName("Ear");
 
 		if (next50(1)) {
-			BrainPicture.setNote( "第1个字训练");
+			BrainPicture.setNote("第1个字训练");
 			ear.hearSound(frog, "A");
 			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels("一"));
 		} else if (next50(50)) {
