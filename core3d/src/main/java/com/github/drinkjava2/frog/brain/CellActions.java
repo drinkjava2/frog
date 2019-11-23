@@ -10,6 +10,7 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -36,50 +37,48 @@ public class CellActions {
 	 * 一对多，拆分，入射光子被拆分成多个光子，发散角与器官相关 
 	 * 多对一，聚合，入射光子被触突捕获
 	 */
-	public static void act(int activeNo, Organ o, Cell cell, int x, int y, int z) {
-		switch (o.type) { // 添加细胞的行为，这是硬编码
-		case Organ.EMPTY: // 如果是WALK细胞，它的行为是让每个光子穿过这个细胞走到下一格，保持直线运动不变
-			break;
-		case Organ.EYE: // 如果是视网膜细胞，TODO: 产生单个光子
-			cell.addPhoton(new Photon(o.organNo, o.color, x, y, z, 1f, 0, 0, 100f));
-			break;
-		case Organ.INSIDE_EYE: // 如果是脑内成像区，它的行为是将收到的光子转化为向右的多个光子发散出去，模拟波源
-			if (cell.photons != null)
-				for (int i = 0; i < cell.photons.length; i++) {
-					Photon p = cell.photons[i];
-					if (p != null && p.organNo != 0) {
-						cell.removePhoton(i);
-						if (cell.getEnergy() > 0 && RandomUtils.percent(100)) {
-							for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
-								for (float zz = -0.3f; zz <= 0.3f; zz += 0.1) {
-									cell.addPhoton(new Photon(o.organNo, o.color, p.x, p.y, p.z, 1, yy, zz, 100f));
-								}
+	public static void act(Frog frog, int activeNo, Cell c) {
+		if (c.holes != null)
+			for (Hole h : c.holes) {// 洞的年龄增加，目的是让年龄越接近的洞之间，绑定的概率和强度越大
+				h.age++;
+			}
+		if (c.organs != null)
+			for (int orgNo : c.organs) {
+				Organ o = frog.organs.get(orgNo);
+				switch (o.type) { // 添加细胞的行为，这是硬编码
+				case Organ.EMPTY: // 如果是WALK细胞，它的行为是让每个光子穿过这个细胞走到下一格，保持直线运动不变
+					if (c.photons != null) {
+						for (int ii = 0; ii < c.photons.length; ii++) {
+							Photon p = c.photons[ii];
+							if (p == null || p.activeNo == activeNo)// 同一轮新产生的光子或处理过的光子不再走了
+								continue;
+							p.activeNo = activeNo;
+							c.removePhoton(ii);// 原来的位置的先清除，去除它的Java对象引用
+							c.photonWalk(frog, p); // 让光子自已往下走
+						}
+					}
+					break;
+				case Organ.EYE: // 如果是视网膜细胞，它的行为是将Cell的激活值转化为向右的多个光子发散出去，模拟波源
+					if (c.getEnergy() > 0 && RandomUtils.percent(100)) {
+						for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
+							for (float zz = -0.3f; zz <= 0.3f; zz += 0.1) {
+								c.addPhoton(new Photon(orgNo, o.color, c.x, c.y, c.z, 1.0f, yy, zz, 100f));
 							}
 						}
 					}
-				}
-			break;
-		case Organ.EAR: // 如果是耳朵细胞， 产生单个向下光子
-			cell.addPhoton(new Photon(o.organNo, o.color, x, y, z, 0, 0, -1, 100f));
-			break;
-		case Organ.INSIDE_EAR: // 如果是听力细胞，它的行为是将收到的光子转化为向下的多个光子发散出去，模拟波源
-			if (cell.photons != null)
-				for (int i = 0; i < cell.photons.length; i++) {
-					Photon p = cell.photons[i];
-					if (p != null && p.organNo != 0) {
-						cell.removePhoton(i);
-						if (cell.getEnergy() > 0 && RandomUtils.percent(100)) {
-							for (float xx = -0.3f; xx <= 0.3f; xx += 0.13) {// 形成一个扇面向下发送
-								for (float yy = -0.3f; yy <= 0.3f; yy += 0.13) {
-									cell.addPhoton(new Photon(o.organNo, o.color, p.x, p.y, p.z, xx, yy, -1f, 100f));
-								}
+					break;
+				case Organ.EAR: // 如果是听力细胞，它的行为是将cell的激活能量转化为向下的多个光子发散出去，模拟波源
+					if (c.getEnergy() > 0 && RandomUtils.percent(100)) {
+						for (float xx = -0.3f; xx <= 0.3f; xx += 0.13) {// 形成一个扇面向下发送
+							for (float yy = -0.3f; yy <= 0.3f; yy += 0.13) {
+								c.addPhoton(new Photon(o.organNo, o.color, c.x, c.y, c.z, xx, yy, -1, 100f));
 							}
 						}
 					}
+					break;
+				default:
+					break;
 				}
-			break;
-		default:
-			break;
-		}
+			}
 	}
 }

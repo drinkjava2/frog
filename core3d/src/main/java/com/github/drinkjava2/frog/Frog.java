@@ -21,9 +21,7 @@ import javax.imageio.ImageIO;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.CellActions;
 import com.github.drinkjava2.frog.brain.Cuboid;
-import com.github.drinkjava2.frog.brain.Hole;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.Photon;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
 
@@ -111,7 +109,7 @@ public class Frog {
 		return activity;
 	}
 
-	private int activeNo = 0;
+	private int activeNo = 0;// 每一帧光子只能走一步，用这个来作标记
 
 	public boolean active(Env v) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
 		activeNo++;
@@ -133,25 +131,8 @@ public class Frog {
 					if (cells[i][j] != null)
 						for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
 							Cell cell = cells[i][j][k];
-							if (cell != null) {
-								if (cell.organs != null)
-									for (int orgNo : cell.organs)
-										CellActions.act(activeNo, organs.get(orgNo), cell, i, j, k); // 调用每个细胞的act方法
-								if (cell.photons != null) {
-									for (int ii = 0; ii < cell.photons.length; ii++) {
-										Photon p = cell.photons[ii];
-										if (p == null || p.activeNo == activeNo)// 同一轮新产生的光子或处理过的光子不再走了
-											continue;
-										p.activeNo = activeNo;
-										cell.removePhoton(ii);// 原来的位置的先清除，去除它的Java对象引用
-										cell.photonWalk(this, p); // 让光子自已往下走
-									}
-								}
-								if (cell.holes != null)
-									for (Hole h : cell.holes) {// 洞的年龄增加，只有年龄很接近的洞才会产生绑定
-										h.age++;
-									}
-							}
+							if (cell != null)  
+							  CellActions.act(this, activeNo,  cell); // 调用每个细胞的act方法 
 						}
 		}
 		return alive;
@@ -180,7 +161,7 @@ public class Frog {
 			cells[x][y] = new Cell[Env.FROG_BRAIN_ZSIZE];
 		Cell cell = cells[x][y][z];
 		if (cell == null) {
-			cell = new Cell();
+			cell = new Cell(x, y, z);
 			cells[x][y][z] = cell;
 		}
 		return cell;
@@ -202,9 +183,6 @@ public class Frog {
 							if (cell != null) {
 								cell.deleteAllPhotons();
 								cell.setEnergy(0);
-								if (cell.holes != null)
-									for (Hole h : cell.holes)
-										h.age += 100;// 强迫所有洞变老，这样就不会干拢下一次训练了
 							}
 						}
 		}

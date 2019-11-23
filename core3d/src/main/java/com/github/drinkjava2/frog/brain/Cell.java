@@ -32,8 +32,18 @@ import com.github.drinkjava2.frog.util.ColorUtils;
  * @since 1.0
  */
 public class Cell {
+	public int x;
+	public int y;
+	public int z;
+	
+	public Cell(int x, int y, int z) {
+		this.x=x;
+		this.y=y;
+		this.z=z;
+	}
+	
 	/** Active of current cell */
-	private float energy = 0; // 这个cell的激活能量，允许是负值（但暂时只用到正值),它反映了在这个cell里所有光子的能量汇总值
+	public float energy = 0; // 这个cell的激活能量，允许是负值（但暂时只用到正值),它反映了在这个cell里所有光子的能量汇总值
 
 	public int[] organs = null; //// 每个Cell可以被多个Organ登记，这里保存organ在蛋里的序号
 
@@ -43,9 +53,9 @@ public class Cell {
 
 	public Relation[] relations = null;// 洞的关联关系
 
-	private int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
+	public int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
 
-	private int photonQty = 0;
+	public int photonQty = 0;
 
 	public void regOrgan(int action) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
 		if (organs == null)
@@ -60,20 +70,12 @@ public class Cell {
 	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
 		if (p == null)
 			return;
-		if (blockBackEyePhoton && p.organNo == 0 && p.x == 0)
-			return;
-		if (blockBackEarPhoton && p.organNo == 0 && p.z == Env.FROG_BRAIN_ZSIZE - 1)
-			return;
-		if (!blockBackEyePhoton && p.organNo == 0 && p.x == 0) {
-			energy += 100;
-			return; // 反向的光子加能量在眼睛上后消灭
-		}
-		if (!blockBackEarPhoton && p.organNo == 0 && p.z == Env.FROG_BRAIN_ZSIZE - 1) {
-			energy += 100;
-			return; // 反向的光子加能量在耳朵上后消灭
-		}
+		if (blockBackEyePhoton && p.organNo == 0 && p.x < 3)
+			return;// 这是个临时限制，防止反向的光子落到视网膜上
+		if (blockBackEarPhoton && p.organNo == 0 && p.z > Env.FROG_BRAIN_ZSIZE - 2)
+			return;// 这是个临时限制，防止反向的光子落到耳朵上
 
-		energy += 100;
+		energy += 100; 
 		// //p.energy *= .7;
 		// if (p.energy < 0.1)
 		// return;
@@ -126,7 +128,7 @@ public class Cell {
 
 		if (found != null) { // 如果第二次扩洞，且光子和洞不是同一个器官产生的，这时可以把这个洞和其它洞关联起来了
 			for (Hole hole : holes) {
-				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 35)) {// TODO:不应用固定值
+				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 9)) {// TODO:不应用固定值
 					bind(found, hole);
 				}
 			}

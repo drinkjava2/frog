@@ -57,12 +57,10 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public static final int EMPTY = 0;// 空细胞，不处理光子
 	public static final int EYE = 1;// 眼细胞，会根据cell激活度产生发散到各个方向的光子
 	public static final int EAR = 2;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活cell
-	public static final int INSIDE_EYE = 5; // 脑内视觉成像区
-	public static final int INSIDE_EAR= 6; // 脑内听觉成像区
 	public static final int DYNAMIC = 3; // 只有动态洞的细胞，它忽略静态洞参数
 	public static final int STATIC = 4; // 只有静态洞的细胞，它忽略动态洞参数
-	public static final int MIX = 7; // 同时具有静态和动态洞的细胞
-	public static final int TYPE_QTY = 8;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
+	public static final int MIX = 5; // 同时具有静态和动态洞的细胞
+	public static final int TYPE_QTY = 6;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
 
 	private static int organNoIndex = 1;
 	public int organNo = organNoIndex++; // 每个器官都有一个唯一的编号,作用是同一个编号的光子间将不产生绑定

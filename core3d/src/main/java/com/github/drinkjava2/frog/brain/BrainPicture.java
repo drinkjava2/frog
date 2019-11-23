@@ -42,8 +42,8 @@ public class BrainPicture extends JPanel {
 	float xAngle = d90 * .8f; // brain rotate on x axis
 	float yAngle = d90 / 4; // brain rotate on y axis
 	float zAngle = 0;// brain rotate on z axis
-	int xMask = 0;// x Mask
-	int yMask = 0;// y Mask
+	int xMask = -1;// x Mask
+	int yMask = -1;// y Mask
 	BufferedImage buffImg;
 	Graphics g;
 	String note;
@@ -311,7 +311,7 @@ public class BrainPicture extends JPanel {
 		}
 		g.setColor(Color.black);
 		if (note != null)
-			g.drawString(note, 30, 25);
+			g.drawString(note, 30, 55);
 		Graphics g2 = this.getGraphics(); // 这两行是将缓存中的图像写到屏幕上
 		g2.drawImage(buffImg, 0, 0, this);
 
