@@ -40,23 +40,43 @@ public class CellActions {
 		switch (o.type) { // 添加细胞的行为，这是硬编码
 		case Organ.EMPTY: // 如果是WALK细胞，它的行为是让每个光子穿过这个细胞走到下一格，保持直线运动不变
 			break;
-		case Organ.EYE: // 如果是视网膜细胞，它的行为是将Cell的激活值转化为向右的多个光子发散出去，模拟波源
-			if (cell.getEnergy() > 0 && RandomUtils.percent(100)) {
-				for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
-					for (float zz = -0.3f; zz <= 0.3f; zz += 0.1) {
-						cell.addPhoton(new Photon(o.organNo, o.color, x, y, z, 1.0f, yy, zz, 100f));
-					}
-				}
-			}
+		case Organ.EYE: // 如果是视网膜细胞，TODO: 产生单个光子
+			cell.addPhoton(new Photon(o.organNo, o.color, x, y, z, 1f, 0, 0, 100f));
 			break;
-		case Organ.EAR: // 如果是听力细胞，它的行为是将cell的激活能量转化为向下的多个光子发散出去，模拟波源
-			if (cell.getEnergy() > 0 && RandomUtils.percent(100)) {
-				for (float xx = -0.3f; xx <= 0.3f; xx += 0.13) {// 形成一个扇面向下发送
-					for (float yy = -0.3f; yy <= 0.3f; yy += 0.13) {
-						cell.addPhoton(new Photon(o.organNo, o.color, x, y, z, xx, yy, -1, 100f));
+		case Organ.INSIDE_EYE: // 如果是脑内成像区，它的行为是将收到的光子转化为向右的多个光子发散出去，模拟波源
+			if (cell.photons != null)
+				for (int i = 0; i < cell.photons.length; i++) {
+					Photon p = cell.photons[i];
+					if (p != null && p.organNo != 0) {
+						cell.removePhoton(i);
+						if (cell.getEnergy() > 0 && RandomUtils.percent(100)) {
+							for (float yy = -0.3f; yy <= 0.3f; yy += 0.1) {// 形成一个扇面向右发送
+								for (float zz = -0.3f; zz <= 0.3f; zz += 0.1) {
+									cell.addPhoton(new Photon(o.organNo, o.color, p.x, p.y, p.z, 1, yy, zz, 100f));
+								}
+							}
+						}
 					}
 				}
-			}
+			break;
+		case Organ.EAR: // 如果是耳朵细胞， 产生单个向下光子
+			cell.addPhoton(new Photon(o.organNo, o.color, x, y, z, 0, 0, -1, 100f));
+			break;
+		case Organ.INSIDE_EAR: // 如果是听力细胞，它的行为是将收到的光子转化为向下的多个光子发散出去，模拟波源
+			if (cell.photons != null)
+				for (int i = 0; i < cell.photons.length; i++) {
+					Photon p = cell.photons[i];
+					if (p != null && p.organNo != 0) {
+						cell.removePhoton(i);
+						if (cell.getEnergy() > 0 && RandomUtils.percent(100)) {
+							for (float xx = -0.3f; xx <= 0.3f; xx += 0.13) {// 形成一个扇面向下发送
+								for (float yy = -0.3f; yy <= 0.3f; yy += 0.13) {
+									cell.addPhoton(new Photon(o.organNo, o.color, p.x, p.y, p.z, xx, yy, -1f, 100f));
+								}
+							}
+						}
+					}
+				}
 			break;
 		default:
 			break;

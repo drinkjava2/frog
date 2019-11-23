@@ -202,6 +202,9 @@ public class Frog {
 							if (cell != null) {
 								cell.deleteAllPhotons();
 								cell.setEnergy(0);
+								if (cell.holes != null)
+									for (Hole h : cell.holes)
+										h.age += 100;// 强迫所有洞变老，这样就不会干拢下一次训练了
 							}
 						}
 		}

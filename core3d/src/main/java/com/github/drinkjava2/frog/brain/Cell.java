@@ -60,12 +60,20 @@ public class Cell {
 	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
 		if (p == null)
 			return;
-		if (blockBackEyePhoton && p.organNo == 0 && p.x < 3)
-			return;// 这是个临时限制，防止反向的光子落到视网膜上
-		if (blockBackEarPhoton && p.organNo == 0 && p.z > Env.FROG_BRAIN_ZSIZE - 2)
-			return;// 这是个临时限制，防止反向的光子落到耳朵上
+		if (blockBackEyePhoton && p.organNo == 0 && p.x == 0)
+			return;
+		if (blockBackEarPhoton && p.organNo == 0 && p.z == Env.FROG_BRAIN_ZSIZE - 1)
+			return;
+		if (!blockBackEyePhoton && p.organNo == 0 && p.x == 0) {
+			energy += 100;
+			return; // 反向的光子加能量在眼睛上后消灭
+		}
+		if (!blockBackEarPhoton && p.organNo == 0 && p.z == Env.FROG_BRAIN_ZSIZE - 1) {
+			energy += 100;
+			return; // 反向的光子加能量在耳朵上后消灭
+		}
 
-		energy += 100; 
+		energy += 100;
 		// //p.energy *= .7;
 		// if (p.energy < 0.1)
 		// return;
@@ -118,7 +126,7 @@ public class Cell {
 
 		if (found != null) { // 如果第二次扩洞，且光子和洞不是同一个器官产生的，这时可以把这个洞和其它洞关联起来了
 			for (Hole hole : holes) {
-				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 9)) {// TODO:不应用固定值
+				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 35)) {// TODO:不应用固定值
 					bind(found, hole);
 				}
 			}

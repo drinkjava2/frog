@@ -25,12 +25,12 @@ import com.github.drinkjava2.frog.util.ColorUtils;
  * @since 2.0.2
  */
 @SuppressWarnings("all")
-public class BigEar extends Organ {// 大耳朵位于脑的顶上，也是长方体
+public class InsideEar extends Organ {// 大耳朵位于脑的顶上，也是长方体
 	private static final long serialVersionUID = 1L;
 
-	public BigEar() {
-		this.shape = new Cuboid(12, 10, Env.FROG_BRAIN_ZSIZE - 1, 10, 10, 1);// 手工固定大耳区的大小
-		this.type = Organ.EAR;
+	public InsideEar() {
+		this.shape = new Cuboid(12, 10, Env.FROG_BRAIN_ZSIZE - 2, 10, 10, 1);// 手工固定大耳区的大小
+		this.type = Organ.INSIDE_EAR;
 		this.organName = "BigEar";
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出

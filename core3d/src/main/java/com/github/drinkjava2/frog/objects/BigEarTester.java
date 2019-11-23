@@ -42,34 +42,26 @@ public class BigEarTester implements EnvObject {
 		Frog frog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); // 这个测试只针对每屏的第一只青蛙，因为脑图固定只显示第一只青蛙
 		Eye eye = frog.findOrganByName("Eye");
 		BigEar ear = frog.findOrganByName("BigEar");
-		int index = Env.step / 30;
-		if (Env.step % 30 == 0)
+		int index = Env.step / 40;
+		if (Env.step % 40 == 0)
 			frog.deleteAllPhotons();
 
 		if (index < STR.length()) {
-			Cell.blockBackEarPhoton = true;
-			Cell.blockBackEyePhoton = true;
+			Cell.blockBackEarPhoton=true;
 			BrainPicture.setNote("第" + (index + 1) + "个字训练");
-			int firstCode = index / 5;
-			int secondCode = index % 5;
-			ear.hearSound(frog, firstCode, secondCode);
+			ear.hearSound(frog, index);
 			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index, index + 1)));
 		} else {
-			Cell.blockBackEarPhoton = false;
 			int index2 = index % 10;
+			Cell.blockBackEarPhoton=false;
 			BrainPicture.setNote("第" + (index2 + 1) + "个字识别");
 			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index2, index2 + 1)));
-			if (Env.step % 30 > 28) {
-				int[] result = ear.readcode(frog);
-				System.out.println(result[0] + "," + result[1]);
+			if (Env.step % 40 > 38) {
+				int result = ear.readcode(frog);
+				System.out.println("result=" + result);
 				frog.deleteAllPhotons();
 			}
 		}
-
-	}
-
-	private static boolean next50(int i) {
-		return Env.step > i && Env.step < i + 25;
 	}
 
 }
