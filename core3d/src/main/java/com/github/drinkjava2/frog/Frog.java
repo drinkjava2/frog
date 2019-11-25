@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.CellActions;
 import com.github.drinkjava2.frog.brain.Cuboid;
+import com.github.drinkjava2.frog.brain.Hole;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
@@ -72,8 +73,8 @@ public class Frog {
 			this.alive = false;
 			return;
 		}
-		for (int i = 0; i < organs.size(); i++) {
-			organs.get(i).init(this, i);
+		for (int orgNo = 0; orgNo < organs.size(); orgNo++) {
+			organs.get(orgNo).init(this, orgNo);
 		}
 	}
 
@@ -96,7 +97,7 @@ public class Frog {
 					if (cells[x][y] != null)
 						for (int z = o.z; z < o.z + o.ze; z++)
 							if (cells[x][y][z] != null)
-								getOrCreateCell(x, y, z).setEnergy(active);
+								getOrCreateCell(x, y, z).energy = active;
 	}
 
 	/** Calculate organ activity by add all organ cells' active value together */
@@ -105,7 +106,7 @@ public class Frog {
 		for (int x = o.x; x < o.x + o.xe; x++)
 			for (int y = o.y; y < o.y + o.ye; y++)
 				for (int z = o.z; z < o.z + o.ze; z++)
-					activity += this.getOrCreateCell(x, y, z).getEnergy();
+					activity += this.getOrCreateCell(x, y, z).energy;
 		return activity;
 	}
 
@@ -131,8 +132,8 @@ public class Frog {
 					if (cells[i][j] != null)
 						for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
 							Cell cell = cells[i][j][k];
-							if (cell != null)  
-							  CellActions.act(this, activeNo,  cell); // 调用每个细胞的act方法 
+							if (cell != null)
+								CellActions.act(this, activeNo, cell); // 调用每个细胞的act方法
 						}
 		}
 		return alive;
@@ -182,7 +183,11 @@ public class Frog {
 							Cell cell = cells[i][j][k];
 							if (cell != null) {
 								cell.deleteAllPhotons();
-								cell.setEnergy(0);
+								cell.energy = 0;
+								if (cell.holes != null)
+									for (Hole h : cell.holes) {
+										h.age += 100;// 强迫洞的年龄增加,用这个方法来区分开不同批次的训练
+									}
 							}
 						}
 		}

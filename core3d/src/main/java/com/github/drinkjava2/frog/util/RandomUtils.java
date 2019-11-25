@@ -44,7 +44,7 @@ public class RandomUtils {
 	}
 
 	public static boolean percent(float percent) {// 有百分这percent的机率为true
-		return rand.nextFloat() * 100 < percent;
+		return rand.nextInt(100) < percent;
 	}
 
 	/** Randomly create a Cuboid inside of brain space */

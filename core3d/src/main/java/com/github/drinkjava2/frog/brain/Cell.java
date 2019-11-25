@@ -12,9 +12,9 @@ package com.github.drinkjava2.frog.brain;
 
 import java.util.Arrays;
 
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.util.ColorUtils;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Cell is the smallest unit of brain space, a Cell can have many actions and
@@ -35,13 +35,13 @@ public class Cell {
 	public int x;
 	public int y;
 	public int z;
-	
+
 	public Cell(int x, int y, int z) {
-		this.x=x;
-		this.y=y;
-		this.z=z;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
-	
+
 	/** Active of current cell */
 	public float energy = 0; // 这个cell的激活能量，允许是负值（但暂时只用到正值),它反映了在这个cell里所有光子的能量汇总值
 
@@ -57,11 +57,11 @@ public class Cell {
 
 	public int photonQty = 0;
 
-	public void regOrgan(int action) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
+	public void regOrgan(int orgNo) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
 		if (organs == null)
 			organs = new int[] {};
 		organs = Arrays.copyOf(organs, organs.length + 1);
-		organs[organs.length - 1] = action;
+		organs[organs.length - 1] = orgNo;
 	}
 
 	public static boolean blockBackEyePhoton = true;
@@ -70,16 +70,9 @@ public class Cell {
 	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
 		if (p == null)
 			return;
-		if (blockBackEyePhoton && p.organNo == 0 && p.x < 3)
-			return;// 这是个临时限制，防止反向的光子落到视网膜上
-		if (blockBackEarPhoton && p.organNo == 0 && p.z > Env.FROG_BRAIN_ZSIZE - 2)
-			return;// 这是个临时限制，防止反向的光子落到耳朵上
-
-		energy += 100; 
-		// //p.energy *= .7;
-		// if (p.energy < 0.1)
-		// return;
 		photonQty++;
+		if (p.organNo != 0)
+			this.energy++;
 		color = p.color; // Cell的颜色取最后一次被添加的光子的颜色
 		if (photons == null) {
 			photons = new Photon[] { p };// 创建数组
@@ -106,10 +99,10 @@ public class Cell {
 			return;
 		}
 
-		if (energy > 90)
+		if (energy > 0 && RandomUtils.percent(20))
 			for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子，注意只针对绑定的坑
 				Hole h = holes[i];
-				if (h != null && h.ifSimilarWay(p)) {
+				if (h != null && h.ifSameWay(p)) {
 					createBackPhoton(h);
 				}
 			}
@@ -184,11 +177,9 @@ public class Cell {
 	}
 
 	/** Photon always walk */
-	public void photonWalk(Frog f, Photon p) { // 光子自已会走到下一格，如果下一格为空，继续走,直到能量耗尽或出界
-		if (p.energy < 0.1)
-			return;// 能量小的光子直接扔掉
-		if (p.outBrainBound())
-			return; //// 出界的光子直接扔掉
+	public void photonWalk(Frog f, Cell oldCell, int i, Photon p) { // 光子自已会走到下一格，如果下一格为空，继续走,直到能量耗尽或出界
+		if (p.energy < 0.1 || p.outBrainBound()) // 能量小的光子和出界的光子直接扔掉
+			return;
 		p.x += p.mx;
 		p.y += p.my;
 		p.z += p.mz;
@@ -199,10 +190,8 @@ public class Cell {
 			return;// 出界直接扔掉
 		Cell cell = f.getCell(rx, ry, rz);
 		if (cell != null) {
+			oldCell.removePhoton(i);
 			cell.addPhoton(p);
-		} else {
-			// p.energy *= .6;// 真空中也要乘一个衰减系数，防止它走太远，占用计算资源
-			photonWalk(f, p);// 递归，一直走下去，直到遇到cell或出界
 		}
 	}
 
@@ -211,28 +200,12 @@ public class Cell {
 		photonQty = 0;
 	}
 
-	public float getEnergy() {// 获取cell的能量
-		return energy;
+	public boolean hasBackPhoton() {
+		if (photons == null)
+			return false;
+		for (Photon p : photons)
+			if (p != null && p.organNo == 0)
+				return true;
+		return false;
 	}
-
-	public void setEnergy(float energy) {// 设cell的能量
-		this.energy = energy;
-	}
-
-	public int getPhotonQty() {// 获取cell里的总光子数
-		return photonQty;
-	}
-
-	public int getColor() {
-		return color;
-	}
-
-	public void setColor(int color) {
-		this.color = color;
-	}
-
-	public void setPhotonQty(int photonQty) {
-		this.photonQty = photonQty;
-	}
-
 }

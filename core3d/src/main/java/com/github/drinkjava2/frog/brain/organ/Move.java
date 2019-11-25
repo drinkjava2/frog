@@ -15,20 +15,20 @@ import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Empty is a special organ has no action, only used as media for photon
+ * Move is a special organ the action move photon go to next cell
  * 
- * Empty这个器官唯一目的只是充当光子媒介初始化cell单元格数组，否则光子如果没遇到cell会一直走下出，从脑图上就观察不到光子了
+ * Move这个器官会让Cell中的光子沿着它的运动方向走到下一格
  * 
  * @author Yong Zhu
  */
-public class Empty extends Organ {
+public class Move extends Organ {
 	private static final long serialVersionUID = 1L;
 
-	public Empty() {
+	public Move() {
 		super();
-		this.shape = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE-5, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
-		this.organName = "Empty";
-		this.type = Organ.EMPTY; // Empty这个器官并不播种cell,它存在的唯一目的只是充当光子媒介，否则光子会一直走下去消失
+		this.shape = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE - 5, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
+		this.organName = "Move";
+		this.type = Organ.MOVE; // Empty这个器官并不播种cell,它存在的唯一目的只是充当光子媒介，否则光子会一直走下去消失
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
 	}

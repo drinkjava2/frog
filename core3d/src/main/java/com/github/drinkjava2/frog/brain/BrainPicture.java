@@ -212,25 +212,11 @@ public class BrainPicture extends JPanel {
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
-	/** 画出cell的中心大点，通常用来显示器官的边界激活点 */
-	public void drawCellBigCenter(float x, float y, float z) {
+	/** 画出cell的中心点 */
+	public void drawCellCenter(float x, float y, float z, float diameter) {
 		if (x > 0 && (x < xMask || y < yMask))
 			return;
-		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .7)));
-	}
-
-	/** 画出cell的中心小点，通常用来显示光子 */
-	public void drawCellMiddleCenter(float x, float y, float z) {
-		if (x > 0 && (x < xMask || y < yMask))
-			return;
-		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .45)));
-	}
-
-	/** 画出cell的中心小点，通常用来显示光子 */
-	public void drawCellSmallCenter(float x, float y, float z) {
-		if (x > 0 && (x < xMask || y < yMask))
-			return;
-		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(1, Math.round(scale * .20)));
+		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(2, Math.round(scale * diameter)));
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
@@ -290,20 +276,25 @@ public class BrainPicture extends JPanel {
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
 							Cell cell = f.getCell(x, y, z);
 							if (cell != null) {// 只显示激活点
-								if (x == 0 && cell.getEnergy() > 0) {// 如果在左边，显示黑色大圆
+								if (  cell.energy > 0 && x==0  ) {// 如果在左边，显示黑色大圆
 									setPicColor(Color.BLACK);
-									drawCellBigCenter(x, y, z);
-								} else if (z == Env.FROG_BRAIN_ZSIZE - 1 && cell.getEnergy() > 0) {// 如果在顶上边，显示兰色大圆
+									drawCellCenter(x, y, z, 0.6f);
+								} else if (z == Env.FROG_BRAIN_ZSIZE - 1 && cell.energy > 0) {// 如果在顶上边，显示兰色大圆
 									setPicColor(Color.BLUE);
-									drawCellBigCenter(x, y, z);
+									drawCellCenter(x, y, z, 0.6f);
 								}
 
-								if (cell.getPhotonQty() > 0) {// 如果在内部，只显示有光子的cell
-									setPicColor(ColorUtils.colorByCode(cell.getColor()));
-									if (x == xMask || y == yMask)
-										drawCellMiddleCenter(x, y, z);
-									else
-										drawCellSmallCenter(x, y, z);
+								if (cell.photonQty > 0) {// 如果在内部，只显示有光子的cell
+									if (cell.hasBackPhoton()) {
+										setPicColor(Color.RED);
+										drawCellCenter(x, y, z, 0.25f);
+									} else {
+										setPicColor(ColorUtils.colorByCode(cell.color));
+										if (x == xMask || y == yMask)
+											drawCellCenter(x, y, z, 0.5f);
+										else
+											drawCellCenter(x, y, z, 0.18f);
+									}
 								}
 							}
 						}

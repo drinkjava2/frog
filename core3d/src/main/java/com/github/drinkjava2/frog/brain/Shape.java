@@ -26,7 +26,5 @@ public interface Shape extends Serializable {
 	/* Draw self on brain picture */
 	public void drawOnBrainPicture(BrainPicture pic); // 把自己在脑图上画出来
 
-	public void createCellsRegOrgan(Frog f, int o); // 根据给定organ的参数，在shape所代表的脑区内添加脑细胞并加入对应细胞的行为
-
-	public void createCells(Frog f); // 在organ所代表的脑区内仅创建空的Cell对象
+	public void createCellsRegOrgan(Frog f, int orgNo); // 在Shape所代表的脑区内找到或创建Cell对象，并将器官号orgNo登记在cell里
 }

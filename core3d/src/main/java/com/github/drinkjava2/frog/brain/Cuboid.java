@@ -59,13 +59,13 @@ public class Cuboid implements Shape {
 	}
 
 	@Override
-	public void createCellsRegOrgan(Frog f, int o) {// 创建Cell并登记Organ， 先忽略密度分布等参数
+	public void createCellsRegOrgan(Frog f, int orgNo) {// 创建Cell并登记Organ， 先忽略密度分布等参数
 		for (int i = x; i < x + xe; i++)
 			for (int j = y; j < y + ye; j++)
 				for (int k = z; k < z + ze; k++) {
 					Cell cell = f.getOrCreateCell(i, j, k);
 					if (cell != null)
-						cell.regOrgan(o);
+						cell.regOrgan(orgNo);
 				}
 	}
 

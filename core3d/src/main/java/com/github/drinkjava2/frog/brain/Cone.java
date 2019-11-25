@@ -59,10 +59,4 @@ public class Cone implements Shape {
 		// TODO 待添加Cone形器官播种脑细胞的代码
 	}
 
-	@Override
-	public void createCells(Frog f) {
-		// TODO 待添加Cone形器官createCells的代码
-
-	}
-
 }

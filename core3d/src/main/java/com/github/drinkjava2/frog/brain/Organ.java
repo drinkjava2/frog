@@ -55,12 +55,14 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	// 以下是各种器官类型，每个神经元都属于一个器官，每个器官都有一个type类型参数
 	public static final int EMPTY = 0;// 空细胞，不处理光子
-	public static final int EYE = 1;// 眼细胞，会根据cell激活度产生发散到各个方向的光子
-	public static final int EAR = 2;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活cell
-	public static final int DYNAMIC = 3; // 只有动态洞的细胞，它忽略静态洞参数
-	public static final int STATIC = 4; // 只有静态洞的细胞，它忽略动态洞参数
-	public static final int MIX = 5; // 同时具有静态和动态洞的细胞
-	public static final int TYPE_QTY = 6;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
+	public static final int MOVE = 1;// 空细胞，不处理光子
+	public static final int EYE = 2;// 眼细胞，会根据cell激活度产生发散到各个方向的光子
+	public static final int EAR = 3;// 耳细胞,类似眼细胞,不同点是为了简化，脑内听觉区和输入区混用一个区，所以它也可吸收光子，倒过来激活cell
+	public static final int DYNAMIC = 4; // 只有动态洞的细胞，它忽略静态洞参数
+	public static final int STATIC = 5; // 只有静态洞的细胞，它忽略动态洞参数
+	public static final int MIX = 6; // 同时具有静态和动态洞的细胞 
+	
+	public static final int TYPE_QTY = 7;// 所有的type都是预先写好在这里的，自动生成的type也只能在写好的type里选一个
 
 	private static int organNoIndex = 1;
 	public int organNo = organNoIndex++; // 每个器官都有一个唯一的编号,作用是同一个编号的光子间将不产生绑定
@@ -138,10 +140,10 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	}
 
 	/** Only call once when frog created , Child class can override this method */
-	public void init(Frog f, int oIndex) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
+	public void init(Frog f, int orgNo) { // 在青蛙生成时会调用这个方法，进行一些初始化，通常是根据参数来播种脑细胞
 		// 里是器官播种脑细胞的具体代码,对于手工生成的器官，也可以重写这个方法，对于自动生成的器官，必须根据type和shape等来播种，要写死在这里
 		if (shape != null)
-			shape.createCellsRegOrgan(f, oIndex); // 先均匀播种脑细胞试试
+			shape.createCellsRegOrgan(f, orgNo); // 先均匀播种脑细胞试试
 	}
 
 	/** each step will call Organ's active methodd */
