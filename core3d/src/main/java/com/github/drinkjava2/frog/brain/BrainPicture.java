@@ -25,7 +25,8 @@ import com.github.drinkjava2.frog.util.ColorUtils;
  * BrainPicture show first frog's brain structure, for debug purpose only
  * 
  * 这个类用来画出脑图，这不是一个关键类，对脑的运行逻辑无影响，但有了脑图后可以直观地看出脑的3维结构，进行有针对性的改进
- * 可以用鼠标进行平移、缩放、旋转，以及t、f、l、r,x五个键来选择顶视、前视、左视、右视、斜视这5个方向的视图
+ * 可以用鼠标进行平移、缩放、旋转，以及t、f、l、r,x五个键来选择顶视、前视、左视、右视、斜视这5个方向的视图，以及空格暂停、方向键调整切面
+ * 鼠标的动作定义在MouseAction类中。
  * 
  * @author Yong Zhu
  * @since 1.0
@@ -85,7 +86,7 @@ public class BrainPicture extends JPanel {
 					if (xMask > Env.FROG_BRAIN_XSIZE)
 						xMask = Env.FROG_BRAIN_XSIZE;
 					break;
-				case ' ':// 暂停切换
+				case ' ':// 暂停及继续
 					Application.pauseAction.actionPerformed(null);
 					break;
 				case 'T':// 顶视
@@ -286,10 +287,12 @@ public class BrainPicture extends JPanel {
 
 								if (cell.photonQty > 0) {// 如果在内部，只显示有光子的cell
 									setPicColor(ColorUtils.colorByCode(cell.color));
+									float dia = 0.2f;
+									if (cell.color == 0)
+										dia = 0.3f;
 									if (x == xMask || y == yMask)
-										drawCellCenter(x, y, z, 0.5f);
-									else
-										drawCellCenter(x, y, z, 0.18f);
+										dia = 0.5f;
+									drawCellCenter(x, y, z, dia);
 								}
 							}
 						}

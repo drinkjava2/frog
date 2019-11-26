@@ -166,7 +166,7 @@ public class Frog {
 	}
 
 	/** Photon always walk */
-	public void addAndWalkPhoton(Photon p) { // 添加光子的同时让它沿光子方向自动走一格
+	public void addAndWalk(Photon p) { // 添加光子的同时让它沿光子方向自动走一格
 		p.x += p.mx;
 		p.y += p.my;
 		p.z += p.mz;
@@ -178,6 +178,23 @@ public class Frog {
 		Cell cell = getCell(rx, ry, rz);
 		if (cell != null)
 			cell.addPhoton(p);
+	}
+
+	/** Photon always walk */
+	public void addAndWalkAndDig(Photon p) { // 添加光子的同时让它沿光子方向自动走一格
+		p.x += p.mx;
+		p.y += p.my;
+		p.z += p.mz;
+		int rx = Math.round(p.x);
+		int ry = Math.round(p.y);
+		int rz = Math.round(p.z);
+		if (Frog.outBrainBound(rx, ry, rz))
+			return;// 出界直接扔掉
+		Cell cell = getCell(rx, ry, rz);
+		if (cell != null) {
+			cell.addPhoton(p);
+			cell.digHole(p);
+		}
 	}
 
 	public void prepareNewTraining() {// for test purpose, reset some values for prepare next training.

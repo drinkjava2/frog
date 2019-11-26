@@ -46,6 +46,7 @@ public class Ear extends Organ {// 耳朵位于脑的顶上，也是长方体
 		int temp = -10000;
 		int yPos = -1;
 		Cuboid c = (Cuboid) this.shape;
+		System.out.print("Ear received photons qty: ");
 		for (int y = 0; y < 10; y++) {
 			int sum = f.getOrCreateCell(c.x, c.y + y, c.z).photonSum;
 			System.out.print(sum + ",");

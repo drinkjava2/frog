@@ -26,7 +26,7 @@ import com.github.drinkjava2.frog.util.StringPixelUtils;
  * @since 1.0
  */
 public class LetterTester implements EnvObject {
-	public static final String STR = "|||||||||||||";
+	public static final String STR = "对酒当歌人生几何";
 	public static final int TIME = 120;
 
 	@Override
@@ -50,14 +50,14 @@ public class LetterTester implements EnvObject {
 		if (index < STR.length()) {
 			BrainPicture.setNote("第" + (index + 1) + "个字训练");
 			ear.hearSound(frog, index);
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index, index + 1)));
+			eye.seeImageWithOffset(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index, index + 1)),0,0);
 		} else {
 			int index2 = index % STR.length();
 			BrainPicture.setNote("第" + (index2 + 1) + "个字识别");
-			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index2, index2 + 1)));
+			eye.seeImageWithOffset(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index2, index2 + 1)),0,0);
 			if (Env.step % TIME > (TIME - 2)) {
 				int result = ear.readcode(frog);
-				System.out.println("result=" + result);
+				System.out.println("Max=" + result+", 即 '"+STR.substring(result, result+1)+"'");
 				frog.prepareNewTraining();
 			}
 		}

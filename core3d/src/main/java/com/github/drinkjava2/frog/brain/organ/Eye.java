@@ -14,6 +14,7 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.util.ColorUtils;
+import com.github.drinkjava2.frog.util.PixelsUtils;
 
 /**
  * Eye can only see env material
@@ -54,5 +55,10 @@ public class Eye extends Organ {// 眼睛是长方体
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
 					f.getOrCreateCell(0, c.y + c.ye - px - 1, c.z + py).hasInput = true;
+	}
+
+	public void seeImageWithOffset(Frog f, byte[][] pixels, int xOff, int yOff) {// 外界硬塞一个象素图到视网膜上，并给出偏移量
+		byte[][] newPixels = PixelsUtils.offset(pixels, xOff, yOff);
+		seeImage(f, newPixels);
 	}
 }
