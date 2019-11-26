@@ -34,7 +34,7 @@ public class Eye extends Organ {// 眼睛是长方体
 
 	/** Clear image on retina */
 	public void seeNothing(Frog f) {// 外界可以直接调用这个方法，清除视网膜图像
-		f.setCuboidVales((Cuboid) shape, 0);
+		f.setCuboidVales((Cuboid) shape, false);
 	}
 
 	/**
@@ -53,6 +53,6 @@ public class Eye extends Organ {// 眼睛是长方体
 		for (int px = 0; px < w; px++)
 			for (int py = 0; py < h; py++)
 				if (pixels[px][py] > 0)
-					f.getOrCreateCell(0, c.y + c.ye - px - 1, c.z + py).energy=100;
+					f.getOrCreateCell(0, c.y + c.ye - px - 1, c.z + py).hasInput = true;
 	}
 }

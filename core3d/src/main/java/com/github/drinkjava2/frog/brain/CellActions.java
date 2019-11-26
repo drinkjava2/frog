@@ -10,6 +10,7 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -47,33 +48,43 @@ public class CellActions {
 				Organ o = frog.organs.get(orgNo);
 				switch (o.type) { // 添加细胞的行为，这是硬编码
 				case Organ.MOVE: // 如果是MOVE细胞，它的行为是让每个光子穿过这个细胞走到下一格，保持直线运动不变
+					if (c.x == 0 || c.z == Env.FROG_BRAIN_ZSIZE - 1) {
+						if (c.photonQty > 0) {
+							c.photonSum += c.photonQty;
+							c.photons = null;
+						}
+						break;
+					}
 					if (c.photons != null) {
 						for (int ii = 0; ii < c.photons.length; ii++) {
 							Photon p = c.photons[ii];
 							if (p == null || p.activeNo == activeNo)// 同一轮新产生的光子或处理过的光子不再走了
 								continue;
-							p.activeNo = activeNo; 
-							c.photonWalk(frog, c, ii, p); // 让光子自已往下走
+							p.activeNo = activeNo;
+							c.removePhoton(ii);
+							frog.addAndWalkPhoton(p); // 让光子自已往下走
 						}
 					}
 					break;
 
-				case Organ.EYE: // 如果是视网膜细胞，它的行为是将只要Cell激活，就产生向右的多个光子发散出去，模拟波源 
-					//c.deleteAllPhotons(); 
-					if (c.energy > 0 && RandomUtils.percent(20)) {// 随机数的作用是加快速度
+				case Organ.EYE: // 如果是视网膜细胞，它的行为是将只要Cell激活，就产生向右的多个光子发散出去，模拟波源
+					if (c.hasInput && RandomUtils.percent(40)) {// 随机数的作用是减少光子数，加快速度
 						for (float yy = -0.1f; yy <= 0.1f; yy += 0.03) {// 形成一个扇面向右发送
 							for (float zz = -0.1f; zz <= 0.1f; zz += 0.03) {
-								c.addPhoton(new Photon(orgNo, o.color, c.x, c.y, c.z, 1.0f, yy, zz, 100f));
+								Photon p = new Photon(orgNo, o.color, c.x, c.y, c.z, 1.0f, yy, zz, 100f);
+								p.activeNo = activeNo;
+								frog.addAndWalkPhoton(p);
 							}
 						}
 					}
 					break;
-				case Organ.EAR: // 如果是听力细胞   
-					Cell e1 = frog.getCell(c.x, c.y, c.z );
-					if (e1.energy > 0 && RandomUtils.percent(20)) {// 随机数的作用是加快速度
+				case Organ.EAR: // 如果是听力细胞
+					if (c.hasInput && RandomUtils.percent(40)) {// 随机数的作用是减少光子数，加快速度
 						for (float xx = -0.3f; xx <= 0.3f; xx += 0.15) {// 形成一个扇面向下发送
 							for (float yy = -1f; yy <= 1f; yy += 0.06) {
-								c.addPhoton(new Photon(o.organNo, o.color, c.x, c.y, c.z, xx, yy, -1, 100f));
+								Photon p = new Photon(o.organNo, o.color, c.x, c.y, c.z, xx, yy, -1, 100f);
+								p.activeNo = activeNo;
+								frog.addAndWalkPhoton(p);
 							}
 						}
 					}

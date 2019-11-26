@@ -39,19 +39,19 @@ public class Ear extends Organ {// 耳朵位于脑的顶上，也是长方体
 
 	public void hearSound(Frog f, int code) {
 		Cuboid c = (Cuboid) this.shape;
-		f.getOrCreateCell(c.x, c.y + code, c.z).energy = 100;
+		f.getOrCreateCell(c.x, c.y + code, c.z).hasInput = true;
 	}
 
-	public int readcode(Frog f) {
-		int photonqty = -10000;
+	public int readcode(Frog f) {//找出收取光子数最多的点
+		int temp = -10000;
 		int yPos = -1;
 		Cuboid c = (Cuboid) this.shape;
 		for (int y = 0; y < 10; y++) {
-			int pty = f.getOrCreateCell(c.x, c.y + y, c.z).photonQty;
-			System.out.print(pty + ",");
-			if (pty > photonqty) {
+			int sum = f.getOrCreateCell(c.x, c.y + y, c.z).photonSum;
+			System.out.print(sum + ",");
+			if (sum > temp) {
 				yPos = y;
-				photonqty = pty;
+				temp = sum;
 			}
 		}
 		System.out.println();
@@ -60,7 +60,7 @@ public class Ear extends Organ {// 耳朵位于脑的顶上，也是长方体
 
 	/** 给这个耳朵听到一个字母，激活它的听觉输入区, 注意听觉输入区并不等于听觉成像区 */
 	public void hearNothing(Frog f) {
-		f.setCuboidVales((Cuboid) shape, 0);
+		f.setCuboidVales((Cuboid) shape, false);
 	}
 
 }

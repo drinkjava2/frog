@@ -12,9 +12,7 @@ package com.github.drinkjava2.frog.brain;
 
 import java.util.Arrays;
 
-import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.util.ColorUtils;
-import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Cell is the smallest unit of brain space, a Cell can have many actions and
@@ -43,7 +41,7 @@ public class Cell {
 	}
 
 	/** Active of current cell */
-	public float energy = 0; // 这个cell的激活能量，允许是负值（但暂时只用到正值),它反映了在这个cell里所有光子的能量汇总值
+	  public boolean hasInput = false; //这个细胞是否有外界信号（如光、声音)输入
 
 	public int[] organs = null; //// 每个Cell可以被多个Organ登记，这里保存organ在蛋里的序号
 
@@ -55,7 +53,9 @@ public class Cell {
 
 	public int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
 
-	public int photonQty = 0;
+	public int photonQty = 0; // 这个细胞里当前包含的光子总数
+
+	public int photonSum = 0; // 这个细胞里曾经收到的光子总数
 
 	public void regOrgan(int orgNo) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
 		if (organs == null)
@@ -64,15 +64,11 @@ public class Cell {
 		organs[organs.length - 1] = orgNo;
 	}
 
-	public static boolean blockBackEyePhoton = true;
-	public static boolean blockBackEarPhoton = true;
-
 	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
 		if (p == null)
 			return;
 		photonQty++;
-		if (p.organNo != 0)
-			this.energy++;
+		photonSum++;
 		color = p.color; // Cell的颜色取最后一次被添加的光子的颜色
 		if (photons == null) {
 			photons = new Photon[] { p };// 创建数组
@@ -80,7 +76,7 @@ public class Cell {
 			return;
 		} else
 			for (int i = 0; i < photons.length; i++) { // 找空位插入,尽量重复利用内存
-				if (photons[i] == null || photons[i].energy < 0.1) {
+				if (photons[i] == null) {
 					photons[i] = p;
 					digHole(p);
 					return; // 如找到就插入，返回
@@ -99,13 +95,12 @@ public class Cell {
 			return;
 		}
 
-		if (energy > 0 && RandomUtils.percent(20))
-			for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子，注意只针对绑定的坑
-				Hole h = holes[i];
-				if (h != null && h.ifSameWay(p)) {
-					createBackPhoton(h);
-				}
+		for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子，注意只针对绑定的坑
+			Hole h = holes[i];
+			if (h != null && h.ifSameWay(p)) {
+				createBackPhoton(h);
 			}
+		}
 
 		Hole found = null;
 		for (int i = 0; i < holes.length; i++) { // 先看看已存在的洞是不是与光子同向，是的话就把洞挖大一点
@@ -121,7 +116,7 @@ public class Cell {
 
 		if (found != null) { // 如果第二次扩洞，且光子和洞不是同一个器官产生的，这时可以把这个洞和其它洞关联起来了
 			for (Hole hole : holes) {
-				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 9)) {// TODO:不应用固定值
+				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) <80)) {// TODO:不应用固定值
 					bind(found, hole);
 				}
 			}
@@ -136,9 +131,7 @@ public class Cell {
 	private void createBackPhoton(Hole h) { // 根据给定的洞，把所有与它绑定的洞上撞出光子来
 		if (relations == null)
 			return;
-		for (Relation r : relations) {
-			if (energy < 90)
-				return;
+		for (Relation r : relations) { 
 			Hole f = null;
 			if (h.equals(r.h1))
 				f = r.h2;// h2与h是一对绑定的
@@ -176,36 +169,9 @@ public class Cell {
 		}
 	}
 
-	/** Photon always walk */
-	public void photonWalk(Frog f, Cell oldCell, int i, Photon p) { // 光子自已会走到下一格，如果下一格为空，继续走,直到能量耗尽或出界
-		if (p.energy < 0.1 || p.outBrainBound()) // 能量小的光子和出界的光子直接扔掉
-			return;
-		p.x += p.mx;
-		p.y += p.my;
-		p.z += p.mz;
-		int rx = Math.round(p.x);
-		int ry = Math.round(p.y);
-		int rz = Math.round(p.z);
-		if (Frog.outBrainBound(rx, ry, rz))
-			return;// 出界直接扔掉
-		Cell cell = f.getCell(rx, ry, rz);
-		if (cell != null) {
-			oldCell.removePhoton(i);
-			cell.addPhoton(p);
-		}
-	}
-
 	public void deleteAllPhotons() {
 		photons = null;
 		photonQty = 0;
 	}
 
-	public boolean hasBackPhoton() {
-		if (photons == null)
-			return false;
-		for (Photon p : photons)
-			if (p != null && p.organNo == 0)
-				return true;
-		return false;
-	}
 }

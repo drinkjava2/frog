@@ -23,6 +23,7 @@ import com.github.drinkjava2.frog.brain.CellActions;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Hole;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.Photon;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
 
@@ -88,7 +89,7 @@ public class Frog {
 	}
 
 	/** Set with given activeValue */
-	public void setCuboidVales(Cuboid o, float active) {// 激活长方体区域内的所有脑区
+	public void setCuboidVales(Cuboid o, boolean active) {// 激活长方体区域内的所有脑区
 		if (!alive)
 			return;
 		for (int x = o.x; x < o.x + o.xe; x++)
@@ -97,17 +98,7 @@ public class Frog {
 					if (cells[x][y] != null)
 						for (int z = o.z; z < o.z + o.ze; z++)
 							if (cells[x][y][z] != null)
-								getOrCreateCell(x, y, z).energy = active;
-	}
-
-	/** Calculate organ activity by add all organ cells' active value together */
-	public float getCuboidActiveTotalValue(Cuboid o) {// 遍历长方体区域所在cell，将它们的激活值汇总返回
-		float activity = 0;
-		for (int x = o.x; x < o.x + o.xe; x++)
-			for (int y = o.y; y < o.y + o.ye; y++)
-				for (int z = o.z; z < o.z + o.ze; z++)
-					activity += this.getOrCreateCell(x, y, z).energy;
-		return activity;
+								getOrCreateCell(x, y, z).hasInput = active;
 	}
 
 	private int activeNo = 0;// 每一帧光子只能走一步，用这个来作标记
@@ -174,7 +165,22 @@ public class Frog {
 				|| z >= Env.FROG_BRAIN_ZSIZE;
 	}
 
-	public void deleteAllPhotons() {// for test purpose, delete all photons in all cells
+	/** Photon always walk */
+	public void addAndWalkPhoton(Photon p) { // 添加光子的同时让它沿光子方向自动走一格
+		p.x += p.mx;
+		p.y += p.my;
+		p.z += p.mz;
+		int rx = Math.round(p.x);
+		int ry = Math.round(p.y);
+		int rz = Math.round(p.z);
+		if (Frog.outBrainBound(rx, ry, rz))
+			return;// 出界直接扔掉
+		Cell cell = getCell(rx, ry, rz);
+		if (cell != null)
+			cell.addPhoton(p);
+	}
+
+	public void prepareNewTraining() {// for test purpose, reset some values for prepare next training.
 		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++) {
 			if (cells[i] != null)
 				for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)
@@ -183,7 +189,8 @@ public class Frog {
 							Cell cell = cells[i][j][k];
 							if (cell != null) {
 								cell.deleteAllPhotons();
-								cell.energy = 0;
+								cell.hasInput = false;
+								cell.photonSum = 0;
 								if (cell.holes != null)
 									for (Hole h : cell.holes) {
 										h.age += 100;// 强迫洞的年龄增加,用这个方法来区分开不同批次的训练

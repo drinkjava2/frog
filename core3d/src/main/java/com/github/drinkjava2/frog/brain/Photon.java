@@ -27,8 +27,7 @@ public class Photon {
 	public float z;
 	public float mx;
 	public float my;
-	public float mz;
-	public float energy;
+	public float mz; 
 	public int organNo;// 每个光子是由哪个器官产生的，为0表示它不是器官而是由细胞动态生成的
 	public int color;// 每个光子都有自已的颜色，由产生光子的器官的颜色来决定,颜色不重要，但能方便观察
 	public int activeNo;// 每一轮循环都有一个编号，光子走一格后就加上这个编号，同一个循环如果遇到相同编号的光子就跳过，防止光子被一直赶着走
@@ -43,8 +42,7 @@ public class Photon {
 		this.mx = mx;
 		this.my = my;
 		this.mz = mz;
-		this.organNo = organNo;
-		this.energy = energy;
+		this.organNo = organNo; 
 		this.color = color;
 	}
 

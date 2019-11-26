@@ -13,7 +13,6 @@ package com.github.drinkjava2.frog.objects;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
-import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.organ.Ear;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.util.StringPixelUtils;
@@ -27,7 +26,8 @@ import com.github.drinkjava2.frog.util.StringPixelUtils;
  * @since 1.0
  */
 public class LetterTester implements EnvObject {
-	private static final String STR = "床前明月";
+	public static final String STR = "|||||||||||||";
+	public static final int TIME = 120;
 
 	@Override
 	public void build() { // do nothing
@@ -37,32 +37,28 @@ public class LetterTester implements EnvObject {
 	public void destory() {// do nothing
 	}
 
-	private static final int interval = 80;
-
 	@Override
 	public void active(int screen) {
 		Frog frog = Env.frogs.get(screen * Env.FROG_PER_SCREEN); // 这个测试只针对每屏的第一只青蛙，因为脑图固定只显示第一只青蛙
 		Eye eye = frog.findOrganByName("Eye");
 		Ear ear = frog.findOrganByName("Ear");
 
-		int index = Env.step / interval;
-		if (Env.step % interval == 0)
-			frog.deleteAllPhotons();
+		int index = Env.step / TIME;
+		if (Env.step % TIME == 0)
+			frog.prepareNewTraining();
 
 		if (index < STR.length()) {
-			Cell.blockBackEarPhoton = true;
 			BrainPicture.setNote("第" + (index + 1) + "个字训练");
 			ear.hearSound(frog, index);
 			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index, index + 1)));
 		} else {
 			int index2 = index % STR.length();
-			Cell.blockBackEarPhoton = false;
 			BrainPicture.setNote("第" + (index2 + 1) + "个字识别");
 			eye.seeImage(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index2, index2 + 1)));
-			if (Env.step % interval > (interval - 2)) {
+			if (Env.step % TIME > (TIME - 2)) {
 				int result = ear.readcode(frog);
 				System.out.println("result=" + result);
-				frog.deleteAllPhotons();
+				frog.prepareNewTraining();
 			}
 		}
 	}
