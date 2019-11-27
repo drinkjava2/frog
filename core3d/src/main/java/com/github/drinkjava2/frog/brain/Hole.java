@@ -11,7 +11,7 @@
 package com.github.drinkjava2.frog.brain;
 
 /**
- * Hole can be input, output, side synapse
+ * Hole is a hole on jelly cell, it works like synapse on nerve cell
  * 
  * 以前叫突触，现在改名叫洞，更形象一点，每个光子传来就好象在果冻上砸出个洞。管它符不符合生物脑突触这个形象，张牙舞爪的神经元变成了千创百孔的果冻，先乱试一通再说。
  * 
@@ -25,8 +25,8 @@ public class Hole {
 	public float mx; // mx,my,mz分别是光子砸出这个洞时的光子每单元移动方向在三个轴上的投影
 	public float my;
 	public float mz;
-	public float size = 1;// 洞的大小，同一个方向砸来的光子越多， 洞就越大
-	public int age;// 洞的年龄,一直在增长，但当洞光子砸进来或被激活产生光子时，洞的年龄就归0
+	public float size = 1;// 洞的大小，同一个方向砸来的光子越多， 洞就越大，这个size会按记忆曲线慢慢回复到0，到0后这个洞就被删除回收内存。
+	public int age;// 洞的年龄,一直在增长，但一个洞有完全同向的光子再次砸进来，洞的年龄就归0
 	public int organNo;// 这里记录第一个撞出来这个洞的产子是由哪个器官产生出来的
 
 	public Hole(Photon p) {

@@ -9,7 +9,7 @@ import java.awt.event.MouseWheelListener;
 /**
  * MouseAction
  * 
- * 这个类用来处理脑图上的鼠标动作，有平移、旋转、缩放三种
+ * 这个类用来处理脑图BrainPicture上的鼠标动作，有平移、旋转、缩放三种
  * 
  * @author Yong Zhu
  * @since 2.0.2

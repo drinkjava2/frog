@@ -28,18 +28,19 @@ import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
 
 /**
- * Frog = organs + cells <br/>
- * cells = brain cells + photons <br/>
- * organs = cell parameters + cell actions
+ * Frog = cells <br/>
+ * cells = actions + photons <br/>
  * 
- * 青蛙脑由器官播种出的细胞组成，器官Organ会播种出各种脑细胞填充在一个cells三维数组代表的空间中，每个cell里可以存在多个脑细胞和光子，光子是信息的载体，永远不停留。
+ * Frog's name is Sam.
+ * 
+ * 青蛙脑由一个cells三维数组组成，每个cell里可以存在多个行为，行为是由器官决定，同一个细胞可以存在多种行为。光子是信息的载体，永远不停留。
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Frog {
+public class Frog {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
 	/** brain cells */
-	public Cell[][][] cells;// 一开始不要初始化，只在调用getCell方法时才初始化相关维以节约内存
+	public Cell[][][] cells;// 一开始不要初始化，只在调用getOrCreateCell方法时才初始化相关维以节约内存
 
 	/** organs */
 	public List<Organ> organs = new ArrayList<>();
@@ -59,8 +60,8 @@ public class Frog {
 		}
 	}
 
-	public Frog(int x, int y, Egg egg) {
-		this.x = x; // x, y 是虑拟环境的坐标
+	public Frog(int x, int y, Egg egg) {// x, y 是虑拟环境的坐标
+		this.x = x;
 		this.y = y;
 		for (Organ org : egg.organs)
 			organs.add(org);
@@ -197,7 +198,8 @@ public class Frog {
 		}
 	}
 
-	public void prepareNewTraining() {// for test purpose, reset some values for prepare next training.
+	// for test purpose, reset some values for prepare next training.
+	public void prepareNewTraining() {
 		for (int i = 0; i < Env.FROG_BRAIN_XSIZE; i++) {
 			if (cells[i] != null)
 				for (int j = 0; j < Env.FROG_BRAIN_YSIZE; j++)

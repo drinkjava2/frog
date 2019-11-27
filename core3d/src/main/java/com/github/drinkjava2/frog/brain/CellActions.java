@@ -29,14 +29,16 @@ public class CellActions {
 	 * 
 	 * 在每个测试步长中act方法都会被调用一次，这个方法针对不同的细胞类型有不同的行为逻辑，这是硬
 	 * 编码，所以要准备多套不同的行为（可以参考动物脑细胞的活动逻辑)，然后抛给电脑去随机筛选，不怕多。
+	 * 同一个细胞可能有多个action,由organs数组中登记的器官号决定，调用顺序也是按器官号顺序
+	 *
 	 * 
 	 * 举例来说，以下是一些假想中的脑细胞行为：
-	 * 一对一，穿透，光子会穿过细胞，细胞起到中继站的作用，如果没有细胞中继，光子在真空中传播(即三维数组的当前坐标没有初始化)会迅速衰减
+	 * 一对一，穿透，光子会穿过细胞，细胞起到中继站的作用，如果没有细胞中继，光子在真空中不能传播
 	 * 一对一，转向，光子传播角度被改变成另一个绝对角度发出
 	 * 一对一，转向，光子传播角度被改变成与器官有关的角度发出，可以模拟光线的发散(如视网膜细胞)和聚焦(如脑内成像，即沿光线发散的逆路径)
 	 * 一对多，拆分，入射光子被拆分成多个光子，以一定的发散角发出，通常发散光子的总能量小于入射+细胞输出能量之和
 	 * 一对多，拆分，入射光子被拆分成多个光子，发散角与器官相关 
-	 * 多对一，聚合，入射光子被触突捕获
+	 * 多对一，聚合，入射光子被细胞捕获
 	 */
 	public static void act(Frog frog, int activeNo, Cell c) {
 		if (c.holes != null)
@@ -62,7 +64,7 @@ public class CellActions {
 								continue;
 							p.activeNo = activeNo;
 							c.removePhoton(ii);
-							frog.addAndWalk(p); // 让光子自已往下走，并且还挖洞
+							frog.addAndWalk(p); // 让光子自已往下走，走到哪就停到哪个细胞里
 						}
 					}
 					break;
@@ -81,11 +83,11 @@ public class CellActions {
 								continue;
 							p.activeNo = activeNo;
 							c.removePhoton(ii);
-							frog.addAndWalkAndDig(p); // 让光子自已往下走，并且还挖洞
+							frog.addAndWalkAndDig(p); // 让光子自已往下走，走到哪就停到哪个细胞里,并且还在细胞上挖洞
 						}
 					}
 					break;
-				case Organ.EYE: // 如果是视网膜细胞，它的行为是将只要Cell有输入信号，就产生向右的多个光子发散出去，模拟波源
+				case Organ.EYE: // 如果是视网膜细胞，它的行为是只要Cell有输入信号，就产生向右的多个光子发散出去，模拟波源
 					if (c.hasInput && RandomUtils.percent(40)) {// 随机数的作用是减少光子数，加快速度
 						for (float yy = -0.1f; yy <= 0.1f; yy += 0.03) {// 形成一个扇面向右发送
 							for (float zz = -0.1f; zz <= 0.1f; zz += 0.03) {
