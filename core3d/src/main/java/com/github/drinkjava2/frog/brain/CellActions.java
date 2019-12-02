@@ -91,7 +91,7 @@ public class CellActions {
 					if (c.hasInput && RandomUtils.percent(40)) {// 随机数的作用是减少光子数，加快速度
 						for (float yy = -0.1f; yy <= 0.1f; yy += 0.03) {// 形成一个扇面向右发送
 							for (float zz = -0.1f; zz <= 0.1f; zz += 0.03) {
-								Photon p = new Photon(orgNo, o.color, c.x, c.y, c.z, 1.0f, yy, zz, 100f);
+								Photon p = new Photon(orgNo, o.color, c.x, c.y, c.z, 1.0f, yy, zz);
 								p.activeNo = activeNo; // 用这个activeNo防止一直被赶着走
 								frog.addAndWalk(p);// 光子不是直接添加，而是走一格后添加在相邻的细胞上
 							}
@@ -102,7 +102,7 @@ public class CellActions {
 					if (c.hasInput && RandomUtils.percent(40)) {// 随机数的作用是减少光子数，加快速度
 						for (float xx = -0.3f; xx <= 0.3f; xx += 0.15) {// 形成一个扇面向下发送
 							for (float yy = -1f; yy <= 1f; yy += 0.06) {
-								Photon p = new Photon(o.organNo, o.color, c.x, c.y, c.z, xx, yy, -1, 100f);
+								Photon p = new Photon(o.organNo, o.color, c.x, c.y, c.z, xx, yy, -1);
 								p.activeNo = activeNo;
 								frog.addAndWalk(p);// 光子不是直接添加，而是走一格后添加在相邻的细胞上
 							}

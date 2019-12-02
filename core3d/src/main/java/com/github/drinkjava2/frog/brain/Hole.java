@@ -25,7 +25,7 @@ public class Hole {
 	public float mx; // mx,my,mz分别是光子砸出这个洞时的光子每单元移动方向在三个轴上的投影
 	public float my;
 	public float mz;
-	public float size = 1;// 洞的大小，同一个方向砸来的光子越多， 洞就越大，这个size会按记忆曲线慢慢回复到0，到0后这个洞就被删除回收内存。
+	public int size = 50;// 洞的大小1~100，这个size会按记忆曲线慢慢回复到0，接近0后这个洞就被删除回收内存，
 	public int age;// 洞的年龄,一直在增长，但一个洞有完全同向的光子再次砸进来，洞的年龄就归0
 	public int organNo;// 这里记录第一个撞出来这个洞的产子是由哪个器官产生出来的
 

@@ -96,27 +96,31 @@ public class Cell {
 			return;
 		}
 
-		if(RandomUtils.percent(2))
-		for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子反向飞回，注意只针对绑定的坑
-			Hole h = holes[i];
-			if (h != null ) {
-				float r = h.angleCompare(p);
-				if(r<0.01) {
-					if(RandomUtils.percent(100-r*100))
-				createBackPhoton(h);
+		if (RandomUtils.percent(10)) // 这个机率纯粹是为了减少光子数，增加运行速度
+			for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子反向飞回，注意只针对绑定的坑
+				Hole h = holes[i];
+				if (h != null) {
+					float r = h.angleCompare(p);
+					if (r < 0.01) {
+						if (RandomUtils.percent(h.size))
+							createBackPhoton(h); // 产生光子的机率与洞的大小有关
+					} else if (r > 0.01 && r < 0.5) { // 这个叫侧抑制，角度不等但相近的光子射过来会使洞变小
+						h.size -= 10;
+						if (h.size < 3)
+							h.size = 3;
+					}
 				}
 			}
-		}
 
 		Hole found = null;
 		for (int i = 0; i < holes.length; i++) { // 先看看已存在的洞是不是与光子同向，是的话就把洞挖大一点
 			Hole h = holes[i];
-			if (h != null && h.ifSameWay(p)) { // 找到了与入射光子同向的洞,实际上就是同一个波源发来的
+			if (h != null && h.ifSimilarWay(p)) { // 找到了与入射光子同向的洞,实际上就是同一个波源发来的
 				found = h;
-				h.size *= 1.2f;
-				if (h.size > 10000)
-					h.size = 10000;
-				h.age = 0;
+				h.size += 10;
+				h.age = 0; // 为0表示这个洞被重新激活，可以参与绑定
+				if (h.size > 100)
+					h.size = 100;
 				break;
 			}
 		}
@@ -145,7 +149,7 @@ public class Cell {
 			else if (h.equals(r.h2))
 				f = r.h1; // h1与h是一对绑定的
 			if (f != null) {
-				Photon back = new Photon(-1, ColorUtils.RED, f.x, f.y, f.z, -f.mx, -f.my, -f.mz, 90);// 生成反向的光子
+				Photon back = new Photon(-1, ColorUtils.RED, f.x, f.y, f.z, -f.mx, -f.my, -f.mz);// 生成反向的光子
 				addPhoton(back);
 				// energy -= 90;
 			}

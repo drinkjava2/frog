@@ -31,11 +31,12 @@ public class Photon {
 	public int organNo;// 每个光子是由哪个器官产生的，为-1表示它不是器官产生而是由细胞动态生成的反向光子信号
 	public int color;// 每个光子都有自已的颜色，由产生光子的器官的颜色来决定,颜色不重要，但能方便观察
 	public int activeNo;// 每一轮循环都有一个编号，光子走一格后就加上这个编号，同一个循环如果遇到相同编号的光子就跳过，防止光子被一直赶着走
+	public int energy;
 
 	public Photon() { // 缺省构造器
 	}
 
-	public Photon(int organNo, int color, float x, float y, float z, float mx, float my, float mz, float energy) {
+	public Photon(int organNo, int color, float x, float y, float z, float mx, float my, float mz) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
