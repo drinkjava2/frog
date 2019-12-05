@@ -16,24 +16,14 @@ import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.group.Group;
-import com.github.drinkjava2.frog.brain.organ.Active;
-import com.github.drinkjava2.frog.brain.organ.Chance;
-import com.github.drinkjava2.frog.brain.organ.Eat;
+import com.github.drinkjava2.frog.brain.organ.Ear;
 import com.github.drinkjava2.frog.brain.organ.Eye;
-import com.github.drinkjava2.frog.brain.organ.Happy;
-import com.github.drinkjava2.frog.brain.organ.Hungry;
-import com.github.drinkjava2.frog.brain.organ.MoveDown;
-import com.github.drinkjava2.frog.brain.organ.MoveLeft;
-import com.github.drinkjava2.frog.brain.organ.MoveRight;
-import com.github.drinkjava2.frog.brain.organ.MoveUp;
-import com.github.drinkjava2.frog.brain.organ.NewEye;
-import com.github.drinkjava2.frog.brain.organ.Pain;
+import com.github.drinkjava2.frog.brain.organ.MoveJelly;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
- * Egg is the static structure description of frog, can save as text file, to
- * build a frog, first need build a egg.<br/>
+ * Egg is the static structure description of frog, can save as file, to build a
+ * frog, first need build a egg.<br/>
  * 
  * 蛋存在的目的是为了以最小的字节数串行化存储Frog,它是Frog的生成算法描述，而不是Frog本身，这样一来Frog就不能"永生"了，因为每一个egg都不等同于
  * 它的母体， 而且每一次测试，大部分条件反射的建立都必须从头开始训练，类似于人类，无论人类社会有多聪明， 婴儿始终是一张白纸，需要花大量的时间从头学习。
@@ -42,59 +32,51 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @since 1.0
  */
 public class Egg implements Serializable {
-	// 为了缩短时间，这个程序随机生成的联结将只落在固定的器官上而不是漫天撒网(见4.12提交)，这是程序的优化，实现的逻辑和随机漫天撒网定是相同的。
-	// 但是这个优化带来的问题是这是一个硬编码逻辑，不利于器官的优胜劣汰， 而且下面这个 FIXED_ORGAN_QTY必须每次手工设定，以后需要重构这块的代码
-	public static int FIXED_ORGAN_QTY = 11;
-
 	private static final long serialVersionUID = 1L;
 
-	public List<Organ> organs = new ArrayList<>();
-
-	public List<Group> groups = new ArrayList<>();
+	public List<Organ> organs = new ArrayList<>();// NOSONAR
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-		organs.add(new Happy().setXYRN(600, 700, 60, "Happy")); // Happy必须第一个加入
-		organs.add(new Hungry().setXYRN(300, 100, 60, "Hungry"));
-		organs.add(new MoveUp().setXYRN(800, 100, 60, "Up"));
-		organs.add(new MoveDown().setXYRN(800, 400, 60, "Down"));
-		organs.add(new MoveLeft().setXYRN(700, 250, 60, "Left"));
-		organs.add(new MoveRight().setXYRN(900, 250, 60, "Right"));
-		organs.add(new Eye().setXYRN(100, 300, 100, "Eye"));
-		organs.add(new NewEye().setXYRN(200, 700, 200, "NewEye"));
-		organs.add(new Pain().setXYRN(800, 700, 60, "Pain")); // 痛苦在靠近边界时触发
-		organs.add(new Active().setXYRN(500, 100, 60, "Active")); // 永远激活
-		organs.add(new Chance().setXYRN(650, 100, 60, "Chance")); // 永远激活
-
-		// 以上为11个, 就是FIXED_ORGAN_QTY值
-
-		organs.add(new Eat().setXYRN(0, 0, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
-
+		organs.add(new MoveJelly()); // MoveJelly即移动光子，也是果冻记忆细胞，本来可以分成两个器官的，图省事
+		organs.add(new Eye()); // 眼是手工创建的，必有
+		organs.add(new Ear()); // 耳是手工创建的，这个是用来测试ABCD字母识别的
 	}
 
 	/** Create egg from frog */
 	public Egg(Frog frog) { // 青蛙下蛋，每个青蛙的器官会创建自已的副本或变异，可以是0或多个
 		for (Organ organ : frog.organs)
-			for (Organ newOrgan : organ.vary())
+			for (Organ newOrgan : organ.vary(frog))
 				organs.add(newOrgan);
 	}
 
 	/**
-	 * Create a egg by join 2 eggs, x+y=zygote 模拟X、Y 染色体合并，两个蛋生成一个新的蛋， X从Y里借一个器官,
-	 * 不用担心器官会越来越多，因为通过用进废退原则来筛选,没用到的器官会在几代之后被自然淘汰掉
-	 * 器官不是越多越好，因为器官需要消耗能量，器官数量多了，在生存竞争中也是劣势
-	 * 
+	 * Create a egg by join 2 eggs, x+y=zygote 模拟X、Y 染色体合并，两个蛋生成一个新的蛋，
+	 * X有可能从Y里的相同位置借一个器官
 	 */
 	public Egg(Egg x, Egg y) {
+		for (Organ organ : x.organs) {
+			if (!organ.allowVary || organ.fat != 0 || RandomUtils.percent(70)) // 如果器官没用到,fat为0，增加丢弃它的机率
+				organs.add(organ);
+		}
 		// x里原来的organ
-		for (Organ organ : x.organs)
-			organs.add(organ);
-
-		// 从y里借一个organ
-		int yOrganSize = y.organs.size();
-		if (yOrganSize > 0) {
-			Organ o = y.organs.get(RandomUtils.nextInt(yOrganSize));
-			if (o.allowBorrow())
-				organs.add(o);
+		if (RandomUtils.percent(70)) // 70%的情况下不作为, x就是受精卵
+			return;
+		// 从y里借一个organ，替换掉原来位置的organ，相当于DNA级别的片段切换，它要求一个随机位置的Organ都允许替换allowBorrow
+		// int yOrganSize = y.organs.size();
+		// if (yOrganSize > 0) {
+		// int i = RandomUtils.nextInt(yOrganSize);
+		// Organ o = y.organs.get(i);
+		// if (o.allowBorrow) {
+		// if (organs.size() > i && organs.get(i).allowBorrow)
+		// organs.set(i, o);// 用y里的organ替换掉x里的organ,模拟受精
+		// }
+		// }
+		// if (RandomUtils.percent(50))// 有50%的机率随机会产生新的器官
+		// organs.add(Organ.randomCuboidOrgan());
+		if (RandomUtils.percent(organs.size())) {// 器官会随机丢失，并且机率与器官数量成正比,防止器官无限增长
+			int i = RandomUtils.nextInt(organs.size());
+			if (organs.get(i).allowBorrow)
+				organs.remove(i);
 		}
 	}
 

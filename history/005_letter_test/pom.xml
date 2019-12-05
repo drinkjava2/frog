@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <groupId>com.gitee.drinkjava2</groupId>
+ <artifactId>frog005</artifactId>
+ <packaging>jar</packaging>
+ <version>1.0</version>
+ 
+ <name>frog</name>
+ <description>An artificial life test project</description>
+ <url>https://gitee.com/drinkjava2/jsqlbox/frog</url>
+  
+ <issueManagement>
+    <system>gitee Issue</system>
+    <url>https://gitee.com/drinkjava2/jsqlbox/frog/issues</url>
+ </issueManagement>
+
+ <licenses>
+   <license>
+     <name>The Apache Software License, Version 2.0</name>
+     <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+   </license>
+ </licenses>
+
+ <developers>
+   <developer>
+     <name>Yong Zhu</name>
+     <email>yong9981@gmail.com</email>
+     <url>https://gitee.com/drinkjava2/</url>
+   </developer>
+ </developers>
+
+ <scm>
+   <connection>scm:git@gitee.com:drinkjava2/frog.git</connection>
+   <developerConnection>scm:git@gitee.com:drinkjava2/frog.git</developerConnection>
+   <url>git@gitee.com:drinkjava2/frog.git</url>
+ </scm>
+
+ <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding> 
+        <!-- Release on Java8 -->
+        <version.java>1.8</version.java>
+        <version.javadoc>6</version.javadoc>
+        <version.compiler-plugin>3.3</version.compiler-plugin>
+        <version.war-plugin>2.6</version.war-plugin>
+        <version.clean-plugin>3.0.0</version.clean-plugin>
+        <version.resources-plugin>2.7</version.resources-plugin>
+        <version.surefire-plugin>2.19</version.surefire-plugin>
+        <version.jar-plugin>2.6</version.jar-plugin>
+        <version.source-plugin>2.4</version.source-plugin>
+        <version.javadoc-plugin>2.10.3</version.javadoc-plugin>
+        <version.gpg-plugin>1.6</version.gpg-plugin> 
+ </properties> 
+ 
+ 
+
+ <dependencies> 
+    <!--dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency-->  
+	
+ </dependencies>
+ 
+    <build>
+      <plugins>  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.compiler-plugin}</version>
+                <configuration>
+                    <source>${version.java}</source>
+                    <target>${version.java}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <useUniqueVersions>false</useUniqueVersions>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.github.drinkjava2.frog.Application</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+       </plugins>       
+    </build> 
+    
+    <profiles> 
+    </profiles> 
+
+</project>

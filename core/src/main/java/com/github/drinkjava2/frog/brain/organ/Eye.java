@@ -10,129 +10,55 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
-import com.github.drinkjava2.frog.Application;
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.BrainPicture;
-import com.github.drinkjava2.frog.brain.Cell;
-import com.github.drinkjava2.frog.brain.Input;
+import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.Zone;
-import com.github.drinkjava2.frog.util.RandomUtils;
+import com.github.drinkjava2.frog.util.ColorUtils;
+import com.github.drinkjava2.frog.util.PixelsUtils;
 
 /**
- * Eye can only see 4 direction
+ * Eye can only see env material
  * 
  * @author Yong Zhu
- * @since 1.0
  */
-public class Eye extends Organ {// 这个Eye是老版的眼睛，只能看到四个方向，但它的调节距离会自动随机调整到一个最佳值，这就是随机试错算法的一个应用
+public class Eye extends Organ {// 眼睛是长方体
 	private static final long serialVersionUID = 1L;
-	public int seeDistance; // 眼睛能看到的距离
 
-	@Override
-	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次
-		if (!initilized) {
-			initilized = true;
-			organOutputEnergy = 30;
-			seeDistance = 8;
-		}
+	public Eye() {
+		this.shape = new Cuboid(0, 3, 2, 1, 13, 13);
+		this.type = Organ.EYE;
+		this.organName = "Eye";
+		this.allowVary = false;// 不允许变异
+		this.allowBorrow = false;// 不允许借出
+		this.color = ColorUtils.GRAY;
 	}
 
-	@Override
-	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
-		if (!Application.SHOW_FIRST_FROG_BRAIN)
+	/** Clear image on retina */
+	public void seeNothing(Frog f) {// 外界可以直接调用这个方法，清除视网膜图像
+		f.setCuboidVales((Cuboid) shape, false);
+	}
+
+	/**
+	 * Accept a byte[x][y] array, active tubes located on eye's retina
+	 * 
+	 * 接收一个二维数组，激活它视网膜所在的脑空间
+	 */
+	public void seeImage(Frog f, byte[][] pixels) {// 外界可以直接调用这个方法，硬塞一个象素图到视网膜上
+		if (!f.alive)
 			return;
-		super.drawOnBrainPicture(f, pic);
-		float qRadius = r / 4;
-		float q3Radius = (float) (r * .75);
-		Zone seeUp = new Zone(x, y + q3Radius, qRadius);
-		Zone seeDown = new Zone(x, y - q3Radius, qRadius);
-		Zone seeLeft = new Zone(x - q3Radius, y, qRadius);
-		Zone seeRight = new Zone(x + q3Radius, y, qRadius);
-		pic.drawZone(seeUp);
-		pic.drawZone(seeDown);
-		pic.drawZone(seeLeft);
-		pic.drawZone(seeRight);
+		int w = pixels.length;
+		int h = pixels[0].length;
+		Cuboid c = (Cuboid) shape;
+
+		// 在视网膜上产生字母像素点阵，即激活这个脑视网膜所在的cells区，然后由器官播种出的脑细胞负责将激活能量转为光子输送、存贮到其它位置
+		for (int px = 0; px < w; px++)
+			for (int py = 0; py < h; py++)
+				if (pixels[px][py] > 0)
+					f.getOrCreateCell(0, c.y + c.ye - px - 1, c.z + py).hasInput = true;
 	}
 
-	@Override
-	public Organ[] vary() {
-		if (RandomUtils.percent(5)) { // 可视距离有5%的机率变异
-			seeDistance = seeDistance + 1 - 2 * RandomUtils.nextInt(2);
-			if (seeDistance < 1)
-				seeDistance = 1;
-			if (seeDistance > 50)
-				seeDistance = 50;
-		}
-		return new Organ[] { this };
+	public void seeImageWithOffset(Frog f, byte[][] pixels, int xOff, int yOff) {// 外界硬塞一个象素图到视网膜上，并给出偏移量
+		byte[][] newPixels = PixelsUtils.offset(pixels, xOff, yOff);
+		seeImage(f, newPixels);
 	}
-
-	@Override
-	public void active(Frog f) {
-		// 第一个眼睛只能观察上、下、左、右四个方向有没有食物
-		float qRadius = r / 4;
-		float q3Radius = (float) (r * .75);
-		Zone seeUp = new Zone(x, y + q3Radius, qRadius);
-		Zone seeDown = new Zone(x, y - q3Radius, qRadius);
-		Zone seeLeft = new Zone(x - q3Radius, y, qRadius);
-		Zone seeRight = new Zone(x + q3Radius, y, qRadius);
-
-		boolean seeSomething = false;
-		boolean atUp = false;
-		boolean atDown = false;
-		boolean atLeft = false;
-		boolean atRight = false;
-
-		for (int i = 1; i < seeDistance; i++)
-			if (Env.foundAnyThing(f.x, f.y + i)) {
-				seeSomething = true;
-				atUp = true;
-				break;
-			}
-
-		for (int i = 1; i < seeDistance; i++)
-			if (Env.foundAnyThing(f.x, f.y - i)) {
-				seeSomething = true;
-				atDown = true;
-				break;
-			}
-
-		for (int i = 1; i < seeDistance; i++)
-			if (Env.foundAnyThing(f.x - i, f.y)) {
-				seeSomething = true;
-				atLeft = true;
-				break;
-			}
-
-		for (int i = 1; i < seeDistance; i++)
-			if (Env.foundAnyThing(f.x + i, f.y)) {
-				seeSomething = true;
-				atRight = true;
-				break;
-			}
-
-		if (seeSomething)
-			for (Cell cell : f.cells) {
-				if (cell.energy < 100)
-					for (Input input : cell.inputs) {
-						if (input.nearby(this)) {
-							if (atUp && input.nearby(seeUp)) {
-								input.cell.energy += organOutputEnergy;
-							}
-							if (atDown && input.nearby(seeDown)) {
-								input.cell.energy += organOutputEnergy;
-							}
-							if (atLeft && input.nearby(seeLeft)) {
-								input.cell.energy += organOutputEnergy;
-							}
-							if (atRight && input.nearby(seeRight)) {
-								input.cell.energy += organOutputEnergy;
-							}
-						}
-					}
-			}
-
-	}
-
 }

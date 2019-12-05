@@ -15,21 +15,22 @@ import java.awt.Color;
 /**
  * Object means some thing in Env
  * 
+ * 用不同的数字常量代表虚拟环境中不同的组成材料，0为空，小于10的不可见，大于20的将杀死在同一位置出现的青蛙,例如砖头和青蛙不可以重叠出现在同一位置
+ * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class Material {
-	public static final byte VISIBLE = 10; // if>=10 will visible to frog
-	public static final byte KILLFROG = 20; // if>=20 will kill frog
-
-	public static final byte NO = 0;
+	public static final byte NO = 0; // nothing
 	public static final byte SEESAW_BASE = 1; // 1~9 is invisible to frog
 
+	public static final byte VISIBLE = 10; // if>=10 will visible to frog
 	public static final byte FOOD = VISIBLE + 1;
-	public static final byte SEESAW = VISIBLE + 2; // if <0 will not cause frog die
+	public static final byte SEESAW = VISIBLE + 2;
 
-	public static final byte BRICK = KILLFROG + 1;
-	public static final byte TRAP = KILLFROG + 2;
+	public static final byte KILLFROG = 20; // if>=20 will kill frog
+	public static final byte BRICK = KILLFROG + 1;// brick will kill frog
+	public static final byte TRAP = KILLFROG + 2; // trap will kill frog
 
 	public static Color color(byte material) {
 		if (material == TRAP)

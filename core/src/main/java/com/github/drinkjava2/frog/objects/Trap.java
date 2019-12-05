@@ -24,7 +24,7 @@ import com.github.drinkjava2.frog.Frog;
  * @since 2019-08-05
  */
 @SuppressWarnings("all")
-public class Trap implements Object {
+public class Trap implements EnvObject {
 	private static final int X1 = ENV_WIDTH / 2 - 350 / 2; // 陷阱左上角
 	private static final int Y1 = ENV_HEIGHT / 2 - 20 / 2; // 陷阱左上角
 	private static final int X2 = ENV_WIDTH / 2 + 350 / 2; // 陷阱右下角
@@ -47,10 +47,6 @@ public class Trap implements Object {
 	@Override
 	public void active(int screen) {
 
-	}
-
-	public static boolean inTrap(Frog f) {
-		return f.x >= X1 && f.x <= X2 && f.y >= Y1 && f.y <= Y2;
 	}
 
 }
