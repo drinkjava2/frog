@@ -11,11 +11,11 @@ public class Application {
 	public static final String CLASSPATH;
 	static {
 		String classpath = new File("").getAbsolutePath();
-		int core = classpath.indexOf("\\frog\\");
-		if (core > 0)
-			CLASSPATH = classpath.substring(0, core) + "\\frog\\";
+		int i = classpath.indexOf("\\frog\\");
+		if (i > 0)
+			CLASSPATH = classpath.substring(0, i) + "\\frog\\";// windows
 		else
-			CLASSPATH = classpath.substring(0, core) + "/frog/"; // UNIX
+			CLASSPATH = classpath + "/"; // UNIX
 	}
 	public static JFrame mainFrame = new JFrame();
 
