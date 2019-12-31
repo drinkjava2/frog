@@ -60,8 +60,6 @@ public class Organ extends Zone {
 	/** Active other cells */
 	public void activeOtherCells(Frog f) {// 与activedByCells相反，它将器官的状态转化为输出能量激活与它相关的其它细胞区
 		for (Cell cell : f.cells) {
-			if (cell.energy > 0)
-				cell.energy--;
 			if (cell.energy < Cell.MAX_ENERGY_LIMIT)
 				for (Input input : cell.inputs)
 					if (input.nearby(this)) // if input zone nearby this zone
