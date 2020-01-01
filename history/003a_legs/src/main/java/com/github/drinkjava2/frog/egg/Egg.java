@@ -30,6 +30,8 @@ import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.brain.organ.FootPosFeel;
 import com.github.drinkjava2.frog.brain.organ.Happy;
 import com.github.drinkjava2.frog.brain.organ.Hungry;
+import com.github.drinkjava2.frog.brain.organ.LogicAnd;
+import com.github.drinkjava2.frog.brain.organ.LogicNot;
 import com.github.drinkjava2.frog.brain.organ.NewEye;
 import com.github.drinkjava2.frog.brain.organ.Pain;
 import com.github.drinkjava2.frog.brain.organ.RFootDrop;
@@ -88,10 +90,15 @@ public class Egg implements Serializable {
 		organs.add(new RFootFeelDown().setXYRN(800, 600, 30, "FeelDown"));// 底脚降下感受细胞
 		for (int i = 0; i <= 10; i++)
 			organs.add(new FootPosFeel().setXYRN(FootPosFeel.RFOOTPOSSTART_X + i * 30, 650, 10, "")); // 底脚位置感受细胞
-
+		for (int i = 0; i < 5; i++) {
+			organs.add(new LogicAnd().setXYRN(100+i*30, 10, 5, "")); // 底脚位置感受细胞
+			organs.add(new LogicNot().setXYRN(100+i*30, 50, 5, "")); // 底脚位置感受细胞
+		} 
+		
 		// 以上器官，就是FIXED_ORGAN_QTY值
 		FIXED_ORGAN_QTY = organs.size();
 		organs.add(new Eat().setXYRN(0, 0, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
+		 
 
 	}
 
