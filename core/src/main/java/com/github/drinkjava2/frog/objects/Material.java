@@ -13,7 +13,7 @@ package com.github.drinkjava2.frog.objects;
 import java.awt.Color;
 
 /**
- * Object means some thing in Env
+ * Material store material types
  * 
  * 用不同的数字常量代表虚拟环境中不同的组成材料，0为空，小于10的不可见，大于20的将杀死在同一位置出现的青蛙,例如砖头和青蛙不可以重叠出现在同一位置
  * 

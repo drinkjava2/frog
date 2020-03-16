@@ -18,7 +18,7 @@ import com.github.drinkjava2.frog.Frog;
 
 /**
  * Trap will kill all frogs inside of it, if frog's position has material and
- * it's not food, frog will die
+ * it's trap, frog will die
  * 
  * @author Yong Zhu
  * @since 2019-08-05

@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
-import com.github.drinkjava2.frog.objects.LetterTester;
 import com.github.drinkjava2.frog.objects.EnvObject;
+import com.github.drinkjava2.frog.objects.LetterTester;
 import com.github.drinkjava2.frog.objects.Material;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -73,7 +73,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-	public static EnvObject[] things = new EnvObject[] {};// 所有外界物体，如食物、字母测试工具都放在这个things里面
+	public static EnvObject[] things = new EnvObject[] {new LetterTester()};// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8

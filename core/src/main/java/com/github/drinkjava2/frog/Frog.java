@@ -19,7 +19,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.github.drinkjava2.frog.brain.Cell;
-import com.github.drinkjava2.frog.brain.CellActions;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Hole;
 import com.github.drinkjava2.frog.brain.Organ;
@@ -125,7 +124,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 						for (int k = 0; k < Env.FROG_BRAIN_ZSIZE; k++) {
 							Cell cell = cells[i][j][k];
 							if (cell != null)
-								CellActions.act(this, activeNo, cell); // 调用每个细胞的act方法
+								cell.act(this,activeNo); 
 						}
 		}
 		return alive;

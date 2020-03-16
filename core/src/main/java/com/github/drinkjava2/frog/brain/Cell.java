@@ -12,6 +12,7 @@ package com.github.drinkjava2.frog.brain;
 
 import java.util.Arrays;
 
+import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.util.ColorUtils;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -60,6 +61,34 @@ public class Cell {
 	public int photonQty = 0; // 这个细胞里当前包含的光子总数
 
 	public int photonSum = 0; // 这个细胞里曾经收到的光子总数
+
+	/*-
+	 * Each cell's act method will be called once at each loop step
+	 * 
+	 * 在每个测试步长中act方法都会被调用一次，这个方法针对不同的细胞类型有不同的行为逻辑，这是硬
+	 * 编码，所以要准备多套不同的行为（可以参考动物脑细胞的活动逻辑)，然后抛给电脑去随机筛选，不怕多。
+	 * 同一个细胞可能有多个action,由organs数组中登记的器官号决定，调用顺序也是按器官号顺序
+	 *
+	 * 
+	 * 举例来说，以下是一些假想中的脑细胞行为：
+	 * 一对一，穿透，光子会穿过细胞，细胞起到中继站的作用，如果没有细胞中继，光子在真空中不能传播
+	 * 一对一，转向，光子传播角度被改变成另一个绝对角度发出
+	 * 一对一，转向，光子传播角度被改变成与器官有关的角度发出，可以模拟光线的发散(如视网膜细胞)和聚焦(如脑内成像，即沿光线发散的逆路径)
+	 * 一对多，拆分，入射光子被拆分成多个光子，以一定的发散角发出，通常发散光子的总能量小于入射+细胞输出能量之和
+	 * 一对多，拆分，入射光子被拆分成多个光子，发散角与器官相关 
+	 * 多对一，聚合，入射光子被细胞捕获
+	 */
+	public void act(Frog f, int activeNo) {
+		if (organs == null)
+			return;
+		if (holes != null)
+			for (Hole h : holes) // 洞的年龄增加，目的是让年龄越接近的洞之间，绑定的概率和强度越大
+				h.age++;
+		for (int i = 0; i < organs.length; i++) {
+			Organ o = f.organs.get(organs[i]);
+			o.cellAct(f, this, activeNo);
+		}
+	}
 
 	public void regOrgan(int orgNo) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
 		if (organs == null)
