@@ -32,8 +32,7 @@ public class Ear extends Organ {// 耳朵位于脑的顶上，也是长方体
 	private static final long serialVersionUID = 1L;
 
 	public Ear() {
-		this.shape = new Cuboid(15, 5, Env.FROG_BRAIN_ZSIZE - 1, 1, 10, 1);// 手工固定耳区的大小
-		this.type = Organ.EAR;
+		this.shape = new Cuboid(15, 5, Env.FROG_BRAIN_ZSIZE - 1, 1, 10, 1);// 手工固定耳区的大小 
 		this.organName = "Ear";
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出

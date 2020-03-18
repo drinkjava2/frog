@@ -30,8 +30,7 @@ public class Move extends Organ {
 	public Move() {
 		super();
 		this.shape = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE - 5, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
-		this.organName = "Move";
-		this.type = Organ.MOVE; // MOVE这个器官充当光子媒介
+		this.organName = "Move"; 
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
 	}

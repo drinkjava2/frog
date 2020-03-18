@@ -30,8 +30,7 @@ public class MoveJelly extends Organ {
 	public MoveJelly() {
 		super();
 		this.shape = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE - 5, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
-		this.organName = "MoveJelly";
-		this.type = Organ.MOVE_JELLY; // Empty这个器官并不播种cell,它存在的唯一目的只是充当光子媒介，否则光子会一直走下去消失
+		this.organName = "MoveJelly"; 
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
 	}
