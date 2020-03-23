@@ -30,19 +30,12 @@ public class Move extends Organ {
 	public Move() {
 		super();
 		this.shape = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE - 5, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
-		this.organName = "Move"; 
+		this.organName = "Move";
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
 	}
 
 	public void cellAct(Frog frog, Cell c, int activeNo) {
-		if (c.x == 0 || c.z == Env.FROG_BRAIN_ZSIZE - 1) {// 但是对于输入区，将删除光子，并合计一共收到多少
-			if (c.photonQty > 0) {
-				c.photonSum += c.photonQty;
-				c.photons = null;
-			}
-			return;
-		}
 		if (c.photons != null) {
 			for (int ii = 0; ii < c.photons.length; ii++) {
 				Photon p = c.photons[ii];

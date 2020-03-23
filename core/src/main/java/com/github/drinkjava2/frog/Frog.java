@@ -48,7 +48,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 	public int y; // frog在Env中的y坐标
 	public long energy = 10000000; // 青蛙的能量为0则死掉
 	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
-	public int ateFood = 0;
+	public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
 
 	static Image frogImg;
 	static {
@@ -207,8 +207,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 							Cell cell = cells[i][j][k];
 							if (cell != null) {
 								cell.deleteAllPhotons();
-								cell.hasInput = false;
-								cell.photonSum = 0;
+								cell.hasInput = false; 
 								if (cell.holes != null)
 									for (Hole h : cell.holes) {
 										h.age += 100;// 强迫洞的年龄增加,用这个方法来区分开不同批次的训练

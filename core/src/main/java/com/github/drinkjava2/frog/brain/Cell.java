@@ -13,7 +13,6 @@ package com.github.drinkjava2.frog.brain;
 import java.util.Arrays;
 
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.util.ColorUtils;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -52,15 +51,11 @@ public class Cell {
 
 	public Photon[] photons = null;// 光子
 
-	public Hole[] holes = null;// 洞（即动态突触），洞由光子产生，洞由时间抹平
-
-	public Relation[] relations = null;// 洞的关联关系
+	public Hole[] holes = null;// 洞（即动态突触），洞由光子产生，洞由时间抹平，洞的角度本身就是关联关系，角度越大，关联关系越大
 
 	public int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
 
 	public int photonQty = 0; // 这个细胞里当前包含的光子总数
-
-	public int photonSum = 0; // 这个细胞里曾经收到的光子总数
 
 	/*-
 	 * Each cell's act method will be called once at each loop step
@@ -101,7 +96,6 @@ public class Cell {
 		if (p == null)
 			return;
 		photonQty++;
-		photonSum++;
 		color = p.color; // Cell的颜色取最后一次被添加的光子的颜色
 		if (photons == null) {
 			photons = new Photon[] { p };// 创建数组
@@ -154,52 +148,14 @@ public class Cell {
 			}
 		}
 
-		if (found != null) { // 如果第二次扩洞，且光子和洞不是同一个器官产生的，这时可以把这个洞和其它洞关联起来了
-			for (Hole hole : holes) {
-				if (hole != found && found.organNo != hole.organNo && (Math.abs(found.age - hole.age) < 80)) {// TODO:不应用固定值
-					bind(found, hole);
-				}
-			}
-		}
-
 		if (found == null) {// 如果还没有找到旧坑，只好挖一个新坑到未尾
 			holes = Arrays.copyOf(holes, holes.length + 1);
 			holes[holes.length - 1] = new Hole(p);
 		}
 	}
 
-	private void createBackPhoton(Hole h) { // 根据给定的洞，把所有与它绑定的洞上撞出光子来
-		if (relations == null)
-			return;
-		for (Relation r : relations) {
-			Hole f = null;
-			if (h.equals(r.h1))
-				f = r.h2;// h2与h是一对绑定的
-			else if (h.equals(r.h2))
-				f = r.h1; // h1与h是一对绑定的
-			if (f != null) {
-				Photon back = new Photon(-1, ColorUtils.RED, f.x, f.y, f.z, -f.mx, -f.my, -f.mz);// 生成反向的光子
-				addPhoton(back);
-				// energy -= 90;
-			}
-		}
-	}
+	private void createBackPhoton(Hole h) { // 根据给定的洞，在细胞上撞出反向光子来，角度差越大的洞，撞出光子的机率就越大
 
-	public void bind(Hole a, Hole b) {// 将两个坑绑定，以后只要有一个坑激活，另一个坑也会产生出光子
-		if (relations == null) {
-			relations = new Relation[] { new Relation(a, b) };
-			return;
-		}
-		for (Relation r : relations) {// 先看看是不是已绑过,绑过就把强度乘1.5
-			if ((r.h1 == a && r.h2 == b) || (r.h2 == a && r.h1 == b)) {
-				r.strength *= 1.5;
-				if (r.strength > 100000) // TODO: strength要有遗忘机制
-					r.strength = 100000;
-				return;
-			}
-		}
-		relations = Arrays.copyOf(relations, relations.length + 1);
-		relations[relations.length - 1] = new Relation(a, b);
 	}
 
 	public void removePhoton(int i) {// 删第几个光子

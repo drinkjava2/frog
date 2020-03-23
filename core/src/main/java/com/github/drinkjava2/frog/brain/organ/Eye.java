@@ -10,6 +10,7 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
+import static com.github.drinkjava2.frog.Env.*;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
@@ -25,16 +26,28 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  */
 public class Eye extends Organ {// 眼睛是长方体
+ 
+
 	private static final long serialVersionUID = 1L;
 
 	public Eye() {
-		this.shape = new Cuboid(0, 3, 2, 1, 13, 13); 
+		this.shape = new Cuboid(3, 3, FROG_BRAIN_ZSIZE/2, 5, 5, 1);//眼晴位于脑的中部
 		this.organName = "Eye";
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
 		this.color = ColorUtils.GRAY;
 	}
-
+ 
+	public void active(Frog f) { 
+		seeFood(f);
+	}
+	
+	public void seeFood(Frog f) { 
+		if (!f.alive)
+			return; 
+		Cuboid c = (Cuboid) shape; 
+	}
+	
 	public void cellAct(Frog frog, Cell c, int activeNo) {
 		if (c.hasInput && RandomUtils.percent(40)) {// 随机数的作用是减少光子数，加快速度
 			for (float yy = -0.1f; yy <= 0.1f; yy += 0.03) {// 形成一个扇面向右发送
@@ -75,4 +88,5 @@ public class Eye extends Organ {// 眼睛是长方体
 		byte[][] newPixels = PixelsUtils.offset(pixels, xOff, yOff);
 		seeImage(f, newPixels);
 	}
+
 }

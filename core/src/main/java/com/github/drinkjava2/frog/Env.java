@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.egg.EggTool;
 import com.github.drinkjava2.frog.objects.EnvObject;
-import com.github.drinkjava2.frog.objects.LetterTester;
+import com.github.drinkjava2.frog.objects.Food;
 import com.github.drinkjava2.frog.objects.Material;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -25,7 +25,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static final int SHOW_SPEED = 10; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -39,9 +39,9 @@ public class Env extends JPanel {
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
 	/** Frog's brain size is a 3D array of Cell */ // 脑空间是个三维Cell数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
-	public static final int FROG_BRAIN_XSIZE = 30; // frog的脑在X方向长度
+	public static final int FROG_BRAIN_XSIZE = 20; // frog的脑在X方向长度
 	public static final int FROG_BRAIN_YSIZE = 20; // frog的脑在Y方向长度
-	public static final int FROG_BRAIN_ZSIZE = 20; // frog的脑在Z方向长度
+	public static final int FROG_BRAIN_ZSIZE = 30; // frog的脑在Z方向长度
 
 	/** SHOW first frog's brain structure */
 	public static boolean SHOW_FIRST_FROG_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -59,10 +59,10 @@ public class Env extends JPanel {
 	public static final int FROG_BRAIN_DISP_WIDTH = 600; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
-	public static final int STEPS_PER_ROUND = LetterTester.STR.length() * 2 * LetterTester.TIME;// 每轮测试步数,可调
+	public static final int STEPS_PER_ROUND = 1000;// 每轮测试步数,可调
 	public static int step;// 当前测试步数
 
-	public static final int FOOD_QTY = 100; // 食物数量, 可调
+	public static final int FOOD_QTY = 1000; // 食物数量, 可调
 
 	// 以下是程序内部变量，不要手工修改它们
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
@@ -73,7 +73,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-	public static EnvObject[] things = new EnvObject[] {new LetterTester()};// 所有外界物体，如食物、字母测试工具都放在这个things里面
+	public static EnvObject[] things = new EnvObject[] {new Food()};// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8

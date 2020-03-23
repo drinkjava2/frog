@@ -16,9 +16,7 @@ import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.organ.Ear;
 import com.github.drinkjava2.frog.brain.organ.Eye;
-import com.github.drinkjava2.frog.brain.organ.MoveJelly;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -37,9 +35,8 @@ public class Egg implements Serializable {
 	public List<Organ> organs = new ArrayList<>();// NOSONAR
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-		organs.add(new MoveJelly()); // MoveJelly即移动光子，也是果冻记忆细胞，本来可以分成两个器官的，图省事
-		organs.add(new Eye()); // 眼是手工创建的，必有
-		organs.add(new Ear()); // 耳是手工创建的，这个是用来测试ABCD字母识别的
+		//organs.add(new MoveJelly()); // MoveJelly即移动光子，也是果冻记忆细胞，本来可以分成两个器官的，图省事
+		organs.add(new Eye()); // 眼是手工创建的，必有 
 	}
 
 	/** Create egg from frog */
