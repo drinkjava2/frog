@@ -41,7 +41,7 @@ public class Env extends JPanel {
 	/** Frog's brain size is a 3D array of Cell */ // 脑空间是个三维Cell数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
 	public static final int FROG_BRAIN_XSIZE = 20; // frog的脑在X方向长度
 	public static final int FROG_BRAIN_YSIZE = 20; // frog的脑在Y方向长度
-	public static final int FROG_BRAIN_ZSIZE = 30; // frog的脑在Z方向长度
+	public static final int FROG_BRAIN_ZSIZE = 20; // frog的脑在Z方向长度
 
 	/** SHOW first frog's brain structure */
 	public static boolean SHOW_FIRST_FROG_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -62,7 +62,7 @@ public class Env extends JPanel {
 	public static final int STEPS_PER_ROUND = 1000;// 每轮测试步数,可调
 	public static int step;// 当前测试步数
 
-	public static final int FOOD_QTY = 1000; // 食物数量, 可调
+	public static final int FOOD_QTY = 3000; // 食物数量, 可调
 
 	// 以下是程序内部变量，不要手工修改它们
 	public static boolean pause = false; // 暂停按钮按下将暂停测试

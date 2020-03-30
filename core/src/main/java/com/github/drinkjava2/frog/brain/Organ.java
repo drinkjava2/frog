@@ -81,13 +81,18 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	}
 
 	/** each step will call Organ's active methodd */
-	public void active(Frog f) { // 每一步测试都会调用active方法，通常用于手动生成的器官，自动生成的器官其行为仅由脑细胞来决定
-		// do nothing
+	public void active(Frog f) {// 每一步测试都会调用active方法，它通常遍历每个细胞，调用它们的cellAct方法
+		if (!f.alive)
+			return;
+		Cuboid c = (Cuboid) shape;
+		for (int px = 0; px < c.xe; px++)
+			for (int py = 0; py < c.ye; py++) {// 要做到近处的分辨率高，远处的分辨率低
+				cellAct(f, f.getOrCreateCell(c.x + px, c.y + py, c.z));
+			}
 	}
 
 	/** each step will call Organ's active methodd */
-	public void cellAct(Frog frog, Cell c, int activeNo) { // 每个细胞都会调用cellAct方法,这是针对细胞级别的方法，子类要覆盖它
-
+	public void cellAct(Frog f, Cell c) { // 每个细胞都会调用cellAct方法,这是针对细胞级别的方法，子类要覆盖它
 	}
 
 	/** Child class can override this method to drawing picture */

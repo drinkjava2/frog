@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
+import javax.swing.plaf.ColorUIResource;
 
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
@@ -276,24 +277,9 @@ public class BrainPicture extends JPanel {
 					if (f.cells[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
 							Cell cell = f.getCell(x, y, z);
-							if (cell != null) {// 只显示激活点
-								if (cell.hasInput && x == 0) {// 如果在左边，显示黑色大圆
-									setPicColor(Color.BLACK);
-									drawCellCenter(x, y, z, 0.6f);
-								} else if (z == Env.FROG_BRAIN_ZSIZE - 1 && cell.hasInput) {// 如果在顶上边，显示兰色大圆
-									setPicColor(Color.BLUE);
-									drawCellCenter(x, y, z, 0.6f);
-								}
-
-								if (cell.photonQty > 0) {// 如果在内部，只显示有光子的cell
-									setPicColor(ColorUtils.colorByCode(cell.color));
-									float dia = 0.2f;
-									if (cell.color == 0)
-										dia = 0.3f;
-									if (x == xMask || y == yMask)
-										dia = 0.5f;
-									drawCellCenter(x, y, z, dia);
-								}
+							if (cell != null && cell.energy>10) { 
+								setPicColor(ColorUtils.rainbowColor(cell.energy));
+								drawCellCenter(x, y, z, 0.6f);
 							}
 						}
 				}

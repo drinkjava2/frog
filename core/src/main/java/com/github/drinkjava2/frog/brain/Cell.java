@@ -12,9 +12,6 @@ package com.github.drinkjava2.frog.brain;
 
 import java.util.Arrays;
 
-import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.util.RandomUtils;
-
 /**
  * Cell is the smallest unit of brain space, a Cell can have many actions and
  * photons and holes and relations
@@ -30,6 +27,9 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * 在短期内同时发生，或长期反复发生，就形成比较稳定的关联，这个与神经网络的hebb规则相符合，以后在这个基础上，看看能不能将深度学习的分层结构借签进来，用图形化
  * 表示，并有可能是无级分层的，层与层之前没有明显界限。
  * 
+ * 光子是信息的载体，旧版本中光子是实际的对象，但实际上只要能表达带方向的信息传递，光子本身可以省略掉，从2020-2-28开始，为了精简架构，光子被删除，直接用A细胞
+ * 在B细胞上挖洞的形式来表达这个信息传递过程，洞是有方向的，洞的方向表示它的信息来源，洞的大小表示信量重复度，洞的年龄表示信息新旧度
+ * 
  * @author Yong Zhu
  * @since 1.0
  */
@@ -37,6 +37,7 @@ public class Cell {
 	public int x;
 	public int y;
 	public int z;
+	public float energy;
 
 	public Cell(int x, int y, int z) {
 		this.x = x;
@@ -44,45 +45,21 @@ public class Cell {
 		this.z = z;
 	}
 
-	/** Active of current cell */
-	public boolean hasInput = false; // 这个细胞是否有外界信号（如光、声音)输入
-
-	public int[] organs = null; //// 每个Cell可以被多个Organ登记，这里保存organ在蛋里的序号
-
-	public Photon[] photons = null;// 光子
+	public int[] organs = null; // 每个Cell可以被多个Organ登记，这里保存organ在蛋里的序号
 
 	public Hole[] holes = null;// 洞（即动态突触），洞由光子产生，洞由时间抹平，洞的角度本身就是关联关系，角度越大，关联关系越大
 
-	public int color;// Cell的颜色取最后一次被添加的光子的颜色，颜色不重要，但能方便观察
+	/** Active this cell, increase its energy value */
+	public void active() {// 激活这个细胞，也就是说，增加它的能量值，最大到10000饱和
+		energy += 100;
+		if (energy > 10000)
+			energy = 10000;
+	}
 
-	public int photonQty = 0; // 这个细胞里当前包含的光子总数
-
-	/*-
-	 * Each cell's act method will be called once at each loop step
-	 * 
-	 * 在每个测试步长中act方法都会被调用一次，这个方法针对不同的细胞类型有不同的行为逻辑，这是硬
-	 * 编码，所以要准备多套不同的行为（可以参考动物脑细胞的活动逻辑)，然后抛给电脑去随机筛选，不怕多。
-	 * 同一个细胞可能有多个action,由organs数组中登记的器官号决定，调用顺序也是按器官号顺序
-	 *
-	 * 
-	 * 举例来说，以下是一些假想中的脑细胞行为：
-	 * 一对一，穿透，光子会穿过细胞，细胞起到中继站的作用，如果没有细胞中继，光子在真空中不能传播
-	 * 一对一，转向，光子传播角度被改变成另一个绝对角度发出
-	 * 一对一，转向，光子传播角度被改变成与器官有关的角度发出，可以模拟光线的发散(如视网膜细胞)和聚焦(如脑内成像，即沿光线发散的逆路径)
-	 * 一对多，拆分，入射光子被拆分成多个光子，以一定的发散角发出，通常发散光子的总能量小于入射+细胞输出能量之和
-	 * 一对多，拆分，入射光子被拆分成多个光子，发散角与器官相关 
-	 * 多对一，聚合，入射光子被细胞捕获
-	 */
-	public void act(Frog f, int activeNo) {
-		if (organs == null)
-			return;
-		if (holes != null)
-			for (Hole h : holes) // 洞的年龄增加，目的是让年龄越接近的洞之间，绑定的概率和强度越大
-				h.age++;
-		for (int i = 0; i < organs.length; i++) {
-			Organ o = f.organs.get(organs[i]);
-			o.cellAct(f, this, activeNo);
-		}
+	public void deActive() {// 抑制这个细胞，也就是说，减小它的能量值，最小到0
+		energy -= 300;
+		if (energy < 0)
+			energy = 0;
 	}
 
 	public void regOrgan(int orgNo) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
@@ -90,84 +67,6 @@ public class Cell {
 			organs = new int[] {};
 		organs = Arrays.copyOf(organs, organs.length + 1);
 		organs[organs.length - 1] = orgNo;
-	}
-
-	public void addPhoton(Photon p) {// 每个cell可以存在多个光子
-		if (p == null)
-			return;
-		photonQty++;
-		color = p.color; // Cell的颜色取最后一次被添加的光子的颜色
-		if (photons == null) {
-			photons = new Photon[] { p };// 创建数组
-			return;
-		} else
-			for (int i = 0; i < photons.length; i++) { // 找空位插入,尽量重复利用内存
-				if (photons[i] == null) {
-					photons[i] = p;
-					return; // 如找到就插入，返回
-				}
-			}
-		photons = Arrays.copyOf(photons, photons.length + 1);// 否则追加新光子到未尾
-		photons[photons.length - 1] = p;
-	}
-
-	public void digHole(Photon p) {// 根据光子来把洞挖大一点，同时，如果有洞和它年龄相近，将把它们绑定起来，如果已有绑定的洞，有可能在绑定的洞里撞出光子来
-		if (p == null || p.isBackway())// 反向的光子不参与挖坑
-			return;
-		if (holes == null) {// 如果没有坑，就新挖一个
-			holes = new Hole[] { new Hole(p) }; // 新挖的坑不参与绑定
-			return;
-		}
-
-		if (RandomUtils.percent(10)) // 这个机率纯粹是为了减少光子数，增加运行速度
-			for (int i = 0; i < holes.length; i++) { // 这部分很关键，光子如果与坑同向或角度相近，会在与坑绑定的坑上撞出新的光子反向飞回，注意只针对绑定的坑
-				Hole h = holes[i];
-				if (h != null) {
-					float r = h.angleCompare(p);
-					if (r < 0.05) {
-						if (RandomUtils.percent(h.size))
-							createBackPhoton(h); // 产生光子的机率与洞的大小有关
-					} else if (r > 0.1 && r < 0.5) { // 这个叫侧抑制，角度不等但相近的光子射过来会使洞变小
-						h.size -= 10;
-						if (h.size < 10)
-							h.size = 10;
-					}
-				}
-			}
-
-		Hole found = null;
-		for (int i = 0; i < holes.length; i++) { // 先看看已存在的洞是不是与光子同向，是的话就把洞挖大一点
-			Hole h = holes[i];
-			if (h != null && h.ifSimilarWay(p)) { // 找到了与入射光子同向的洞,实际上就是同一个波源发来的
-				found = h;
-				h.size += 10;
-				h.age = 0; // 为0表示这个洞被重新激活，可以参与绑定
-				if (h.size > 100)
-					h.size = 100;
-				break;
-			}
-		}
-
-		if (found == null) {// 如果还没有找到旧坑，只好挖一个新坑到未尾
-			holes = Arrays.copyOf(holes, holes.length + 1);
-			holes[holes.length - 1] = new Hole(p);
-		}
-	}
-
-	private void createBackPhoton(Hole h) { // 根据给定的洞，在细胞上撞出反向光子来，角度差越大的洞，撞出光子的机率就越大
-
-	}
-
-	public void removePhoton(int i) {// 删第几个光子
-		if (photons[i] != null) {
-			photons[i] = null;
-			photonQty--;
-		}
-	}
-
-	public void deleteAllPhotons() {
-		photons = null;
-		photonQty = 0;
 	}
 
 }

@@ -25,9 +25,7 @@ public class Hole {
 	public float mx; // mx,my,mz分别是光子砸出这个洞时的光子每单元移动方向在三个轴上的投影
 	public float my;
 	public float mz;
-	public int size = 50;// 洞的大小1~100，这个size会按记忆曲线慢慢回复到0，接近0后这个洞就被删除回收内存，
-	public int age;// 洞的年龄,一直在增长，但一个洞有完全同向的光子再次砸进来，洞的年龄就归0
-	public int organNo;// 这里记录第一个撞出来这个洞的产子是由哪个器官产生出来的
+	public float size = 0;// 洞的大小，收到光子会变大1.1倍直到饱和，平时会沿指数曲线消失 
 
 	public Hole(Photon p) {
 		this.x = p.x;
@@ -35,8 +33,7 @@ public class Hole {
 		this.z = p.z;
 		this.mx = p.mx;
 		this.my = p.my;
-		this.mz = p.mz;
-		this.organNo = p.organNo;
+		this.mz = p.mz; 
 	}
 
 	public float angleCompare(Hole p) {// 比较洞与光子之间的角度差值
