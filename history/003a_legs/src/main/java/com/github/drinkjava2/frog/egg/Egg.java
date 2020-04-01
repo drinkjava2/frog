@@ -90,10 +90,11 @@ public class Egg implements Serializable {
 		organs.add(new RFootFeelDown().setXYRN(800, 600, 30, "FeelDown"));// 底脚降下感受细胞
 		for (int i = 0; i <= 10; i++)
 			organs.add(new FootPosFeel().setXYRN(FootPosFeel.RFOOTPOSSTART_X + i * 30, 650, 10, "")); // 底脚位置感受细胞
-		for (int i = 0; i < 5; i++) {
-			organs.add(new LogicAnd().setXYRN(100+i*30, 10, 5, "")); // 底脚位置感受细胞
-			organs.add(new LogicNot().setXYRN(100+i*30, 50, 5, "")); // 底脚位置感受细胞
-		} 
+
+		//for (int i = 0; i < 5; i++) {
+		//	organs.add(new LogicAnd().setXYRN(100+i*30, 10, 5, "")); // 逻辑与器官，经测试没用上，暂排除
+		//	organs.add(new LogicNot().setXYRN(100+i*30, 50, 5, "")); // 逻辑非器官，经测试没用上，暂排除
+		//} 
 		
 		// 以上器官，就是FIXED_ORGAN_QTY值
 		FIXED_ORGAN_QTY = organs.size();
