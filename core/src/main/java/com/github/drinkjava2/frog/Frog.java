@@ -65,14 +65,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 			organs.add(org);
 	}
 
-	public void initFrog() {// 仅在测试之前调用这个方法初始化frog以节约内存，测试完成后要清空units释放内存
-		try {
-			cells = new Cell[Env.FROG_BRAIN_XSIZE][][]; // 为了节约内存，先只初始化三维数组的x维，另两维用到时再分配
-		} catch (OutOfMemoryError e) {
-			System.out.println("OutOfMemoryError found for frog, force it die.");
-			this.alive = false;
-			return;
-		}
+	public void initFrog() {
 		for (int orgNo = 0; orgNo < organs.size(); orgNo++) {
 			organs.get(orgNo).init(this, orgNo);
 		}
@@ -94,13 +87,9 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 		if (sp instanceof Cuboid) {
 			Cuboid o = (Cuboid) sp;
 			for (int x = o.x; x < o.x + o.xe; x++)
-				if (cells[x] != null)
-					for (int y = o.y; y < o.y + o.ye; y++)
-						if (cells[x][y] != null)
-							for (int z = o.z; z < o.z + o.ze; z++)
-								if (cells[x][y][z] != null) {
-									getOrCreateCell(x, y, z).active();
-								}
+				for (int y = o.y; y < o.y + o.ye; y++)
+					for (int z = o.z; z < o.z + o.ze; z++)
+						getOrCreateCell(x, y, z).active();
 		}
 	}
 
@@ -130,7 +119,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 
 	/** Check if cell exist */
 	public Cell getCell(int x, int y, int z) {// 返回指定脑ssf坐标的cell ，如果不存在，返回null
-		if (cells[x] == null || cells[x][y] == null)
+		if (cells == null || cells[x] == null || cells[x][y] == null)
 			return null;
 		return cells[x][y][z];
 	}
@@ -138,7 +127,9 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 	/** Get a cell in position (x,y,z), if not exist, create a new one */
 	public Cell getOrCreateCell(int x, int y, int z) {// 获取指定坐标的Cell，如果为空，则在指定位置新建Cell
 		if (outBrainRange(x, y, z))
-			return null;
+			throw new IllegalArgumentException("x,y,z postion out of range, x=" + x + ", y=" + y + ", z=" + z);
+		if (cells == null)
+			cells = new Cell[Env.FROG_BRAIN_XSIZE][][];
 		if (cells[x] == null)
 			cells[x] = new Cell[Env.FROG_BRAIN_YSIZE][];
 		if (cells[x][y] == null)

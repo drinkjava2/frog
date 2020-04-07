@@ -271,8 +271,8 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
 
-		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {// 开始画整个脑空间的光子和激活点阵图
-			if (f.cells[x] != null)
+		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {// 开始画整个脑空间的光子和激活点阵图 
+			if (f.cells!=null && f.cells[x] != null)
 				for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
 					if (f.cells[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {

@@ -26,7 +26,7 @@ import com.github.drinkjava2.frog.util.ColorUtils;
  * @author Yong Zhu
  */
 public class Eye extends Organ {// 眼睛是长方体
-	private static final int EYE_SIZE = 6;
+	private static final int EYE_SIZE = 4;
 
 	private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ public class Eye extends Organ {// 眼睛是长方体
 	}
 
 	public void cellAct(Frog f, Cell c) {// 眼细胞的作用是根据食物激活视网膜和眼下皮层
-		f.x=0;f.y=0;
+		//f.x=0;f.y=0;
 		for (int i = 0; i < 2; i++) {
 			Env.bricks[i][0]=Material.FOOD;
 			Env.bricks[i][1]=Material.FOOD;
