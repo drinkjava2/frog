@@ -18,7 +18,6 @@ import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.objects.Material;
-import com.github.drinkjava2.frog.util.ColorUtils;
 
 /**
  * Eye can only see env material
@@ -26,26 +25,25 @@ import com.github.drinkjava2.frog.util.ColorUtils;
  * @author Yong Zhu
  */
 public class Eye extends Organ {// 眼睛是长方体
-	private static final int EYE_SIZE = 4;
+	private static final int EYE_SIZE = 8;
 
 	private static final long serialVersionUID = 1L;
 
 	public Eye() {
-		this.shape = new Cuboid(3, 3, FROG_BRAIN_ZSIZE / 2, EYE_SIZE, EYE_SIZE, 1);// 眼晴位于脑的中部
+		this.shape = new Cuboid(FROG_BRAIN_ZSIZE / 2, 3, 3, 1, EYE_SIZE, EYE_SIZE);// 眼晴位于脑的中部
 		this.organName = "Eye";
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
-		this.color = ColorUtils.GRAY;
 	}
 
 	public void cellAct(Frog f, Cell c) {// 眼细胞的作用是根据食物激活视网膜和眼下皮层
-		//f.x=0;f.y=0;
-		for (int i = 0; i < 2; i++) {
-			Env.bricks[i][0]=Material.FOOD;
-			Env.bricks[i][1]=Material.FOOD;
-			Env.bricks[i][32]=Material.FOOD;
-		}
-		if (Env.foundAnyThing(f.x - EYE_SIZE / 2 + c.x, f.y - EYE_SIZE / 2 + c.y))
+		 f.x=0;f.y=0;
+		for (int i = 0; i <= 2; i++) {
+			Env.bricks[i][0] = Material.FOOD; 
+			Env.bricks[i][1] = Material.FOOD; 
+			Env.bricks[i][2] = Material.FOOD; 
+		} 
+		if (Env.foundAnyThing(f.x - EYE_SIZE / 2 + c.y, f.y - EYE_SIZE / 2 + c.z))
 			c.active();
 		else
 			c.deActive();

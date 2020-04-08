@@ -59,4 +59,8 @@ public class ColorUtils {
 			return Color.RED;
 		return Color.MAGENTA;
 	}
+
+	public static Color grayColor(int i) { // 根据数值大小范围0~255，返回一个灰度色，越大越黑 
+		return new Color(255-i, 255-i, 255-i);
+	}
 }

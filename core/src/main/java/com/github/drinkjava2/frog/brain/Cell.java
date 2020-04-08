@@ -50,14 +50,14 @@ public class Cell {
 	public Hole[] holes = null;// 洞（即动态突触），洞由光子产生，洞由时间抹平，洞的角度本身就是关联关系，角度越大，关联关系越大
 
 	/** Active this cell, increase its energy value */
-	public void active() {// 激活这个细胞，也就是说，增加它的能量值，最大到10000饱和
-		energy += 100;
-		if (energy > 10000)
-			energy = 10000;
+	public void active() {// 激活这个细胞，也就是说，增加它的能量值，最大到255饱和
+		energy += 1;
+		if (energy > 255)
+			energy = 255;
 	}
 
 	public void deActive() {// 抑制这个细胞，也就是说，减小它的能量值，最小到0
-		energy -= 300;
+		energy -= 1;
 		if (energy < 0)
 			energy = 0;
 	}
