@@ -278,7 +278,7 @@ public class BrainPicture extends JPanel {
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
 							Cell cell = f.getCell(x, y, z);
 							if (cell != null && cell.energy > 20) {
-								setPicColor(ColorUtils.grayColor(Math.round(cell.energy)));
+								setPicColor(ColorUtils.grayColor( cell.energy ));
 								drawCellCenter(x, y, z, 0.6f);
 							}
 						}

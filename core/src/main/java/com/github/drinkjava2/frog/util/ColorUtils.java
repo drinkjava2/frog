@@ -60,7 +60,12 @@ public class ColorUtils {
 		return Color.MAGENTA;
 	}
 
-	public static Color grayColor(int i) { // 根据数值大小范围0~255，返回一个灰度色，越大越黑 
-		return new Color(255-i, 255-i, 255-i);
+	public static Color grayColor(float f) { // 根据数值大小范围0~1000，返回一个灰度色，越大越黑
+		if (f > 1000)
+			f = 1000;
+		int i1 = 255 - (int) Math.round(f * .255);
+		int i2 = 200 - (int) Math.round(f * .200);
+		int i3 = 150 - (int) Math.round(f * .150);
+		return new Color(i1, i2, i3);
 	}
 }

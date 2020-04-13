@@ -49,12 +49,7 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public boolean allowBorrow;// 是否允许在精子中将这个器官借出，有一些器官是手工创建的，在项目初级阶段禁止它们借出
 	public String organName;// 器官的名字，通常只有手工创建的器官才有名字，可以用frog.findOrganByName来查找到这个器官
 	public Shape shape; // 器官的形状，不同的形状要写出不同的播种行为
-
-	public Organ() {// 缺省构造器，生成具有缺省参数但没有形状的器官
-		allowVary = true;
-		allowBorrow = true;
-	}
-
+ 
 	/** Only call once after organ be created */
 	public Organ[] vary(Frog f) { // 器官变异，仅会在青蛙下蛋时即new Egg(frog)中被调用一次，返回本身或变异后的一个或一组类似器官返回
 		if (!allowVary)
