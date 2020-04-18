@@ -25,7 +25,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static final int SHOW_SPEED = 10; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static int SHOW_SPEED = 50; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -254,9 +254,10 @@ public class Env extends JPanel {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 					f.cells = null; // 清空frog脑细胞所占用的内存
 				}
-				Application.mainFrame.setTitle(new StringBuilder("Round: ").append(round).append(", screen:")
-						.append(screen).append(", ").append(foodFoundCountText()).append(", 用时: ")
-						.append(System.currentTimeMillis() - time0).append("ms").toString());
+				Application.mainFrame
+						.setTitle(new StringBuilder("Round: ").append(round).append(", screen:").append(screen)
+								.append(", speed:").append(Env.SHOW_SPEED).append(", ").append(foodFoundCountText())
+								.append(", 用时: ").append(System.currentTimeMillis() - time0).append("ms").toString());
 				for (EnvObject thing : things)// 去除食物、陷阱等物体
 					thing.destory();
 			}

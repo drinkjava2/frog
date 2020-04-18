@@ -10,6 +10,7 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
+import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
@@ -24,15 +25,15 @@ import com.github.drinkjava2.frog.brain.Organ;
  */
 public class Move {// 因为青蛙生活在二次元，所以只有上下左右4个运动方向
 
-	private static final int cx = 5; // 中心点
+	private static final int cx = 5;
 	private static final int cy = 15;
-	private static final int cz = 15;
+	private static final int cz = FROG_BRAIN_ZSIZE / 2 + 3;
 
 	public static class MoveUp extends Organ {// 这个运动细胞激活，青蛙将向上移动
 		private static final long serialVersionUID = 1L;
 
 		public MoveUp() {
-			shape = new Cuboid(cx, cy, cz + 2, 1, 1, 1);
+			shape = new Cuboid(cx, cy + 2, cz, 1, 1, 1);
 		}
 
 		@Override
@@ -48,7 +49,7 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 		private static final long serialVersionUID = 1L;
 
 		public MoveDown() {
-			shape = new Cuboid(cx, cy, cz - 2, 1, 1, 1);
+			shape = new Cuboid(cx, cy - 2, cz, 1, 1, 1);
 		}
 
 		@Override
@@ -63,7 +64,7 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 		private static final long serialVersionUID = 1L;
 
 		public MoveLeft() {
-			shape = new Cuboid(cx, cy + 2, cz, 1, 1, 1);
+			shape = new Cuboid(cx + 2, cy, cz, 1, 1, 1);
 		}
 
 		@Override
@@ -78,7 +79,7 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 		private static final long serialVersionUID = 1L;
 
 		public MoveRight() {
-			shape = new Cuboid(cx, cy - 2, cz, 1, 1, 1);
+			shape = new Cuboid(cx - 2, cy, cz, 1, 1, 1);
 		}
 
 		@Override

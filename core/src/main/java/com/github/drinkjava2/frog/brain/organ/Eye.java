@@ -27,15 +27,15 @@ import com.github.drinkjava2.frog.brain.Organ;
  */
 public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生活在二次元空间，所以它只能观察上下左右4个方向有无食物
 	private static final int SEE_DIST = 20; // 视距
-	private static final int cx = FROG_BRAIN_XSIZE / 2; // 中心点
+	private static final int cx = 5; //中心点
 	private static final int cy = 15;
-	private static final int cz = 15;
+	private static final int cz = FROG_BRAIN_XSIZE /2; // 中层
 
 	public static class SeeUp extends Organ {// 这个感光细胞只能看到上方有没有物体
 		private static final long serialVersionUID = 1L;
 
 		public SeeUp() {
-			shape = new Cuboid(cx, cy, cz + 2, 1, 1, 1);
+			shape = new Cuboid(cx, cy+2, cz, 1, 1, 1);
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
@@ -52,7 +52,7 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		private static final long serialVersionUID = 1L;
 
 		public SeeDown() {
-			shape = new Cuboid(cx, cy, cz - 2, 1, 1, 1);
+			shape = new Cuboid(cx, cy-2, cz , 1, 1, 1);
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
@@ -68,7 +68,7 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		private static final long serialVersionUID = 1L;
 
 		public SeeLeft() {
-			shape = new Cuboid(cx, cy + 2, cz, 1, 1, 1);
+			shape = new Cuboid(cx+2, cy, cz, 1, 1, 1);
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
@@ -84,7 +84,7 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		private static final long serialVersionUID = 1L;
 
 		public SeeRight() {
-			shape = new Cuboid(cx, cy - 2, cz, 1, 1, 1);
+			shape = new Cuboid(cx-2, cy , cz, 1, 1, 1);
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞

@@ -101,10 +101,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 			return false;
 		}
 		energy -= 20;
-		for (Organ o : organs)
-			o.active(this); // 调用每个器官的active方法， 通常只用于执行器官的外界信息输入、动作输出，脑细胞的遍历不是在这一步
-
-		// 这里是最关键的脑细胞主循环，依次调用每个器官的active方法，每个器官各自负责调用各自区域（通常是Cuboid)内的细胞的行为
+		// 依次调用每个器官的active方法，每个器官各自负责调用各自区域（通常是Cuboid)内的细胞的行为
 		for (Organ o : organs)
 			o.active(this);
 

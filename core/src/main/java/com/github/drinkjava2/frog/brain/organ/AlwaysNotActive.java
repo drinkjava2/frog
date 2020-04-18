@@ -10,6 +10,8 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
+import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
+
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
@@ -24,7 +26,7 @@ public class AlwaysNotActive extends Organ {// 这个器官的作用总是激活
 	private static final long serialVersionUID = 1L;
 
 	public AlwaysNotActive() {
-		this.shape = new Cuboid(7,5, 13, 1, 1, 1);
+		this.shape = new Cuboid(15, 15, FROG_BRAIN_ZSIZE / 2 + 3, 1, 1, 1);
 	}
 
 	@Override

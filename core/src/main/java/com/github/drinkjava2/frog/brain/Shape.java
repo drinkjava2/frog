@@ -28,4 +28,5 @@ public interface Shape extends Serializable {
 
 	/* Organ will call this method to create cells or register organ in cells */
 	public void createCellsRegOrgan(Frog f, int orgNo); // 在Shape所代表的脑区内找到或创建Cell对象，并将器官号orgNo登记在cell里
+
 }

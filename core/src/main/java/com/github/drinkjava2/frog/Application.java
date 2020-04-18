@@ -6,6 +6,10 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.github.drinkjava2.frog.brain.BrainPicture;
 
@@ -37,14 +41,14 @@ public class Application {
 	static private void checkIfShowBrainPicture(JButton button) {
 		if (Env.SHOW_FIRST_FROG_BRAIN) {
 			button.setText("Hide brain");
-			int y = Env.ENV_HEIGHT + 100;
+			int y = Env.ENV_HEIGHT + 120;
 			if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
 				y = Env.FROG_BRAIN_DISP_WIDTH + 41;
 			mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
 			brainPic.requestFocus();
 		} else {
 			button.setText("Show brain");
-			mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100);
+			mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 120);
 		}
 	}
 
@@ -52,11 +56,10 @@ public class Application {
 		mainFrame.setLayout(null);
 		mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100); // 窗口大小
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 关闭时退出程序
-		mainFrame.add(env);
+		mainFrame.add(env); // 添加虚拟环境Panel
+		mainFrame.add(brainPic); // 添加脑图Panel
 
-		mainFrame.add(brainPic);
-
-		JButton button = new JButton("Show brain");
+		JButton button = new JButton("Show brain");// 按钮，显示或隐藏脑图
 		int buttonWidth = 100;
 		int buttonHeight = 22;
 		int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
@@ -74,7 +77,7 @@ public class Application {
 		button.addActionListener(al);
 		mainFrame.add(button);
 
-		JButton stopButton = new JButton("Pause");
+		JButton stopButton = new JButton("Pause");// 按钮，暂停或继续
 		stopButton.setBounds(buttonXpos, Env.ENV_HEIGHT + 35, buttonWidth, buttonHeight);
 		pauseAction = new ActionListener() {
 			@Override
@@ -90,6 +93,20 @@ public class Application {
 		};
 		stopButton.addActionListener(pauseAction);
 		mainFrame.add(stopButton);
+
+		final JSlider speedSlider = new JSlider(1, 1000, Env.SHOW_SPEED); // 速度条
+		speedSlider.setBounds(buttonXpos - 50, stopButton.getY() + 25, buttonWidth + 100, buttonHeight);
+		ChangeListener slideAction = new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				Env.SHOW_SPEED = speedSlider.getValue();
+			}
+		};
+		speedSlider.addChangeListener(slideAction);
+		mainFrame.add(speedSlider);
+		final JLabel label = new JLabel("Speed:");
+		label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
+		mainFrame.add(label);
 
 		mainFrame.setVisible(true);
 		env.run();
