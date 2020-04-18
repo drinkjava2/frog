@@ -8,29 +8,26 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.brain.organ;
+package com.github.drinkjava2.frog.brain;
 
-import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
-
-import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Cell;
-import com.github.drinkjava2.frog.brain.Cuboid;
-import com.github.drinkjava2.frog.brain.Organ;
+import java.io.Serializable;
 
 /**
- * KeepActive always active
+ * Line is a line from cell1 to cell2
  * 
  * @author Yong Zhu
+ * @since 2020-04-18
  */
-public class AlwaysActive extends Organ {// 这个器官的作用总是激活一个固定区，它有可能会被自然选择选中
+public class Line implements Serializable {// Line代表一个从cell1到cell2的神经元连接,value表示传递能量的能力
 	private static final long serialVersionUID = 1L;
+	public float value;
+	public Cell c1;
+	public Cell c2;
 
-	public AlwaysActive() {
-		this.shape = new Cuboid(15, 10, FROG_BRAIN_ZSIZE / 2+3, 1, 1, 1);
+	public Line(float value, Cell c1, Cell c2) {
+		this.value = value;
+		this.c1 = c1;
+		this.c2 = c2;
 	}
 
-	@Override
-	public void cellAct(Frog f, Cell c) {
-		c.active();
-	}
 }

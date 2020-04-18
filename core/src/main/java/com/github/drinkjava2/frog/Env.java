@@ -30,7 +30,7 @@ public class Env extends JPanel {
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
 
-	public static final int EGG_QTY = 10; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int EGG_QTY = 25; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
 	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
 
@@ -202,8 +202,7 @@ public class Env extends JPanel {
 				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
 				boolean allDead = false;
-				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN);
-				checkIfPause(firstFrog);
+				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN); 
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 					f.initFrog(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
@@ -250,6 +249,7 @@ public class Env extends JPanel {
 					g2.drawImage(buffImg, 0, 0, this);
 				}
 				Application.brainPic.drawBrainPicture(firstFrog);
+				checkIfPause(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 					f.cells = null; // 清空frog脑细胞所占用的内存

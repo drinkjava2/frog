@@ -10,6 +10,7 @@
  */
 package com.github.drinkjava2.frog.brain;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -33,7 +34,8 @@ import java.util.Arrays;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Cell {
+public class Cell implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public int x;
 	public int y;
 	public int z;
@@ -71,8 +73,9 @@ public class Cell {
 
 	public void regOrgan(int orgNo) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
 		if (organs == null)
-			organs = new int[] {};
-		organs = Arrays.copyOf(organs, organs.length + 1);
+			organs = new int[1];
+		else
+			organs = Arrays.copyOf(organs, organs.length + 1);
 		organs[organs.length - 1] = orgNo;
 	}
 

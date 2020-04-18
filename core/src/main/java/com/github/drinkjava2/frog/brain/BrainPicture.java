@@ -9,13 +9,13 @@ import static java.lang.Math.round;
 import static java.lang.Math.sin;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
-import javax.swing.plaf.ColorUIResource;
 
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
@@ -152,6 +152,13 @@ public class BrainPicture extends JPanel {
 		// TODO 画出锥体的上下面
 	}
 
+	/**
+	 * 从cell c1中心画一条线到cell c2中心
+	 */
+	public void drawLine(Cell c1, Cell c2) {
+		drawLine(c1.x+.5f, c1.y+.5f, c1.z+.5f, c2.x+.5f, c2.y+.5f, c2.z+.5f);
+	}
+
 	/*-
 	  画线，固定以top视角的角度，所以只需要从x1,y1画一条到x2,y2的直线	
 		绕 x 轴旋转 θ
@@ -250,6 +257,35 @@ public class BrainPicture extends JPanel {
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - diameter / 2, diameter, diameter);
 	}
 
+	public void drawText(float px1, float py1, float pz1, String text) {
+		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
+		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+		double z1 = pz1 - Env.FROG_BRAIN_ZSIZE / 2;
+		x1 = x1 * scale;
+		y1 = y1 * scale;
+		z1 = z1 * scale;
+		double x, y, z;
+		y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
+		z = y1 * sin(xAngle) + z1 * cos(xAngle);
+		y1 = y;
+		z1 = z;
+
+		x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
+		z = z1 * cos(yAngle) - x1 * sin(yAngle);
+		x1 = x;
+		z1 = z;
+
+		x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
+		y = x1 * sin(zAngle) + y1 * cos(zAngle);
+		x1 = x;
+		y1 = y;
+
+		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(scale * .3)));
+		g.drawString(text, (int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
+				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
+
+	}
+
 	private static Cuboid brain = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
 
 	public void drawBrainPicture(Frog f) {// 在这个方法里进行青蛙三维脑结构的绘制
@@ -263,6 +299,9 @@ public class BrainPicture extends JPanel {
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 		setPicColor(BLACK);
 		drawCuboid(brain);// 先把脑的框架画出来
+		drawText(1, 0, 0, "x");
+		drawText(0, 1, 0, "y");
+		drawText(0, 0, 1, "z");
 
 		for (Organ organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
 			organ.drawOnBrainPicture(f, this); // each organ draw itself
@@ -271,25 +310,24 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
 
-		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {// 开始画整个脑空间的光子和激活点阵图
+		for (int x = 0; x < Env.FROG_BRAIN_XSIZE; x++) {// 开始画整个脑空间的细胞活跃分布图
 			if (f.cells != null && f.cells[x] != null)
 				for (int y = 0; y < Env.FROG_BRAIN_YSIZE; y++) {
 					if (f.cells[x][y] != null)
 						for (int z = 0; z < Env.FROG_BRAIN_ZSIZE; z++) {
 							Cell cell = f.getCell(x, y, z);
 							if (cell != null && cell.energy > 20) {
-								setPicColor(ColorUtils.grayColor( cell.energy ));
+								setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度表示活跃度
 								drawCellCenter(x, y, z, 0.6f);
 							}
 						}
 				}
 		}
 		g.setColor(Color.black);
-		if (note != null)
+		if (note != null) // 全局注释
 			g.drawString(note, 30, 55);
-		Graphics g2 = this.getGraphics(); // 这两行是将缓存中的图像写到屏幕上
-		g2.drawImage(buffImg, 0, 0, this);
-
+		Graphics g2 = this.getGraphics();
+		g2.drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
 	}
 
 	public static void setNote(String note) {

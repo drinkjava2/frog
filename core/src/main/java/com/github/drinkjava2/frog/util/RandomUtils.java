@@ -17,9 +17,12 @@ import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
 import java.util.Random;
 
 import com.github.drinkjava2.frog.Env;
+import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cone;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Hole;
+import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.Shape;
 
 /**
@@ -44,7 +47,22 @@ public class RandomUtils {
 	}
 
 	public static boolean percent(float percent) {// 有百分这percent的机率为true
-		return rand.nextInt(100) < percent;
+		return rand.nextFloat() * 100 < percent;
+	}
+
+	public static Cell getRandomCell(Frog f) {// 在随机一个器官里取一个随机Cell
+		int r = rand.nextInt(f.organs.size());
+		Organ o = f.organs.get(r);
+		if (o.shape == null)
+			return null;
+		if (o.shape instanceof Cuboid) {
+			Cuboid c = (Cuboid) o.shape;
+			int x = c.x + rand.nextInt(c.xe);
+			int y = c.y + rand.nextInt(c.ye);
+			int z = c.z + rand.nextInt(c.ze);
+			return f.getCell(x, y, z);
+		}
+		return null;
 	}
 
 	/** Randomly create a Cuboid inside of brain space */

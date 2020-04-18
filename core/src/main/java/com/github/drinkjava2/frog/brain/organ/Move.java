@@ -28,6 +28,7 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 	private static final int cx = 5;
 	private static final int cy = 15;
 	private static final int cz = FROG_BRAIN_ZSIZE / 2 + 3;
+	private static final float MOVE_ENERGY = 30;
 
 	public static class MoveUp extends Organ {// 这个运动细胞激活，青蛙将向上移动
 		private static final long serialVersionUID = 1L;
@@ -38,9 +39,9 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > 100)
+			if (c.energy > MOVE_ENERGY)
 				f.y++;
-			c.active(-10);
+			c.active(-MOVE_ENERGY);
 			// TODO：让信号参与模式识别，并最终存贮在脑皮层细胞里,即金字塔的底部。
 		}
 	}
@@ -54,9 +55,9 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > 100)
+			if (c.energy > MOVE_ENERGY)
 				f.y--;
-			c.active(-10);
+			c.active(-MOVE_ENERGY);
 		}
 	}
 
@@ -64,14 +65,14 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 		private static final long serialVersionUID = 1L;
 
 		public MoveLeft() {
-			shape = new Cuboid(cx + 2, cy, cz, 1, 1, 1);
+			shape = new Cuboid(cx - 2, cy, cz, 1, 1, 1);
 		}
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > 100)
+			if (c.energy > MOVE_ENERGY)
 				f.x--;
-			c.active(-10);
+			c.active(-MOVE_ENERGY);
 		}
 	}
 
@@ -79,14 +80,14 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 		private static final long serialVersionUID = 1L;
 
 		public MoveRight() {
-			shape = new Cuboid(cx - 2, cy, cz, 1, 1, 1);
+			shape = new Cuboid(cx + 2, cy, cz, 1, 1, 1);
 		}
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > 100)
+			if (c.energy > MOVE_ENERGY)
 				f.x++;
-			c.active(-10);
+			c.active(-MOVE_ENERGY);
 		}
 	}
 

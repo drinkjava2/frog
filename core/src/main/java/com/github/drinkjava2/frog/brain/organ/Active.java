@@ -18,19 +18,19 @@ import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * AlwaysNotActive always not active
+ * Active always active
  * 
  * @author Yong Zhu
  */
-public class AlwaysNotActive extends Organ {// 这个器官的作用总是激活一个固定区，它有可能会被自然选择选中
+public class Active extends Organ {// 这个器官的作用总是激活一个固定区，它有可能会被自然选择选中
 	private static final long serialVersionUID = 1L;
 
-	public AlwaysNotActive() {
-		this.shape = new Cuboid(15, 15, FROG_BRAIN_ZSIZE / 2 + 3, 1, 1, 1);
+	public Active() {
+		this.shape = new Cuboid(15, 10, FROG_BRAIN_ZSIZE / 2+3, 1, 1, 1);
 	}
 
 	@Override
 	public void cellAct(Frog f, Cell c) {
-		c.deActive(); // TODO:与它相连的线条会产生负信号，抑制其它细胞的兴奋
+		c.active();
 	}
 }

@@ -16,10 +16,10 @@ import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.organ.AlwaysActive;
-import com.github.drinkjava2.frog.brain.organ.AlwaysNotActive;
+import com.github.drinkjava2.frog.brain.organ.Active;
 import com.github.drinkjava2.frog.brain.organ.BigEye;
 import com.github.drinkjava2.frog.brain.organ.Eye;
+import com.github.drinkjava2.frog.brain.organ.Lines;
 import com.github.drinkjava2.frog.brain.organ.Move;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -48,8 +48,8 @@ public class Egg implements Serializable {
 		organs.add(new Move.MoveDown());
 		organs.add(new Move.MoveLeft());
 		organs.add(new Move.MoveRight());
-		organs.add(new AlwaysActive()); //
-		organs.add(new AlwaysNotActive()); //
+		organs.add(new Active()); // 始终激活
+		organs.add(new Lines()); // 连线
 	}
 
 	/** Create egg from frog */

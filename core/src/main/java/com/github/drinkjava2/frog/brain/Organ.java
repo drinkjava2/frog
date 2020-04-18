@@ -47,9 +47,9 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	public float fat = 0;// 细胞活跃多，则fat值大，如果fat值很低，则这个器官被丢弃的可能性加大，这个值很重要，它使得孤岛器官被淘汰
 	public boolean allowVary;// 是否允许变异，有一些器官是手工创建的，在项目初级阶段禁止它们参与变异和生存竟争。
 	public boolean allowBorrow;// 是否允许在精子中将这个器官借出，有一些器官是手工创建的，在项目初级阶段禁止它们借出
-	public String organName;// 器官的名字，通常只有手工创建的器官才有名字，可以用frog.findOrganByName来查找到这个器官
+	public String organName = this.getClass().getSimpleName();;// 器官的名字，通常只有手工创建的器官才有名字，可以用frog.findOrganByName来查找到这个器官
 	public Shape shape; // 器官的形状，不同的形状要写出不同的播种行为
- 
+
 	/** Only call once after organ be created */
 	public Organ[] vary(Frog f) { // 器官变异，仅会在青蛙下蛋时即new Egg(frog)中被调用一次，返回本身或变异后的一个或一组类似器官返回
 		if (!allowVary)
@@ -68,7 +68,8 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	/** each step will call Organ's active methodd */
 	public void active(Frog f) {// 每一步测试都会调用active方法，它通常遍历每个细胞，调用它们的cellAct方法
-		if (!f.alive)
+		// 这里是缺省的方法体，子类可以重写这个方法
+		if (!f.alive || shape == null)
 			return;
 		Cuboid c = (Cuboid) shape;
 		for (int px = 0; px < c.xe; px++)
@@ -83,13 +84,18 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 	}
 
 	/** Child class can override this method to drawing picture */
-	public void drawOnBrainPicture(Frog f, BrainPicture pic) { // 把器官的轮廓显示在脑图上
-		if (shape == null)
-			return;// 如果没有形状，就不画
-		if (!Env.SHOW_FIRST_FROG_BRAIN || !f.alive) // 如果不允许画或青蛙死了，就直接返回
+	public void drawOnBrainPicture(Frog f, BrainPicture pic) { // 把器官的轮廓显示在脑图上，子类可以重写这个方法
+		if (!Env.SHOW_FIRST_FROG_BRAIN || !f.alive || shape == null) // 如果不允许画或青蛙死了或没形状，就直接返回
 			return;
 		pic.setPicColor(Color.LIGHT_GRAY); // 缺省是灰色
 		shape.drawOnBrainPicture(pic);
+		pic.setPicColor(Color.RED); // 缺省是灰色
+		if (this.organName != null && this.shape.getClass() == Cuboid.class) {
+			int x = ((Cuboid) shape).x;
+			int y = ((Cuboid) shape).y;
+			int z = ((Cuboid) shape).z;
+			pic.drawText(x, y, z, this.organName);
+		}
 	}
 
 }
