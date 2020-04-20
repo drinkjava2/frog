@@ -19,6 +19,7 @@ import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.organ.Active;
 import com.github.drinkjava2.frog.brain.organ.BigEye;
 import com.github.drinkjava2.frog.brain.organ.Eye;
+import com.github.drinkjava2.frog.brain.organ.Happy;
 import com.github.drinkjava2.frog.brain.organ.Lines;
 import com.github.drinkjava2.frog.brain.organ.Move;
 import com.github.drinkjava2.frog.util.RandomUtils;
@@ -43,12 +44,13 @@ public class Egg implements Serializable {
 		organs.add(new Eye.SeeDown());
 		organs.add(new Eye.SeeLeft());
 		organs.add(new Eye.SeeRight());
-		organs.add(new BigEye()); // 添加大眼睛
+		// organs.add(new BigEye()); // 添加大眼睛
 		organs.add(new Move.MoveUp()); // 添加四个运动输出细胞
 		organs.add(new Move.MoveDown());
 		organs.add(new Move.MoveLeft());
 		organs.add(new Move.MoveRight());
 		organs.add(new Active()); // 始终激活
+		// organs.add(new Happy()); // 没有什么比吃到东西更愉快的了
 		organs.add(new Lines()); // 连线
 	}
 

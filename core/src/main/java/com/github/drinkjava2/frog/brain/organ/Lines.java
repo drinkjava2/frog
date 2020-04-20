@@ -39,14 +39,17 @@ public class Lines extends Organ {// Lines器官很重要，它是神经元之�
 			lines = new Line[LINE_QTY];
 	}
 
+	public void init(Frog f, int orgNo) { // 在青蛙生成时会调用这个方法，进行一些初始化
+		if (RandomUtils.percent(5f)) // 生成线
+			addLine(f);
+		if (RandomUtils.percent(5f)) // 丢弃线
+			forgetLine(f);
+	}
+
 	/**
 	 * 有两个任务：1.生成或丢弃线 2.用线在细胞间传输能量
 	 */
 	public void active(Frog f) {
-		if (RandomUtils.percent(0.5f)) // 生成线
-			addLine(f);
-		if (RandomUtils.percent(0.1f)) // 丢弃线
-			forgetLine(f);
 		for (Line line : lines) {
 			if (line == null)
 				continue;
@@ -55,8 +58,10 @@ public class Lines extends Organ {// Lines器官很重要，它是神经元之�
 				if (line.c1.energy < 0)
 					line.c1.energy = 0;
 				line.c2.energy += line.value;
-				if (line.c2.energy > 1000)
-					line.c2.energy = 1000;
+				if (line.c2.energy < 0)
+					line.c2.energy = 0;
+				if (line.c2.energy > 100)
+					line.c2.energy = 100;
 			}
 		}
 	}
@@ -68,7 +73,14 @@ public class Lines extends Organ {// Lines器官很重要，它是神经元之�
 		Cell c2 = RandomUtils.getRandomCell(f);
 		if (c2 == null)
 			return;
-		lines[RandomUtils.nextInt(LINE_QTY)] = new Line((float) (RandomUtils.nextFloat() - 0.2) * 50, c1, c2);
+		for (int i = 0; i < lines.length; i++) {// 找空位插入新的线
+			if (lines[i] == null) {
+				lines[i] = new Line(30, c1, c2);
+				break;
+			}
+		}
+		// 没找到? 随便找个位置顶替原来的线
+		lines[RandomUtils.nextInt(LINE_QTY)] = new Line(30, c1, c2);
 	}
 
 	public void forgetLine(Frog f) {// 随机丢弃线

@@ -51,26 +51,6 @@ public class Cell implements Serializable {
 
 	public Hole[] holes = null;// 洞（即动态突触），洞由光子产生，洞由时间抹平，洞的角度本身就是关联关系，角度越大，关联关系越大
 
-	/** Add cell energy by given e */
-	public void active(float e) {// 给细胞的能量增加e
-		energy += e;
-		if (energy > 1000)
-			energy = 1000;
-		if (energy < 0)
-			energy = 0;
-	}
-
-	/** Active this cell, increase its energy value */
-	public void active() {// 激活这个细胞，也就是说，增加它的能量值，最大到1000饱和
-		energy += 10;
-		if (energy > 1000)
-			energy = 1000;
-	}
-
-	public void deActive() {// 抑制这个细胞，也就是说，减小它的能量值，最小到0
-		energy = 0;
-	}
-
 	public void regOrgan(int orgNo) {// 每个Cell可以被多个Organ登记，通常只在青蛙初始化器官时调用这个方法
 		if (organs == null)
 			organs = new int[1];
@@ -79,4 +59,11 @@ public class Cell implements Serializable {
 		organs[organs.length - 1] = orgNo;
 	}
 
+	public void addEnergy(float e) {
+		energy += e;
+	}
+
+	public void subEnergy(float e) {
+		energy -= e;
+	}
 }

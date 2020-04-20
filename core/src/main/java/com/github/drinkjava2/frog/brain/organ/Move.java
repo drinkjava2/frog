@@ -39,9 +39,9 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > MOVE_ENERGY)
-				f.y++;
-			c.active(-MOVE_ENERGY);
+			if (c.energy > 10)
+				f.y--;
+			c.subEnergy(MOVE_ENERGY);
 			// TODO：让信号参与模式识别，并最终存贮在脑皮层细胞里,即金字塔的底部。
 		}
 	}
@@ -55,9 +55,9 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > MOVE_ENERGY)
-				f.y--;
-			c.active(-MOVE_ENERGY);
+			if (c.energy > 10)
+				f.y++;
+			c.subEnergy(MOVE_ENERGY);
 		}
 	}
 
@@ -70,9 +70,9 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > MOVE_ENERGY)
+			if (c.energy > 10)
 				f.x--;
-			c.active(-MOVE_ENERGY);
+			c.subEnergy(MOVE_ENERGY);
 		}
 	}
 
@@ -85,9 +85,9 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > MOVE_ENERGY)
+			if (c.energy > 10)
 				f.x++;
-			c.active(-MOVE_ENERGY);
+			c.subEnergy(MOVE_ENERGY);
 		}
 	}
 

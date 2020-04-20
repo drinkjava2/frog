@@ -25,7 +25,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static int SHOW_SPEED = 50; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static int SHOW_SPEED = 5; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
@@ -202,7 +202,7 @@ public class Env extends JPanel {
 				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
 				boolean allDead = false;
-				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN); 
+				Frog firstFrog = frogs.get(screen * FROG_PER_SCREEN);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 					f.initFrog(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空

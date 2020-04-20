@@ -42,9 +42,9 @@ public class BigEye extends Organ {// 这个大眼睛是青蛙从上帝视角来
 	public void cellAct(Frog f, Cell c) {// 大眼睛根据虚拟环境是否有物体，激活视网膜细胞, 以及与它底层相邻的脑细胞(待加)
 		// 根据距中心点(cx,cy)的偏移，来映射虚拟环境的物体到视网膜上
 		if (Env.foundAnyThing(f.x + c.x - cx, f.y - c.y + cy))
-			c.active();
+			c.addEnergy(30);
 		else
-			c.deActive();
+			c.subEnergy(30);
 		// TODO：激活眼下细胞，让信号进入模式识别之旅，并最终存贮在脑皮层细胞里,即金字塔的底部。
 	}
 
