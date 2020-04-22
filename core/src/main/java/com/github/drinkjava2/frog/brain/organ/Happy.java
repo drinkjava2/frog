@@ -34,15 +34,15 @@ public class Happy extends Organ { // 进食后，Happy器官会激活，痛苦�
 	@Override
 	public void active(Frog f) {
 		if (Env.foundAndAteFood(f.x, f.y)) {
-			f.energy += 30;
-			foundFood = 10;
+			f.energy += 3000;
+			//foundFood = 10;
 		}
 	}
 
 	@Override
 	public void cellAct(Frog f, Cell c) {
-		if ((foundFood--) > 0)
-			c.addEnergy(30);
+//		if ((foundFood--) > 0)
+//			c.energy=100;
 	}
 
 }

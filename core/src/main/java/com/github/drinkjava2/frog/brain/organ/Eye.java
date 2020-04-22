@@ -39,14 +39,10 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
-			if (c.energy > 100)
-				return;
 			for (int i = 1; i <= SEE_DIST; i++)
 				if (Env.foundAnyThing(f.x, f.y - i)) {
-					c.energy += 30f;
-					break;
+					addLineEnergy(f, c); 
 				}
-			// TODO：让信号参与模式识别，并最终存贮在脑皮层细胞里,即金字塔的底部。
 		}
 	}
 
@@ -58,12 +54,9 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
-			if (c.energy > 100)
-				return;
 			for (int i = 1; i <= SEE_DIST; i++)
 				if (Env.foundAnyThing(f.x, f.y + i)) {
-					c.energy += 30f;
-					break;
+					addLineEnergy(f, c); 
 				}
 		}
 	}
@@ -76,12 +69,9 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
-			if (c.energy > 100)
-				return;
 			for (int i = 1; i <= SEE_DIST; i++)
 				if (Env.foundAnyThing(f.x - i, f.y)) {
-					c.energy += 30f;
-					break;
+					addLineEnergy(f, c); 
 				}
 		}
 	}
@@ -94,12 +84,9 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
-			if (c.energy > 100)
-				return;
 			for (int i = 1; i <= SEE_DIST; i++)
 				if (Env.foundAnyThing(f.x + i, f.y)) {
-					c.energy += 30f;
-					break;
+					addLineEnergy(f, c); 
 				}
 		}
 	}

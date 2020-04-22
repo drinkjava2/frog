@@ -19,6 +19,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.github.drinkjava2.frog.brain.Cell;
+import com.github.drinkjava2.frog.brain.Cuboid;
+import com.github.drinkjava2.frog.brain.Line;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
@@ -43,7 +45,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 
 	public int x; // frog在Env中的x坐标
 	public int y; // frog在Env中的y坐标
-	public long energy = 10000; // 青蛙的能量为0则死掉
+	public long energy = 1000000; // 青蛙的能量为0则死掉
 	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
 	public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
 
@@ -89,11 +91,33 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 		g.drawImage(frogImg, x - 8, y - 8, 16, 16, null);
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T extends Organ> T findOrganByClass(Class<?> claz) {// 根据器官名寻找器官，但不是每个器官都有名字
+		for (Organ o : organs)
+			if (o != null && o.getClass() == claz)
+				return (T) o;
+		return null;
+	}
+
+	public Cell findFirstCellByClass(Class<?> claz) {// 根据器官名寻找器官，但不是每个器官都有名字
+		Organ o = findOrganByClass(claz);
+		Cuboid c = (Cuboid) o.shape;
+		return this.getCell(c.x, c.y, c.z);
+	}
+
 	/** Check if cell exist */
 	public Cell getCell(int x, int y, int z) {// 返回指定脑ssf坐标的cell ，如果不存在，返回null
 		if (cells == null || cells[x] == null || cells[x][y] == null)
 			return null;
 		return cells[x][y][z];
+	}
+
+	public Cell getCell1(Line l) {
+		return cells[l.x1][l.y1][l.z1];
+	}
+
+	public Cell getCell2(Line l) {
+		return cells[l.x2][l.y2][l.z2];
 	}
 
 	/** Get a cell in position (x,y,z), if not exist, create a new one */

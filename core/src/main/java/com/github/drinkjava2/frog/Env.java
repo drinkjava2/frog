@@ -25,12 +25,12 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Env extends JPanel {
 	/** Speed of test */
-	public static int SHOW_SPEED = 5; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
 
-	public static final int EGG_QTY = 25; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int EGG_QTY = 50; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
 	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
 
@@ -59,10 +59,10 @@ public class Env extends JPanel {
 	public static final int FROG_BRAIN_DISP_WIDTH = 600; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
-	public static final int STEPS_PER_ROUND = 1000;// 每轮测试步数,可调
+	public static final int STEPS_PER_ROUND = 3000;// 每轮测试步数,可调
 	public static int step;// 当前测试步数
 
-	public static final int FOOD_QTY = 3000; // 食物数量, 可调
+	public static final int FOOD_QTY = 2000; // 食物数量, 可调
 
 	// 以下是程序内部变量，不要手工修改它们
 	public static boolean pause = false; // 暂停按钮按下将暂停测试

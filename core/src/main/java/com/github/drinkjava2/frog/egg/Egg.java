@@ -17,7 +17,6 @@ import java.util.List;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.organ.Active;
-import com.github.drinkjava2.frog.brain.organ.BigEye;
 import com.github.drinkjava2.frog.brain.organ.Eye;
 import com.github.drinkjava2.frog.brain.organ.Happy;
 import com.github.drinkjava2.frog.brain.organ.Lines;
@@ -50,7 +49,7 @@ public class Egg implements Serializable {
 		organs.add(new Move.MoveLeft());
 		organs.add(new Move.MoveRight());
 		organs.add(new Active()); // 始终激活
-		// organs.add(new Happy()); // 没有什么比吃到东西更愉快的了
+		organs.add(new Happy()); // 没有什么比吃到东西更愉快的了
 		organs.add(new Lines()); // 连线
 	}
 

@@ -40,10 +40,10 @@ public class Lines extends Organ {// Lines器官很重要，它是神经元之�
 	}
 
 	public void init(Frog f, int orgNo) { // 在青蛙生成时会调用这个方法，进行一些初始化
-		if (RandomUtils.percent(5f)) // 生成线
+		if (RandomUtils.percent(3f)) // 生成线
 			addLine(f);
-		if (RandomUtils.percent(5f)) // 丢弃线
-			forgetLine(f);
+		if (RandomUtils.percent(3f)) // 丢弃线
+			discardLine(f);
 	}
 
 	/**
@@ -53,16 +53,7 @@ public class Lines extends Organ {// Lines器官很重要，它是神经元之�
 		for (Line line : lines) {
 			if (line == null)
 				continue;
-			if (line.c1.energy > 0) {
-				line.c1.energy -= Math.abs(line.value);
-				if (line.c1.energy < 0)
-					line.c1.energy = 0;
-				line.c2.energy += line.value;
-				if (line.c2.energy < 0)
-					line.c2.energy = 0;
-				if (line.c2.energy > 100)
-					line.c2.energy = 100;
-			}
+			f.energy -= 1;
 		}
 	}
 
@@ -75,15 +66,15 @@ public class Lines extends Organ {// Lines器官很重要，它是神经元之�
 			return;
 		for (int i = 0; i < lines.length; i++) {// 找空位插入新的线
 			if (lines[i] == null) {
-				lines[i] = new Line(30, c1, c2);
-				break;
+				lines[i] = new Line(c1, c2);
+				return;
 			}
 		}
 		// 没找到? 随便找个位置顶替原来的线
-		lines[RandomUtils.nextInt(LINE_QTY)] = new Line(30, c1, c2);
+		lines[RandomUtils.nextInt(LINE_QTY)] = new Line(c1, c2);
 	}
 
-	public void forgetLine(Frog f) {// 随机丢弃线
+	public void discardLine(Frog f) {// 随机丢弃线
 		lines[RandomUtils.nextInt(LINE_QTY)] = null;
 	}
 
@@ -94,11 +85,12 @@ public class Lines extends Organ {// Lines器官很重要，它是神经元之�
 		for (Line line : lines) {
 			if (line == null)
 				continue;
-			if (line.value > 0) // 正值用兰色，负值用红色表示
-				pic.setPicColor(Color.BLUE);
-			else
+			if (line.energy > 0) // 正值用兰色，负值用红色表示
 				pic.setPicColor(Color.RED);
-			pic.drawLine(line.c1, line.c2);
+			else
+				pic.setPicColor(Color.GRAY);
+			pic.drawLine(line);
+			pic.drawPoint(line.x2 + .5f, line.y2 + .5f, line.z2 + .5f, 10);
 		}
 	}
 

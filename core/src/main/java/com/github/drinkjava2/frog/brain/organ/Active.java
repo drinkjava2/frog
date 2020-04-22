@@ -31,6 +31,6 @@ public class Active extends Organ {// 这个器官的作用总是激活一个固
 
 	@Override
 	public void cellAct(Frog f, Cell c) {
-		c.energy += 2;
+		addLineEnergy(f, c);
 	}
 }

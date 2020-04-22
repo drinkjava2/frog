@@ -11,6 +11,7 @@
 package com.github.drinkjava2.frog.brain.organ;
 
 import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
+
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
@@ -28,7 +29,6 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 	private static final int cx = 5;
 	private static final int cy = 15;
 	private static final int cz = FROG_BRAIN_ZSIZE / 2 + 3;
-	private static final float MOVE_ENERGY = 30;
 
 	public static class MoveUp extends Organ {// 这个运动细胞激活，青蛙将向上移动
 		private static final long serialVersionUID = 1L;
@@ -39,10 +39,8 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > 10)
+			if (getLineEnergy(f, c))
 				f.y--;
-			c.subEnergy(MOVE_ENERGY);
-			// TODO：让信号参与模式识别，并最终存贮在脑皮层细胞里,即金字塔的底部。
 		}
 	}
 
@@ -55,9 +53,8 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > 10)
+			if (getLineEnergy(f, c))
 				f.y++;
-			c.subEnergy(MOVE_ENERGY);
 		}
 	}
 
@@ -70,9 +67,8 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > 10)
+			if (getLineEnergy(f, c))
 				f.x--;
-			c.subEnergy(MOVE_ENERGY);
 		}
 	}
 
@@ -85,9 +81,8 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (c.energy > 10)
+			if (getLineEnergy(f, c))
 				f.x++;
-			c.subEnergy(MOVE_ENERGY);
 		}
 	}
 

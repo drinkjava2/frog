@@ -18,16 +18,22 @@ import java.io.Serializable;
  * @author Yong Zhu
  * @since 2020-04-18
  */
-public class Line implements Serializable {// Line代表一个从cell1到cell2的神经元连接,value表示传递能量的能力
+public class Line implements Serializable {// Line代表一个从cell1到cell2的神经元连接,energy表示连接能量
 	private static final long serialVersionUID = 1L;
-	public float value;
-	public Cell c1;
-	public Cell c2;
+	public float energy;
+	public int x1, y1, z1, x2, y2, z2;
 
-	public Line(float value, Cell c1, Cell c2) {
-		this.value = value;
-		this.c1 = c1;
-		this.c2 = c2;
+	public Line() {
+		// 缺省构造器必有, 因为从磁盘上反序列化要先调用这个构造器
+	}
+
+	public Line(Cell c1, Cell c2) {
+		this.x1 = c1.x;
+		this.y1 = c1.y;
+		this.z1 = c1.z;
+		this.x2 = c2.x;
+		this.y2 = c2.y;
+		this.z2 = c2.z;
 	}
 
 }

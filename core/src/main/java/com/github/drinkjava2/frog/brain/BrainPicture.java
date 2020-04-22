@@ -156,7 +156,12 @@ public class BrainPicture extends JPanel {
 	 * 从cell c1中心画一条线到cell c2中心
 	 */
 	public void drawLine(Cell c1, Cell c2) {
-		drawLine(c1.x+.5f, c1.y+.5f, c1.z+.5f, c2.x+.5f, c2.y+.5f, c2.z+.5f);
+		drawLine(c1.x + .5f, c1.y + .5f, c1.z + .5f, c2.x + .5f, c2.y + .5f, c2.z + .5f);
+	}
+
+	/** 将Line对象在pic上画一条线 */
+	public void drawLine(Line l) {
+		drawLine(l.x1 + .5f, l.y1 + .5f, l.z1 + .5f, l.x2 + .5f, l.y2 + .5f, l.z2 + .5f);
 	}
 
 	/*-

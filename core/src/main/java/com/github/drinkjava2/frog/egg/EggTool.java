@@ -22,6 +22,7 @@ import java.util.List;
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.organ.Lines;
 import com.github.drinkjava2.frog.util.FrogFileUtils;
 
 /**
@@ -39,11 +40,14 @@ public class EggTool {
 	 * 用能量的多少来简化生存竟争模拟，每次下蛋数量固定为EGG_QTY个
 	 */
 	public static void layEggs() {
+		 
 		sortFrogsOrderByEnergyDesc();
-
+//		for (Frog frog : Env.frogs) {
+//			Lines LINES=(Lines) frog.organs.get(10);
+//			System.out.println(frog.energy+":"+LINES.lines[0]);
+//		}
 		Frog first = Env.frogs.get(0);
 		Frog last = Env.frogs.get(Env.frogs.size() - 1);
-
 		try {
 			Env.eggs.clear();
 			for (int i = 0; i < Env.EGG_QTY; i++)
