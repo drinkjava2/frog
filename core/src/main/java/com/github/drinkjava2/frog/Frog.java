@@ -20,8 +20,8 @@ import javax.imageio.ImageIO;
 
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
-import com.github.drinkjava2.frog.brain.Line;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.organ.Line;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
 

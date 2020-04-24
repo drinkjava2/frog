@@ -8,9 +8,11 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.brain;
+package com.github.drinkjava2.frog.brain.organ;
 
 import java.io.Serializable;
+
+import com.github.drinkjava2.frog.brain.Cell;
 
 /**
  * Line is a line from cell1 to cell2
@@ -21,6 +23,7 @@ import java.io.Serializable;
 public class Line implements Serializable {// Line代表一个从cell1到cell2的神经元连接,energy表示连接能量
 	private static final long serialVersionUID = 1L;
 	public float energy;
+	public int fat = 0;
 	public int x1, y1, z1, x2, y2, z2;
 
 	public Line() {

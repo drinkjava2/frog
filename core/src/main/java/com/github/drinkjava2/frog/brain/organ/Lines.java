@@ -16,7 +16,6 @@ import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cell;
-import com.github.drinkjava2.frog.brain.Line;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -30,7 +29,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 public class Lines extends Organ {// Lines器官很重要，它是神经元之间的连线，由随机生成，由生存竟争淘汰
 	private static final long serialVersionUID = 1L;
 	private static final int LINE_QTY = 100;// 总共允许最多有多少根线条
-	public Line[] lines = new Line[LINE_QTY];
+	public Line[] lines;
 
 	public Lines() {
 		shape = null;
@@ -53,7 +52,7 @@ public class Lines extends Organ {// Lines器官很重要，它是神经元之�
 		for (Line line : lines) {
 			if (line == null)
 				continue;
-			f.energy -= 1;
+			f.energy -= 1; //线不是越多越好，线越多，所需能量越多
 		}
 	}
 

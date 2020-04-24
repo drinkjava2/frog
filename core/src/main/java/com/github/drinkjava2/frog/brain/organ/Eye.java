@@ -17,6 +17,7 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Eye can only see env material
@@ -26,27 +27,35 @@ import com.github.drinkjava2.frog.brain.Organ;
  * @author Yong Zhu
  */
 public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生活在二次元空间，所以它只能观察上下左右4个方向有无食物
-	private static final int SEE_DIST = 10; // 视距
+	// 视距
 	private static final int cx = 5; // 中心点
 	private static final int cy = 15;
 	private static final int cz = FROG_BRAIN_XSIZE / 2; // 中层
 
 	public static class SeeUp extends Organ {// 这个感光细胞只能看到上方有没有物体
 		private static final long serialVersionUID = 1L;
+		public int seeDistance = 10;
+		public int addEyeEnergy = 6;
+
+		public Organ[] vary(Frog f) {// 重写器官的very方法，允许眼睛看到的距离随机进化
+			seeDistance = RandomUtils.varyInLimit(seeDistance, 1, 50);
+			addEyeEnergy = RandomUtils.varyInLimit(addEyeEnergy, 1, 200);
+			return new Organ[] { this };
+		}
 
 		public SeeUp() {
 			shape = new Cuboid(cx, cy + 2, cz, 1, 1, 1);
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
-			for (int i = 1; i <= SEE_DIST; i++)
+			for (int i = 1; i <= seeDistance; i++)
 				if (Env.foundAnyThing(f.x, f.y - i)) {
-					addLineEnergy(f, c); 
+					addLineEnergy(f, c, addEyeEnergy);
 				}
 		}
 	}
 
-	public static class SeeDown extends Organ {// 这个感光细胞只能看到下方有没有物体
+	public static class SeeDown extends SeeUp {// 这个感光细胞只能看到下方有没有物体
 		private static final long serialVersionUID = 1L;
 
 		public SeeDown() {
@@ -54,14 +63,14 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
-			for (int i = 1; i <= SEE_DIST; i++)
+			for (int i = 1; i <= seeDistance; i++)
 				if (Env.foundAnyThing(f.x, f.y + i)) {
-					addLineEnergy(f, c); 
+					addLineEnergy(f, c, addEyeEnergy);
 				}
 		}
 	}
 
-	public static class SeeLeft extends Organ {// 这个感光细胞只能看到左边有没有物体
+	public static class SeeLeft extends SeeUp {// 这个感光细胞只能看到左边有没有物体
 		private static final long serialVersionUID = 1L;
 
 		public SeeLeft() {
@@ -69,14 +78,14 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
-			for (int i = 1; i <= SEE_DIST; i++)
+			for (int i = 1; i <= seeDistance; i++)
 				if (Env.foundAnyThing(f.x - i, f.y)) {
-					addLineEnergy(f, c); 
+					addLineEnergy(f, c, addEyeEnergy);
 				}
 		}
 	}
 
-	public static class SeeRight extends Organ {// 这个感光细胞只能看到右边有没有物体
+	public static class SeeRight extends SeeUp {// 这个感光细胞只能看到右边有没有物体
 		private static final long serialVersionUID = 1L;
 
 		public SeeRight() {
@@ -84,9 +93,9 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		}
 
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
-			for (int i = 1; i <= SEE_DIST; i++)
+			for (int i = 1; i <= seeDistance; i++)
 				if (Env.foundAnyThing(f.x + i, f.y)) {
-					addLineEnergy(f, c); 
+					addLineEnergy(f, c, addEyeEnergy);
 				}
 		}
 	}

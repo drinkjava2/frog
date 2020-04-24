@@ -14,35 +14,32 @@ import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Happy active after ate food
  */
-public class Happy extends Organ { // 进食后，Happy器官会激活，痛苦和快感是条件反射形成的前题
+public class Eat extends Organ { // Eat器官的作用就是如果位置与食物重合，增加frog的能量
 
 	private static final long serialVersionUID = 1L;
-	public float happy = 0; // happy初始值为0, 进食后将由eat器官增加happy值
-	public int foundFood = 0;
+	public int actEngery = 1000;
 
-	public Happy() {
+	public Eat() {
 		this.shape = new Cuboid(15, 13, FROG_BRAIN_ZSIZE / 2 + 3, 1, 1, 1);
+	}
+
+	public Organ[] vary(Frog f) {// 重写器官的very方法
+		actEngery = RandomUtils.varyInLimit(actEngery, 1, 5000);
+		return new Organ[] { this };
 	}
 
 	@Override
 	public void active(Frog f) {
 		if (Env.foundAndAteFood(f.x, f.y)) {
-			f.energy += 3000;
-			//foundFood = 10;
+			f.energy += actEngery;
 		}
-	}
-
-	@Override
-	public void cellAct(Frog f, Cell c) {
-//		if ((foundFood--) > 0)
-//			c.energy=100;
 	}
 
 }

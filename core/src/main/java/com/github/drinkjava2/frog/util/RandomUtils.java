@@ -121,6 +121,15 @@ public class RandomUtils {
 		return v;
 	}
 
+	public static int varyInLimit(int v, int from, int to) {// 让返回值在from和to之间随机变异
+		int i = vary(v);
+		if (i < from)
+			i = from;
+		if (i > to)
+			i = to;
+		return i;
+	}
+
 	public static float vary(float v, int percet) {
 		if (percent(percet))
 			return vary(v);

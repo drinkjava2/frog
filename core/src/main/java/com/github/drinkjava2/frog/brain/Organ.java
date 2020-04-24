@@ -15,6 +15,7 @@ import java.io.Serializable;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.organ.Line;
 import com.github.drinkjava2.frog.brain.organ.Lines;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
@@ -112,13 +113,13 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 		return false;
 	}
 
-	public static void addLineEnergy(Frog f, Cell c) {
+	public static void addLineEnergy(Frog f, Cell c, float energy) {
 		Lines ls = f.findOrganByClass(Lines.class);
 		for (Line l : ls.lines) {
 			if (l == null || l.energy > 100)
 				continue;
 			if (l.x1 == c.x && l.y1 == c.y && l.z1 == c.z) // 如果线的输入端位于视网膜上，增加线的能量
-				l.energy += 5;
+				l.energy += energy;
 		}
 	}
 }

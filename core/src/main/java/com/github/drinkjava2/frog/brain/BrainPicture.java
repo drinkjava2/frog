@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.organ.Line;
 import com.github.drinkjava2.frog.util.ColorUtils;
 
 /**
