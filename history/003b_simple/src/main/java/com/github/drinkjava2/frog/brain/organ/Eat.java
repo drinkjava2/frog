@@ -10,35 +10,21 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
-import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
-
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Happy active after ate food
+ * Eat food at current x, y position
  */
-public class Eat extends Organ { // Eat器官的作用就是如果位置与食物重合，增加frog的能量
-
+public class Eat extends Organ {// Eat这个类将食物转化为能量，能量小于0，则青蛙死掉
 	private static final long serialVersionUID = 1L;
-	public int actEngery = 1000;
-
-	public Eat() {
-		this.shape = new Cuboid(15, 13, FROG_BRAIN_ZSIZE / 2 + 3, 1, 1, 1);
-	}
-
-	public Organ[] vary(Frog f) {// 重写器官的very方法
-		// actEngery = RandomUtils.varyInLimit(actEngery, 1, 5000);
-		return new Organ[] { this };
-	}
 
 	@Override
 	public void active(Frog f) {
 		if (Env.foundAndAteFood(f.x, f.y)) {
-			f.ateFood++;
-			f.energy += actEngery;
+			f.ateFood++; 
+			f.energy += 1000;// 如果青蛙的坐标与食物重合，吃掉food，能量境加 
 		}
 	}
 
