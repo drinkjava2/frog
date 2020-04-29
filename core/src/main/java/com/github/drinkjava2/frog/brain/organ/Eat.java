@@ -16,7 +16,6 @@ import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Happy active after ate food
@@ -31,7 +30,7 @@ public class Eat extends Organ { // Eat器官的作用就是如果位置与食�
 	}
 
 	public Organ[] vary(Frog f) {// 重写器官的very方法
-		actEngery = RandomUtils.varyInLimit(actEngery, 1, 5000);
+		// actEngery = RandomUtils.varyInLimit(actEngery, 1, 5000);
 		return new Organ[] { this };
 	}
 

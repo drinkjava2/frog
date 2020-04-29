@@ -264,6 +264,10 @@ public class BrainPicture extends JPanel {
 	}
 
 	public void drawText(float px1, float py1, float pz1, String text) {
+		drawText(px1, py1, pz1, text, 1);
+	}
+
+	public void drawText(float px1, float py1, float pz1, String text, float textSize) {
 		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
 		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
 		double z1 = pz1 - Env.FROG_BRAIN_ZSIZE / 2;
@@ -286,7 +290,8 @@ public class BrainPicture extends JPanel {
 		x1 = x;
 		y1 = y;
 
-		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(scale * .3)));
+		g.setColor(picColor);
+		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale * .3)));
 		g.drawString(text, (int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 

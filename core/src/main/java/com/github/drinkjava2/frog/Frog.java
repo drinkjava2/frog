@@ -24,6 +24,7 @@ import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.organ.Line;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Frog = cells <br/>
@@ -45,7 +46,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 
 	public int x; // frog在Env中的x坐标
 	public int y; // frog在Env中的y坐标
-	public long energy = 1000000; // 青蛙的能量为0则死掉
+	public long energy = 100000; // 青蛙的能量为0则死掉
 	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
 	public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
 
@@ -65,9 +66,27 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 			organs.add(org);
 	}
 
-	public void initFrog() {
+	public void initFrog() { // 初始化frog,通常只是调用每个organ的init方法
 		for (int orgNo = 0; orgNo < organs.size(); orgNo++) {
 			organs.get(orgNo).init(this, orgNo);
+			//energy -= 1; // organ 增多需要消耗能量
+		}
+
+//		Cell c1 = this.findFirstCellByClass(Active.class);
+//		Cell c2 = this.findFirstCellByClass(MoveUp.class);
+//		organs.add(new Line(c1, c2));
+	}
+
+	public void addRandomLines() {// 有一定机率在器官间生成随机的神经连线
+		if (RandomUtils.percent(0.2f)) {
+			Cell c1 = RandomUtils.getRandomCell(this);
+			if (c1 == null)
+				return;
+			Cell c2 = RandomUtils.getRandomCell(this);
+			if (c2 == null || c1 == c2)
+				return;
+			organs.add(new Line(c1, c2));
+
 		}
 	}
 
@@ -82,6 +101,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 		// 依次调用每个器官的active方法，每个器官各自负责调用各自区域（通常是Cuboid)内的细胞的行为
 		for (Organ o : organs)
 			o.active(this);
+		addRandomLines(); // 有一定机率在器官间生成随机的神经连线
 		return alive;
 	}
 

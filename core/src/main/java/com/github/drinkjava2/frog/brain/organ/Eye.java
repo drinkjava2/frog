@@ -35,11 +35,13 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 	public static class SeeUp extends Organ {// 这个感光细胞只能看到上方有没有物体
 		private static final long serialVersionUID = 1L;
 		public int seeDistance = 10;
-		public int addEyeEnergy = 6;
+		public int addEng = 30;
+		public int subEng = 2;
 
 		public Organ[] vary(Frog f) {// 重写器官的very方法，允许眼睛看到的距离随机进化
-			seeDistance = RandomUtils.varyInLimit(seeDistance, 1, 50);
-			addEyeEnergy = RandomUtils.varyInLimit(addEyeEnergy, 1, 200);
+			seeDistance = RandomUtils.varyInLimit(seeDistance, 5, 15);
+			addEng = RandomUtils.varyInLimit(addEng, 10, 30);
+			subEng = RandomUtils.varyInLimit(subEng, 1, 30);
 			return new Organ[] { this };
 		}
 
@@ -50,8 +52,10 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
 			for (int i = 1; i <= seeDistance; i++)
 				if (Env.foundAnyThing(f.x, f.y - i)) {
-					addLineEnergy(f, c, addEyeEnergy);
+					c.addEnergy(addEng);
+					return;
 				}
+			c.subEnergy(subEng);
 		}
 	}
 
@@ -62,11 +66,13 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 			shape = new Cuboid(cx, cy - 2, cz, 1, 1, 1);
 		}
 
-		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
+		public void cellAct(Frog f, Cell c) {
 			for (int i = 1; i <= seeDistance; i++)
 				if (Env.foundAnyThing(f.x, f.y + i)) {
-					addLineEnergy(f, c, addEyeEnergy);
+					c.addEnergy(addEng);
+					return;
 				}
+			c.subEnergy(subEng);
 		}
 	}
 
@@ -77,11 +83,13 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 			shape = new Cuboid(cx - 2, cy, cz, 1, 1, 1);
 		}
 
-		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
+		public void cellAct(Frog f, Cell c) {
 			for (int i = 1; i <= seeDistance; i++)
 				if (Env.foundAnyThing(f.x - i, f.y)) {
-					addLineEnergy(f, c, addEyeEnergy);
+					c.addEnergy(addEng);
+					return;
 				}
+			c.subEnergy(subEng);
 		}
 	}
 
@@ -92,11 +100,13 @@ public class Eye {// 这个眼睛是从青蛙视角来观察，因为青蛙生�
 			shape = new Cuboid(cx + 2, cy, cz, 1, 1, 1);
 		}
 
-		public void cellAct(Frog f, Cell c) {// 如果上方有物体就激活视网膜细胞
+		public void cellAct(Frog f, Cell c) {
 			for (int i = 1; i <= seeDistance; i++)
 				if (Env.foundAnyThing(f.x + i, f.y)) {
-					addLineEnergy(f, c, addEyeEnergy);
+					c.addEnergy(addEng);
+					return;
 				}
+			c.subEnergy(subEng);
 		}
 	}
 

@@ -25,19 +25,25 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  */
 public class Active extends Organ {// 这个器官的作用总是激活一个固定区，它有可能会被自然选择选中
 	private static final long serialVersionUID = 1L;
-	public int actEngery = 5;
+	public int actEngery = 2;
 
 	public Active() {
 		this.shape = new Cuboid(15, 10, FROG_BRAIN_ZSIZE / 2 + 3, 1, 1, 1);
 	}
 
 	public Organ[] vary(Frog f) {// 重写器官的very方法
-		actEngery = RandomUtils.varyInLimit(actEngery, 1, 500);
+		// actEngery = RandomUtils.varyInLimit(actEngery, 1, 5);
+//		if (RandomUtils.percent(3f)) {
+//			Active a = new Active();
+//			Cuboid c = (Cuboid) a.shape;
+//			c.y--;
+//			return new Organ[] { this, a };
+//		}
 		return new Organ[] { this };
 	}
 
 	@Override
 	public void cellAct(Frog f, Cell c) {
-		addLineEnergy(f, c, actEngery);
+		c.energy = actEngery;
 	}
 }

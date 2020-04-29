@@ -39,7 +39,7 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (getLineEnergy(f, c))
+			if (inActive(c))
 				f.y--;
 		}
 	}
@@ -53,7 +53,7 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (getLineEnergy(f, c))
+			if (inActive(c))
 				f.y++;
 		}
 	}
@@ -67,7 +67,7 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (getLineEnergy(f, c))
+			if (inActive(c))
 				f.x--;
 		}
 	}
@@ -81,7 +81,7 @@ public class Move {// 因为青蛙生活在二次元，所以只有上下左右4
 
 		@Override
 		public void cellAct(Frog f, Cell c) {
-			if (getLineEnergy(f, c))
+			if (inActive(c))
 				f.x++;
 		}
 	}
