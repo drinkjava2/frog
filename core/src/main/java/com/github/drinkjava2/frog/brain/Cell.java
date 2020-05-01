@@ -59,6 +59,14 @@ public class Cell implements Serializable {
 		organs[organs.length - 1] = orgNo;
 	}
 
+	public boolean inActive() {
+		if (energy > 30) {
+			energy -= 30;
+			return true;
+		}
+		return false;
+	}
+
 	public void addEnergy(float e) {
 		energy += e;
 		if (energy > 1000)

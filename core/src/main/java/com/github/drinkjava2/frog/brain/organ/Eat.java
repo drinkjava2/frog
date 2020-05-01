@@ -10,27 +10,18 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
-import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
-
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
  * Happy active after ate food
  */
 public class Eat extends Organ { // Eat器官的作用就是如果位置与食物重合，增加frog的能量
-
 	private static final long serialVersionUID = 1L;
 	public int actEngery = 1000;
 
-	public Eat() {
-		this.shape = new Cuboid(15, 13, FROG_BRAIN_ZSIZE / 2 + 3, 1, 1, 1);
-	}
-
 	public Organ[] vary(Frog f) {// 重写器官的very方法
-		// actEngery = RandomUtils.varyInLimit(actEngery, 1, 5000);
 		return new Organ[] { this };
 	}
 

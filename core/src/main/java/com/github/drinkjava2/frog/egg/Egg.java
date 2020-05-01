@@ -50,7 +50,6 @@ public class Egg implements Serializable {
 		organs.add(new Move.MoveRight());
 		organs.add(new Active()); // 始终激活
 		organs.add(new Eat()); // 没有什么比吃到东西更愉快的了
-
 	}
 
 	/** Create egg from frog */

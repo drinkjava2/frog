@@ -68,8 +68,8 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 
 	/** each step will call Organ's active methodd */
 	public void active(Frog f) {// 每一步测试都会调用active方法，它通常遍历每个细胞，调用它们的cellAct方法
-		// 这里是缺省的方法体，子类可以重写这个方法
-		if (!f.alive || shape == null)
+		// 这里是缺省的方法体，只针对最常见的形状为长方体的器官，子类可以重写这个方法
+		if (!f.alive || shape == null || shape.getClass() != Cuboid.class)
 			return;
 		Cuboid c = (Cuboid) shape;
 		for (int px = 0; px < c.xe; px++)
@@ -77,14 +77,6 @@ public class Organ implements Serializable, Cloneable {// 因为要保存在蛋�
 				for (int pz = 0; pz < c.ze; pz++) {
 					cellAct(f, f.getCell(c.x + px, c.y + py, c.z + pz));
 				}
-	}
-
-	public boolean inActive(Cell c) {
-		if (c.energy > 30) {
-			c.energy -= 30;
-			return true;
-		}
-		return false;
 	}
 
 	/** each step will call Organ's active methodd */

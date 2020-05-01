@@ -19,7 +19,10 @@ import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.group.Group;
 import com.github.drinkjava2.frog.brain.organ.Active;
 import com.github.drinkjava2.frog.brain.organ.Eat;
-import com.github.drinkjava2.frog.brain.organ.Eye;
+import com.github.drinkjava2.frog.brain.organ.Eyes.SeeDown;
+import com.github.drinkjava2.frog.brain.organ.Eyes.SeeLeft;
+import com.github.drinkjava2.frog.brain.organ.Eyes.SeeRight;
+import com.github.drinkjava2.frog.brain.organ.Eyes.SeeUp;
 import com.github.drinkjava2.frog.brain.organ.MoveDown;
 import com.github.drinkjava2.frog.brain.organ.MoveLeft;
 import com.github.drinkjava2.frog.brain.organ.MoveRight;
@@ -39,7 +42,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 public class Egg implements Serializable {
 	// 为了缩短时间，这个程序随机生成的联结将只落在固定的器官上而不是漫天撒网(见4.12提交)，这是程序的优化，实现的逻辑和随机漫天撒网定是相同的。
 	// 但是这个优化带来的问题是这是一个硬编码逻辑，不利于器官的优胜劣汰， 而且下面这个 FIXED_ORGAN_QTY必须每次手工设定，以后需要重构这块的代码
-	public static int FIXED_ORGAN_QTY = 6;
+	public static int FIXED_ORGAN_QTY = 9;
 
 	private static final long serialVersionUID = 1L;
 
@@ -52,9 +55,12 @@ public class Egg implements Serializable {
 		organs.add(new MoveDown().setXYRN(800, 400, 60, "Down"));
 		organs.add(new MoveLeft().setXYRN(700, 250, 60, "Left"));
 		organs.add(new MoveRight().setXYRN(900, 250, 60, "Right"));
-		organs.add(new Eye().setXYRN(100, 300, 100, "Eye"));
+		organs.add(new SeeUp().setXYRN(200, 300 + 90, 40, "SeeUp"));
+		organs.add(new SeeDown().setXYRN(200, 300 - 90, 40, "SeeDown"));
+		organs.add(new SeeLeft().setXYRN(200 - 90, 300, 40, "SeeLeft"));
+		organs.add(new SeeRight().setXYRN(200 + 90, 300, 40, "SeeRight"));
 		organs.add(new Active().setXYRN(500, 100, 60, "Active")); // 永远激活
-		// 以上为6个, 就是FIXED_ORGAN_QTY值
+		// 以上数量就是FIXED_ORGAN_QTY=9值
 
 		organs.add(new Eat().setXYRN(0, 0, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
 

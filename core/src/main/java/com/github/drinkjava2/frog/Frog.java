@@ -69,7 +69,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 	public void initFrog() { // 初始化frog,通常只是调用每个organ的init方法
 		for (int orgNo = 0; orgNo < organs.size(); orgNo++) {
 			organs.get(orgNo).init(this, orgNo);
-			//energy -= 1; // organ 增多需要消耗能量
+			// energy -= 1; // organ 增多需要消耗能量
 		}
 
 //		Cell c1 = this.findFirstCellByClass(Active.class);
@@ -86,7 +86,6 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 			if (c2 == null || c1 == c2)
 				return;
 			organs.add(new Line(c1, c2));
-
 		}
 	}
 

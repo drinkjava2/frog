@@ -56,6 +56,17 @@ public class Organ extends Zone {
 		return false;
 	}
 
+	/** If active in this organ's zone? */
+	public void activeInput(Frog f, float energy) { // 如果一个细胞能量>10,且它的输出触突位于这个器官内，则器官被激活
+		for (Cell cell : f.cells)
+			if (cell.energy < 100)
+				for (Input input : cell.inputs)
+					if (input.nearby(this)) {
+						input.cell.energy += energy;
+						return;
+					}
+	}
+
 	/** Set X, Y, Radius, name of current Organ */
 	public Organ setXYRN(float x, float y, float r, String name) {
 		this.setXYR(x, y, r);

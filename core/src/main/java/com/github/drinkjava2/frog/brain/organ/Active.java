@@ -16,7 +16,6 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Active always active
@@ -44,6 +43,6 @@ public class Active extends Organ {// 这个器官的作用总是激活一个固
 
 	@Override
 	public void cellAct(Frog f, Cell c) {
-		c.energy = actEngery;
+		c.energy -= actEngery;
 	}
 }
