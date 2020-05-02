@@ -37,6 +37,7 @@ public class Eyes {
 
 		@Override
 		public Organ[] vary() {
+			seeDistance=RandomUtils.varyInLimit(seeDistance, 5, 20);
 			if (RandomUtils.percent(5)) { // 可视距离有5%的机率变异
 				seeDistance = seeDistance + 1 - 2 * RandomUtils.nextInt(2);
 				if (seeDistance < 1)

@@ -6,6 +6,10 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.github.drinkjava2.frog.brain.BrainPicture;
 
@@ -35,7 +39,7 @@ public class Application {
 
 	public static void main(String[] args) throws InterruptedException {
 		mainFrame.setLayout(null);
-		mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100); // 窗口大小
+		mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 125); // 窗口大小
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 关闭时退出程序
 		mainFrame.add(env);
 
@@ -52,13 +56,13 @@ public class Application {
 				SHOW_FIRST_FROG_BRAIN = !SHOW_FIRST_FROG_BRAIN;
 				if (SHOW_FIRST_FROG_BRAIN) {
 					button.setText("Hide first frog's brain");
-					int y = Env.ENV_HEIGHT + 100;
+					int y = Env.ENV_HEIGHT + 125;
 					if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
 						y = Env.FROG_BRAIN_DISP_WIDTH + 41;
 					mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
 				} else {
 					button.setText("Show first frog's brain");
-					mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100);
+					mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 125);
 				}
 			}
 		};
@@ -81,6 +85,21 @@ public class Application {
 		stopButton.addActionListener(a2);
 		mainFrame.add(stopButton);
 
+		
+		
+		final JSlider speedSlider = new JSlider(1, 10, (int) Math.round(Math.sqrt(Env.SHOW_SPEED))); // 速度条
+		speedSlider.setBounds(buttonXpos - 50, stopButton.getY() + 25, buttonWidth + 100, buttonHeight);
+		ChangeListener slideAction = new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				Env.SHOW_SPEED = speedSlider.getValue() * speedSlider.getValue() * speedSlider.getValue();
+			}
+		};
+		speedSlider.addChangeListener(slideAction);
+		mainFrame.add(speedSlider);
+		final JLabel label = new JLabel("Speed:");
+		label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
+		mainFrame.add(label);
 		mainFrame.setVisible(true);
 		env.run();
 	}

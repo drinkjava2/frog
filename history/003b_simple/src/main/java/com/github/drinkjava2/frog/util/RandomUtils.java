@@ -59,4 +59,50 @@ public class RandomUtils {
 		return rand.nextFloat() * 100 < percent;
 	}
 
+	public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+		if (percent(40))
+			v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
+		if (percent(10))
+			v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
+		else if (percent(5))
+			v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
+		else if (percent(2))
+			v += v * 4 * (nextFloat() - 0.5); // v=v+-2
+		else if (percent(1f))
+			v += v * 8 * (nextFloat() - 0.5); // v=v+-6
+		return v;
+	}
+
+	public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+		if (percent(40))
+			v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
+		if (percent(10))
+			v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
+		else if (percent(5))
+			v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
+		else if (percent(2))
+			v += v * 4 * (nextFloat() - 0.5); // v=v+-2
+		else if (percent(1f))
+			v += v * 8 * (nextFloat() - 0.5); // v=v+-6
+		return v;
+	}
+
+	public static int varyInLimit(int v, int from, int to) {// 让返回值在from和to之间随机变异
+		int i = vary(v);
+		if (i < from)
+			i = from;
+		if (i > to)
+			i = to;
+		return i;
+	}
+
+	public static float varyInLimit(float v, float from, float to) {// 让返回值在from和to之间随机变异
+		float i = vary(v);
+		if (i < from)
+			i = from;
+		if (i > to)
+			i = to;
+		return i;
+	}
+
 }

@@ -16,7 +16,6 @@ import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.group.Group;
 import com.github.drinkjava2.frog.brain.organ.Active;
 import com.github.drinkjava2.frog.brain.organ.Eat;
 import com.github.drinkjava2.frog.brain.organ.Eyes.SeeDown;
@@ -48,8 +47,6 @@ public class Egg implements Serializable {
 
 	public List<Organ> organs = new ArrayList<>();
 
-	public List<Group> groups = new ArrayList<>();
-
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
 		organs.add(new MoveUp().setXYRN(800, 100, 60, "Up"));
 		organs.add(new MoveDown().setXYRN(800, 400, 60, "Down"));
@@ -59,8 +56,9 @@ public class Egg implements Serializable {
 		organs.add(new SeeDown().setXYRN(200, 300 - 90, 40, "SeeDown"));
 		organs.add(new SeeLeft().setXYRN(200 - 90, 300, 40, "SeeLeft"));
 		organs.add(new SeeRight().setXYRN(200 + 90, 300, 40, "SeeRight"));
+//		organs.add(new Eye().setXYRN(100, 300, 100, "Eye"));
 		organs.add(new Active().setXYRN(500, 100, 60, "Active")); // 永远激活
-		// 以上数量就是FIXED_ORGAN_QTY=9值
+		// 以上数量就是FIXED_ORGAN_QTY值
 
 		organs.add(new Eat().setXYRN(0, 0, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
 

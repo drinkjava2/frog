@@ -8,7 +8,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.brain.group;
+package com.github.drinkjava2.frog.brain.organ;
 
 import java.awt.Color;
 
@@ -23,17 +23,14 @@ import com.github.drinkjava2.frog.brain.Zone;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
- * RandomConnectGroup
+ * Line
  * 
- * 这是一个随机方式连接两端的Group，它是从旧版的CellGroup改造过来，这是一种最简单的神经元排列方式，只有一组细胞，触突输入区和输出区分别位于Zone内的任意随机两点。
- * 至于是否合理则由frog的遗传进化来决定，不合理的RandomConnectGroup会被淘汰掉。
- * 
- * (还没改造完成，在不破坏原有外在表现的基础上，要平滑将它改造成一个标准Group的子类，也是第一个子类 )
+ * 这是一个随机方式连接两端的Organ，它是从旧版的RandomConnectGroup改造过来，这是一种最简单的神经元排列方式，
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class RandomConnectGroup extends Group {
+public class Line extends Organ {
 	private static final long serialVersionUID = 1L;
 
 	public Zone inputZone; // 输入触突区
@@ -73,6 +70,7 @@ public class RandomConnectGroup extends Group {
 
 	@Override
 	public Organ[] vary() {
+		organOutputEnergy = RandomUtils.varyInLimit(organOutputEnergy, -3, 3);
 		if (fat <= 0)// 如果胖值为0，表示这个组的细胞没有用到，可以小概率丢掉它了
 			if (RandomUtils.percent(30))
 				return new Organ[] {};
@@ -85,16 +83,17 @@ public class RandomConnectGroup extends Group {
 	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
 		if (fat <= 0)
 			pic.setColor(Color.LIGHT_GRAY); // 没用到? 灰色
+		else if (organOutputEnergy <= 0)
+			pic.setColor(Color.BLUE);
 		else
 			pic.setColor(Color.red); // 用到了?红色
 		pic.drawLine(inputZone, outputZone);
 		pic.drawZone(this);
 		pic.drawZone(inputZone);
 		pic.fillZone(outputZone);
-		if (fat > 0) {
-			pic.setColor(Color.red);
-			pic.drawCircle(outputZone); // 如果胖了，表示激活过了，下次下蛋少不了这一组
-		}
+		pic.setColor(Color.red);
+
+		pic.drawCircle(outputZone); // 如果胖了，表示激活过了，下次下蛋少不了这一组
 	}
 
 }

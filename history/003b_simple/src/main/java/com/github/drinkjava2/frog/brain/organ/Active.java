@@ -14,13 +14,14 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Input;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Active always keep active
  * 
  * 这个器官永远激活
  */
-public class Active extends Organ {//以前的实验发现添加一个始终激活的区比用Hungry来驱动更能提高找食效率
+public class Active extends Organ {// 以前的实验发现添加一个始终激活的区比用Hungry来驱动更能提高找食效率
 
 	private static final long serialVersionUID = 1L;
 

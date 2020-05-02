@@ -109,15 +109,29 @@ public class RandomUtils {
 		return v;
 	}
 
+//	public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+//		if (percent(40))
+//			v *= .98 + .04 * nextFloat(); // 0.98~1.02
+//		if (percent(10))
+//			v *= .95 + .103 * nextFloat(); // 0.95~1.053
+//		else if (percent(5))
+//			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
+//		else if (percent(1))
+//			v *= .05 + 1.5 * nextFloat(); // 0.5~2
+//		return v;
+//	}
+
 	public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
 		if (percent(40))
-			v *= .98 + .04 * nextFloat(); // 0.98~1.02
+			v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
 		if (percent(10))
-			v *= .95 + .103 * nextFloat(); // 0.95~1.053
+			v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
 		else if (percent(5))
-			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
-		else if (percent(1))
-			v *= .05 + 1.5 * nextFloat(); // 0.5~2
+			v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
+		else if (percent(2))
+			v += v * 4 * (nextFloat() - 0.5); // v=v+-2
+		else if (percent(1f))
+			v += v * 8 * (nextFloat() - 0.5); // v=v+-6
 		return v;
 	}
 
@@ -136,15 +150,29 @@ public class RandomUtils {
 		return v;
 	}
 
+//	public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+//		if (percent(40))
+//			v *= .98 + .04 * nextFloat(); // 0.98~1.02
+//		if (percent(10))
+//			v *= .95 + .103 * nextFloat(); // 0.95~1.053
+//		else if (percent(5))
+//			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
+//		else if (percent(1))
+//			v *= .05 + 1.5 * nextFloat(); // 0.5~2
+//		return v;
+//	}
+
 	public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
 		if (percent(40))
-			v *= .98 + .04 * nextFloat(); // 0.98~1.02
+			v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
 		if (percent(10))
-			v *= .95 + .103 * nextFloat(); // 0.95~1.053
+			v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
 		else if (percent(5))
-			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
-		else if (percent(1))
-			v *= .05 + 1.5 * nextFloat(); // 0.5~2
+			v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
+		else if (percent(2))
+			v += v * 4 * (nextFloat() - 0.5); // v=v+-2
+		else if (percent(1f))
+			v += v * 8 * (nextFloat() - 0.5); // v=v+-6
 		return v;
 	}
 
