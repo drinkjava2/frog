@@ -54,9 +54,4 @@ public class Cone implements Shape {
 		pic.drawCone(this);
 	}
 
-	@Override
-	public void createCellsRegOrgan(Frog f, int o) {
-		// TODO 待添加Cone形器官播种脑细胞的代码
-	}
-
 }

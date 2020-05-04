@@ -19,12 +19,9 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.github.drinkjava2.frog.brain.Cell;
-import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.organ.Line;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
-import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Frog = cells <br/>
@@ -40,8 +37,8 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  */
 public class Frog {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
 	/** brain cells */
-	public Cell[][][] cells;// 一开始不要初始化，只在调用getOrCreateCell方法时才初始化相关维以节约内存
-
+	public List<Cell> cells = new ArrayList<>();
+	
 	/** organs */
 	public List<Organ> organs = new ArrayList<>();
 
@@ -68,27 +65,10 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 	}
 
 	public void initFrog() { // 初始化frog,通常只是调用每个organ的init方法
-		for (int orgNo = 0; orgNo < organs.size(); orgNo++) {
-			organs.get(orgNo).init(this, orgNo);
-			// energy -= 1; // organ 增多需要消耗能量
-		}
-
-//		Cell c1 = this.findFirstCellByClass(Active.class);
-//		Cell c2 = this.findFirstCellByClass(MoveUp.class);
-//		organs.add(new Line(c1, c2));
+		for (Organ org : organs)
+			org.initFrog(this);// 每个新器官初始化，如果是Group类，它们会生成许多脑细胞 
 	}
-
-	public void addRandomLines() {// 有一定机率在器官间生成随机的神经连线
-		if (RandomUtils.percent(0.2f)) {
-			Cell c1 = RandomUtils.getRandomCell(this);
-			if (c1 == null)
-				return;
-			Cell c2 = RandomUtils.getRandomCell(this);
-			if (c2 == null || c1 == c2)
-				return;
-			organs.add(new Line(c1, c2));
-		}
-	}
+ 
 
 	public boolean active(Env v) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
 		// 如果能量小于0、出界、与非食物的点重合则判死
@@ -101,7 +81,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 		// 依次调用每个器官的active方法，每个器官各自负责调用各自区域（通常是Cuboid)内的细胞的行为
 		for (Organ o : organs)
 			o.active(this);
-		addRandomLines(); // 有一定机率在器官间生成随机的神经连线
+		//addRandomLines(); // 有一定机率在器官间生成随机的神经连线
 		return alive;
 	}
 
@@ -118,45 +98,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 				return (T) o;
 		return null;
 	}
-
-	public Cell findFirstCellByClass(Class<?> claz) {// 根据器官名寻找器官，但不是每个器官都有名字
-		Organ o = findOrganByClass(claz);
-		Cuboid c = (Cuboid) o.shape;
-		return this.getCell(c.x, c.y, c.z);
-	}
-
-	/** Check if cell exist */
-	public Cell getCell(int x, int y, int z) {// 返回指定脑ssf坐标的cell ，如果不存在，返回null
-		if (cells == null || cells[x] == null || cells[x][y] == null)
-			return null;
-		return cells[x][y][z];
-	}
-
-	public Cell getCell1(Line l) {
-		return cells[l.x1][l.y1][l.z1];
-	}
-
-	public Cell getCell2(Line l) {
-		return cells[l.x2][l.y2][l.z2];
-	}
-
-	/** Get a cell in position (x,y,z), if not exist, create a new one */
-	public Cell getOrCreateCell(int x, int y, int z) {// 获取指定坐标的Cell，如果为空，则在指定位置新建Cell
-		if (outBrainRange(x, y, z))
-			throw new IllegalArgumentException("x,y,z postion out of range, x=" + x + ", y=" + y + ", z=" + z);
-		if (cells == null)
-			cells = new Cell[Env.FROG_BRAIN_XSIZE][][];
-		if (cells[x] == null)
-			cells[x] = new Cell[Env.FROG_BRAIN_YSIZE][];
-		if (cells[x][y] == null)
-			cells[x][y] = new Cell[Env.FROG_BRAIN_ZSIZE];
-		Cell cell = cells[x][y][z];
-		if (cell == null) {
-			cell = new Cell(x, y, z);
-			cells[x][y][z] = cell;
-		}
-		return cell;
-	}
+   
 
 	/** Check if x,y,z out of frog's brain range */
 	public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出frog脑空间界限

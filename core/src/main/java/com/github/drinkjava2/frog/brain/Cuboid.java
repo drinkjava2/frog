@@ -10,8 +10,6 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import com.github.drinkjava2.frog.Frog;
-
 /**
  * Cuboid represents a rectangular prism 3d zone in brain
  * 
@@ -58,21 +56,4 @@ public class Cuboid implements Shape {
 		pic.drawCuboid(this);
 	}
 
-	@Override
-	public void createCellsRegOrgan(Frog f, int orgNo) {// 创建Cell并登记Organ， 先忽略密度分布等参数
-		for (int i = x; i < x + xe; i++)
-			for (int j = y; j < y + ye; j++)
-				for (int k = z; k < z + ze; k++) {
-					Cell cell = f.getOrCreateCell(i, j, k);
-					if (cell != null)
-						cell.regOrgan(orgNo);
-				}
-	}
-
-	public void createCells(Frog f) {// 创建Cell， 先忽略密度分布等参数
-		for (int i = x; i < x + xe; i++)
-			for (int j = y; j < y + ye; j++)
-				for (int k = z; k < z + ze; k++)
-					f.getOrCreateCell(i, j, k);
-	}
 }

@@ -18,9 +18,14 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.organ.Active;
 import com.github.drinkjava2.frog.brain.organ.Eat;
-import com.github.drinkjava2.frog.brain.organ.Eye;
-import com.github.drinkjava2.frog.brain.organ.Move;
-import com.github.drinkjava2.frog.brain.organ.Move.MoveUp;
+import com.github.drinkjava2.frog.brain.organ.Eyes.SeeDown;
+import com.github.drinkjava2.frog.brain.organ.Eyes.SeeLeft;
+import com.github.drinkjava2.frog.brain.organ.Eyes.SeeRight;
+import com.github.drinkjava2.frog.brain.organ.Eyes.SeeUp;
+import com.github.drinkjava2.frog.brain.organ.MoveDown;
+import com.github.drinkjava2.frog.brain.organ.MoveLeft;
+import com.github.drinkjava2.frog.brain.organ.MoveRight;
+import com.github.drinkjava2.frog.brain.organ.MoveUp;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -39,54 +44,43 @@ public class Egg implements Serializable {
 	public List<Organ> organs = new ArrayList<>();// NOSONAR
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-		organs.add(new Eye.SeeUp()); // 添加眼睛的四个感光细胞器官
-		organs.add(new Eye.SeeDown());
-		organs.add(new Eye.SeeLeft());
-		organs.add(new Eye.SeeRight());
-		// organs.add(new BigEye()); // 添加大眼睛
-		organs.add(new Move.MoveUp()); // 添加四个运动输出细胞
-		organs.add(new Move.MoveDown());
-		organs.add(new Move.MoveLeft());
-		organs.add(new Move.MoveRight());
-		organs.add(new Active()); // 始终激活
-		organs.add(new Eat()); // 没有什么比吃到东西更愉快的了
+		organs.add(new MoveUp().setXYZRN(800, 100, 500, 60, "Up"));
+		organs.add(new MoveDown().setXYZRN(800, 400, 500, 60, "Down"));
+		organs.add(new MoveLeft().setXYZRN(700, 250, 500, 60, "Left"));
+		organs.add(new MoveRight().setXYZRN(900, 250, 500, 60, "Right"));
+		organs.add(new SeeUp().setXYZRN(200, 300 + 90, 500, 40, "SeeUp"));
+		organs.add(new SeeDown().setXYZRN(200, 300 - 90, 500, 40, "SeeDown"));
+		organs.add(new SeeLeft().setXYZRN(200 - 90, 300, 500, 40, "SeeLeft"));
+		organs.add(new SeeRight().setXYZRN(200 + 90, 300, 500, 40, "SeeRight"));
+		organs.add(new Active().setXYZRN(500, 600, 500, 60, "Active")); // 永远激活
+
+		organs.add(new Eat().setXYZRN(0, 0, 500, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
 	}
 
 	/** Create egg from frog */
 	public Egg(Frog frog) { // 青蛙下蛋，每个青蛙的器官会创建自已的副本或变异，可以是0或多个
 		for (Organ organ : frog.organs)
-			for (Organ newOrgan : organ.vary(frog))
+			for (Organ newOrgan : organ.vary())
 				organs.add(newOrgan);
 	}
 
 	/**
-	 * Create a egg by join 2 eggs, x+y=zygote 模拟X、Y 染色体合并，两个蛋生成一个新的蛋，
-	 * X有可能从Y里的相同位置借一个器官
+	 * Create a egg by join 2 eggs, x+y=zygote 模拟X、Y 染色体合并，两个蛋生成一个新的蛋， X从Y里借一个器官,
+	 * 不用担心器官会越来越多，因为通过用进废退原则来筛选,没用到的器官会在几代之后被自然淘汰掉
+	 * 器官不是越多越好，因为器官需要消耗能量，器官数量多了，在生存竞争中也是劣势
+	 * 
 	 */
 	public Egg(Egg x, Egg y) {
-		for (Organ organ : x.organs) {
-			if (!organ.allowVary || organ.fat != 0 || RandomUtils.percent(70)) // 如果器官没用到,fat为0，增加丢弃它的机率
-				organs.add(organ);
-		}
 		// x里原来的organ
-		if (RandomUtils.percent(70)) // 70%的情况下不作为, x就是受精卵
-			return;
-		// 从y里借一个organ，替换掉原来位置的organ，相当于DNA级别的片段切换，它要求一个随机位置的Organ都允许替换allowBorrow
-		// int yOrganSize = y.organs.size();
-		// if (yOrganSize > 0) {
-		// int i = RandomUtils.nextInt(yOrganSize);
-		// Organ o = y.organs.get(i);
-		// if (o.allowBorrow) {
-		// if (organs.size() > i && organs.get(i).allowBorrow)
-		// organs.set(i, o);// 用y里的organ替换掉x里的organ,模拟受精
-		// }
-		// }
-		// if (RandomUtils.percent(50))// 有50%的机率随机会产生新的器官
-		// organs.add(Organ.randomCuboidOrgan());
-		if (RandomUtils.percent(organs.size())) {// 器官会随机丢失，并且机率与器官数量成正比,防止器官无限增长
-			int i = RandomUtils.nextInt(organs.size());
-			if (organs.get(i).allowBorrow)
-				organs.remove(i);
+		for (Organ organ : x.organs)
+			organs.add(organ);
+
+		// 从y里借一个organ
+		int yOrganSize = y.organs.size();
+		if (yOrganSize > 0) {
+			Organ o = y.organs.get(RandomUtils.nextInt(yOrganSize));
+			if (o.allowBorrow())
+				organs.add(o);
 		}
 	}
 

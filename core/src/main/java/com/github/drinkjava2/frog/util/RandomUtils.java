@@ -21,9 +21,6 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Cone;
 import com.github.drinkjava2.frog.brain.Cuboid;
-import com.github.drinkjava2.frog.brain.Hole;
-import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.Shape;
 
 /**
  * Random Utilities used in this project
@@ -51,18 +48,9 @@ public class RandomUtils {
 	}
 
 	public static Cell getRandomCell(Frog f) {// 在随机一个器官里取一个随机Cell
-		int r = rand.nextInt(f.organs.size());
-		Organ o = f.organs.get(r);
-		if (o.shape == null)
-			return null;
-		if (o.shape instanceof Cuboid) {
-			Cuboid c = (Cuboid) o.shape;
-			int x = c.x + rand.nextInt(c.xe);
-			int y = c.y + rand.nextInt(c.ye);
-			int z = c.z + rand.nextInt(c.ze);
-			return f.getCell(x, y, z);
-		}
-		return null;
+		int r = rand.nextInt(f.cells.size());
+		Cell c = f.cells.get(r);
+		return c;
 	}
 
 	/** Randomly create a Cuboid inside of brain space */
@@ -109,19 +97,21 @@ public class RandomUtils {
 		return v;
 	}
 
-//	public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-//		if (percent(40))
-//			v *= .98 + .04 * nextFloat(); // 0.98~1.02
-//		if (percent(10))
-//			v *= .95 + .103 * nextFloat(); // 0.95~1.053
-//		else if (percent(5))
-//			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
-//		else if (percent(1))
-//			v *= .05 + 1.5 * nextFloat(); // 0.5~2
-//		return v;
-//	}
-
 	public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+		if (percent(40))
+			v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
+		if (percent(10))
+			v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
+		else if (percent(5))
+			v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
+		else if (percent(2))
+			v += v * 4 * (nextFloat() - 0.5); // v=v+-2
+		else if (percent(1f))
+			v += v * 8 * (nextFloat() - 0.5); // v=v+-6
+		return v;
+	}
+
+	public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
 		if (percent(40))
 			v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
 		if (percent(10))
@@ -144,44 +134,13 @@ public class RandomUtils {
 		return i;
 	}
 
-	public static float vary(float v, int percet) {
-		if (percent(percet))
-			return vary(v);
-		return v;
-	}
-
-//	public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-//		if (percent(40))
-//			v *= .98 + .04 * nextFloat(); // 0.98~1.02
-//		if (percent(10))
-//			v *= .95 + .103 * nextFloat(); // 0.95~1.053
-//		else if (percent(5))
-//			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
-//		else if (percent(1))
-//			v *= .05 + 1.5 * nextFloat(); // 0.5~2
-//		return v;
-//	}
-
-	public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		if (percent(40))
-			v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
-		if (percent(10))
-			v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
-		else if (percent(5))
-			v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
-		else if (percent(2))
-			v += v * 4 * (nextFloat() - 0.5); // v=v+-2
-		else if (percent(1f))
-			v += v * 8 * (nextFloat() - 0.5); // v=v+-6
-		return v;
-	}
-
-	public static Shape vary(Shape shape) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		return shape; // TODO shape的变异
-	}
-
-	public static Hole[] vary(Hole[] holes) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		return holes; // TODO holes的变异
+	public static float varyInLimit(float v, float from, float to) {// 让返回值在from和to之间随机变异
+		float i = vary(v);
+		if (i < from)
+			i = from;
+		if (i > to)
+			i = to;
+		return i;
 	}
 
 }

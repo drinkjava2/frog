@@ -39,9 +39,9 @@ public class Env extends JPanel {
 	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
 	/** Frog's brain size is a 3D array of Cell */ // 脑空间是个三维Cell数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
-	public static final int FROG_BRAIN_XSIZE = 20; // frog的脑在X方向长度
-	public static final int FROG_BRAIN_YSIZE = 20; // frog的脑在Y方向长度
-	public static final int FROG_BRAIN_ZSIZE = 20; // frog的脑在Z方向长度
+	public static final int FROG_BRAIN_XSIZE = 1000; // frog的脑在X方向长度
+	public static final int FROG_BRAIN_YSIZE = 1000; // frog的脑在Y方向长度
+	public static final int FROG_BRAIN_ZSIZE = 1000; // frog的脑在Z方向长度
 
 	/** SHOW first frog's brain structure */
 	public static boolean SHOW_FIRST_FROG_BRAIN = true; // 是否显示脑图在Env区的右侧

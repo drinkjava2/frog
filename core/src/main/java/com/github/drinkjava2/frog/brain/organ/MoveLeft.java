@@ -10,22 +10,18 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Eat food at current x, y position
+ * Move left frog 1 unit if outputs of nerve cells active in this zone
  */
-public class Eat extends Organ {// Eat这个类将食物转化为能量，能量小于0，则青蛙死掉
+public class MoveLeft extends Organ {
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void active(Frog f) {
-		if (Env.foundAndAteFood(f.x, f.y)) {
-			f.ateFood++; 
-			f.energy += 1000;// 如果青蛙的坐标与食物重合，吃掉food，能量境加 
-		}
+		if (outputActive(f))
+			f.x--;
 	}
-
 }

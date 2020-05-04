@@ -10,6 +10,9 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
+import java.awt.Color;
+
+import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cell;
@@ -17,47 +20,34 @@ import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
- * Line is a line from cell1 to cell2
+ * Line
+ * 
+ * 这是一个随机方式连接两端的Organ，它是从旧版的RandomConnectGroup改造过来，这是一种最简单的神经元排列方式，
  * 
  * @author Yong Zhu
- * @since 2020-04-18
+ * @since 1.0
  */
-public class Line extends Organ {// Line代表一个从cell1到cell2的神经元连接,energy表示连接能量
+public class Line extends Organ {
+	public Cell cell;
 	private static final long serialVersionUID = 1L;
 
-	public int eng = 30;
-	public int fat = 0;
-	public int x1, y1, z1, x2, y2, z2;
-
-	public Line(Cell c1, Cell c2) {
-		this.x1 = c1.x;
-		this.y1 = c1.y;
-		this.z1 = c1.z;
-		this.x2 = c2.x;
-		this.y2 = c2.y;
-		this.z2 = c2.z;
-	}
-
-	public void active(Frog f) {// 重写active方法,line的作用就是在细胞c1,c2间传送能量(即信息)
-		if (!f.alive)
-			return;
-		if (RandomUtils.percent(5))
-			eng = RandomUtils.varyInLimit(eng, 1, 70);// 传输的能量也参与进化
-		Cell c1 = f.getCell1(this);
-		if (c1 == null)
-			return;
-		Cell c2 = f.getCell2(this);
-		if (c2 == null)
-			return;
-		if (c1.energy > eng) { // 为了保证能量(即熵)守恒，传出的能量要不大于输入能量
-			fat++;
-			c1.subEnergy(eng);
-			c2.addEnergy(eng);
-		}
+	@Override
+	public boolean allowBorrow() { // 是否允许在精子中将这个器官借出
+		return true;
 	}
 
 	@Override
-	public Organ[] vary(Frog f) {
+	public void initFrog(Frog f) {
+		if (cell == null)
+			return;
+		this.fat = 0;// 每次fat清0，因为遗传下来的fat不为0
+		cell.organ = this;
+		f.cells.add(cell);
+	}
+
+	@Override
+	public Organ[] vary() {
+		organOutputEnergy = RandomUtils.varyInLimit(organOutputEnergy, -3, 3);
 		if (fat <= 0)// 如果胖值为0，表示这个组的细胞没有用到，可以小概率丢掉它了
 			if (RandomUtils.percent(30))
 				return new Organ[] {};
@@ -66,9 +56,18 @@ public class Line extends Organ {// Line代表一个从cell1到cell2的神经元
 		return new Organ[] { this };
 	}
 
-	public void drawOnBrainPicture(Frog f, BrainPicture pic) {
-		pic.drawLine(this);
-		pic.drawPoint(this.x2 + .5f, this.y2 + .5f, this.z2 + .5f, 5);
-		pic.drawText((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2, "" + eng, 1);
+	@Override
+	public void drawOnBrainPicture(Frog f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
+		if (fat <= 0)
+			pic.setPicColor(Color.LIGHT_GRAY); // 没用到? 灰色
+		else if (organOutputEnergy <= 0)
+			pic.setPicColor(Color.BLUE);
+		else
+			pic.setPicColor(Color.red); // 用到了?红色
+		pic.drawLine(cell.input, cell.body);
+		pic.drawLine(cell.body, cell.output);
+		pic.drawZone(this);
+		pic.setPicColor(Color.red);
 	}
+
 }
