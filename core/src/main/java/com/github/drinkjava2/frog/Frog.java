@@ -35,6 +35,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * 青蛙脑由一个cells三维数组组成，每个cell里可以存在多个行为，行为是由器官决定，同一个细胞可以存在多种行为。光子是信息的载体，永远不停留。
  * 
  * @author Yong Zhu
+ * 
  * @since 1.0
  */
 public class Frog {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
