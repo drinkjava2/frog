@@ -122,12 +122,12 @@ public class BrainPicture extends JPanel {
 		addKeyListener(keyAdapter);
 		this.setFocusable(true);
 	}
-	
+
 	public void drawZone(Zone o) {// 在脑图上画一个正立方体Zone框架，视角是TopView
-		float x = o.x-o.r;
-		float y = o.y-o.r;
-		float z = o.z-o.r;
-		float e = o.r+o.r; 
+		float x = o.x - o.r;
+		float y = o.y - o.r;
+		float z = o.z - o.r;
+		float e = o.r + o.r;
 
 		drawLine(x, y, z, x + e, y, z);// 画立方体的下面边
 		drawLine(x + e, y, z, x + e, y + e, z);
@@ -144,7 +144,6 @@ public class BrainPicture extends JPanel {
 		drawLine(x + e, y + e, z + e, x, y + e, z + e);
 		drawLine(x, y + e, z + e, x, y, z + e);
 	}
-	
 
 	public void drawCuboid(Cuboid c) {// 在脑图上画一个长立方体框架，视角是TopView
 		float x = c.x;
@@ -170,9 +169,19 @@ public class BrainPicture extends JPanel {
 		drawLine(x, y + ye, z + ze, x, y, z + ze);
 	}
 
-	public void drawLine(Zone z1, Zone z2) {//从zone1到z2中心画一条线
-		
+	public void drawCell(Cell c) {// 从zone1到z2中心画一条线
+		if (c == null)
+			return;
+		if (c.body != null) {
+			drawZone(c.body);
+			if (c.input != null)
+				drawLine(c.input.x, c.input.y, c.input.z, c.body.x, c.body.y, c.body.z);
+			if (c.output != null)
+				drawLine(c.output.x, c.output.y, c.output.z, c.body.x, c.body.y, c.body.z);
+		}
+
 	}
+
 	public void drawCone(Cone c) {// 在脑图上画一个锥体，视角是TopView
 		drawLine(c.x1, c.y1, c.z1, c.x2, c.y2, c.z2);// 画锥体的中心线
 		// TODO 画出锥体的上下面
@@ -339,8 +348,8 @@ public class BrainPicture extends JPanel {
 				setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度表示活跃度
 				drawZone(cell.body);
 			}
-		} 
-		
+		}
+
 		g.setColor(Color.black);
 		if (note != null) // 全局注释
 			g.drawString(note, 30, 55);

@@ -12,11 +12,11 @@ package com.github.drinkjava2.frog.brain.organ;
 
 import java.awt.Color;
 
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.Zone;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -38,8 +38,15 @@ public class Line extends Organ {
 
 	@Override
 	public void initFrog(Frog f) {
-		if (cell == null)
-			return;
+		if (cell == null) {
+			cell = new Cell();
+			cell.input = RandomUtils.randomZoneInOrgans(f);
+			cell.output = RandomUtils.randomZoneInOrgans(f);
+			cell.body = new Zone();
+			cell.body.x = (cell.input.x + cell.output.x) * .5f;
+			cell.body.y = (cell.input.y + cell.output.y) * .5f;
+			cell.body.z = Math.max(cell.input.z, cell.output.z) + 1f;
+		}
 		this.fat = 0;// 每次fat清0，因为遗传下来的fat不为0
 		cell.organ = this;
 		f.cells.add(cell);
@@ -64,8 +71,7 @@ public class Line extends Organ {
 			pic.setPicColor(Color.BLUE);
 		else
 			pic.setPicColor(Color.red); // 用到了?红色
-		pic.drawLine(cell.input, cell.body);
-		pic.drawLine(cell.body, cell.output);
+		pic.drawCell(cell);
 		pic.drawZone(this);
 		pic.setPicColor(Color.red);
 	}

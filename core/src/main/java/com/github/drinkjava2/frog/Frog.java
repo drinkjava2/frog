@@ -20,8 +20,10 @@ import javax.imageio.ImageIO;
 
 import com.github.drinkjava2.frog.brain.Cell;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.brain.organ.Line;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.objects.Material;
+import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Frog = cells <br/>
@@ -38,7 +40,7 @@ import com.github.drinkjava2.frog.objects.Material;
 public class Frog {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
 	/** brain cells */
 	public List<Cell> cells = new ArrayList<>();
-	
+
 	/** organs */
 	public List<Organ> organs = new ArrayList<>();
 
@@ -66,9 +68,16 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 
 	public void initFrog() { // 初始化frog,通常只是调用每个organ的init方法
 		for (Organ org : organs)
-			org.initFrog(this);// 每个新器官初始化，如果是Group类，它们会生成许多脑细胞 
+			org.initFrog(this);// 每个新器官初始化，如果是Group类，它们会生成许多脑细胞
 	}
- 
+
+	public void addRandomLines() {// 有一定机率在器官间生成随机的神经连线
+		if (alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
+			Line line = new Line();
+			line.initFrog(this);
+			organs.add(line);
+		}
+	}
 
 	public boolean active(Env v) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
 		// 如果能量小于0、出界、与非食物的点重合则判死
@@ -81,7 +90,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 		// 依次调用每个器官的active方法，每个器官各自负责调用各自区域（通常是Cuboid)内的细胞的行为
 		for (Organ o : organs)
 			o.active(this);
-		//addRandomLines(); // 有一定机率在器官间生成随机的神经连线
+		addRandomLines(); // 有一定机率在器官间生成随机的神经连线
 		return alive;
 	}
 
@@ -98,7 +107,6 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 				return (T) o;
 		return null;
 	}
-   
 
 	/** Check if x,y,z out of frog's brain range */
 	public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出frog脑空间界限

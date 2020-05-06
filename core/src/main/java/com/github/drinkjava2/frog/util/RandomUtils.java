@@ -16,11 +16,9 @@ import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
 
 import java.util.Random;
 
-import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Cell;
-import com.github.drinkjava2.frog.brain.Cone;
 import com.github.drinkjava2.frog.brain.Cuboid;
+import com.github.drinkjava2.frog.brain.Zone;
 
 /**
  * Random Utilities used in this project
@@ -47,10 +45,16 @@ public class RandomUtils {
 		return rand.nextFloat() * 100 < percent;
 	}
 
-	public static Cell getRandomCell(Frog f) {// 在随机一个器官里取一个随机Cell
-		int r = rand.nextInt(f.cells.size());
-		Cell c = f.cells.get(r);
-		return c;
+	public static Zone randomZoneInZone(Zone o) { // 在一个区内随机取一个小小区
+		return new Zone(o.x - o.r + o.r * 2 * rand.nextFloat(), o.y - o.r + o.r * 2 * rand.nextFloat(),
+				o.z - o.r + o.r * 2 * rand.nextFloat(), o.r * rand.nextFloat() * .04f);
+	}
+
+	/** Return a random zone inside of frog's random organ */
+	public static Zone randomZoneInOrgans(Frog f) {
+		if (f.organs == null || f.organs.size() == 0)
+			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when frog has no organ");
+		return randomZoneInZone(f.organs.get(RandomUtils.nextInt(f.organs.size())));
 	}
 
 	/** Randomly create a Cuboid inside of brain space */
@@ -74,20 +78,6 @@ public class RandomUtils {
 		c.ze = 1 + nextInt(FROG_BRAIN_ZSIZE);
 		if (c.ze > (FROG_BRAIN_ZSIZE - c.z))
 			c.ze = FROG_BRAIN_ZSIZE - c.z;
-		return c;
-	}
-
-	/** Randomly create a Cone inside of brain space */
-	public static Cone randomCone() {// 随机生成一个位于脑空间内的锥体
-		Cone c = new Cone();
-		c.x1 = nextInt(Env.FROG_BRAIN_XSIZE);
-		c.y1 = nextInt(Env.FROG_BRAIN_YSIZE);
-		c.z1 = nextInt(Env.FROG_BRAIN_ZSIZE);
-		c.x2 = nextInt(Env.FROG_BRAIN_XSIZE);
-		c.y2 = nextInt(Env.FROG_BRAIN_YSIZE);
-		c.z2 = nextInt(Env.FROG_BRAIN_ZSIZE);
-		c.r1 = nextInt(Env.FROG_BRAIN_ZSIZE / 2);// 暂时以z边长的一半取随机数
-		c.r2 = nextInt(Env.FROG_BRAIN_ZSIZE / 2);
 		return c;
 	}
 
