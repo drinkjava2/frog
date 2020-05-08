@@ -10,42 +10,27 @@
  */
 package com.github.drinkjava2.frog.brain;
 
-import java.io.Serializable;
-
 /**
- * Cell is the smallest unit of brain
- * 
- * Cell是脑的单元，cell必须属于一个器官Organ，同一个空间可以有多个不同的Cell重叠出现，cell之间互相影响是因为它们空间上的位置相同造成的
+ * Cell is the basic unit of frog's brain
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Cell implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Cell {
 	public static final float MAX_ENERGY_LIMIT = 100.0f;
-	public Zone input;
-	public Zone output;
-	public Zone body; // 这个细胞的本体位置
-	public float energy = 0;
+
+	// this cell belong to frog's which organ
 	public Organ organ;
 
-	public boolean inActive() {
-		if (energy > 30) {
-			energy -= 30;
-			return true;
-		}
-		return false;
-	}
+	// inputs of cell
+	public Zone input; // 每个细胞有一个输入触突
 
-	public void addEnergy(float e) {
-		energy += e;
-		if (energy > MAX_ENERGY_LIMIT)
-			energy = MAX_ENERGY_LIMIT;
-	}
+	// outputs of cell
+	public Zone output; // 每个细胞有一个输出触突
 
-	public void subEnergy(float e) {
-		energy -= e;
-		if (energy < 0)
-			energy = 0;
-	}
+	// body of cell
+	public Zone body; // 每个细胞有一个本体，用来接受其它cell的信号
+
+	// energy of cell, energy got from food
+	public float energy; // 每个细胞当前的能量值
 }

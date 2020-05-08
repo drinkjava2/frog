@@ -15,7 +15,7 @@ import java.io.Serializable;
 import com.github.drinkjava2.frog.Env;
 
 /**
- * Zone represents a rectangle zone in brain
+ * Zone represents a cube zone in brain
  * 
  * @author Yong Zhu
  * @since 1.0
@@ -23,7 +23,6 @@ import com.github.drinkjava2.frog.Env;
 public class Zone implements Serializable { // zone 代表脑空间中的一块立方区域， 以x,y,z为中心， 以r为边长的一半
 	private static final long serialVersionUID = 1L;
 
-	public Cell cell; // zone 有可能是cell的一个部分
 	public float x;
 	public float y;
 	public float z;

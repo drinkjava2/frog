@@ -100,6 +100,7 @@ public class Application {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				Env.SHOW_SPEED = speedSlider.getValue() * speedSlider.getValue() * speedSlider.getValue();
+				brainPic.requestFocus();
 			}
 		};
 		speedSlider.addChangeListener(slideAction);

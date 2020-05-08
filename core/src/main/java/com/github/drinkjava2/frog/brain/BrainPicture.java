@@ -182,11 +182,6 @@ public class BrainPicture extends JPanel {
 
 	}
 
-	public void drawCone(Cone c) {// 在脑图上画一个锥体，视角是TopView
-		drawLine(c.x1, c.y1, c.z1, c.x2, c.y2, c.z2);// 画锥体的中心线
-		// TODO 画出锥体的上下面
-	}
-
 	/*-
 	  画线，固定以top视角的角度，所以只需要从x1,y1画一条到x2,y2的直线	
 		绕 x 轴旋转 θ
@@ -249,11 +244,8 @@ public class BrainPicture extends JPanel {
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
-	/** 画出cell的中心点 */
-	public void drawCellCenter(float x, float y, float z, float diameter) {
-		if (x > 0 && (x < xMask || y < yMask))
-			return;
-		drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, (int) Math.max(2, Math.round(scale * diameter)));
+	public void drawLine(Zone a, Zone b) {
+		drawLine(a.x, a.y, a.z, b.x, b.y, b.z);
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
@@ -286,7 +278,7 @@ public class BrainPicture extends JPanel {
 	}
 
 	public void drawText(float px1, float py1, float pz1, String text) {
-		drawText(px1, py1, pz1, text, 1);
+		drawText(px1, py1, pz1, text, 12);
 	}
 
 	public void drawText(float px1, float py1, float pz1, String text, float textSize) {
@@ -313,7 +305,7 @@ public class BrainPicture extends JPanel {
 		y1 = y;
 
 		g.setColor(picColor);
-		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale * .3)));
+		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale)));
 		g.drawString(text, (int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 
@@ -332,9 +324,9 @@ public class BrainPicture extends JPanel {
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 		setPicColor(BLACK);
 		drawCuboid(brain);// 先把脑的框架画出来
-		drawText(1, 0, 0, "x");
-		drawText(0, 1, 0, "y");
-		drawText(0, 0, 1, "z");
+		drawText(100, 0, 0, "x");
+		drawText(0, 100, 0, "y");
+		drawText(0, 0, 100, "z");
 
 		for (Organ organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
 			organ.drawOnBrainPicture(f, this); // each organ draw itself
@@ -346,7 +338,8 @@ public class BrainPicture extends JPanel {
 		for (Cell cell : f.cells) {
 			if (cell != null && cell.energy > 20) {
 				setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度表示活跃度
-				drawZone(cell.body);
+				if (cell.body != null)
+					drawZone(cell.body);
 			}
 		}
 

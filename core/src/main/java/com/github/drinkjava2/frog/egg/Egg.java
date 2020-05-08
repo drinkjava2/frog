@@ -41,6 +41,8 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 public class Egg implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	public static int FIXED_ORGAN_QTY = 9;
+
 	public List<Organ> organs = new ArrayList<>();// NOSONAR
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
@@ -52,8 +54,11 @@ public class Egg implements Serializable {
 		organs.add(new SeeDown().setXYZRN(200, 300 - 90, 500, 40, "SeeDown"));
 		organs.add(new SeeLeft().setXYZRN(200 - 90, 300, 500, 40, "SeeLeft"));
 		organs.add(new SeeRight().setXYZRN(200 + 90, 300, 500, 40, "SeeRight"));
-		organs.add(new Active().setXYZRN(500, 600, 500, 60, "Active")); // 永远激活 
-		organs.add(new Eat().setXYZRN(0, 0, 500, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
+		organs.add(new Active().setXYZRN(500, 600, 500, 40, "Active")); // 永远激活
+		// 以上数量就是FIXED_ORGAN_QTY值
+
+		organs.add(new Eat().setXYZRN(0, 0, 0, 0, null)); // EAT不是感觉或输出器官，没有位置和大小
+
 	}
 
 	/** Create egg from frog */

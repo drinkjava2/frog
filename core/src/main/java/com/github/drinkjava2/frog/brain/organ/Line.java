@@ -27,9 +27,11 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Line extends Organ {
-	public Cell cell;
+public class Line extends Organ { 
 	private static final long serialVersionUID = 1L;
+
+	public Zone inputZone; // 输入触突区
+	public Zone outputZone; // 输出触突区
 
 	@Override
 	public boolean allowBorrow() { // 是否允许在精子中将这个器官借出
@@ -38,18 +40,17 @@ public class Line extends Organ {
 
 	@Override
 	public void initFrog(Frog f) {
-		if (cell == null) {
-			cell = new Cell();
-			cell.input = RandomUtils.randomZoneInOrgans(f);
-			cell.output = RandomUtils.randomZoneInOrgans(f);
-			cell.body = new Zone();
-			cell.body.x = (cell.input.x + cell.output.x) * .5f;
-			cell.body.y = (cell.input.y + cell.output.y) * .5f;
-			cell.body.z = Math.max(cell.input.z, cell.output.z) + 1f;
-		}
+		if (!initilized) {
+			initilized = true; 
+			inputZone= RandomUtils.randomZoneInOrgans(f);
+			outputZone = RandomUtils.randomZoneInOrgans(f);
+			 	}
 		this.fat = 0;// 每次fat清0，因为遗传下来的fat不为0
-		cell.organ = this;
-		f.cells.add(cell);
+		Cell c=new Cell();
+		c.input= inputZone;
+		c.output=outputZone;
+		c.organ=this;
+		f.cells.add(c);
 	}
 
 	@Override
@@ -70,8 +71,8 @@ public class Line extends Organ {
 		else if (organOutputEnergy <= 0)
 			pic.setPicColor(Color.BLUE);
 		else
-			pic.setPicColor(Color.red); // 用到了?红色
-		pic.drawCell(cell);
+			pic.setPicColor(Color.red); // 用到了?红色 
+		pic.drawLine(inputZone, outputZone);
 		pic.drawZone(this);
 		pic.setPicColor(Color.red);
 	}

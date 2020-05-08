@@ -36,9 +36,9 @@ public class Active extends Organ {// 以前的实验发现添加一个始终激
 		for (Cell cell : f.cells) {
 			if (cell.energy > 0)
 				cell.energy--;
-			if (cell.energy < Cell.MAX_ENERGY_LIMIT)
-				if (this.nearby(cell.input)) // if input zone near by happy zone
-					cell.energy += organOutputEnergy;
+			if (cell.energy < Cell.MAX_ENERGY_LIMIT) 
+					if (cell.input.nearby(this)) // if input zone near by happy zone
+						cell.energy += organOutputEnergy;
 		}
 	}
 

@@ -23,10 +23,10 @@ public class Cell {
 	public Organ organ;
 
 	// inputs of cell
-	public Input[] inputs; // 每个细胞有一组输入触突
+	public Input input; // 每个细胞有一个输入触突
 
 	// outputs of cell
-	public Output[] outputs; // 每个细胞有一组输出触突
+	public Output output; // 每个细胞有一个输出触突
 
 	// energy of cell, energy got from food
 	public float energy; // 每个细胞当前的能量值

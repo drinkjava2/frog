@@ -37,8 +37,16 @@ public class Organ extends Zone {
 		return false;
 	}
 
+	/** Only call once when frog created , Child class can override this method */
+	public void initFrog(Frog f) { // 仅在Frog生成时会调用一次
+	}
+
 	/** Each loop step call active method, Child class can override this method */
-	public void active(Frog f) { // 每一步都会调用器官的active方法 ，缺省啥也不干
+	public void active(Frog f) { // 这是器官级别的方法，每个步长调用一次
+	}
+
+	/** Each loop step call active method, Child class can override this method */
+	public void active(Frog f, Cell c) { // 这是Cell级别的方法，每个步长、每个细胞都要调用一次
 	}
 
 	/** If active in this organ's zone? */
@@ -78,10 +86,6 @@ public class Organ extends Zone {
 		pic.drawZone(this);
 		if (this.name != null)
 			pic.drawText(x, y, z, String.valueOf(this.name));
-	}
-
-	/** Only call once when frog created , Child class can override this method */
-	public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Group子类的初始化
 	}
 
 	/** Only call once after organ be created by new() method */

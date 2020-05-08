@@ -30,7 +30,7 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Line extends Organ {
+public class Line extends Organ { 
 	private static final long serialVersionUID = 1L;
 
 	public Zone inputZone; // 输入触突区
@@ -58,11 +58,11 @@ public class Line extends Organ {
 		Cell c = new Cell();
 		Input in = new Input(inputZone);
 		in.cell = c;
-		c.inputs = new Input[] { in };
+		c.input = in;
 
 		Output out = new Output(outputZone);
 		out.cell = c;
-		c.outputs = new Output[] { out };
+		c.output = out;	
 
 		c.organ = this;
 		f.cells.add(c);
@@ -70,7 +70,7 @@ public class Line extends Organ {
 
 	@Override
 	public Organ[] vary() {
-		organOutputEnergy = RandomUtils.varyInLimit(organOutputEnergy, -3, 3);
+//		organOutputEnergy = RandomUtils.varyInLimit(organOutputEnergy, -3, 3);
 		if (fat <= 0)// 如果胖值为0，表示这个组的细胞没有用到，可以小概率丢掉它了
 			if (RandomUtils.percent(30))
 				return new Organ[] {};

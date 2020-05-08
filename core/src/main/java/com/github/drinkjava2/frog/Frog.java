@@ -74,8 +74,8 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 	public void addRandomLines() {// 有一定机率在器官间生成随机的神经连线
 		if (alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
 			Line line = new Line();
-			line.initFrog(this);
 			organs.add(line);
+			line.initFrog(this);
 		}
 	}
 
@@ -87,10 +87,13 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 			return false;
 		}
 		energy -= 20;
-		// 依次调用每个器官的active方法，每个器官各自负责调用各自区域（通常是Cuboid)内的细胞的行为
-		for (Organ o : organs)
-			o.active(this);
-		addRandomLines(); // 有一定机率在器官间生成随机的神经连线
+		// 依次调用每个organ的active方法
+		for (Organ organ : organs)
+			organ.active(this);
+		// 依次调用每个cell的active方法，这是写在organ类里的方法，因为同一个器官的cell具有相同的行为
+		for (Cell cell : cells)
+			cell.organ.active(this, cell);
+		addRandomLines();
 		return alive;
 	}
 

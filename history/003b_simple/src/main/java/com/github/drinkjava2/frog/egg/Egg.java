@@ -56,9 +56,10 @@ public class Egg implements Serializable {
 		organs.add(new SeeDown().setXYRN(200, 300 - 90, 40, "SeeDown"));
 		organs.add(new SeeLeft().setXYRN(200 - 90, 300, 40, "SeeLeft"));
 		organs.add(new SeeRight().setXYRN(200 + 90, 300, 40, "SeeRight"));
-//		organs.add(new Eye().setXYRN(100, 300, 100, "Eye"));
+		// Eye类是旧类，现用四个单独的SeeXxx感光器官代替，以简化模型
+		// organs.add(new Eye().setXYRN(200, 700, 100, "Eye"));
 		organs.add(new Active().setXYRN(500, 100, 60, "Active")); // 永远激活
-		// 以上数量就是FIXED_ORGAN_QTY值
+		// 以上9个器官就是FIXED_ORGAN_QTY值
 
 		organs.add(new Eat().setXYRN(0, 0, 0, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
 

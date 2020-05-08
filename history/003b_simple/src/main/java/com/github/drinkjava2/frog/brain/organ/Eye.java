@@ -15,13 +15,14 @@ import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.BrainPicture;
 import com.github.drinkjava2.frog.brain.Cell;
-import com.github.drinkjava2.frog.brain.Input;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.Zone;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Eye can only see 4 direction
+ * 
+ * @Deprecated use Eyes classes instead.
  * 
  * @author Yong Zhu
  * @since 1.0
@@ -115,20 +116,18 @@ public class Eye extends Organ {// 这个Eye是老版的眼睛，只能看到四
 		if (seeSomething)
 			for (Cell cell : f.cells) {
 				if (cell.energy < 100)
-					for (Input input : cell.inputs) {
-						if (input.nearby(this)) {
-							if (atUp && input.nearby(seeUp)) {
-								input.cell.energy += organOutputEnergy;
-							}
-							if (atDown && input.nearby(seeDown)) {
-								input.cell.energy += organOutputEnergy;
-							}
-							if (atLeft && input.nearby(seeLeft)) {
-								input.cell.energy += organOutputEnergy;
-							}
-							if (atRight && input.nearby(seeRight)) {
-								input.cell.energy += organOutputEnergy;
-							}
+					if (cell.input.nearby(this)) {
+						if (atUp && cell.input.nearby(seeUp)) {
+							cell.energy += organOutputEnergy;
+						}
+						if (atDown && cell.input.nearby(seeDown)) {
+							cell.energy += organOutputEnergy;
+						}
+						if (atLeft && cell.input.nearby(seeLeft)) {
+							cell.energy += organOutputEnergy;
+						}
+						if (atRight && cell.input.nearby(seeRight)) {
+							cell.energy += organOutputEnergy;
 						}
 					}
 			}

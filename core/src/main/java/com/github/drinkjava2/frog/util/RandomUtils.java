@@ -19,6 +19,7 @@ import java.util.Random;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Zone;
+import com.github.drinkjava2.frog.egg.Egg;
 
 /**
  * Random Utilities used in this project
@@ -54,7 +55,7 @@ public class RandomUtils {
 	public static Zone randomZoneInOrgans(Frog f) {
 		if (f.organs == null || f.organs.size() == 0)
 			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when frog has no organ");
-		return randomZoneInZone(f.organs.get(RandomUtils.nextInt(f.organs.size())));
+		return randomZoneInZone(f.organs.get(RandomUtils.nextInt(Egg.FIXED_ORGAN_QTY)));
 	}
 
 	/** Randomly create a Cuboid inside of brain space */
