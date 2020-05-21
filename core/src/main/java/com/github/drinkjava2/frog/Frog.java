@@ -74,8 +74,9 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 	public void addRandomLines() {// 有一定机率在器官间生成随机的神经连线
 		if (alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
 			Line line = new Line();
-			organs.add(line);
+			line.initilized = false;
 			line.initFrog(this);
+			organs.add(line);
 		}
 	}
 
@@ -115,6 +116,23 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 	public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出frog脑空间界限
 		return x < 0 || x >= Env.FROG_BRAIN_XSIZE || y < 0 || y >= Env.FROG_BRAIN_YSIZE || z < 0
 				|| z >= Env.FROG_BRAIN_ZSIZE;
+	}
+
+	/** Print debug info */
+	public String debugInfo() {// 输出Frog调试内容
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < organs.size(); i++) {
+			Organ o = organs.get(i);
+			if (o != null) {
+				sb.append("organ(" + i + ")=" + o.getClass()).append("\r");
+				if (Line.class.equals(o.getClass())) {
+					Line l = (Line) o;
+					sb.append(l.inputZone.debugInfo()).append("\r");
+					sb.append(l.outputZone.debugInfo()).append("\r");
+				}
+			}
+		}
+		return sb.toString();
 	}
 
 }

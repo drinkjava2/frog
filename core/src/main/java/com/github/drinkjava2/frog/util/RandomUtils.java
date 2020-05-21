@@ -10,16 +10,10 @@
  */
 package com.github.drinkjava2.frog.util;
 
-import static com.github.drinkjava2.frog.Env.FROG_BRAIN_XSIZE;
-import static com.github.drinkjava2.frog.Env.FROG_BRAIN_YSIZE;
-import static com.github.drinkjava2.frog.Env.FROG_BRAIN_ZSIZE;
-
 import java.util.Random;
 
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.brain.Cuboid;
 import com.github.drinkjava2.frog.brain.Zone;
-import com.github.drinkjava2.frog.egg.Egg;
 
 /**
  * Random Utilities used in this project
@@ -47,39 +41,21 @@ public class RandomUtils {
 	}
 
 	public static Zone randomZoneInZone(Zone o) { // 在一个区内随机取一个小小区
-		return new Zone(o.x - o.r + o.r * 2 * rand.nextFloat(), o.y - o.r + o.r * 2 * rand.nextFloat(),
+		Zone r = new Zone(o.x - o.r + o.r * 2 * rand.nextFloat(), o.y - o.r + o.r * 2 * rand.nextFloat(),
 				o.z - o.r + o.r * 2 * rand.nextFloat(), o.r * rand.nextFloat() * .04f);
+		if (r.x <= 0.00001f) {
+			System.out.println(o.getClass());
+			System.out.println("input:" + o.debugInfo());
+			System.out.println("result:" + r.debugInfo());
+		}
+		return r;
 	}
 
 	/** Return a random zone inside of frog's random organ */
 	public static Zone randomZoneInOrgans(Frog f) {
 		if (f.organs == null || f.organs.size() == 0)
 			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when frog has no organ");
-		return randomZoneInZone(f.organs.get(RandomUtils.nextInt(Egg.FIXED_ORGAN_QTY)));
-	}
-
-	/** Randomly create a Cuboid inside of brain space */
-	public static Cuboid randomCuboid() {// 随机生成一个位于脑空间内的立方体
-		Cuboid c = new Cuboid();
-		c.x = nextInt(FROG_BRAIN_XSIZE) - FROG_BRAIN_XSIZE / 4;// 为了多产生贴边的立方体，超出边界的被裁切
-		if (c.x < 0)
-			c.x = 0;
-		c.y = nextInt(FROG_BRAIN_YSIZE) - FROG_BRAIN_YSIZE / 4;
-		if (c.y < 0)
-			c.y = 0;
-		c.z = nextInt(FROG_BRAIN_ZSIZE) - FROG_BRAIN_ZSIZE / 4;
-		if (c.z < 0)
-			c.z = 0;
-		c.xe = 1 + nextInt(FROG_BRAIN_XSIZE); // 立方体任一个边长至少是1
-		if (c.xe > (FROG_BRAIN_XSIZE - c.x))// 超出边界的被裁切
-			c.xe = FROG_BRAIN_XSIZE - c.x;
-		c.ye = 1 + nextInt(FROG_BRAIN_YSIZE);
-		if (c.ye > (FROG_BRAIN_YSIZE - c.y))
-			c.ye = FROG_BRAIN_YSIZE - c.y;
-		c.ze = 1 + nextInt(FROG_BRAIN_ZSIZE);
-		if (c.ze > (FROG_BRAIN_ZSIZE - c.z))
-			c.ze = FROG_BRAIN_ZSIZE - c.z;
-		return c;
+		return randomZoneInZone(f.organs.get(1 + RandomUtils.nextInt(f.organs.size() - 1))); // 跳过第一个器官
 	}
 
 	public static int vary(int v, int percet) {

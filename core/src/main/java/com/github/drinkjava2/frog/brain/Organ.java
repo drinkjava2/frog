@@ -94,7 +94,7 @@ public class Organ extends Zone {
 		try {
 			newOrgan = this.getClass().newInstance();
 		} catch (Exception e) {
-			throw new UnknownError("Can not make new Organ copy for " + this);
+			throw new UnknownError("Can not make new organ copy for " + this);
 		}
 		copyXYZR(this, newOrgan);
 		newOrgan.name = this.name;

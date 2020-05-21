@@ -48,16 +48,16 @@ public class EggTool {
 		Frog first = Env.frogs.get(0);
 		Frog last = Env.frogs.get(Env.frogs.size() - 1);
 		try {
-			Env.eggs.clear();
-			for (int i = 0; i < Env.EGG_QTY; i++)
-				Env.eggs.add(new Egg(Env.frogs.get(i)));
-			FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "eggs.ser");
+			Env.frog_eggs.clear();
+			for (int i = 0; i < Env.FROG_EGG_QTY; i++)
+				Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
+			FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");
 			ObjectOutputStream so = new ObjectOutputStream(fo);
-			so.writeObject(Env.eggs);
+			so.writeObject(Env.frog_eggs);
 			so.close();
 			System.out.print("Fist frog has " + first.organs.size() + " organs,  energy=" + first.energy);
 			System.out.println(", Last frog has " + last.organs.size() + " organs,  energy=" + last.energy);
-			System.out.println("Saved " + Env.eggs.size() + " eggs to file '" + Application.CLASSPATH + "eggs.ser'");
+			System.out.println("Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}
@@ -77,8 +77,8 @@ public class EggTool {
 	}
 
 	public static void deleteEggs() {
-		System.out.println("Delete exist egg file: '" + Application.CLASSPATH + "eggs.ser'");
-		FrogFileUtils.deleteFile(Application.CLASSPATH + "eggs.ser");
+		System.out.println("Delete exist egg file: '" + Application.CLASSPATH + "frog_eggs.ser'");
+		FrogFileUtils.deleteFile(Application.CLASSPATH + "frog_eggs.ser");
 	}
 
 	/**
@@ -88,21 +88,21 @@ public class EggTool {
 	public static void loadEggs() {
 		boolean errorfound = false;
 		try {
-			FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "eggs.ser");
+			FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "frog_eggs.ser");
 			ObjectInputStream eggsInputStream = new ObjectInputStream(eggsFile);
-			Env.eggs = (List<Egg>) eggsInputStream.readObject();
+			Env.frog_eggs = (List<Egg>) eggsInputStream.readObject();
 			System.out.println(
-					"Loaded " + Env.eggs.size() + " eggs from file '" + Application.CLASSPATH + "eggs.ser" + "'.\n");
+					"Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH + "frog_eggs.ser" + "'.\n");
 			eggsInputStream.close();
 		} catch (Exception e) {
 			errorfound = true;
 		}
 		if (errorfound) {
-			Env.eggs.clear();
-			for (int j = 0; j < Env.EGG_QTY; j++)
-				Env.eggs.add(new Egg());
+			Env.frog_eggs.clear();
+			for (int j = 0; j < Env.FROG_EGG_QTY; j++)
+				Env.frog_eggs.add(new Egg());
 			System.out.println("Fail to load egg file at path '" + Application.CLASSPATH + "', created "
-					+ Env.eggs.size() + " eggs to do test.\n");
+					+ Env.frog_eggs.size() + " eggs to do test.\n");
 		}
 
 	}

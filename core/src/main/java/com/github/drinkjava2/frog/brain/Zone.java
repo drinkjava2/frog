@@ -97,4 +97,8 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 		this.r = r;
 	}
 
+	public String debugInfo() {
+		return new StringBuilder().append("zone x=").append(x).append(", y=").append(y).append(", z=").append(z)
+				.append(", r=").append(r).toString();
+	}
 }

@@ -30,13 +30,13 @@ public class Env extends JPanel {
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_EGGS = true;// 每次运行是否先删除保存的蛋
 
-	public static final int EGG_QTY = 25; // 每轮下n个蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int FROG_EGG_QTY = 25; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
-	public static final int FROG_PER_EGG = 4; // 每个蛋可以孵出几个青蛙
+	public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
 	public static final int SCREEN = 1; // 分几屏测完
 
-	public static final int FROG_PER_SCREEN = EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
+	public static final int FROG_PER_SCREEN = FROG_EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏上显示几个青蛙，这个数值由上面三个参数计算得来
 
 	/** Frog's brain size is a 3D array of Cell */ // 脑空间是个三维Cell数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
 	public static final int FROG_BRAIN_XSIZE = 1000; // frog的脑在X方向长度
@@ -71,9 +71,20 @@ public class Env extends JPanel {
 
 	public static List<Frog> frogs = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
-	public static List<Egg> eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
+	public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
 	public static EnvObject[] things = new EnvObject[] { new Food() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+
+	// 以下是与蛇相关的常量和变量
+	public static final int SNAKE_EGG_QTY = 10; // 每轮下n个蛇蛋，可调，只有最优秀的前n个蛇们才允许下蛋
+
+	public static final int SNAKE_PER_EGG = 4; // 每个蛇蛋可以孵出几个蛇
+
+	public static final int SNAKE_PER_SCREEN = SNAKE_EGG_QTY * SNAKE_PER_EGG / SCREEN; // 每屏上显示几个蛇，这个数值由上面参数计算得来
+
+	public static List<Frog> snakes = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
+
+	public static List<Egg> snakeEggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -115,16 +126,16 @@ public class Env extends JPanel {
 
 	private void rebuildFrogs() {
 		frogs.clear();
-		for (int i = 0; i < eggs.size(); i++) {// 创建青蛙，每个蛋生成n个蛙，并随机取一个别的蛋作为精子
+		for (int i = 0; i < frog_eggs.size(); i++) {// 创建青蛙，每个蛋生成n个蛙，并随机取一个别的蛋作为精子
 			int loop = FROG_PER_EGG;
-			if (eggs.size() > 20) { // 如果数量多，进行一些优化，让排名靠前的Egg多孵出青蛙
+			if (frog_eggs.size() > 20) { // 如果数量多，进行一些优化，让排名靠前的Egg多孵出青蛙
 				if (i < FROG_PER_EGG)// 0,1,2,3
 					loop = FROG_PER_EGG + 1;
-				if (i >= (eggs.size() - FROG_PER_EGG))
+				if (i >= (frog_eggs.size() - FROG_PER_EGG))
 					loop = FROG_PER_EGG - 1;
 			}
 			for (int j = 0; j < loop; j++) {
-				Egg zygote = new Egg(eggs.get(i), eggs.get(RandomUtils.nextInt(eggs.size())));
+				Egg zygote = new Egg(frog_eggs.get(i), frog_eggs.get(RandomUtils.nextInt(frog_eggs.size())));
 				frogs.add(new Frog(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote));
 			}
 		}
@@ -248,6 +259,7 @@ public class Env extends JPanel {
 					Graphics g2 = this.getGraphics();
 					g2.drawImage(buffImg, 0, 0, this);
 				}
+				System.out.println(firstFrog.debugInfo());// 打印输出Frog调试内容
 				Application.brainPic.drawBrainPicture(firstFrog);
 				checkIfPause(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
