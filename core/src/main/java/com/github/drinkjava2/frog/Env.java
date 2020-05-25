@@ -259,7 +259,7 @@ public class Env extends JPanel {
 					Graphics g2 = this.getGraphics();
 					g2.drawImage(buffImg, 0, 0, this);
 				}
-				System.out.println(firstFrog.debugInfo());// 打印输出Frog调试内容
+				//System.out.println(firstFrog.debugInfo());// 打印输出Frog调试内容
 				Application.brainPic.drawBrainPicture(firstFrog);
 				checkIfPause(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {

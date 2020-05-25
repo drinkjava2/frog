@@ -22,12 +22,12 @@ import com.github.drinkjava2.frog.util.RandomUtils;
 /**
  * Line
  * 
- * 这是一个随机方式连接两端的Organ，它是从旧版的RandomConnectGroup改造过来，这是一种最简单的神经元排列方式，
+ * 这是一个随机方式连接两端的Organ，它是从旧版的RandomConnectGroup改造过来，这是一种最简单的神经元排列方式
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Line extends Organ { 
+public class Line extends Organ {
 	private static final long serialVersionUID = 1L;
 
 	public Zone inputZone; // 输入触突区
@@ -41,15 +41,15 @@ public class Line extends Organ {
 	@Override
 	public void initFrog(Frog f) {
 		if (!initilized) {
-			initilized = true; 
-			inputZone= RandomUtils.randomZoneInOrgans(f);
+			initilized = true;
+			inputZone = RandomUtils.randomZoneInOrgans(f);
 			outputZone = RandomUtils.randomZoneInOrgans(f);
-			 	}
+		}
 		this.fat = 0;// 每次fat清0，因为遗传下来的fat不为0
-		Cell c=new Cell();
-		c.input= inputZone;
-		c.output=outputZone;
-		c.organ=this;
+		Cell c = new Cell();
+		c.input = inputZone;
+		c.output = outputZone;
+		c.organ = this;
 		f.cells.add(c);
 	}
 
@@ -71,7 +71,7 @@ public class Line extends Organ {
 		else if (organOutputEnergy <= 0)
 			pic.setPicColor(Color.BLUE);
 		else
-			pic.setPicColor(Color.red); // 用到了?红色 
+			pic.setPicColor(Color.red); // 用到了?红色
 		pic.drawLine(inputZone, outputZone);
 		pic.drawZone(this);
 		pic.setPicColor(Color.red);

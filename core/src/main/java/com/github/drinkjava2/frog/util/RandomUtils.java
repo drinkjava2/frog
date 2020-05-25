@@ -41,14 +41,8 @@ public class RandomUtils {
 	}
 
 	public static Zone randomZoneInZone(Zone o) { // 在一个区内随机取一个小小区
-		Zone r = new Zone(o.x - o.r + o.r * 2 * rand.nextFloat(), o.y - o.r + o.r * 2 * rand.nextFloat(),
+		return new Zone(o.x - o.r + o.r * 2 * rand.nextFloat(), o.y - o.r + o.r * 2 * rand.nextFloat(),
 				o.z - o.r + o.r * 2 * rand.nextFloat(), o.r * rand.nextFloat() * .04f);
-		if (r.x <= 0.00001f) {
-			System.out.println(o.getClass());
-			System.out.println("input:" + o.debugInfo());
-			System.out.println("result:" + r.debugInfo());
-		}
-		return r;
 	}
 
 	/** Return a random zone inside of frog's random organ */

@@ -94,7 +94,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 		// 依次调用每个cell的active方法，这是写在organ类里的方法，因为同一个器官的cell具有相同的行为
 		for (Cell cell : cells)
 			cell.organ.active(this, cell);
-		addRandomLines();
+		addRandomLines(); // 随机添加神经连线, 这是一个硬编码, 目前一个连线对应一个器官，待改进
 		return alive;
 	}
 
