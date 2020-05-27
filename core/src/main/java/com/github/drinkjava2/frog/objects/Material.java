@@ -25,10 +25,15 @@ public class Material {
 	public static final byte SEESAW_BASE = 1; // 1~9 is invisible to frog
 
 	public static final byte VISIBLE = 10; // if>=10 will visible to frog
-	public static final byte FOOD = VISIBLE + 1;
-	public static final byte SEESAW = VISIBLE + 2;
+	public static final byte SEESAW = VISIBLE + 1;
 
-	public static final byte KILLFROG = 20; // if>=20 will kill frog
+	public static final byte FOOD = 20;
+	public static final byte FLY1 = FOOD + 1;// FLY是会动的Food
+	public static final byte FLY2 = FOOD + 2;
+	public static final byte FLY3 = FOOD + 3;
+	public static final byte FLY4 = FOOD + 4;
+
+	public static final byte KILLFROG = 30; // if>=20 will kill frog
 	public static final byte BRICK = KILLFROG + 1;// brick will kill frog
 	public static final byte TRAP = KILLFROG + 2; // trap will kill frog
 

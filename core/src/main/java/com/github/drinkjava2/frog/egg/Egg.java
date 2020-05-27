@@ -18,7 +18,6 @@ import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.organ.Active;
 import com.github.drinkjava2.frog.brain.organ.Eat;
-import com.github.drinkjava2.frog.brain.organ.OldEye;
 import com.github.drinkjava2.frog.brain.organ.Eyes.SeeDown;
 import com.github.drinkjava2.frog.brain.organ.Eyes.SeeLeft;
 import com.github.drinkjava2.frog.brain.organ.Eyes.SeeRight;
@@ -57,7 +56,6 @@ public class Egg implements Serializable {
 		organs.add(new SeeDown().setXYZRN(200, 300 - 90, 500, r, "SeeDown"));
 		organs.add(new SeeLeft().setXYZRN(200 - 90, 300, 500, r, "SeeLeft"));
 		organs.add(new SeeRight().setXYZRN(200 + 90, 300, 500, r, "SeeRight"));
-//		organs.add(new OldEye().setXYZRN(200, 300, 500, r, "OldEye"));
 	}
 
 	/** Create egg from frog */

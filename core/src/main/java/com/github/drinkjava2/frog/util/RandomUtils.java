@@ -13,7 +13,9 @@ package com.github.drinkjava2.frog.util;
 import java.util.Random;
 
 import com.github.drinkjava2.frog.Frog;
+import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.brain.Zone;
+import com.github.drinkjava2.frog.brain.organ.Line;
 
 /**
  * Random Utilities used in this project
@@ -42,14 +44,19 @@ public class RandomUtils {
 
 	public static Zone randomZoneInZone(Zone o) { // 在一个区内随机取一个小小区
 		return new Zone(o.x - o.r + o.r * 2 * rand.nextFloat(), o.y - o.r + o.r * 2 * rand.nextFloat(),
-				o.z - o.r + o.r * 2 * rand.nextFloat(), o.r * rand.nextFloat() * .04f);
+				o.z /*- o.r + o.r * 2 * rand.nextFloat()*/, o.r * rand.nextFloat() * .04f);
 	}
 
 	/** Return a random zone inside of frog's random organ */
 	public static Zone randomZoneInOrgans(Frog f) {
 		if (f.organs == null || f.organs.size() == 0)
 			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when frog has no organ");
-		return randomZoneInZone(f.organs.get(1 + RandomUtils.nextInt(f.organs.size() - 1))); // 跳过第一个器官
+		Organ o = f.organs.get(1 + RandomUtils.nextInt(f.organs.size() - 1)); // 跳过第一个器官
+		if (o instanceof Line) {
+			return randomZoneInZone(((Line) o).bodyZone);
+		} else {
+			return randomZoneInZone(o);
+		}
 	}
 
 	public static int vary(int v, int percet) {

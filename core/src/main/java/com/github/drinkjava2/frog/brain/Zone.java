@@ -58,6 +58,13 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 		this.r = z.r;
 	}
 
+	public Zone(Zone a, Zone b) {// 用两个Zone来构造，新的zone位于两个zone的中间
+		this.x = (a.x + b.x) / 2;
+		this.y = (a.y + b.y) / 2;
+		this.z = (a.z + b.z) / 2-50;
+		this.r = (a.r + b.r) / 2;
+	}
+
 	public boolean nearby(Zone o) {
 		if (o == null)
 			return false;

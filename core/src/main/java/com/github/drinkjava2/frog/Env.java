@@ -63,6 +63,7 @@ public class Env extends JPanel {
 	public static int step;// 当前测试步数
 
 	public static final int FOOD_QTY = 1500; // 食物数量, 可调
+	public static boolean FOOD_CAN_MOVE = true; // 食物是否可以移动
 
 	// 以下是程序内部变量，不要手工修改它们
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
@@ -117,7 +118,8 @@ public class Env extends JPanel {
 	}
 
 	public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
-		if (insideEnv(x, y) && Env.bricks[x][y] == Material.FOOD) {
+		if (insideEnv(x, y) && Env.bricks[x][y] >= Material.FOOD && Env.bricks[x][y] <= Material.FLY4) {
+			Food.food_ated++;
 			bricks[x][y] = 0;
 			return true;
 		}
@@ -148,9 +150,10 @@ public class Env extends JPanel {
 				brick = bricks[x][y];
 				if (brick != 0) {
 					g.setColor(Material.color(brick));
-					if (brick == Material.FOOD)
-						g.fillRoundRect(x, y, 4, 4, 2, 2); // show food bigger
-					else
+					if (brick >= Material.FOOD && brick <= Material.FLY4) {
+						g.fillRoundRect(x, y, 4, 4, 2, 2); // 食物只有一个点太小，画大一点
+						// g.drawString(String.valueOf(brick-Material.FOOD), x, y); //数字雨
+					} else
 						g.drawLine(x, y, x, y); // only 1 point
 				}
 			}
@@ -162,23 +165,13 @@ public class Env extends JPanel {
 		format100.setMaximumFractionDigits(2);
 	}
 
-	private static int foodFoundAmount() {// 统计找食数等
-		int leftfood = 0;
-		for (int x = 0; x < ENV_WIDTH; x++)
-			for (int y = 0; y < ENV_HEIGHT; y++)
-				if (bricks[x][y] == Material.FOOD)
-					leftfood++;
-		return FOOD_QTY - leftfood;
-	}
-
 	private String foodFoundCountText() {// 统计找食数等
-		int foodFound = foodFoundAmount();
 		int maxFound = 0;
 		for (Frog f : frogs)
 			if (f.ateFood > maxFound)
 				maxFound = f.ateFood;
-		return new StringBuilder("找食率:").append(format100.format(foodFound * 1.00 / FOOD_QTY)).append(", 平均: ")
-				.append(foodFound * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound).toString();
+		return new StringBuilder("找食率:").append(format100.format(Food.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ")
+				.append(Food.food_ated * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound).toString();
 	}
 
 	public static void checkIfPause(Frog f) {
@@ -237,12 +230,12 @@ public class Env extends JPanel {
 					if (SHOW_SPEED < 0) // 如果speed小于0，人为加入延迟
 						sleep(-SHOW_SPEED);
 
-					// 开始画青蛙
+					// 开始画虚拟环境和青蛙
 					g.setColor(Color.white);
-					g.fillRect(0, 0, this.getWidth(), this.getHeight());
+					g.fillRect(0, 0, this.getWidth(), this.getHeight()); // 先清空虚拟环境
 					g.setColor(Color.BLACK);
-					drawWorld(g);
-					for (int j = 0; j < FROG_PER_SCREEN; j++) {
+					drawWorld(g);// 画整个虚拟环境
+					for (int j = 0; j < FROG_PER_SCREEN; j++) { // 显示青蛙
 						Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 						f.show(g);
 					}
@@ -259,7 +252,7 @@ public class Env extends JPanel {
 					Graphics g2 = this.getGraphics();
 					g2.drawImage(buffImg, 0, 0, this);
 				}
-				//System.out.println(firstFrog.debugInfo());// 打印输出Frog调试内容
+				// System.out.println(firstFrog.debugInfo());// 打印输出Frog调试内容
 				Application.brainPic.drawBrainPicture(firstFrog);
 				checkIfPause(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
