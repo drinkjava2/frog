@@ -58,6 +58,8 @@ public class Line extends Organ {
 
 	/** Line如果input是另一个line的body，吸收能量， Line如果output是另一个line的body,放出能量 */
 	public void active(Frog f, Cell c) {
+		if (RandomUtils.percent(95)) //这个会严重影响速度，所以降低它的机率
+			return;
 		for (Cell cell : f.cells) {
 			if (cell.energy > organActiveEnergy)
 				if (c.input.nearby(cell.body)) {

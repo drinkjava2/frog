@@ -19,14 +19,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * File Utilities used in this project
+ * Local File Utilities used in this project
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class FrogFileUtils {
+public class LocalFileUtils {
 
-	private FrogFileUtils() {
+	private LocalFileUtils() {
 		// default constructor
 	}
 

@@ -22,7 +22,7 @@ import java.util.List;
 import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
-import com.github.drinkjava2.frog.util.FrogFileUtils;
+import com.github.drinkjava2.frog.util.LocalFileUtils;
 
 /**
  * EggTool save eggs to disk
@@ -30,7 +30,7 @@ import com.github.drinkjava2.frog.util.FrogFileUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class EggTool {
+public class FrogEggTool {
 
 	/**
 	 * Frogs which have higher energy lay eggs
@@ -39,12 +39,8 @@ public class EggTool {
 	 * 用能量的多少来简化生存竟争模拟，每次下蛋数量固定为EGG_QTY个
 	 */
 	public static void layEggs() {
-		 
+
 		sortFrogsOrderByEnergyDesc();
-//		for (Frog frog : Env.frogs) {
-//			Lines LINES=(Lines) frog.organs.get(10);
-//			System.out.println(frog.energy+":"+LINES.lines[0]);
-//		}
 		Frog first = Env.frogs.get(0);
 		Frog last = Env.frogs.get(Env.frogs.size() - 1);
 		try {
@@ -57,7 +53,8 @@ public class EggTool {
 			so.close();
 			System.out.print("Fist frog has " + first.organs.size() + " organs,  energy=" + first.energy);
 			System.out.println(", Last frog has " + last.organs.size() + " organs,  energy=" + last.energy);
-			System.out.println("Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
+			System.out.println(
+					"Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}
@@ -78,21 +75,21 @@ public class EggTool {
 
 	public static void deleteEggs() {
 		System.out.println("Delete exist egg file: '" + Application.CLASSPATH + "frog_eggs.ser'");
-		FrogFileUtils.deleteFile(Application.CLASSPATH + "frog_eggs.ser");
+		LocalFileUtils.deleteFile(Application.CLASSPATH + "frog_eggs.ser");
 	}
 
 	/**
-	 * 从磁盘读入一批Egg
+	 * 从磁盘读入一批frog Egg
 	 */
 	@SuppressWarnings("unchecked")
-	public static void loadEggs() {
+	public static void loadFrogEggs() {
 		boolean errorfound = false;
 		try {
 			FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "frog_eggs.ser");
 			ObjectInputStream eggsInputStream = new ObjectInputStream(eggsFile);
 			Env.frog_eggs = (List<Egg>) eggsInputStream.readObject();
-			System.out.println(
-					"Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH + "frog_eggs.ser" + "'.\n");
+			System.out.println("Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH
+					+ "frog_eggs.ser" + "'.\n");
 			eggsInputStream.close();
 		} catch (Exception e) {
 			errorfound = true;
@@ -101,8 +98,8 @@ public class EggTool {
 			Env.frog_eggs.clear();
 			for (int j = 0; j < Env.FROG_EGG_QTY; j++)
 				Env.frog_eggs.add(new Egg());
-			System.out.println("Fail to load egg file at path '" + Application.CLASSPATH + "', created "
-					+ Env.frog_eggs.size() + " eggs to do test.\n");
+			System.out.println("Fail to load frog egg file '" + Application.CLASSPATH + "frog_eggs.ser" + "', created "
+					+ Env.frog_eggs.size() + " eggs to do test.");
 		}
 
 	}
