@@ -50,7 +50,7 @@ public class RandomUtils {
 	/** Return a random zone inside of frog's random organ */
 	public static Zone randomZoneInOrgans(Frog f) {
 		if (f.organs == null || f.organs.size() == 0)
-			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when frog has no organ");
+			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when has no organ");
 		Organ o = f.organs.get(1 + RandomUtils.nextInt(f.organs.size() - 1)); // 跳过第一个器官
 		if (o instanceof Line) {
 			return randomZoneInZone(((Line) o).bodyZone);

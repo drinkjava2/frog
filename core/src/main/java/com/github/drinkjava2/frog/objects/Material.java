@@ -15,29 +15,35 @@ import java.awt.Color;
 /**
  * Material store material types
  * 
- * 用不同的数字常量代表虚拟环境中不同的组成材料，0为空，小于10的不可见，大于20的将杀死在同一位置出现的青蛙,例如砖头和青蛙不可以重叠出现在同一位置
+ * 用不同的数字常量代表虚拟环境中不同的材料，0为空，每个材料用整数中的一位表示, 所以一个整数中可以表达15种不同的材料，并且这些材料可以同时出现
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class Material {
-	public static final byte NO = 0; // nothing
-	public static final byte SEESAW_BASE = 1; // 1~9 is invisible to frog
+	private static int origin = 1;
 
-	public static final byte VISIBLE = 10; // if>=10 will visible to frog
-	public static final byte SEESAW = VISIBLE + 1;
+	private static int next() {// 每次将origin左移1位
+		origin = origin << 1;
+		if (origin < 0)
+			throw new RuntimeException("");
+		return origin;
+	}
 
-	public static final byte FOOD = 20;
-	public static final byte FLY1 = FOOD + 1;// FLY是会动的Food
-	public static final byte FLY2 = FOOD + 2;
-	public static final byte FLY3 = FOOD + 3;
-	public static final byte FLY4 = FOOD + 4;
+	public static final int NO = 0; // nothing
+	public static final int VISIBLE = next(); // if visible to frog
+	public static final int SEESAW = next();
+	public static final int FOOD = next();
+	public static final int FLY1 = next();// FLY1苍蝇是一种会移动的Food
+	public static final int FLY2 = next();// FLY2苍蝇是一种会移动的Food
+	public static final int FLY3 = next();// FLY3苍蝇是一种会移动的Food
+	public static final int FLY4 = next();// FLY4苍蝇是一种会移动的Food
 
-	public static final byte KILLFROG = 30; // if>=20 will kill frog
-	public static final byte BRICK = KILLFROG + 1;// brick will kill frog
-	public static final byte TRAP = KILLFROG + 2; // trap will kill frog
+	public static final int KILLFROG = next(); // if>=KILLFROG will kill frog
+	public static final int BRICK = next();// brick will kill frog
+	public static final int TRAP = next(); // trap will kill frog
 
-	public static Color color(byte material) {
+	public static Color color(int material) {
 		if (material == TRAP)
 			return Color.LIGHT_GRAY;
 		else

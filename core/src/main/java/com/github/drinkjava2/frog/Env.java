@@ -70,7 +70,7 @@ public class Env extends JPanel {
 	// 以下是程序内部变量，不要手工修改它们
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
 
-	public static byte[][] bricks = new byte[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，见Material.java
+	public static int[][] bricks = new int[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，见Material.java
 
 	public static List<Frog> frogs = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
@@ -80,7 +80,7 @@ public class Env extends JPanel {
 
 	// =========以下是与蛇相关的常量和变量===========
 
-	public static final boolean DELETE_SNAKE_EGGS = false;// 每次运行是否先删除保存的蛇蛋
+	public static final boolean DELETE_SNAKE_EGGS = true;// 每次运行是否先删除保存的蛇蛋
 
 	public static final boolean SNAKE_MODE = true; // 是否加小蛇加进来吃青蛙?
 
@@ -134,7 +134,7 @@ public class Env extends JPanel {
 		return false;
 	}
 
-	private void rebuildFrogs() {
+	private void rebuildFrogs() {// 根据蛙蛋重新孵化出蛙
 		frogs.clear();
 		for (int i = 0; i < frog_eggs.size(); i++) {// 创建青蛙，每个蛋生成n个蛙，并随机取一个别的蛋作为精子
 			int loop = FROG_PER_EGG;
@@ -151,8 +151,25 @@ public class Env extends JPanel {
 		}
 	}
 
+	private void rebuildSnakes() {// 根据蛇蛋重新孵化出蛇
+		snakes.clear();
+		for (int i = 0; i < snake_eggs.size(); i++) {// 创建蛇，每个蛋生成n个蛇，并随机取一个别的蛋作为精子
+			int loop = SNAKE_PER_EGG;
+			if (snake_eggs.size() > 20) { // 如果数量多，进行一些优化，让排名靠前的Egg多孵出青蛙
+				if (i < SNAKE_PER_EGG)// 0,1,2,3
+					loop = SNAKE_PER_EGG + 1;
+				if (i >= (snake_eggs.size() - SNAKE_PER_EGG))
+					loop = SNAKE_PER_EGG - 1;
+			}
+			for (int j = 0; j < loop; j++) {
+				Egg zygote = new Egg(snake_eggs.get(i), snake_eggs.get(RandomUtils.nextInt(snake_eggs.size())));
+				snakes.add(new Snake(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote));
+			}
+		}
+	}
+
 	private void drawWorld(Graphics g) {
-		byte brick;
+		int brick;
 		for (int x = 0; x < ENV_WIDTH; x++)
 			for (int y = 0; y < ENV_HEIGHT; y++) {
 				brick = bricks[x][y];
@@ -298,24 +315,8 @@ public class Env extends JPanel {
 			}
 			round++;
 			FrogEggTool.layEggs();
+			SnakeEggTool.layEggs();
 		} while (true);
 	}
 
-	// =============下面是与蛇相关的方法==========
-	private void rebuildSnakes() {
-		snakes.clear();
-		for (int i = 0; i < snake_eggs.size(); i++) {// 创建蛇，每个蛋生成n个蛇，并随机取一个别的蛋作为精子
-			int loop = SNAKE_PER_EGG;
-			if (snake_eggs.size() > 20) { // 如果数量多，进行一些优化，让排名靠前的Egg多孵出青蛙
-				if (i < SNAKE_PER_EGG)// 0,1,2,3
-					loop = SNAKE_PER_EGG + 1;
-				if (i >= (snake_eggs.size() - SNAKE_PER_EGG))
-					loop = SNAKE_PER_EGG - 1;
-			}
-			for (int j = 0; j < loop; j++) {
-				Egg zygote = new Egg(snake_eggs.get(i), snake_eggs.get(RandomUtils.nextInt(snake_eggs.size())));
-				snakes.add(new Snake(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote));
-			}
-		}
-	}
 }

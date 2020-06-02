@@ -16,16 +16,6 @@ import java.util.List;
 
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
-import com.github.drinkjava2.frog.brain.organ.Active;
-import com.github.drinkjava2.frog.brain.organ.Eat;
-import com.github.drinkjava2.frog.brain.organ.Eyes.SeeDown;
-import com.github.drinkjava2.frog.brain.organ.Eyes.SeeLeft;
-import com.github.drinkjava2.frog.brain.organ.Eyes.SeeRight;
-import com.github.drinkjava2.frog.brain.organ.Eyes.SeeUp;
-import com.github.drinkjava2.frog.brain.organ.MoveDown;
-import com.github.drinkjava2.frog.brain.organ.MoveLeft;
-import com.github.drinkjava2.frog.brain.organ.MoveRight;
-import com.github.drinkjava2.frog.brain.organ.MoveUp;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -43,19 +33,7 @@ public class Egg implements Serializable {
 
 	public List<Organ> organs = new ArrayList<>();// NOSONAR
 
-	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-		float r = 40;
-		organs.add(new Eat().setXYZRN(100, 100, 100, r, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
-		organs.add(new Active().setXYZRN(500, 600, 500, r, "Active")); // 永远激活
-		organs.add(new Active().setXYZRN(500, 600, 500, r, "Active")); // 永远激活
-		organs.add(new MoveUp().setXYZRN(800, 100, 500, r, "Up"));
-		organs.add(new MoveDown().setXYZRN(800, 400, 500, r, "Down"));
-		organs.add(new MoveLeft().setXYZRN(700, 250, 500, r, "Left"));
-		organs.add(new MoveRight().setXYZRN(900, 250, 500, r, "Right"));
-		organs.add(new SeeUp().setXYZRN(200, 300 + 90, 500, r, "SeeUp"));
-		organs.add(new SeeDown().setXYZRN(200, 300 - 90, 500, r, "SeeDown"));
-		organs.add(new SeeLeft().setXYZRN(200 - 90, 300, 500, r, "SeeLeft"));
-		organs.add(new SeeRight().setXYZRN(200 + 90, 300, 500, r, "SeeRight"));
+	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙 
 	}
 
 	/** Create egg from frog */
