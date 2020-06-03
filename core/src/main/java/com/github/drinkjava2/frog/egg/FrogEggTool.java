@@ -23,7 +23,7 @@ import com.github.drinkjava2.frog.Application;
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.organ.Active;
-import com.github.drinkjava2.frog.brain.organ.Eat;
+import com.github.drinkjava2.frog.brain.organ.Mouth;
 import com.github.drinkjava2.frog.brain.organ.MoveDown;
 import com.github.drinkjava2.frog.brain.organ.MoveLeft;
 import com.github.drinkjava2.frog.brain.organ.MoveRight;
@@ -109,9 +109,8 @@ public class FrogEggTool {
 			for (int j = 0; j < Env.FROG_EGG_QTY; j++) {
 				Egg egg = new Egg();
 				float r = 40;
-				egg.organs.add(new Eat().setXYZRN(100, 100, 100, r, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
-				egg.organs.add(new Active().setXYZRN(500, 600, 500, r, "Active")); // 永远激活
-				egg.organs.add(new Active().setXYZRN(500, 600, 500, r, "Active")); // 永远激活
+				egg.organs.add(new Mouth().setXYZRN(0, 0, 0, 0, "Eat")); // Mouth不是感觉或输出器官，没有位置和大小
+				egg.organs.add(new Active().setXYZRN(500, 600, 500, r, "Active")); // 永远激活 
 				egg.organs.add(new MoveUp().setXYZRN(800, 100, 500, r, "Up"));
 				egg.organs.add(new MoveDown().setXYZRN(800, 400, 500, r, "Down"));
 				egg.organs.add(new MoveLeft().setXYZRN(700, 250, 500, r, "Left"));

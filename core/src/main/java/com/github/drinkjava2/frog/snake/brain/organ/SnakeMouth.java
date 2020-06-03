@@ -8,23 +8,23 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.brain.organ;
+package com.github.drinkjava2.frog.snake.brain.organ;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Eat food at current x, y position
+ * SnakeMouth eat frog at current x, y position (snake's mouth postion)
  */
-public class Eat extends Organ {// Eat这个类将食物转化为能量，能量小于0，则青蛙死掉
+public class SnakeMouth extends Organ {// SnakeMouth这个类将青蛙作为食物转化为能量，能量小于0，则蛇死掉
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void active(Frog f) {
-		if (Env.foundAndAteFood(f.x, f.y)) {
-			f.ateFood++; 
-			f.energy += 1000;// 如果青蛙的坐标与食物重合，吃掉food，能量境加 
+		if (Env.foundAndAteFrog(f.x, f.y)) {
+			f.ateFood++;
+			f.energy += 1000;// 如果蛇的坐标与青蛙重合，吃掉food，能量境加
 		}
 	}
 

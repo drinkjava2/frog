@@ -27,8 +27,8 @@ import com.github.drinkjava2.frog.brain.organ.MoveLeft;
 import com.github.drinkjava2.frog.brain.organ.MoveRight;
 import com.github.drinkjava2.frog.brain.organ.MoveUp;
 import com.github.drinkjava2.frog.snake.Snake;
-import com.github.drinkjava2.frog.snake.brain.organ.SnakeEat;
 import com.github.drinkjava2.frog.snake.brain.organ.SnakeEyes;
+import com.github.drinkjava2.frog.snake.brain.organ.SnakeMouth;
 import com.github.drinkjava2.frog.util.LocalFileUtils;
 
 /**
@@ -46,7 +46,8 @@ public class SnakeEggTool {
 	 * 用能量的多少来简化生存竟争模拟，每次下蛋数量固定为EGG_QTY个
 	 */
 	public static void layEggs() {
-
+		if (!Env.SNAKE_MODE)
+			return;
 		sortSnakesOrderByEnergyDesc();
 		Snake first = Env.snakes.get(0);
 		Snake last = Env.snakes.get(Env.snakes.size() - 1);
@@ -89,7 +90,7 @@ public class SnakeEggTool {
 	 * 从磁盘读入一批snake Egg
 	 */
 	@SuppressWarnings("unchecked")
-	public static void loadSnakeEggs() {
+	public static void loadSnakeEggs() { 
 		boolean errorfound = false;
 		try {
 			FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "snake_eggs.ser");
@@ -106,10 +107,8 @@ public class SnakeEggTool {
 			for (int j = 0; j < Env.SNAKE_EGG_QTY; j++) {
 				Egg egg = new Egg();
 				float r = 40;
-				egg.organs.add(new SnakeEat().setXYZRN(100, 100, 100, r, "Eat")); // EAT不是感觉或输出器官，没有位置和大小
-
-				egg.organs.add(new Active().setXYZRN(500, 600, 500, r, "Active")); // 永远激活
-				egg.organs.add(new Active().setXYZRN(500, 600, 500, r, "Active")); // 永远激活
+				egg.organs.add(new SnakeMouth().setXYZRN(0, 0, 0, 0, "Eat")); // SnakeMouth不是感觉或输出器官，没有位置和大小
+				egg.organs.add(new Active().setXYZRN(500, 600, 500, 5, "Active")); // 永远激活
 				egg.organs.add(new MoveUp().setXYZRN(800, 100, 500, r, "Up"));
 				egg.organs.add(new MoveDown().setXYZRN(800, 400, 500, r, "Down"));
 				egg.organs.add(new MoveLeft().setXYZRN(700, 250, 500, r, "Left"));

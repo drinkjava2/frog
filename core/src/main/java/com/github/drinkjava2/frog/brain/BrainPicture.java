@@ -313,10 +313,8 @@ public class BrainPicture extends JPanel {
 
 	private static Cuboid brain = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
 
-	public void drawBrainPicture(Frog f) {// 在这个方法里进行青蛙三维脑结构的绘制
-		if (!f.alive)
-			return;
-		if (!Env.SHOW_FIRST_FROG_BRAIN)
+	public void drawBrainPicture(Frog f) {// 在这个方法里进行青蛙或蛇的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
+		if (!Env.SHOW_FIRST_FROG_BRAIN || f == null || !f.alive)
 			return;
 		g.setColor(WHITE);// 先清空旧图
 		g.fillRect(0, 0, brainDispWidth, brainDispWidth);

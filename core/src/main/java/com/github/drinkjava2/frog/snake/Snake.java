@@ -40,9 +40,10 @@ public class Snake extends Frog {
 		super(x, y, egg);
 	}
 
+	@Override
 	public void show(Graphics g) {// 显示蛇的图象
 		if (!alive)
 			return;
-		g.drawImage(snakeImg, x - 20, y - 20, 24, 24, null);
+		g.drawImage(snakeImg, x - 16, y - 5, 18, 18, null);// 减去坐标，保证蛇嘴巴显示在当前x,y处
 	}
 }

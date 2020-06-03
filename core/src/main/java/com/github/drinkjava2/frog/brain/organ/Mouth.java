@@ -8,16 +8,16 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.github.drinkjava2.frog.snake.brain.organ;
+package com.github.drinkjava2.frog.brain.organ;
 
 import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
 
 /**
- * Eat food at current x, y position
+ * Mouth eat food at current x, y position
  */
-public class SnakeEat extends Organ {// Eat这个类将食物转化为能量，能量小于0，则青蛙死掉
+public class Mouth extends Organ {// Mouth这个类将食物转化为能量，能量小于0，则青蛙死掉
 	private static final long serialVersionUID = 1L;
 
 	@Override

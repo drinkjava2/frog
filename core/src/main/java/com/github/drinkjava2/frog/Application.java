@@ -4,9 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -37,6 +40,7 @@ public class Application {
 	public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_XSIZE,
 			Env.FROG_BRAIN_DISP_WIDTH);
 	public static ActionListener pauseAction;
+	public static boolean selectFrog = true;
 
 	static private void checkIfShowBrainPicture(JButton button) {
 		if (Env.SHOW_FIRST_FROG_BRAIN) {
@@ -63,19 +67,41 @@ public class Application {
 		int buttonWidth = 100;
 		int buttonHeight = 22;
 		int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
-		button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
 
+		// select frog or snake 显示青蛙或蛇的脑图
+		JRadioButton radioFrog = new JRadioButton("Frog");
+		radioFrog.setBounds(buttonXpos + buttonWidth + 10, Env.ENV_HEIGHT + 8, 50, buttonHeight);
+		radioFrog.addActionListener(e -> selectFrog = radioFrog.isSelected());
+		JRadioButton radioSnake = new JRadioButton("Snake");
+
+		button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
 		ActionListener al = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Env.SHOW_FIRST_FROG_BRAIN = !Env.SHOW_FIRST_FROG_BRAIN;
 				checkIfShowBrainPicture(button);
+				if (Env.SHOW_FIRST_FROG_BRAIN && Env.SNAKE_MODE) {
+					radioFrog.setVisible(true);
+					radioSnake.setVisible(true);
+				} else {
+					radioFrog.setVisible(false);
+					radioSnake.setVisible(false);
+				}
 			}
 
 		};
 		checkIfShowBrainPicture(button);
 		button.addActionListener(al);
 		mainFrame.add(button);
+
+		radioSnake.setBounds(buttonXpos + buttonWidth + 60, Env.ENV_HEIGHT + 8, 80, buttonHeight);
+		radioSnake.addActionListener(e -> selectFrog = radioFrog.isSelected());
+		ButtonGroup btnGroup = new ButtonGroup();
+		btnGroup.add(radioFrog);
+		btnGroup.add(radioSnake);
+		radioFrog.setSelected(true);
+		mainFrame.add(radioFrog);
+		mainFrame.add(radioSnake);
 
 		JButton stopButton = new JButton("Pause");// 按钮，暂停或继续
 		stopButton.setBounds(buttonXpos, Env.ENV_HEIGHT + 35, buttonWidth, buttonHeight);
@@ -108,6 +134,21 @@ public class Application {
 		final JLabel label = new JLabel("Speed:");
 		label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
 		mainFrame.add(label);
+
+		JCheckBox snakeModeCkBox = new JCheckBox("Snake Mode");
+		snakeModeCkBox.setBounds(buttonXpos, speedSlider.getY() + 25, 120, buttonHeight);
+		snakeModeCkBox.addActionListener(e -> {
+			Env.SNAKE_MODE = snakeModeCkBox.isSelected();
+			if (Env.SHOW_FIRST_FROG_BRAIN && Env.SNAKE_MODE) {
+				radioFrog.setVisible(true);
+				radioSnake.setVisible(true);
+			} else {
+				radioFrog.setVisible(false);
+				radioSnake.setVisible(false);
+			}
+		});
+		snakeModeCkBox.setSelected(true);
+		mainFrame.add(snakeModeCkBox);
 
 		mainFrame.setVisible(true);
 		env.run();

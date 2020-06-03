@@ -16,19 +16,21 @@ import com.github.drinkjava2.frog.brain.Organ;
 import com.github.drinkjava2.frog.util.RandomUtils;
 
 /**
- * Eye can only see 4 direction
+ * SnakeEyes can only see 4 direction's frog
+ * 
+ * 蛇的眼睛看不到food, 只能看到青蛙，也就是说它把青蛙当成食物
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class SnakeEyes {
 
-	public static class SeeUp extends Organ {// 只能看到上方食物
+	public static class SeeUp extends Organ {// 只能看到上方青蛙
 		private static final long serialVersionUID = 1L;
 		public int seeDistance; // 眼睛能看到的距离
 
 		@Override
-		public void initFrog(Frog f) { // 仅在Frog生成时这个方法会调用一次
+		public void initFrog(Frog f) { // 仅在Snake生成时这个方法会调用一次
 			if (!initilized) {
 				initilized = true;
 				seeDistance = 8;
@@ -37,7 +39,7 @@ public class SnakeEyes {
 
 		@Override
 		public Organ[] vary() {
-			seeDistance=RandomUtils.varyInLimit(seeDistance, 5, 20);
+			seeDistance = RandomUtils.varyInLimit(seeDistance, 5, 20);
 			if (RandomUtils.percent(5)) { // 可视距离有5%的机率变异
 				seeDistance = seeDistance + 1 - 2 * RandomUtils.nextInt(2);
 				if (seeDistance < 1)
@@ -58,7 +60,7 @@ public class SnakeEyes {
 		}
 	}
 
-	public static class SeeDown extends SeeUp {// 只能看到下方食物
+	public static class SeeDown extends SeeUp {// 只能看到下方青蛙
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -71,7 +73,7 @@ public class SnakeEyes {
 		}
 	}
 
-	public static class SeeLeft extends SeeUp {// 只能看到左方食物
+	public static class SeeLeft extends SeeUp {// 只能看到左方青蛙
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -84,7 +86,7 @@ public class SnakeEyes {
 		}
 	}
 
-	public static class SeeRight extends SeeUp {// 只能看到右方食物
+	public static class SeeRight extends SeeUp {// 只能看到右方青蛙
 		private static final long serialVersionUID = 1L;
 
 		@Override
