@@ -25,11 +25,9 @@ import com.github.drinkjava2.frog.util.RandomUtils;
  * @since 1.0
  */
 public class Food implements EnvObject {
-	public static int food_ated = 0;
 
 	@Override
 	public void build() {
-		food_ated = 0;
 		if (!Env.FOOD_CAN_MOVE) {
 			for (int i = 0; i < FOOD_QTY; i++) // 生成食物
 				bricks[RandomUtils.nextInt(ENV_WIDTH)][RandomUtils.nextInt(ENV_HEIGHT)] = Material.FOOD;

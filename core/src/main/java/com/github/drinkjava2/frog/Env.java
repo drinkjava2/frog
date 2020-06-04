@@ -68,6 +68,10 @@ public class Env extends JPanel {
 	public static boolean FOOD_CAN_MOVE = false; // 食物是否可以移动，眼花
 
 	// 以下是程序内部变量，不要手工修改它们
+	public static int food_ated = 0; // 用来统计总共多少个食物被青蛙吃掉
+
+	public static int frog_ated = 0; // 用来统计总共多少个食物被青蛙吃掉
+
 	public static boolean pause = false; // 暂停按钮按下将暂停测试
 
 	public static int[][] bricks = new int[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，见Material.java
@@ -88,7 +92,9 @@ public class Env extends JPanel {
 
 	public static final int SNAKE_PER_EGG = 4; // 每个蛇蛋可以孵出几个蛇
 
-	public static final int SNAKE_PER_SCREEN = SNAKE_EGG_QTY * SNAKE_PER_EGG / SCREEN; // 每屏上显示几个蛇，这个数值由上面参数计算得来
+	public static final int TOTAL_SNAKE_QTY = SNAKE_EGG_QTY * SNAKE_PER_EGG;
+
+	public static final int SNAKE_PER_SCREEN = TOTAL_SNAKE_QTY / SCREEN; // 每屏上显示几个蛇，这个数值由上面参数计算得来
 
 	public static List<Snake> snakes = new ArrayList<>(); // 这里存放所有待测的蛇，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
@@ -137,7 +143,7 @@ public class Env extends JPanel {
 
 	public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
 		if (insideEnv(x, y) && Env.bricks[x][y] >= Material.FOOD && Env.bricks[x][y] <= Material.FLY4) {
-			Food.food_ated++;
+			Env.food_ated++;
 			bricks[x][y] = 0;
 			return true;
 		}
@@ -147,6 +153,7 @@ public class Env extends JPanel {
 	public static boolean foundAndAteFrog(int x, int y) {// TODO:优化寻找青蛙的速度，不要用循环 如果x,y有青蛙，将其杀死，返回true
 		for (Frog f : frogs)
 			if (f.alive && f.x == x && f.y == y) {
+				Env.frog_ated++;
 				f.alive = false;
 				return true;
 			}
@@ -209,13 +216,17 @@ public class Env extends JPanel {
 		format100.setMaximumFractionDigits(2);
 	}
 
-	private String foodFoundCountText() {// 统计找食数等
+	private String foodAtedCount() {// 统计吃食总数等
 		int maxFound = 0;
 		for (Frog f : frogs)
 			if (f.ateFood > maxFound)
 				maxFound = f.ateFood;
-		return new StringBuilder("找食率:").append(format100.format(Food.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ")
-				.append(Food.food_ated * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound).toString();
+		return new StringBuilder("吃食率:").append(format100.format(Env.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ")
+				.append(Env.food_ated * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound).toString();
+	}
+
+	private String frogAtedCount() {// 统计食蛙总数
+		return new StringBuilder("食蛙率:").append(format100.format(Env.frog_ated * 1.00 / TOTAL_SNAKE_QTY)).toString();
 	}
 
 	public static void checkIfPause(Frog f) {
@@ -250,6 +261,8 @@ public class Env extends JPanel {
 			if (SNAKE_MODE)
 				rebuildSnakes();
 			for (int screen = 0; screen < SCREEN; screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
+				Env.food_ated = 0; // 先清0吃食物数
+				Env.frog_ated = 0;// 先清0吃蛙数
 				time0 = System.currentTimeMillis();
 				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
@@ -325,10 +338,15 @@ public class Env extends JPanel {
 					Frog f = frogs.get(screen * FROG_PER_SCREEN + j);
 					f.cells = null; // 清空frog脑细胞所占用的内存
 				}
-				Application.mainFrame
-						.setTitle(new StringBuilder("Round: ").append(round).append(", screen:").append(screen)
-								.append(", speed:").append(Env.SHOW_SPEED).append(", ").append(foodFoundCountText())
-								.append(", 用时: ").append(System.currentTimeMillis() - time0).append("ms").toString());
+				StringBuilder sb = new StringBuilder("Round: ");
+				sb.append(round).append(", screen:").append(screen).append(", speed:").append(Env.SHOW_SPEED)
+						.append(", ").append(", 用时: ").append(System.currentTimeMillis() - time0).append("ms, ");
+				if (SNAKE_MODE && !Application.selectFrog)
+					sb.append(frogAtedCount());
+				else
+					sb.append(foodAtedCount());
+
+				Application.mainFrame.setTitle(sb.toString());
 				for (EnvObject thing : things)// 去除食物、陷阱等物体
 					thing.destory();
 			}

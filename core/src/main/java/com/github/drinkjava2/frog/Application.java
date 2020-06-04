@@ -143,6 +143,8 @@ public class Application {
 				radioFrog.setVisible(true);
 				radioSnake.setVisible(true);
 			} else {
+				radioFrog.setSelected(true);
+				selectFrog =true;
 				radioFrog.setVisible(false);
 				radioSnake.setVisible(false);
 			}
