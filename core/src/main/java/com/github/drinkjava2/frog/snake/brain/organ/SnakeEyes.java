@@ -53,7 +53,7 @@ public class SnakeEyes {
 		@Override
 		public void active(Frog f) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundAnyThing(f.x, f.y + i)) {
+				if (Env.foundFrog(f.x, f.y + i)) {
 					activeInput(f, 30);
 					return;
 				}
@@ -66,7 +66,7 @@ public class SnakeEyes {
 		@Override
 		public void active(Frog f) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundAnyThing(f.x, f.y - i)) {
+				if (Env.foundFrog(f.x, f.y - i)) {
 					activeInput(f, 30);
 					return;
 				}
@@ -79,7 +79,7 @@ public class SnakeEyes {
 		@Override
 		public void active(Frog f) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundAnyThing(f.x - i, f.y)) {
+				if (Env.foundFrog(f.x - i, f.y)) {
 					activeInput(f, 30);
 					return;
 				}
@@ -92,7 +92,7 @@ public class SnakeEyes {
 		@Override
 		public void active(Frog f) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundAnyThing(f.x + i, f.y)) {
+				if (Env.foundFrog(f.x + i, f.y)) {
 					activeInput(f, 30);
 					return;
 				}

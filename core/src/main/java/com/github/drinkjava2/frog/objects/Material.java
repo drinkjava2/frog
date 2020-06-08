@@ -23,25 +23,31 @@ import java.awt.Color;
 public class Material {
 	private static int origin = 1;
 
-	private static int next() {// 每次将origin左移1位
+	private static int nextLeftShift() {// 每次将origin左移1位
 		origin = origin << 1;
 		if (origin < 0)
-			throw new RuntimeException("");
+			throw new IllegalArgumentException("Material out of maximum range");
 		return origin;
 	}
 
 	public static final int NO = 0; // nothing
-	public static final int VISIBLE = next(); // if visible to frog
-	public static final int SEESAW = next();
-	public static final int FOOD = next();
-	public static final int FLY1 = next();// FLY1苍蝇是一种会移动的Food
-	public static final int FLY2 = next();// FLY2苍蝇是一种会移动的Food
-	public static final int FLY3 = next();// FLY3苍蝇是一种会移动的Food
-	public static final int FLY4 = next();// FLY4苍蝇是一种会移动的Food
 
-	public static final int KILLFROG = next(); // if>=KILLFROG will kill frog
-	public static final int BRICK = next();// brick will kill frog
-	public static final int TRAP = next(); // trap will kill frog
+	public static final int VISIBLE = nextLeftShift(); // if visible to frog
+
+	public static final int SEESAW = nextLeftShift();
+
+	public static final int FROG = nextLeftShift(); //FROG每移动一次就清除旧位置标记，然后把新位置标记为FROG
+
+	public static final int FOOD = nextLeftShift();
+	public static final int FLY1 = nextLeftShift();// FLY1苍蝇是一种会移动的Food
+	public static final int FLY2 = nextLeftShift();// FLY2苍蝇是一种会移动的Food
+	public static final int FLY3 = nextLeftShift();// FLY3苍蝇是一种会移动的Food
+	public static final int FLY4 = nextLeftShift();// FLY4苍蝇是一种会移动的Food
+	public static final int ANY_FOOD = FOOD + FLY1 + FLY2 + FLY3 + FLY4;// ANY_FOOD是几种FOOD的位叠加
+
+	public static final int KILLFROG = nextLeftShift(); // if>=KILLFROG will kill frog
+	public static final int BRICK = nextLeftShift();// brick will kill frog
+	public static final int TRAP = nextLeftShift(); // trap will kill frog
 
 	public static Color color(int material) {
 		if (material == TRAP)

@@ -50,7 +50,7 @@ public class Organ extends Zone {
 	}
 
 	/** If active in this organ's zone? */
-	public boolean outputActive(Frog f) { // 如果一个细胞能量>10,且它的输出触突位于这个器官内，则器官被激活
+	public boolean outputActive(Frog f) { // 如果细胞能量>organActiveEnergy,则细胞能量减少，返回true(激活)标志
 		for (Cell cell : f.cells)
 			if (cell.energy > organActiveEnergy)
 				if (this.nearby(cell.output)) {
@@ -62,7 +62,7 @@ public class Organ extends Zone {
 	}
 
 	/** If active in this organ's zone? */
-	public void activeInput(Frog f, float energy) { // 如果一个细胞能量>10,且它的输出触突位于这个器官内，则器官被激活
+	public void activeInput(Frog f, float energy) { // 如果一个细胞输入触突位于这个器官内，则细胞能量增加激活
 		for (Cell cell : f.cells)
 			if (cell.energy < 100)
 				if (this.nearby(cell.input)) {

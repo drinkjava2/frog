@@ -10,8 +10,10 @@
  */
 package com.github.drinkjava2.frog.brain.organ;
 
+import com.github.drinkjava2.frog.Env;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.brain.Organ;
+import com.github.drinkjava2.frog.objects.Material;
 
 /**
  * Move left frog 1 unit if outputs of nerve cells active in this zone
@@ -21,7 +23,10 @@ public class MoveLeft extends Organ {
 
 	@Override
 	public void active(Frog f) {
-		if (outputActive(f))
+		if (outputActive(f)) {
+			Env.clearMaterial(f.x, f.y, Material.FROG);
 			f.x--;
+			Env.setMaterial(f.x, f.y, Material.FROG);
+		}
 	}
 }
