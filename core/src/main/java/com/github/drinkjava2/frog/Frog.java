@@ -49,6 +49,7 @@ public class Frog {// 这个程序大量用到public变量而不是getter/setter
 	public long energy = 100000; // 青蛙的能量为0则死掉
 	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
 	public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
+	public int no; // 青蛙在Env.frogs中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.frogs.get(no-1)快速定位青蛙
 
 	static Image frogImg;
 	static {

@@ -15,13 +15,16 @@ import java.awt.Color;
 /**
  * Material store material types
  * 
- * 用不同的数字常量代表虚拟环境中不同的材料，0为空，每个材料用整数中的一位表示, 所以一个整数中可以表达15种不同的材料，并且这些材料可以同时出现
+ * 小于等于16384的位数用来标记青蛙序号，可利用Env.frogs.get(no-1)快速定位青蛙，其它各种材料用整数中其它位来表示
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class Material {
-	private static int origin = 1;
+
+	public static final int FROG_TAG = 0b11111111111111; // 16383 小于等于16384的位数用来标记青蛙序号，可利用Env.frogs.get(no-1)快速定位青蛙
+
+	private static int origin = FROG_TAG + 1; // 大于16384用来作为各种材料的标记
 
 	private static int nextLeftShift() {// 每次将origin左移1位
 		origin = origin << 1;
@@ -30,13 +33,11 @@ public class Material {
 		return origin;
 	}
 
-	public static final int NO = 0; // nothing
+	// public static final int NO = 0; // nothing
 
 	public static final int VISIBLE = nextLeftShift(); // if visible to frog
 
 	public static final int SEESAW = nextLeftShift();
-
-	public static final int FROG = nextLeftShift(); //FROG每移动一次就清除旧位置标记，然后把新位置标记为FROG
 
 	public static final int FOOD = nextLeftShift();
 	public static final int FLY1 = nextLeftShift();// FLY1苍蝇是一种会移动的Food
@@ -44,15 +45,17 @@ public class Material {
 	public static final int FLY3 = nextLeftShift();// FLY3苍蝇是一种会移动的Food
 	public static final int FLY4 = nextLeftShift();// FLY4苍蝇是一种会移动的Food
 	public static final int ANY_FOOD = FOOD + FLY1 + FLY2 + FLY3 + FLY4;// ANY_FOOD是几种FOOD的位叠加
+	public static final int SNAKE = nextLeftShift(); // 蛇的图形
 
 	public static final int KILLFROG = nextLeftShift(); // if>=KILLFROG will kill frog
 	public static final int BRICK = nextLeftShift();// brick will kill frog
 	public static final int TRAP = nextLeftShift(); // trap will kill frog
 
 	public static Color color(int material) {
-		if (material == TRAP)
+		if ((material & TRAP) > 0)
 			return Color.LIGHT_GRAY;
 		else
 			return Color.BLACK;
 	}
+
 }

@@ -74,11 +74,11 @@ public class Food implements EnvObject {
 		for (int i = 1; i < ENV_WIDTH; i++) {// 水平移动FLY
 			for (int j = 1; j < ENV_HEIGHT; j++) {
 				if (bricks[i][j] == Material.FLY1) {
-					Env.clearMaterial(i - 1, j, Material.FLY1);
+					Env.setMaterial(i - 1, j, Material.FLY1);
 					Env.clearMaterial(i, j, Material.FLY1);
 				}
 				if (bricks[i][j] == Material.FLY2) {
-					Env.clearMaterial(i, j - 1, Material.FLY2);
+					Env.setMaterial(i, j - 1, Material.FLY2);
 					Env.clearMaterial(i, j, Material.FLY2);
 				}
 			}
@@ -87,11 +87,11 @@ public class Food implements EnvObject {
 		for (int i = ENV_WIDTH - 2; i > 0; i--) {// 上下移动FLY
 			for (int j = ENV_HEIGHT - 2; j > 0; j--) {
 				if (bricks[i][j] == Material.FLY3) {
-					Env.clearMaterial(i + 1, j, Material.FLY3);
+					Env.setMaterial(i + 1, j, Material.FLY3);
 					Env.clearMaterial(i, j, Material.FLY3);
 				}
 				if (bricks[i][j] == Material.FLY4) {
-					Env.clearMaterial(i, j + 1, Material.FLY4);
+					Env.setMaterial(i, j + 1, Material.FLY4);
 					Env.clearMaterial(i, j, Material.FLY4);
 				}
 			}

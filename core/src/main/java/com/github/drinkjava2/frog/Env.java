@@ -1,5 +1,8 @@
 package com.github.drinkjava2.frog;
 
+import static com.github.drinkjava2.frog.Env.ENV_HEIGHT;
+import static com.github.drinkjava2.frog.Env.ENV_WIDTH;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -133,33 +136,38 @@ public class Env extends JPanel {
 		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT || Env.bricks[x][y] >= Material.VISIBLE;
 	}
 
-	public static boolean foundFrog(int x, int y) {// 如果指定点看到青蛙或超出边界，返回true
-		if (x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT)
-			return true;// 如果出界也返回true
-		if ((Env.bricks[x][y] & Material.FROG) > 0)
-			for (Frog f : frogs)
-				if (f.alive && f.x == x && f.y == y)
-					return true;
-		return false;
-	}
-
 	public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
 		if (insideEnv(x, y) && (Env.bricks[x][y] & Material.ANY_FOOD) > 0) {
 			Env.food_ated++;
-			bricks[x][y] = Env.bricks[x][y] & ~Material.ANY_FOOD; // 清空任意食物
+			clearMaterial(x, y, Material.ANY_FOOD);// 清空任意食物
 			return true;
 		}
 		return false;
 	}
 
+	public static boolean foundFrog(int x, int y) {// 如果指定点看到青蛙或超出边界，返回true
+		if (x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT)
+			return false;// 如果出界返回true
+		int frogNo = Env.bricks[x][y] & Material.FROG_TAG;
+		if (frogNo > 0) {
+			Frog f = frogs.get(frogNo - 1);
+			if (f.alive)
+				return true;
+		}
+		return false;
+	}
+
 	public static boolean foundAndAteFrog(int x, int y) {// TODO:优化寻找青蛙的速度，不要用循环 如果x,y有青蛙，将其杀死，返回true
-		if (insideEnv(x, y) && (Env.bricks[x][y] & Material.FROG) > 0) {
-			for (Frog f : frogs)
-				if (f.alive && f.x == x && f.y == y) {
-					Env.frog_ated++;
-					f.alive = false;
-					return true;
-				}
+		if (x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT)
+			return false;// 如果出界返回false;
+		int frogNo = Env.bricks[x][y] & Material.FROG_TAG;
+		if (frogNo > 0) {
+			Frog f = frogs.get(frogNo - 1);
+			if (f.alive) {
+				Env.frog_ated++;
+				f.alive = false;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -186,7 +194,9 @@ public class Env extends JPanel {
 			}
 			for (int j = 0; j < loop; j++) {
 				Egg zygote = new Egg(frog_eggs.get(i), frog_eggs.get(RandomUtils.nextInt(frog_eggs.size())));
-				frogs.add(new Frog(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote));
+				Frog f = new Frog(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote);
+				frogs.add(f);
+				f.no = frogs.size();
 			}
 		}
 	}
@@ -361,8 +371,12 @@ public class Env extends JPanel {
 					sb.append(foodAtedCount());
 
 				Application.mainFrame.setTitle(sb.toString());
-				for (EnvObject thing : things)// 去除食物、陷阱等物体
-					thing.destory();
+//				for (EnvObject thing : things)// 去除食物、陷阱等物体
+//					thing.destory();
+				for (int i = 0; i < ENV_WIDTH; i++) {// 清除食物
+					for (int j = 0; j < ENV_HEIGHT; j++)
+						bricks[i][j]=0;
+				}
 			}
 			round++;
 			FrogEggTool.layEggs();
