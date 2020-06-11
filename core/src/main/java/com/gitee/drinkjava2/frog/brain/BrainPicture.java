@@ -122,36 +122,15 @@ public class BrainPicture extends JPanel {
 		this.setFocusable(true);
 	}
 
-	public void drawZone(Zone o) {// 在脑图上画一个正立方体Zone框架，视角是TopView
-		float x = o.x - o.r;
-		float y = o.y - o.r;
-		float z = o.z - o.r;
-		float e = o.r + o.r;
-
-		drawLine(x, y, z, x + e, y, z);// 画立方体的下面边
-		drawLine(x + e, y, z, x + e, y + e, z);
-		drawLine(x + e, y + e, z, x, y + e, z);
-		drawLine(x, y + e, z, x, y, z);
-
-		drawLine(x, y, z, x, y, z + e);// 画立方体的中间边
-		drawLine(x + e, y, z, x + e, y, z + e);
-		drawLine(x + e, y + e, z, x + e, y + e, z + e);
-		drawLine(x, y + e, z, x, y + e, z + e);
-
-		drawLine(x, y, z + e, x + e, y, z + e);// 画立方体的上面边
-		drawLine(x + e, y, z + e, x + e, y + e, z + e);
-		drawLine(x + e, y + e, z + e, x, y + e, z + e);
-		drawLine(x, y + e, z + e, x, y, z + e);
+	public void drawZone(Zone o) {// 在脑图上画一个正立方体Zone框架，视角是TopView 
+		drawCuboid(o.x - o.r, o.y - o.r, o.z - o.h * .5f, o.r + o.r, o.r + o.r, o.h);
 	}
 
 	public void drawCuboid(Cuboid c) {// 在脑图上画一个长立方体框架，视角是TopView
-		float x = c.x;
-		float y = c.y;
-		float z = c.z;
-		float xe = c.xe;
-		float ye = c.ye;
-		float ze = c.ze;
+		drawCuboid(c.x, c.y, c.z, c.xe, c.ye, c.ze);
+	}
 
+	public void drawCuboid(float x, float y, float z, float xe, float ye, float ze) {// 在脑图上画一个长立方体框架，视角是TopView
 		drawLine(x, y, z, x + xe, y, z);// 画立方体的下面边
 		drawLine(x + xe, y, z, x + xe, y + ye, z);
 		drawLine(x + xe, y + ye, z, x, y + ye, z);
@@ -313,7 +292,7 @@ public class BrainPicture extends JPanel {
 	private static Cuboid brain = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
 
 	public void drawBrainPicture(Animal f) {// 在这个方法里进行青蛙或蛇的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
-		if (!Env.SHOW_FIRST_FROG_BRAIN || f == null || !f.alive)
+		if (!Env.SHOW_FIRST_ANIMAL_BRAIN || f == null || !f.alive)
 			return;
 		g.setColor(WHITE);// 先清空旧图
 		g.fillRect(0, 0, brainDispWidth, brainDispWidth);
@@ -386,6 +365,10 @@ public class BrainPicture extends JPanel {
 
 	public void setPicColor(Color color) {
 		this.picColor = color;
+	}
+
+	public Color getPicColor() {
+		return picColor;
 	}
 
 	public int getxOffset() {

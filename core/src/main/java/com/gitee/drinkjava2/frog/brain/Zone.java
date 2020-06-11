@@ -15,7 +15,9 @@ import java.io.Serializable;
 import com.gitee.drinkjava2.frog.Env;
 
 /**
- * Zone represents a cube zone in brain
+ * Zone represents a cuboid zone in brain, but x,y,z is in the center
+ * 
+ * Zone为一个上表面为正方形的立方体，x,y,z位于立方体的中心，r为上表面正方形边长的一半，h为立方体厚度
  * 
  * @author Yong Zhu
  * @since 1.0
@@ -26,7 +28,8 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 	public float x;
 	public float y;
 	public float z;
-	public float r;// r为这个立方矩形边长的一半
+	public float r;// r为这个立方矩形上边长的一半
+	public float h;// h为这个立方矩形厚度
 
 	public Zone() {
 		// 空构造器不能省
@@ -37,6 +40,27 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 		this.y = y;
 		this.z = z;
 		this.r = r;
+		this.h = r + r;
+		if (this.x < 0)
+			this.x = 0;
+		if (this.y < 0)
+			this.y = 0;
+		if (this.z < 0)
+			this.z = 0;
+		if (this.x > Env.FROG_BRAIN_XSIZE)
+			this.x = Env.FROG_BRAIN_XSIZE;
+		if (this.y > Env.FROG_BRAIN_YSIZE)
+			this.y = Env.FROG_BRAIN_YSIZE;
+		if (this.z > Env.FROG_BRAIN_ZSIZE)
+			this.z = Env.FROG_BRAIN_ZSIZE;
+	}
+
+	public Zone(float x, float y, float z, float r, float h) {// 用x,y,z, r来构造
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.r = r;
+		this.h = h;
 		if (this.x < 0)
 			this.x = 0;
 		if (this.y < 0)
@@ -56,13 +80,15 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 		this.y = z.y;
 		this.z = z.z;
 		this.r = z.r;
+		this.h = z.h;
 	}
 
 	public Zone(Zone a, Zone b) {// 用两个Zone来构造，新的zone位于两个zone的中间
 		this.x = (a.x + b.x) / 2;
 		this.y = (a.y + b.y) / 2;
-		this.z = (a.z + b.z) / 2-10 ;
+		this.z = (a.z + b.z) / 2 - 10;
 		this.r = (a.r + b.r) / 2;
+		this.h = (a.h + b.h) / 2;
 	}
 
 	public boolean nearby(Zone o) {
@@ -70,6 +96,11 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 			return false;
 		float dist = r + o.r;
 		return Math.abs(x - o.x) < dist && Math.abs(y - o.y) < dist && Math.abs(z - o.z) < dist;
+	}
+
+	public boolean nearby(float x, float y, float z, float r) {
+		float dist = this.r + r;
+		return Math.abs(this.x - x) < dist && Math.abs(this.y - y) < dist && Math.abs(this.z - z) < dist;
 	}
 
 	public int roundX() {

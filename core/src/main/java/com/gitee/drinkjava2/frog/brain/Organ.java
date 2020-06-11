@@ -80,7 +80,7 @@ public class Organ extends Zone {
 
 	/** Child class can override this method to drawing picture */
 	public void drawOnBrainPicture(Animal f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
-		if (!Env.SHOW_FIRST_FROG_BRAIN)
+		if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
 			return;
 		pic.setPicColor(Color.BLACK); // 缺省是黑色
 		pic.drawZone(this);

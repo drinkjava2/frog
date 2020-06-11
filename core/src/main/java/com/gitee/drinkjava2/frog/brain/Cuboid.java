@@ -22,18 +22,18 @@ package com.gitee.drinkjava2.frog.brain;
 public class Cuboid implements Shape {
 	private static final long serialVersionUID = 1L;
 
-	public int x;// x,y,z是长方体的左下角坐标
-	public int y;
-	public int z;
-	public int xe;// xe,ye,ze分别是长方体三边长
-	public int ye;
-	public int ze;
+	public float x;// x,y,z是长方体的左下角坐标
+	public float y;
+	public float z;
+	public float xe;// xe,ye,ze分别是长方体三边长
+	public float ye;
+	public float ze;
 
 	public Cuboid() {
 		// 空构造器不能省
 	}
 
-	public Cuboid(int x, int y, int z, int xe, int ye, int ze) {// 用x,y,z,r来构造
+	public Cuboid(float x, float y, float z, float xe, float ye, float ze) {// 用x,y,z,r来构造
 		this.x = x;
 		this.y = y;
 		this.z = z;

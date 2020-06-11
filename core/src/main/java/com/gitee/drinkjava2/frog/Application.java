@@ -43,7 +43,7 @@ public class Application {
 	public static boolean selectFrog = true;
 
 	static private void checkIfShowBrainPicture(JButton button) {
-		if (Env.SHOW_FIRST_FROG_BRAIN) {
+		if (Env.SHOW_FIRST_ANIMAL_BRAIN) {
 			button.setText("Hide brain");
 			int y = Env.ENV_HEIGHT + 120;
 			if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
@@ -78,9 +78,9 @@ public class Application {
 		ActionListener al = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Env.SHOW_FIRST_FROG_BRAIN = !Env.SHOW_FIRST_FROG_BRAIN;
+				Env.SHOW_FIRST_ANIMAL_BRAIN = !Env.SHOW_FIRST_ANIMAL_BRAIN;
 				checkIfShowBrainPicture(button);
-				if (Env.SHOW_FIRST_FROG_BRAIN && Env.SNAKE_MODE) {
+				if (Env.SHOW_FIRST_ANIMAL_BRAIN && Env.SNAKE_MODE) {
 					radioFrog.setVisible(true);
 					radioSnake.setVisible(true);
 				} else {
@@ -139,7 +139,7 @@ public class Application {
 		snakeModeCkBox.setBounds(buttonXpos, speedSlider.getY() + 25, 120, buttonHeight);
 		snakeModeCkBox.addActionListener(e -> {
 			Env.SNAKE_MODE = snakeModeCkBox.isSelected();
-			if (Env.SHOW_FIRST_FROG_BRAIN && Env.SNAKE_MODE) {
+			if (Env.SHOW_FIRST_ANIMAL_BRAIN && Env.SNAKE_MODE) {
 				radioFrog.setVisible(true);
 				radioSnake.setVisible(true);
 			} else {

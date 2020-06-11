@@ -45,8 +45,8 @@ public class Env extends JPanel {
 	public static final int FROG_BRAIN_YSIZE = 1000; // frog的脑在Y方向长度
 	public static final int FROG_BRAIN_ZSIZE = 1000; // frog的脑在Z方向长度
 
-	/** SHOW first frog's brain structure */
-	public static boolean SHOW_FIRST_FROG_BRAIN = true; // 是否显示脑图在Env区的右侧
+	/** SHOW first animal's brain structure */
+	public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
 
 	/** Draw first frog's brain after some steps */
 	public static int DRAW_BRAIN_AFTER_STEPS = 1; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
@@ -343,7 +343,7 @@ public class Env extends JPanel {
 							s.show(g);
 						}
 
-					if (SHOW_FIRST_FROG_BRAIN && showFrog != null) {
+					if (SHOW_FIRST_ANIMAL_BRAIN && showFrog != null) {
 						g.setColor(Color.red);
 						g.drawArc(showFrog.x - 15, showFrog.y - 15, 30, 30, 0, 360);
 						g.setColor(Color.BLACK);
@@ -354,7 +354,7 @@ public class Env extends JPanel {
 					g2.drawImage(buffImg, 0, 0, this);
 				}
 				// System.out.println(showFrog.debugInfo());// 打印输出Frog调试内容
-				if (SHOW_FIRST_FROG_BRAIN)
+				if (SHOW_FIRST_ANIMAL_BRAIN)
 					Application.brainPic.drawBrainPicture(showFrog);
 				checkIfPause(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {

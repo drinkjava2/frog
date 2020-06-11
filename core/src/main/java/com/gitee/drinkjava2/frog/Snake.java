@@ -24,7 +24,6 @@ import com.gitee.drinkjava2.frog.egg.Egg;
  * @since 1.0
  */
 public class Snake extends Animal {
-	  
 
 	public Snake(int x, int y, Egg egg) {
 		super(x, y, egg);

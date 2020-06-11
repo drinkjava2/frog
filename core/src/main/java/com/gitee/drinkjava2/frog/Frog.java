@@ -23,8 +23,8 @@ import com.gitee.drinkjava2.frog.egg.Egg;
  * 
  * @since 1.0
  */
-public class Frog extends Animal { 
-	 
+public class Frog extends Animal {
+
 	public Frog(int x, int y, Egg egg) {
 		super(x, y, egg);
 		try {
@@ -38,6 +38,6 @@ public class Frog extends Animal {
 	public void show(Graphics g) {// 显示蛇的图象
 		if (!alive)
 			return;
-		g.drawImage(animalImage, x - 16, y - 5, 18, 18, null);// 减去坐标，保证蛇嘴巴显示在当前x,y处
+		g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证蛇嘴巴显示在当前x,y处
 	}
 }
