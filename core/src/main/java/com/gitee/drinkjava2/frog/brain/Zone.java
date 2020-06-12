@@ -115,24 +115,20 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 		return Math.round(z);
 	}
 
-	public static void copyXYZ(Zone from, Zone to) {
-		to.x = from.x;
-		to.y = from.y;
-		to.z = from.z;
-	}
-
-	public static void copyXYZR(Zone from, Zone to) {
+	public static void copyXYZRH(Zone from, Zone to) {
 		to.x = from.x;
 		to.y = from.y;
 		to.z = from.z;
 		to.r = from.r;
+		to.h = from.h;
 	}
 
-	public void setXYZR(float x, float y, float z, float r) {
+	public void setXYZRH(float x, float y, float z, float r, float h) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.r = r;
+		this.h = h;
 	}
 
 	public String debugInfo() {

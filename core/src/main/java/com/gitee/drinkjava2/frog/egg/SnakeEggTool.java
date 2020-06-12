@@ -104,16 +104,17 @@ public class SnakeEggTool {
 			for (int j = 0; j < Env.SNAKE_EGG_QTY; j++) {
 				Egg egg = new Egg();
 				float r = 40;
-				egg.organs.add(new SnakeMouth().setXYZRN(0, 0, 0, 0, "Eat")); // SnakeMouth不是感觉或输出器官，没有位置和大小
-				egg.organs.add(new Active().setXYZRN(500, 600, 500, 5, "Active")); // 永远激活
-				egg.organs.add(new SnakeMoves.MoveUp().setXYZRN(800, 100, 500, r, "Up"));
-				egg.organs.add(new SnakeMoves.MoveDown().setXYZRN(800, 400, 500, r, "Down"));
-				egg.organs.add(new SnakeMoves.MoveLeft().setXYZRN(700, 250, 500, r, "Left"));
-				egg.organs.add(new SnakeMoves.MoveRight().setXYZRN(900, 250, 500, r, "Right"));
-				egg.organs.add(new SnakeEyes.SeeUp().setXYZRN(200, 300 + 90, 500, r, "SeeUp"));
-				egg.organs.add(new SnakeEyes.SeeDown().setXYZRN(200, 300 - 90, 500, r, "SeeDown"));
-				egg.organs.add(new SnakeEyes.SeeLeft().setXYZRN(200 - 90, 300, 500, r, "SeeLeft"));
-				egg.organs.add(new SnakeEyes.SeeRight().setXYZRN(200 + 90, 300, 500, r, "SeeRight"));
+				float h = 3;
+				egg.organs.add(new SnakeMouth().setXYZRHN(0, 0, 0, 0, h, "Eat")); // SnakeMouth不是感觉或输出器官，没有位置和大小
+				egg.organs.add(new Active().setXYZRHN(500, 600, 500, 5, h, "Active")); // 永远激活
+				egg.organs.add(new SnakeMoves.MoveUp().setXYZRHN(800, 100, 500, r, h, "Up"));
+				egg.organs.add(new SnakeMoves.MoveDown().setXYZRHN(800, 400, 500, r, h, "Down"));
+				egg.organs.add(new SnakeMoves.MoveLeft().setXYZRHN(700, 250, 500, r, h, "Left"));
+				egg.organs.add(new SnakeMoves.MoveRight().setXYZRHN(900, 250, 500, r, h, "Right"));
+				egg.organs.add(new SnakeEyes.SeeUp().setXYZRHN(200, 300 + 90, 500, r, h, "SeeUp"));
+				egg.organs.add(new SnakeEyes.SeeDown().setXYZRHN(200, 300 - 90, 500, r, h, "SeeDown"));
+				egg.organs.add(new SnakeEyes.SeeLeft().setXYZRHN(200 - 90, 300, 500, r, h, "SeeLeft"));
+				egg.organs.add(new SnakeEyes.SeeRight().setXYZRHN(200 + 90, 300, 500, r, h, "SeeRight"));
 				Env.snake_eggs.add(egg);
 			}
 			System.out.println("Fail to load snake egg file '" + Application.CLASSPATH + "snake_eggs.ser"

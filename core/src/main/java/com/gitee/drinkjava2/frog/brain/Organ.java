@@ -72,8 +72,8 @@ public class Organ extends Zone {
 	}
 
 	/** Set X, Y, Radius, name of current Organ */
-	public Organ setXYZRN(float x, float y, float z, float r, String name) {
-		this.setXYZR(x, y, z, r);
+	public Organ setXYZRHN(float x, float y, float z, float r, float h, String name) {
+		this.setXYZRH(x, y, z, r, h);
 		this.name = name;
 		return this;
 	}
@@ -96,7 +96,7 @@ public class Organ extends Zone {
 		} catch (Exception e) {
 			throw new UnknownError("Can not make new organ copy for " + this);
 		}
-		copyXYZR(this, newOrgan);
+		copyXYZRH(this, newOrgan);
 		newOrgan.name = this.name;
 		newOrgan.fat = this.fat;
 		return new Organ[] { newOrgan };

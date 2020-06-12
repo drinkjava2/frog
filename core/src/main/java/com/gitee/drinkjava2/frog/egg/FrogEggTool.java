@@ -23,7 +23,7 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.organ.Active;
-import com.gitee.drinkjava2.frog.organ.NewEye;
+import com.gitee.drinkjava2.frog.organ.BigEye;
 import com.gitee.drinkjava2.frog.organ.frog.FrogEyes;
 import com.gitee.drinkjava2.frog.organ.frog.FrogMouth;
 import com.gitee.drinkjava2.frog.organ.frog.FrogMoves;
@@ -104,17 +104,18 @@ public class FrogEggTool {
 			for (int j = 0; j < Env.FROG_EGG_QTY; j++) {
 				Egg egg = new Egg();
 				float r = 40;
-				egg.organs.add(new FrogMouth().setXYZRN(0, 0, 0, 0, "Eat")); // Mouth不是感觉或输出器官，没有位置和大小
-				egg.organs.add(new Active().setXYZRN(500, 600, 500, r, "Active")); // 永远激活
-				egg.organs.add(new FrogMoves.MoveUp().setXYZRN(800, 300, 500, r, "Up"));
-				egg.organs.add(new FrogMoves.MoveDown().setXYZRN(800, 600, 500, r, "Down"));
-				egg.organs.add(new FrogMoves.MoveLeft().setXYZRN(700, 450, 500, r, "Left"));
-				egg.organs.add(new FrogMoves.MoveRight().setXYZRN(900, 450, 500, r, "Right"));
-				egg.organs.add(new FrogEyes.SeeUp().setXYZRN(200, 500 + 90, 500, r, "SeeUp"));
-				egg.organs.add(new FrogEyes.SeeDown().setXYZRN(200, 500 - 90, 500, r, "SeeDown"));
-				egg.organs.add(new FrogEyes.SeeLeft().setXYZRN(200 - 90, 500, 500, r, "SeeLeft"));
-				egg.organs.add(new FrogEyes.SeeRight().setXYZRN(200 + 90, 500, 500, r, "SeeRight"));
-				egg.organs.add(new NewEye().setXYZRN(100 + 90, 100, 500, r*2, "SeeRight"));
+				float h = 3;
+				egg.organs.add(new FrogMouth().setXYZRHN(0, 0, 0, 0, h, "Eat")); // Mouth不是感觉或输出器官，没有位置和大小
+				egg.organs.add(new Active().setXYZRHN(500, 600, 500, r, h, "Active")); // 永远激活
+				egg.organs.add(new FrogMoves.MoveUp().setXYZRHN(800, 300, 500, r, h, "Up"));
+				egg.organs.add(new FrogMoves.MoveDown().setXYZRHN(800, 600, 500, r, h, "Down"));
+				egg.organs.add(new FrogMoves.MoveLeft().setXYZRHN(700, 450, 500, r, h, "Left"));
+				egg.organs.add(new FrogMoves.MoveRight().setXYZRHN(900, 450, 500, r, h, "Right"));
+				egg.organs.add(new FrogEyes.SeeUp().setXYZRHN(200, 500 + 90, 500, r, h, "SeeUp"));
+				egg.organs.add(new FrogEyes.SeeDown().setXYZRHN(200, 500 - 90, 500, r, h, "SeeDown"));
+				egg.organs.add(new FrogEyes.SeeLeft().setXYZRHN(200 - 90, 500, 500, r, h, "SeeLeft"));
+				egg.organs.add(new FrogEyes.SeeRight().setXYZRHN(200 + 90, 500, 500, r, h, "SeeRight"));
+				egg.organs.add(new BigEye().setXYZRHN(100 + 90, 100, 500, r * 2, h, "SeeRight"));
 				Env.frog_eggs.add(egg);
 			}
 			System.out.println("Fail to load frog egg file '" + Application.CLASSPATH + "frog_eggs.ser" + "', created "

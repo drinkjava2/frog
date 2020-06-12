@@ -21,15 +21,15 @@ import com.gitee.drinkjava2.frog.brain.Zone;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
- * Eye is an organ can see environment, and active brain cells which inputs are
- * located in eye range
+ * BigEye is an organ can see environment, and active brain cells which inputs
+ * are located in eye range
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class NewEye extends Organ {// 这个新版的眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
+public class BigEye extends Organ {// 这个新版的眼睛有nxn个感光细胞，可以看到青蛙周围nxn网络内有没有食物
 	private static final long serialVersionUID = 1L;
-	public int n = 3; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3)
+	public int n = 3; // 眼睛有n x n个感光细胞， 用随机试错算法自动变异(加1或减1，最小是3x3，最大是12)
 
 	@Override
 	public void initOrgan(Animal f) { // 仅在Frog生成时这个方法会调用一次，缺省啥也不干，通常用于Organ类的初始化
@@ -40,31 +40,8 @@ public class NewEye extends Organ {// 这个新版的眼睛有nxn个感光细胞
 	}
 
 	@Override
-	public void drawOnBrainPicture(Animal f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
-		if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
-			return;
-		super.drawOnBrainPicture(f, pic);
-		float r2 = r / n; // r2是每个感光细胞的半径
-		float x0 = x - r;
-		float y0 = y - r; // x0,y0是眼睛的左上角
-		float z0 = z - r;
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				Zone cell = new Zone(x0 + i * 2 * r2 + r2, y0 + j * 2 * r2 + r2, z0 + j * 2 * r2 + r2, r2);
-				if (Env.foundAnyThing(f.x - n / 2 + i, f.y - n / 2 + j)) {
-					Color old = pic.getPicColor();
-					pic.setPicColor(Color.RED);
-					pic.drawZone(cell);
-					pic.setPicColor(old);
-				} else
-					pic.drawZone(cell);
-			}
-		}
-	}
-
-	@Override
 	public Organ[] vary() {
-		if (RandomUtils.percent(50)) {
+		if (RandomUtils.percent(5)) {
 			n = n + 1 - 2 * RandomUtils.nextInt(2);
 			if (n < 3)
 				n = 3;
@@ -75,16 +52,37 @@ public class NewEye extends Organ {// 这个新版的眼睛有nxn个感光细胞
 	}
 
 	@Override
+	public void drawOnBrainPicture(Animal f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
+		if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
+			return;
+		super.drawOnBrainPicture(f, pic);
+		float r2 = r / n; // r2是每个感光细胞的半径
+		float x0 = x - r;
+		float y0 = y - r; // x0,y0是眼睛的左上角
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				Zone cell = new Zone(x0 + i * 2 * r2 + r2, y0 + j * 2 * r2 + r2, z, r2, h);
+				if (Env.foundAnyThing(f.x - n / 2 + i, f.y - n / 2 + j)) {
+					Color old = pic.getPicColor();
+					pic.setPicColor(Color.RED);
+					pic.drawPoint(x0 + i * 2 * r2 + r2, y0 + j * 2 * r2 + r2, z, Math.round(r2 * .5f));
+					pic.setPicColor(old);
+				}
+				pic.drawZone(cell);
+			}
+		}
+	}
+
+	@Override
 	public void active(Animal f) {// 如果看到食物就激活对应脑区的所有输入触突
 		float r2 = r / n; // r2是每个感光细胞的半径
 		float x0 = x - r;
 		float y0 = y - r; // x0,y0是眼睛的左上角
-		float z0 = z - r;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				if (Env.foundAnyThing(f.x - n / 2 + i, f.y - n / 2 + j)) {
 					for (Cell cell : f.cells)
-						if (cell.input.nearby(x0 + i * 2 * r2 + r2, y0 + j * 2 * r2 + r2, z0 + j * 2 * r2 + r2, r2))
+						if (cell.input.nearby(x0 + i * 2 * r2 + r2, y0 + j * 2 * r2 + r2, z, r2))
 							cell.energy += organOutputEnergy;
 				}
 			}

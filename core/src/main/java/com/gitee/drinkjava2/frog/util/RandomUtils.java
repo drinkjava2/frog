@@ -44,7 +44,7 @@ public class RandomUtils {
 
 	public static Zone randomZoneInZone(Zone o) { // 在一个区内随机取一个小小区
 		return new Zone(o.x - o.r + o.r * 2 * rand.nextFloat(), o.y - o.r + o.r * 2 * rand.nextFloat(),
-				o.z /*- o.r + o.r * 2 * rand.nextFloat()*/, o.r * rand.nextFloat() * .04f);
+				o.z /*- o.r + o.r * 2 * rand.nextFloat()*/, o.r * rand.nextFloat() * .3f, o.h * rand.nextFloat() * .3f);
 	}
 
 	/** Return a random zone inside of frog's random organ */

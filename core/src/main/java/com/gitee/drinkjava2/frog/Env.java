@@ -1,8 +1,5 @@
 package com.gitee.drinkjava2.frog;
 
-import static com.gitee.drinkjava2.frog.Env.ENV_HEIGHT;
-import static com.gitee.drinkjava2.frog.Env.ENV_WIDTH;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -78,7 +75,9 @@ public class Env extends JPanel {
 	public static final int SNAKE_PER_EGG = 4; // 每个蛇蛋可以孵出几个蛇
 
 	// 以下是程序内部变量，不要手工修改它们
-	public static final int FROG_PER_SCREEN = FROG_EGG_QTY * FROG_PER_EGG / SCREEN; // 每屏显示几个青蛙，这个数值由其它常量计算得来
+	public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 蛇的总数
+
+	public static final int FROG_PER_SCREEN = TOTAL_FROG_QTY / SCREEN; // 每屏显示几个青蛙，这个数值由其它常量计算得来
 
 	public static int current_screen = 0;
 
@@ -249,7 +248,7 @@ public class Env extends JPanel {
 	}
 
 	private String frogAtedCount() {// 统计食蛙总数
-		return new StringBuilder("吃蛙率:").append(format100.format(Env.frog_ated * 1.00 / TOTAL_SNAKE_QTY)).toString();
+		return new StringBuilder("吃蛙率:").append(format100.format(Env.frog_ated * 1.00 / TOTAL_FROG_QTY)).toString();
 	}
 
 	public static void checkIfPause(Animal f) {
