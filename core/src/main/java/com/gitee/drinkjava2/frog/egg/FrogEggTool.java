@@ -22,8 +22,9 @@ import java.util.List;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.organ.Active;
-import com.gitee.drinkjava2.frog.organ.BigEye;
+import com.gitee.drinkjava2.frog.organ.frog.FrogBigEye;
 import com.gitee.drinkjava2.frog.organ.frog.FrogEyes;
 import com.gitee.drinkjava2.frog.organ.frog.FrogMouth;
 import com.gitee.drinkjava2.frog.organ.frog.FrogMoves;
@@ -35,6 +36,7 @@ import com.gitee.drinkjava2.frog.util.LocalFileUtils;
  * @author Yong Zhu
  * @since 1.0
  */
+@SuppressWarnings("all")
 public class FrogEggTool {
 
 	/**
@@ -46,8 +48,8 @@ public class FrogEggTool {
 	public static void layEggs() {
 
 		sortFrogsOrderByEnergyDesc();
-		Animal first = Env.frogs.get(0);
-		Animal last = Env.frogs.get(Env.frogs.size() - 1);
+		Frog first = Env.frogs.get(0);
+		Frog last = Env.frogs.get(Env.frogs.size() - 1);
 		try {
 			Env.frog_eggs.clear();
 			for (int i = 0; i < Env.FROG_EGG_QTY; i++)
@@ -106,6 +108,7 @@ public class FrogEggTool {
 				float r = 40;
 				float h = 3;
 				egg.organs.add(new FrogMouth().setXYZRHN(0, 0, 0, 0, h, "Eat")); // Mouth不是感觉或输出器官，没有位置和大小
+				egg.organs.add(new FrogBigEye().setXYZRHN(190, 90, 500, r * 2, h, "BigEye"));// 大眼睛，永远加在第一位
 				egg.organs.add(new Active().setXYZRHN(500, 600, 500, r, h, "Active")); // 永远激活
 				egg.organs.add(new FrogMoves.MoveUp().setXYZRHN(800, 300, 500, r, h, "Up"));
 				egg.organs.add(new FrogMoves.MoveDown().setXYZRHN(800, 600, 500, r, h, "Down"));
@@ -115,7 +118,7 @@ public class FrogEggTool {
 				egg.organs.add(new FrogEyes.SeeDown().setXYZRHN(200, 500 - 90, 500, r, h, "SeeDown"));
 				egg.organs.add(new FrogEyes.SeeLeft().setXYZRHN(200 - 90, 500, 500, r, h, "SeeLeft"));
 				egg.organs.add(new FrogEyes.SeeRight().setXYZRHN(200 + 90, 500, 500, r, h, "SeeRight"));
-				egg.organs.add(new BigEye().setXYZRHN(100 + 90, 100, 500, r * 2, h, "SeeRight"));
+
 				Env.frog_eggs.add(egg);
 			}
 			System.out.println("Fail to load frog egg file '" + Application.CLASSPATH + "frog_eggs.ser" + "', created "

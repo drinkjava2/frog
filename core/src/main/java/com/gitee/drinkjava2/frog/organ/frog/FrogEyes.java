@@ -10,8 +10,8 @@
  */
 package com.gitee.drinkjava2.frog.organ.frog;
 
-import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Animal;
+import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -28,7 +28,7 @@ public class FrogEyes {
 		public int seeDistance; // 眼睛能看到的距离
 
 		@Override
-		public void initOrgan(Animal f) { // 仅在Frog生成时这个方法会调用一次
+		public void initOrgan(Animal a) { // 仅在生成时这个方法会调用一次
 			if (!initilized) {
 				initilized = true;
 				seeDistance = 8;
@@ -37,7 +37,7 @@ public class FrogEyes {
 
 		@Override
 		public Organ[] vary() {
-			seeDistance=RandomUtils.varyInLimit(seeDistance, 5, 20);
+			seeDistance = RandomUtils.varyInLimit(seeDistance, 5, 20);
 			if (RandomUtils.percent(5)) { // 可视距离有5%的机率变异
 				seeDistance = seeDistance + 1 - 2 * RandomUtils.nextInt(2);
 				if (seeDistance < 1)
@@ -49,10 +49,10 @@ public class FrogEyes {
 		}
 
 		@Override
-		public void active(Animal f) {
+		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundAnyThing(f.x, f.y + i)) {
-					activeInput(f, 30);
+				if (Env.foundAnyThingOrOutEdge(a.x, a.y + i)) {
+					activeInput(a, 30);
 					return;
 				}
 		}
@@ -62,10 +62,10 @@ public class FrogEyes {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
+		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundAnyThing(f.x, f.y - i)) {
-					activeInput(f, 30);
+				if (Env.foundAnyThingOrOutEdge(a.x, a.y - i)) {
+					activeInput(a, 30);
 					return;
 				}
 		}
@@ -75,10 +75,10 @@ public class FrogEyes {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
+		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundAnyThing(f.x - i, f.y)) {
-					activeInput(f, 30);
+				if (Env.foundAnyThingOrOutEdge(a.x - i, a.y)) {
+					activeInput(a, 30);
 					return;
 				}
 		}
@@ -88,10 +88,10 @@ public class FrogEyes {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
+		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundAnyThing(f.x + i, f.y)) {
-					activeInput(f, 30);
+				if (Env.foundAnyThingOrOutEdge(a.x + i, a.y)) {
+					activeInput(a, 30);
 					return;
 				}
 		}

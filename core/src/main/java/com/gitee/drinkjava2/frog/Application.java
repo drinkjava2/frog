@@ -22,6 +22,7 @@ import com.gitee.drinkjava2.frog.brain.BrainPicture;
  * @author Yong Zhu
  * @since 1.0
  */
+@SuppressWarnings("all")
 public class Application {
 
 	public static final String CLASSPATH;
@@ -42,7 +43,7 @@ public class Application {
 	public static ActionListener pauseAction;
 	public static boolean selectFrog = true;
 
-	static private void checkIfShowBrainPicture(JButton button) {
+	private static void checkIfShowBrainPicture(JButton button) {
 		if (Env.SHOW_FIRST_ANIMAL_BRAIN) {
 			button.setText("Hide brain");
 			int y = Env.ENV_HEIGHT + 120;
@@ -56,7 +57,7 @@ public class Application {
 		}
 	}
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) {
 		mainFrame.setLayout(null);
 		mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 100); // 窗口大小
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 关闭时退出程序
@@ -144,7 +145,7 @@ public class Application {
 				radioSnake.setVisible(true);
 			} else {
 				radioFrog.setSelected(true);
-				selectFrog =true;
+				selectFrog = true;
 				radioFrog.setVisible(false);
 				radioSnake.setVisible(false);
 			}

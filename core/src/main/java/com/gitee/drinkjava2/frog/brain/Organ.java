@@ -38,32 +38,31 @@ public class Organ extends Zone {
 	}
 
 	/** Only call once when frog created , Child class can override this method */
-	public void initOrgan(Animal f) { // 仅在Frog生成时会调用一次
+	public void initOrgan(Animal a) { // 仅在Animal生成时会调用一次
 	}
 
 	/** Each loop step call active method, Child class can override this method */
-	public void active(Animal f) { // 这是器官级别的方法，每个步长调用一次
+	public void active(Animal a) { // 这是器官级别的方法，每个步长调用一次
 	}
 
 	/** Each loop step call active method, Child class can override this method */
-	public void active(Animal f, Cell c) { // 这是Cell级别的方法，每个步长、每个细胞都要调用一次
+	public void active(Animal a, Cell c) { // 这是Cell级别的方法，每个步长、每个细胞都要调用一次
 	}
 
 	/** If active in this organ's zone? */
-	public boolean outputActive(Animal f) { // 如果细胞能量>organActiveEnergy,则细胞能量减少，返回true(激活)标志
-		for (Cell cell : f.cells)
-			if (cell.energy > organActiveEnergy)
-				if (this.nearby(cell.output)) {
-					cell.organ.fat++;
-					cell.energy -= 30;//
-					return true;
-				}
+	public boolean outputActive(Animal a) { // 如果细胞能量>organActiveEnergy,则细胞能量减少，返回true(激活)标志
+		for (Cell cell : a.cells)
+			if (cell.energy > organActiveEnergy && this.nearby(cell.output)) {
+				cell.organ.fat++;
+				cell.energy -= 30;//
+				return true;
+			}
 		return false;
 	}
 
 	/** If active in this organ's zone? */
-	public void activeInput(Animal f, float energy) { // 如果一个细胞输入触突位于这个器官内，则细胞能量增加激活
-		for (Cell cell : f.cells)
+	public void activeInput(Animal a, float energy) { // 如果一个细胞输入触突位于这个器官内，则细胞能量增加激活
+		for (Cell cell : a.cells)
 			if (cell.energy < 100)
 				if (this.nearby(cell.input)) {
 					cell.energy += energy;
@@ -79,7 +78,7 @@ public class Organ extends Zone {
 	}
 
 	/** Child class can override this method to drawing picture */
-	public void drawOnBrainPicture(Animal f, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
+	public void drawOnBrainPicture(Animal a, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
 		if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
 			return;
 		pic.setPicColor(Color.BLACK); // 缺省是黑色

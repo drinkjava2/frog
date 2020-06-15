@@ -16,6 +16,7 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.brain.Zone;
 import com.gitee.drinkjava2.frog.organ.Line;
+import com.gitee.drinkjava2.frog.organ.frog.FrogBigEye;
 
 /**
  * Random Utilities used in this project
@@ -48,10 +49,20 @@ public class RandomUtils {
 	}
 
 	/** Return a random zone inside of frog's random organ */
-	public static Zone randomZoneInOrgans(Animal f) {
-		if (f.organs == null || f.organs.size() == 0)
+	public static Zone randomZoneInOrgans(Animal a) {
+		if (a.organs == null || a.organs.isEmpty())
 			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when has no organ");
-		Organ o = f.organs.get(1 + RandomUtils.nextInt(f.organs.size() - 1)); // 跳过第一个器官
+		Organ o = null;
+		if (percent(10)) {// 增加选中大眼睛的机率，因为里面感光细胞多
+			for (Organ og : a.organs) {
+				if (og instanceof FrogBigEye) {
+					o = og;
+					break;
+				}
+			}
+		}
+		if (o == null)
+			o = a.organs.get(1 + RandomUtils.nextInt(a.organs.size() - 1)); // 跳过第一个器官
 		if (o instanceof Line) {
 			return randomZoneInZone(((Line) o).bodyZone);
 		} else {

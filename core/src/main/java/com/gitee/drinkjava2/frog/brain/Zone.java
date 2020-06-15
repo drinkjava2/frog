@@ -22,6 +22,7 @@ import com.gitee.drinkjava2.frog.Env;
  * @author Yong Zhu
  * @since 1.0
  */
+@SuppressWarnings("all")
 public class Zone implements Serializable { // zone 代表脑空间中的一块立方区域， 以x,y,z为中心， 以r为边长的一半
 	private static final long serialVersionUID = 1L;
 
@@ -86,8 +87,8 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 	public Zone(Zone a, Zone b) {// 用两个Zone来构造，新的zone位于两个zone的中间
 		this.x = (a.x + b.x) / 2;
 		this.y = (a.y + b.y) / 2;
-		this.z = (a.z + b.z) / 2 - 10;
-		this.r = (a.r + b.r) / 2;
+		this.z = (a.z + b.z) / 2 - 20; // -20表示它是下一层的连线
+		this.r = 5;
 		this.h = (a.h + b.h) / 2;
 	}
 

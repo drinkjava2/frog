@@ -21,10 +21,10 @@ public class SnakeMouth extends Organ {// SnakeMouth这个类将青蛙作为食�
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void active(Animal f) {
-		if (Env.foundAndAteFrog(f.x, f.y)) {
-			f.ateFood++;
-			f.energy += 1000;// 如果蛇的坐标与青蛙重合，吃掉food，能量境加
+	public void active(Animal a) {
+		if (Env.foundAndAteFrog(a.x, a.y)) {
+			a.ateFood++;
+			a.energy += 1000;// 如果蛇的坐标与青蛙重合，吃掉food，能量境加
 		}
 	}
 

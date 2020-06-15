@@ -23,12 +23,12 @@ public class FrogMoves {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
-			if (outputActive(f)) {
-				Env.clearMaterial(f.x, f.y, Material.FROG_TAG);
-				f.y--;
-				Env.clearMaterial(f.x, f.y, Material.FROG_TAG);
-				Env.setMaterial(f.x, f.y, f.no);
+		public void active(Animal a) {
+			if (outputActive(a)) {
+				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
+				a.y--;
+				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
+				Env.setMaterial(a.x, a.y, a.no);
 			}
 		}
 	}
@@ -37,12 +37,12 @@ public class FrogMoves {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
-			if (outputActive(f)) {
-				Env.clearMaterial(f.x, f.y, Material.FROG_TAG);
-				f.y++;
-				Env.clearMaterial(f.x, f.y, Material.FROG_TAG);
-				Env.setMaterial(f.x, f.y, f.no);
+		public void active(Animal a) {
+			if (outputActive(a)) {
+				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
+				a.y++;
+				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
+				Env.setMaterial(a.x, a.y, a.no);
 			}
 		}
 	}
@@ -51,12 +51,12 @@ public class FrogMoves {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
-			if (outputActive(f)) {
-				Env.clearMaterial(f.x, f.y, Material.FROG_TAG);
-				f.x--;
-				Env.clearMaterial(f.x, f.y, Material.FROG_TAG);
-				Env.setMaterial(f.x, f.y, f.no);
+		public void active(Animal a) {
+			if (outputActive(a)) {
+				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
+				a.x--;
+				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
+				Env.setMaterial(a.x, a.y, a.no);
 			}
 		}
 	}
@@ -65,12 +65,12 @@ public class FrogMoves {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
-			if (outputActive(f)) {
-				Env.clearMaterial(f.x, f.y, Material.FROG_TAG);
-				f.x++;
-				Env.clearMaterial(f.x, f.y, Material.FROG_TAG);
-				Env.setMaterial(f.x, f.y, f.no);
+		public void active(Animal a) {
+			if (outputActive(a)) {
+				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
+				a.x++;
+				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
+				Env.setMaterial(a.x, a.y, a.no);
 			}
 		}
 

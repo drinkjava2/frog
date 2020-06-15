@@ -24,7 +24,7 @@ public class Active extends Organ {// 以前的实验发现添加一个始终激
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void initOrgan(Animal f) {
+	public void initOrgan(Animal a) {
 		if (!initilized) {
 			initilized = true;
 			organOutputEnergy = 2f;
@@ -32,8 +32,8 @@ public class Active extends Organ {// 以前的实验发现添加一个始终激
 	}
 
 	@Override
-	public void active(Animal f) {
-		for (Cell cell : f.cells) {
+	public void active(Animal a) {
+		for (Cell cell : a.cells) {
 			if (cell.energy > 0)
 				cell.energy--;
 			if (cell.energy < Cell.MAX_ENERGY_LIMIT) 

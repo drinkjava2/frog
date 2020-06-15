@@ -20,7 +20,7 @@ import java.awt.Color;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Material {
+public class Material {// NOSONAR
 
 	public static final int FROG_TAG = 0b11111111111111; // 16383 小于等于16384的位数用来标记青蛙序号，可利用Env.frogs.get(no-1)快速定位青蛙
 
@@ -32,12 +32,6 @@ public class Material {
 			throw new IllegalArgumentException("Material out of maximum range");
 		return origin;
 	}
-
-	// public static final int NO = 0; // nothing
-
-	public static final int VISIBLE = nextLeftShift(); // if visible to frog
-
-	public static final int SEESAW = nextLeftShift();
 
 	public static final int FOOD = nextLeftShift();
 	public static final int FLY1 = nextLeftShift();// FLY1苍蝇是一种会移动的Food

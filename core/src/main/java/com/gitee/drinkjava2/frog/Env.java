@@ -15,6 +15,7 @@ import com.gitee.drinkjava2.frog.egg.SnakeEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
+import com.gitee.drinkjava2.frog.objects.Trap;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -25,6 +26,8 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  */
 @SuppressWarnings("all")
 public class Env extends JPanel {
+	private static final long serialVersionUID = 1L;
+
 	/** Speed of test */
 	public static int SHOW_SPEED = 10; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
@@ -93,7 +96,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-	public static EnvObject[] things = new EnvObject[] { new Food() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+	public static EnvObject[] things = new EnvObject[] { new Food(), new Trap() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
 	public static final int TOTAL_SNAKE_QTY = SNAKE_EGG_QTY * SNAKE_PER_EGG; // 蛇的总数
 
@@ -126,12 +129,12 @@ public class Env extends JPanel {
 		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT;
 	}
 
-	public static boolean closeToEdge(Animal f) {// 青蛙靠近边界? 离死不远了
-		return f.x < 20 || f.y < 20 || f.x > (Env.ENV_WIDTH - 20) || f.y > (Env.ENV_HEIGHT - 20);
+	public static boolean closeToEdge(Animal a) {// 靠近边界? 离死不远了
+		return a.x < 20 || a.y < 20 || a.x > (Env.ENV_WIDTH - 20) || a.y > (Env.ENV_HEIGHT - 20);
 	}
 
-	public static boolean foundAnyThing(int x, int y) {// 如果指定点看到任意东西或超出边界，返回true
-		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT || Env.bricks[x][y] >= Material.VISIBLE;
+	public static boolean foundAnyThingOrOutEdge(int x, int y) {// 如果指定点看到任意东西或超出边界，返回true
+		return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT || Env.bricks[x][y] != 0;
 	}
 
 	public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
@@ -143,24 +146,24 @@ public class Env extends JPanel {
 		return false;
 	}
 
-	public static boolean foundFrog(int x, int y) {// 如果指定点看到青蛙或超出边界，返回true
+	public static boolean foundFrogOrOutEdge(int x, int y) {// 如果指定点看到青蛙或超出边界，返回true
 		if (x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT)
-			return false;// 如果出界返回true
+			return true;// 如果出界返回true
 		int frogNo = Env.bricks[x][y] & Material.FROG_TAG;
 		if (frogNo > 0) {
-			Animal f = frogs.get(frogNo - 1);
+			Frog f = frogs.get(frogNo - 1);
 			if (f.alive)
 				return true;
 		}
 		return false;
 	}
 
-	public static boolean foundAndAteFrog(int x, int y) {// TODO:优化寻找青蛙的速度，不要用循环 如果x,y有青蛙，将其杀死，返回true
+	public static boolean foundAndAteFrog(int x, int y) {// 如果x,y有青蛙，将其杀死，返回true
 		if (x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT)
 			return false;// 如果出界返回false;
 		int frogNo = Env.bricks[x][y] & Material.FROG_TAG;
 		if (frogNo > 0) {
-			Animal f = frogs.get(frogNo - 1);
+			Frog f = frogs.get(frogNo - 1);
 			if (f.alive) {
 				Env.frog_ated++;
 				f.alive = false;
@@ -240,7 +243,7 @@ public class Env extends JPanel {
 
 	private String foodAtedCount() {// 统计吃食总数等
 		int maxFound = 0;
-		for (Animal f : frogs)
+		for (Frog f : frogs)
 			if (f.ateFood > maxFound)
 				maxFound = f.ateFood;
 		return new StringBuilder("吃食率:").append(format100.format(Env.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ")
@@ -251,11 +254,11 @@ public class Env extends JPanel {
 		return new StringBuilder("吃蛙率:").append(format100.format(Env.frog_ated * 1.00 / TOTAL_FROG_QTY)).toString();
 	}
 
-	public static void checkIfPause(Animal f) {
+	public static void checkIfPause(Animal a) {
 		if (pause)
 			do {
-				if (f != null) {
-					Application.brainPic.drawBrainPicture(f);
+				if (a != null) {
+					Application.brainPic.drawBrainPicture(a);
 					Application.brainPic.requestFocus();
 				}
 				sleep(100);
@@ -289,11 +292,11 @@ public class Env extends JPanel {
 				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
 				boolean allDead = false;
-				Animal firstFrog = frogs.get(current_screen * FROG_PER_SCREEN);
+				Frog firstFrog = frogs.get(current_screen * FROG_PER_SCREEN);
 				Snake firstSnake = null;
 
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
-					Animal f = frogs.get(current_screen * FROG_PER_SCREEN + j);
+					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
 				}
 				if (SNAKE_MODE && !snakes.isEmpty()) {
@@ -306,12 +309,12 @@ public class Env extends JPanel {
 				Animal showFrog = Application.selectFrog ? firstFrog : firstSnake;
 				for (step = 0; step < STEPS_PER_ROUND; step++) {
 					for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
-						thing.active(current_screen);
+						thing.active();
 					if (allDead)
 						break; // 青蛙全死光了就直接跳到下一轮,以节省时间
 					allDead = true;
 					for (int j = 0; j < FROG_PER_SCREEN; j++) {
-						Animal f = frogs.get(current_screen * FROG_PER_SCREEN + j);
+						Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 						if (f.active(this))// 调用青蛙的Active方法，并返回是否还活着
 							allDead = false;
 					}
@@ -333,7 +336,7 @@ public class Env extends JPanel {
 					g.setColor(Color.BLACK);
 					drawWorld(g);// 画整个虚拟环境
 					for (int j = 0; j < FROG_PER_SCREEN; j++) { // 显示青蛙
-						Animal f = frogs.get(current_screen * FROG_PER_SCREEN + j);
+						Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 						f.show(g);
 					}
 					if (SNAKE_MODE && !snakes.isEmpty())
@@ -357,7 +360,7 @@ public class Env extends JPanel {
 					Application.brainPic.drawBrainPicture(showFrog);
 				checkIfPause(firstFrog);
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
-					Animal f = frogs.get(current_screen * FROG_PER_SCREEN + j);
+					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.cells = null; // 清空frog脑细胞所占用的内存
 				}
 				StringBuilder sb = new StringBuilder("Round: ");

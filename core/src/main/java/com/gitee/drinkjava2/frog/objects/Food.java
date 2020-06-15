@@ -66,7 +66,7 @@ public class Food implements EnvObject {
 	}
 
 	@Override
-	public void active(int screen) {
+	public void active() {
 		if (!Env.FOOD_CAN_MOVE)// 如果食物不能移动
 			return;
 		if (RandomUtils.percent(96))// 用机率来调整食物(苍蝇)的速度

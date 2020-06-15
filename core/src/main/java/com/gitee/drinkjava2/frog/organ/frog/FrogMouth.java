@@ -21,10 +21,10 @@ public class FrogMouth extends Organ {// Mouth这个类将食物转化为能量�
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void active(Animal f) {
-		if (Env.foundAndAteFood(f.x, f.y)) {
-			f.ateFood++; 
-			f.energy += 1000;// 如果青蛙的坐标与食物重合，吃掉food，能量境加 
+	public void active(Animal a) {
+		if (Env.foundAndAteFood(a.x, a.y)) {
+			a.ateFood++; 
+			a.energy += 1000;// 如果青蛙的坐标与食物重合，吃掉food，能量境加 
 		}
 	}
 

@@ -12,6 +12,7 @@ package com.gitee.drinkjava2.frog.egg;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.gitee.drinkjava2.frog.Animal;
@@ -33,14 +34,13 @@ public class Egg implements Serializable {
 
 	public List<Organ> organs = new ArrayList<>();// NOSONAR
 
-	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙 
+	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
 	}
 
 	/** Create egg from frog */
-	public Egg(Animal frog) { // 青蛙下蛋，每个青蛙的器官会创建自已的副本或变异，可以是0或多个
-		for (Organ organ : frog.organs)
-			for (Organ newOrgan : organ.vary())
-				organs.add(newOrgan);
+	public Egg(Animal a) { // 下蛋，每个器官会创建自已的副本或变异，可以是0或多个
+		for (Organ organ : a.organs)
+			organs.addAll(Arrays.asList(organ.vary()));
 	}
 
 	/**

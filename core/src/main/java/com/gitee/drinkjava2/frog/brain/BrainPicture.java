@@ -16,9 +16,9 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
 
 /**
@@ -33,15 +33,17 @@ import com.gitee.drinkjava2.frog.util.ColorUtils;
  */
 @SuppressWarnings("all")
 public class BrainPicture extends JPanel {
-	private static final float d90 = (float) (Math.PI / 2);
+	private static final long serialVersionUID = 1L;
+
+	private static final float D90 = (float) (Math.PI / 2);
 
 	Color picColor = RED;
 	int brainDispWidth; // screen display piexls width
 	float scale; // brain scale
 	int xOffset = 0; // brain display x offset compare to screen
 	int yOffset = 0; // brain display y offset compare to screen
-	float xAngle = d90 * .8f; // brain rotate on x axis
-	float yAngle = d90 / 4; // brain rotate on y axis
+	float xAngle = D90 * .8f; // brain rotate on x axis
+	float yAngle = D90 / 4; // brain rotate on y axis
 	float zAngle = 0;// brain rotate on z axis
 	int xMask = -1;// x Mask
 	int yMask = -1;// y Mask
@@ -64,6 +66,7 @@ public class BrainPicture extends JPanel {
 		this.addMouseMotionListener(act);// 添加鼠标移动动作监听
 
 		keyAdapter = new KeyAdapter() {// 处理t,f,l,r，x键盘命令
+			@Override
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_UP:// Y切面向上
@@ -95,23 +98,23 @@ public class BrainPicture extends JPanel {
 					zAngle = 0;
 					break;
 				case 'F':// 前视
-					xAngle = d90;
+					xAngle = D90;
 					yAngle = 0;
 					zAngle = 0;
 					break;
 				case 'L':// 左视
-					xAngle = d90;
-					yAngle = d90;
+					xAngle = D90;
+					yAngle = D90;
 					zAngle = 0;
 					break;
 				case 'R':// 右视
-					xAngle = d90;
-					yAngle = -d90;
+					xAngle = D90;
+					yAngle = -D90;
 					zAngle = 0;
 					break;
 				case 'X':// 斜视
-					xAngle = d90 * .8f;
-					yAngle = d90 / 4;
+					xAngle = D90 * .8f;
+					yAngle = D90 / 4;
 					zAngle = 0;
 					break;
 				default:
@@ -122,7 +125,7 @@ public class BrainPicture extends JPanel {
 		this.setFocusable(true);
 	}
 
-	public void drawZone(Zone o) {// 在脑图上画一个正立方体Zone框架，视角是TopView 
+	public void drawZone(Zone o) {// 在脑图上画一个正立方体Zone框架，视角是TopView
 		drawCuboid(o.x - o.r, o.y - o.r, o.z - o.h * .5f, o.r + o.r, o.r + o.r, o.h);
 	}
 
@@ -191,9 +194,9 @@ public class BrainPicture extends JPanel {
 		z1 = z;
 
 		x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
-		z = z1 * cos(yAngle) - x1 * sin(yAngle);
+		// z = z1 * cos(yAngle) - x1 * sin(yAngle);
 		x1 = x;
-		z1 = z;
+		// z1 = z;
 
 		x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
 		y = x1 * sin(zAngle) + y1 * cos(zAngle);
@@ -206,9 +209,9 @@ public class BrainPicture extends JPanel {
 		z2 = z;
 
 		x = z2 * sin(yAngle) + x2 * cos(yAngle);// 绕y轴转
-		z = z2 * cos(yAngle) - x2 * sin(yAngle);
+		// z = z2 * cos(yAngle) - x2 * sin(yAngle);
 		x2 = x;
-		z2 = z;
+		// z2 = z;
 
 		x = x2 * cos(zAngle) - y2 * sin(zAngle);// 绕z轴转
 		y = x2 * sin(zAngle) + y2 * cos(zAngle);
@@ -227,7 +230,7 @@ public class BrainPicture extends JPanel {
 	}
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
-	public void drawPoint(float px1, float py1, float pz1, int diameter) {
+	public void drawPoint(float px1, float py1, float pz1, float r) {
 		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
 		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
 		double z1 = pz1 - Env.FROG_BRAIN_ZSIZE / 2;
@@ -241,9 +244,9 @@ public class BrainPicture extends JPanel {
 		z1 = z;
 
 		x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
-		z = z1 * cos(yAngle) - x1 * sin(yAngle);
+		// z = z1 * cos(yAngle) - x1 * sin(yAngle);
 		x1 = x;
-		z1 = z;
+		// z1 = z;
 
 		x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
 		y = x1 * sin(zAngle) + y1 * cos(zAngle);
@@ -251,8 +254,8 @@ public class BrainPicture extends JPanel {
 		y1 = y;
 
 		g.setColor(picColor);
-		g.fillOval((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
-				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - diameter / 2, diameter, diameter);
+		g.fillOval(round((float) x1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset-r*scale*.5f),
+				round((float) y1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset-r*scale*.5f), round(r*scale), round(r*scale));
 	}
 
 	public void drawText(float px1, float py1, float pz1, String text) {
@@ -273,9 +276,9 @@ public class BrainPicture extends JPanel {
 		z1 = z;
 
 		x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
-		z = z1 * cos(yAngle) - x1 * sin(yAngle);
+		// z = z1 * cos(yAngle) - x1 * sin(yAngle);
 		x1 = x;
-		z1 = z;
+		// z1 = z;
 
 		x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
 		y = x1 * sin(zAngle) + y1 * cos(zAngle);
@@ -291,8 +294,8 @@ public class BrainPicture extends JPanel {
 
 	private static Cuboid brain = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
 
-	public void drawBrainPicture(Animal f) {// 在这个方法里进行青蛙或蛇的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
-		if (!Env.SHOW_FIRST_ANIMAL_BRAIN || f == null || !f.alive)
+	public void drawBrainPicture(Animal a) {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
+		if (!Env.SHOW_FIRST_ANIMAL_BRAIN || a == null || !a.alive)
 			return;
 		g.setColor(WHITE);// 先清空旧图
 		g.fillRect(0, 0, brainDispWidth, brainDispWidth);
@@ -304,14 +307,14 @@ public class BrainPicture extends JPanel {
 		drawText(0, 100, 0, "y");
 		drawText(0, 0, 100, "z");
 
-		for (Organ organ : f.organs)// 每个器官负责画出自已在脑图中的位置和形状
-			organ.drawOnBrainPicture(f, this); // each organ draw itself
+		for (Organ organ : a.organs)// 每个器官负责画出自已在脑图中的位置和形状
+			organ.drawOnBrainPicture(a, this); // each organ draw itself
 		setPicColor(RED);
 		drawLine(0, 0, 0, 1, 0, 0);
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
 
-		for (Cell cell : f.cells) {
+		for (Cell cell : a.cells) {
 			if (cell != null && cell.energy > 20) {
 				setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度表示活跃度
 				if (cell.body != null)

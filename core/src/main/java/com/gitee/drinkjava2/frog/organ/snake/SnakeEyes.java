@@ -30,7 +30,7 @@ public class SnakeEyes {
 		public int seeDistance; // 眼睛能看到的距离
 
 		@Override
-		public void initOrgan(Animal f) { // 仅在Snake生成时这个方法会调用一次
+		public void initOrgan(Animal a) { // 仅在Snake生成时这个方法会调用一次
 			if (!initilized) {
 				initilized = true;
 				seeDistance = 8;
@@ -51,10 +51,10 @@ public class SnakeEyes {
 		}
 
 		@Override
-		public void active(Animal f) {
+		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundFrog(f.x, f.y + i)) {
-					activeInput(f, 30);
+				if (Env.foundFrogOrOutEdge(a.x, a.y + i)) {
+					activeInput(a, 30);
 					return;
 				}
 		}
@@ -64,10 +64,10 @@ public class SnakeEyes {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
+		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundFrog(f.x, f.y - i)) {
-					activeInput(f, 30);
+				if (Env.foundFrogOrOutEdge(a.x, a.y - i)) {
+					activeInput(a, 30);
 					return;
 				}
 		}
@@ -77,10 +77,10 @@ public class SnakeEyes {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
+		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundFrog(f.x - i, f.y)) {
-					activeInput(f, 30);
+				if (Env.foundFrogOrOutEdge(a.x - i, a.y)) {
+					activeInput(a, 30);
 					return;
 				}
 		}
@@ -90,10 +90,10 @@ public class SnakeEyes {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
+		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
-				if (Env.foundFrog(f.x + i, f.y)) {
-					activeInput(f, 30);
+				if (Env.foundFrogOrOutEdge(a.x + i, a.y)) {
+					activeInput(a, 30);
 					return;
 				}
 		}

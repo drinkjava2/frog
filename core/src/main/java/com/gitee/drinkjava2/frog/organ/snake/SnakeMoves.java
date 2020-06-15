@@ -10,8 +10,8 @@
  */
 package com.gitee.drinkjava2.frog.organ.snake;
 
-import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Animal;
+import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.objects.Material;
 
@@ -22,12 +22,17 @@ public class SnakeMoves {
 	public static class MoveUp extends Organ {
 		private static final long serialVersionUID = 1L;
 
+		private void clearSnakeMaterial(Animal snake) {//TODO 
+			
+		}
+		
+		
 		@Override
-		public void active(Animal f) {
-			if (outputActive(f)) {
-				Env.clearMaterial(f.x, f.y, Material.SNAKE);
-				f.y--;
-				Env.setMaterial(f.x, f.y, Material.SNAKE);
+		public void active(Animal a) {
+			if (outputActive(a)) {
+				Env.clearMaterial(a.x, a.y, Material.SNAKE);
+				a.y--;
+				Env.setMaterial(a.x, a.y, Material.SNAKE);
 			}
 		}
 	}
@@ -36,11 +41,11 @@ public class SnakeMoves {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
-			if (outputActive(f)) {
-				Env.clearMaterial(f.x, f.y, Material.SNAKE);
-				f.y++;
-				Env.setMaterial(f.x, f.y, Material.SNAKE);
+		public void active(Animal a) {
+			if (outputActive(a)) {
+				Env.clearMaterial(a.x, a.y, Material.SNAKE);
+				a.y++;
+				Env.setMaterial(a.x, a.y, Material.SNAKE);
 			}
 		}
 	}
@@ -49,11 +54,11 @@ public class SnakeMoves {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
-			if (outputActive(f)) {
-				Env.clearMaterial(f.x, f.y, Material.SNAKE);
-				f.x--;
-				Env.setMaterial(f.x, f.y, Material.SNAKE);
+		public void active(Animal a) {
+			if (outputActive(a)) {
+				Env.clearMaterial(a.x, a.y, Material.SNAKE);
+				a.x--;
+				Env.setMaterial(a.x, a.y, Material.SNAKE);
 			}
 		}
 	}
@@ -62,11 +67,11 @@ public class SnakeMoves {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void active(Animal f) {
-			if (outputActive(f)) {
-				Env.clearMaterial(f.x, f.y, Material.SNAKE);
-				f.x++;
-				Env.setMaterial(f.x, f.y, Material.SNAKE);
+		public void active(Animal a) {
+			if (outputActive(a)) {
+				Env.clearMaterial(a.x, a.y, Material.SNAKE);
+				a.x++;
+				Env.setMaterial(a.x, a.y, Material.SNAKE);
 			}
 		}
 
