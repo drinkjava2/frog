@@ -39,11 +39,13 @@ public class Material {// NOSONAR
 	public static final int FLY3 = nextLeftShift();// FLY3苍蝇是一种会移动的Food
 	public static final int FLY4 = nextLeftShift();// FLY4苍蝇是一种会移动的Food
 	public static final int ANY_FOOD = FOOD + FLY1 + FLY2 + FLY3 + FLY4;// ANY_FOOD是几种FOOD的位叠加
-	public static final int SNAKE = nextLeftShift(); // 蛇的图形
 
+	public static final int SNAKE = nextLeftShift(); // 蛇的图形
 	public static final int KILLFROG = nextLeftShift(); // if>=KILLFROG will kill frog
 	public static final int BRICK = nextLeftShift();// brick will kill frog
 	public static final int TRAP = nextLeftShift(); // trap will kill frog
+
+	// 大于INVISIBLE的材料不显示在环境里，但有可能被青蛙或蛇看到，这是为了简化模式识别，蛇显示为蛇图形，但实际上目前它在环境中用一根线条来代表，以简化模型
 
 	public static Color color(int material) {
 		if ((material & TRAP) > 0)

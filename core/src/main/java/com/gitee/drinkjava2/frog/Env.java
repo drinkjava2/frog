@@ -73,7 +73,7 @@ public class Env extends JPanel {
 
 	public static boolean SNAKE_MODE = true; // 是否加小蛇加进来吃青蛙?
 
-	public static final int SNAKE_EGG_QTY = 5; // 每轮下n个蛇蛋，可调，只有最优秀的前n个蛇们才允许下蛋
+	public static final int SNAKE_EGG_QTY = 10; // 每轮下n个蛇蛋，可调，只有最优秀的前n个蛇们才允许下蛋
 
 	public static final int SNAKE_PER_EGG = 4; // 每个蛇蛋可以孵出几个蛇
 
@@ -96,7 +96,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-	public static EnvObject[] things = new EnvObject[] { new Food(), new Trap() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+	public static EnvObject[] things = new EnvObject[] { new Food() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
 	public static final int TOTAL_SNAKE_QTY = SNAKE_EGG_QTY * SNAKE_PER_EGG; // 蛇的总数
 

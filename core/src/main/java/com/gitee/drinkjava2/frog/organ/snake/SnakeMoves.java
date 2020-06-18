@@ -19,12 +19,16 @@ import com.gitee.drinkjava2.frog.objects.Material;
  * Move up frog 1 unit if outputs of nerve cells active in this zone
  */
 public class SnakeMoves {
-	public static void clearSnakeMaterial(Animal snake) {// TODO
-		Env.clearMaterial(snake.x, snake.y, Material.SNAKE);
+	private static void clearSnakeMaterial(Animal snake) {
+//		for (int i = -5; i < 6; i++)
+//			Env.clearMaterial(snake.x + i, snake.y + i, Material.SNAKE);
+//		// Env.clearMaterial(snake.x, snake.y, Material.SNAKE);
 	}
 
-	public static void setSnakeMaterial(Animal snake) {// TODO
-		Env.setMaterial(snake.x, snake.y, Material.SNAKE);
+	private static void setSnakeMaterial(Animal snake) {
+		for (int i = -5; i < 20; i++)
+			Env.setMaterial(snake.x + i, snake.y + i, Material.SNAKE);
+		// Env.setMaterial(snake.x, snake.y, Material.SNAKE);
 	}
 
 	public static class MoveUp extends Organ {
