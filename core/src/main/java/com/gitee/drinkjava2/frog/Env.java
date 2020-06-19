@@ -15,7 +15,6 @@ import com.gitee.drinkjava2.frog.egg.SnakeEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
-import com.gitee.drinkjava2.frog.objects.Trap;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -304,6 +303,7 @@ public class Env extends JPanel {
 					for (int j = 0; j < SNAKE_PER_SCREEN; j++) {
 						Snake s = snakes.get(current_screen * SNAKE_PER_SCREEN + j);
 						s.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
+						Snake.setEnvSnakeMaterial(s); // 出现时就要设定蛇的材料在环境里，暂时用一条线代替
 					}
 				}
 				Animal showFrog = Application.selectFrog ? firstFrog : firstSnake;

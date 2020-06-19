@@ -11,25 +11,13 @@
 package com.gitee.drinkjava2.frog.organ.snake;
 
 import com.gitee.drinkjava2.frog.Animal;
-import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.Snake;
 import com.gitee.drinkjava2.frog.brain.Organ;
-import com.gitee.drinkjava2.frog.objects.Material;
 
 /**
  * Move up frog 1 unit if outputs of nerve cells active in this zone
  */
 public class SnakeMoves {
-	private static void clearSnakeMaterial(Animal snake) {
-//		for (int i = -5; i < 6; i++)
-//			Env.clearMaterial(snake.x + i, snake.y + i, Material.SNAKE);
-//		// Env.clearMaterial(snake.x, snake.y, Material.SNAKE);
-	}
-
-	private static void setSnakeMaterial(Animal snake) {
-		for (int i = -5; i < 20; i++)
-			Env.setMaterial(snake.x + i, snake.y + i, Material.SNAKE);
-		// Env.setMaterial(snake.x, snake.y, Material.SNAKE);
-	}
 
 	public static class MoveUp extends Organ {
 		private static final long serialVersionUID = 1L;
@@ -37,9 +25,9 @@ public class SnakeMoves {
 		@Override
 		public void active(Animal a) {
 			if (outputActive(a)) {
-				clearSnakeMaterial(a);
+				Snake.clearEnvSnakeMaterial(a);
 				a.y--;
-				setSnakeMaterial(a);
+				Snake.setEnvSnakeMaterial(a);
 			}
 		}
 	}
@@ -50,9 +38,9 @@ public class SnakeMoves {
 		@Override
 		public void active(Animal a) {
 			if (outputActive(a)) {
-				clearSnakeMaterial(a);
+				Snake.clearEnvSnakeMaterial(a);
 				a.y++;
-				setSnakeMaterial(a);
+				Snake.setEnvSnakeMaterial(a);
 			}
 		}
 	}
@@ -63,9 +51,9 @@ public class SnakeMoves {
 		@Override
 		public void active(Animal a) {
 			if (outputActive(a)) {
-				clearSnakeMaterial(a);
+				Snake.clearEnvSnakeMaterial(a);
 				a.x--;
-				setSnakeMaterial(a);
+				Snake.setEnvSnakeMaterial(a);
 			}
 		}
 	}
@@ -76,9 +64,9 @@ public class SnakeMoves {
 		@Override
 		public void active(Animal a) {
 			if (outputActive(a)) {
-				clearSnakeMaterial(a);
+				Snake.clearEnvSnakeMaterial(a);
 				a.x++;
-				setSnakeMaterial(a);
+				Snake.setEnvSnakeMaterial(a);
 			}
 		}
 

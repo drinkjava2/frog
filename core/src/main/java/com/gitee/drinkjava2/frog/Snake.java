@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.objects.Material;
 
 /**
  * Snake has similar brain like Frog, snake eat frog <br>
@@ -39,5 +40,15 @@ public class Snake extends Animal {
 		if (!alive)
 			return;
 		g.drawImage(animalImage, x - 16, y - 5, 18, 18, null);// 减去坐标，保证蛇嘴巴显示在当前x,y处
+	}
+
+	public static void clearEnvSnakeMaterial(Animal snake) {// 这个方法清除Env中代表蛇的图像对应int的位
+		for (int i = -5; i < 6; i++)
+			Env.clearMaterial(snake.x + i, snake.y - i, Material.SNAKE);
+	}
+
+	public static void setEnvSnakeMaterial(Animal snake) {// 这个方法清除Env中代表蛇的图像对应int的位
+		for (int i = -5; i < 6; i++)
+			Env.setMaterial(snake.x + i, snake.y - i, Material.SNAKE);
 	}
 }
