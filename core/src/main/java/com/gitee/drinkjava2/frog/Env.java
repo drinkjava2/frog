@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import com.gitee.drinkjava2.frog.brain.BrainPicture;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.egg.SnakeEggTool;
@@ -28,7 +29,7 @@ public class Env extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	/** Speed of test */
-	public static int SHOW_SPEED = 10; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+	public static int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除保存的青蛙蛋
@@ -74,7 +75,7 @@ public class Env extends JPanel {
 
 	public static final int SNAKE_EGG_QTY = 10; // 每轮下n个蛇蛋，可调，只有最优秀的前n个蛇们才允许下蛋
 
-	public static final int SNAKE_PER_EGG = 4; // 每个蛇蛋可以孵出几个蛇
+	public static final int SNAKE_PER_EGG = 2; // 每个蛇蛋可以孵出几个蛇
 
 	// 以下是程序内部变量，不要手工修改它们
 	public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 蛇的总数
@@ -148,13 +149,10 @@ public class Env extends JPanel {
 	public static boolean foundFrogOrOutEdge(int x, int y) {// 如果指定点看到青蛙或超出边界，返回true
 		if (x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT)
 			return true;// 如果出界返回true
-		int frogNo = Env.bricks[x][y] & Material.FROG_TAG;
-		if (frogNo > 0) {
-			Frog f = frogs.get(frogNo - 1);
-			if (f.alive)
-				return true;
-		}
-		return false;
+		if ((Env.bricks[x][y] & Material.FROG_TAG) > 0)
+			return true;
+		else
+			return false;
 	}
 
 	public static boolean foundAndAteFrog(int x, int y) {// 如果x,y有青蛙，将其杀死，返回true
@@ -165,7 +163,7 @@ public class Env extends JPanel {
 			Frog f = frogs.get(frogNo - 1);
 			if (f.alive) {
 				Env.frog_ated++;
-				f.alive = false;
+				f.kill();
 				return true;
 			}
 		}
@@ -213,7 +211,8 @@ public class Env extends JPanel {
 			}
 			for (int j = 0; j < loop; j++) {
 				Egg zygote = new Egg(snake_eggs.get(i), snake_eggs.get(RandomUtils.nextInt(snake_eggs.size())));
-				snakes.add(new Snake(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote));
+				Snake s = new Snake(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), zygote);
+				snakes.add(s);
 			}
 		}
 	}
@@ -253,13 +252,11 @@ public class Env extends JPanel {
 		return new StringBuilder("吃蛙率:").append(format100.format(Env.frog_ated * 1.00 / TOTAL_FROG_QTY)).toString();
 	}
 
-	public static void checkIfPause(Animal a) {
+	public static void checkIfPause() {
 		if (pause)
 			do {
-				if (a != null) {
-					Application.brainPic.drawBrainPicture(a);
-					Application.brainPic.requestFocus();
-				}
+				Application.brainPic.drawBrainPicture();
+				Application.brainPic.requestFocus();
 				sleep(100);
 			} while (pause);
 	}
@@ -270,6 +267,11 @@ public class Env extends JPanel {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static Animal getShowAnimal() {
+		return Application.selectFrog ? frogs.get(current_screen * FROG_PER_SCREEN)
+				: snakes.get(current_screen * SNAKE_PER_SCREEN);
 	}
 
 	public void run() {
@@ -291,22 +293,19 @@ public class Env extends JPanel {
 				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
 				boolean allDead = false;
-				Frog firstFrog = frogs.get(current_screen * FROG_PER_SCREEN);
-				Snake firstSnake = null;
 
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
 				}
 				if (SNAKE_MODE && !snakes.isEmpty()) {
-					firstSnake = snakes.get(current_screen * SNAKE_PER_SCREEN);
 					for (int j = 0; j < SNAKE_PER_SCREEN; j++) {
 						Snake s = snakes.get(current_screen * SNAKE_PER_SCREEN + j);
 						s.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
 						Snake.setEnvSnakeMaterial(s); // 出现时就要设定蛇的材料在环境里，暂时用一条线代替
 					}
 				}
-				Animal showFrog = Application.selectFrog ? firstFrog : firstSnake;
+
 				for (step = 0; step < STEPS_PER_ROUND; step++) {
 					for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
 						thing.active();
@@ -315,13 +314,13 @@ public class Env extends JPanel {
 					allDead = true;
 					for (int j = 0; j < FROG_PER_SCREEN; j++) {
 						Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
-						if (f.active(this))// 调用青蛙的Active方法，并返回是否还活着
+						if (f.active())// 调用青蛙的Active方法，并返回是否还活着
 							allDead = false;
 					}
 					if (SNAKE_MODE && !snakes.isEmpty())
 						for (int j = 0; j < SNAKE_PER_SCREEN; j++) {
 							Snake s = snakes.get(current_screen * SNAKE_PER_SCREEN + j);
-							s.active(this);// snake唯一作用就是吃小蛇
+							s.active();// snake唯一作用就是吃小蛇
 						}
 
 					if (SHOW_SPEED > 0 && step % SHOW_SPEED != 0) // 用是否跳帧画图的方式来控制速度
@@ -345,20 +344,23 @@ public class Env extends JPanel {
 							s.show(g);
 						}
 
-					if (SHOW_FIRST_ANIMAL_BRAIN && showFrog != null) {
-						g.setColor(Color.red);
-						g.drawArc(showFrog.x - 15, showFrog.y - 15, 30, 30, 0, 360);
-						g.setColor(Color.BLACK);
+					if (SHOW_FIRST_ANIMAL_BRAIN) {// 在showAnimal上画一个红圈
+						Animal showAnimal = getShowAnimal();
+						if (showAnimal != null) {
+							g.setColor(Color.red);
+							g.drawArc(showAnimal.x - 15, showAnimal.y - 15, 30, 30, 0, 360);
+							g.setColor(Color.BLACK);
+						}
 					}
 					if (DRAW_BRAIN_AFTER_STEPS > 0 && step % DRAW_BRAIN_AFTER_STEPS == 0)
-						Application.brainPic.drawBrainPicture(showFrog);
+						Application.brainPic.drawBrainPicture();
 					Graphics g2 = this.getGraphics();
 					g2.drawImage(buffImg, 0, 0, this);
 				}
 				// System.out.println(showFrog.debugInfo());// 打印输出Frog调试内容
 				if (SHOW_FIRST_ANIMAL_BRAIN)
-					Application.brainPic.drawBrainPicture(showFrog);
-				checkIfPause(firstFrog);
+					Application.brainPic.drawBrainPicture();
+				checkIfPause();
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.cells = null; // 清空frog脑细胞所占用的内存

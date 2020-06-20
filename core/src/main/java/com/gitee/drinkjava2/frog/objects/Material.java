@@ -41,7 +41,7 @@ public class Material {// NOSONAR
 	public static final int ANY_FOOD = FOOD + FLY1 + FLY2 + FLY3 + FLY4;// ANY_FOOD是几种FOOD的位叠加
 
 	public static final int SNAKE = nextLeftShift(); // 蛇的图形
-	public static final int KILLFROG = nextLeftShift(); // if>=KILLFROG will kill frog
+	public static final int KILL_ANIMAL = nextLeftShift(); // if>=KILLFROG will kill animal
 	public static final int BRICK = nextLeftShift();// brick will kill frog
 	public static final int TRAP = nextLeftShift(); // trap will kill frog
 

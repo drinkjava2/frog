@@ -10,10 +10,9 @@
  */
 package com.gitee.drinkjava2.frog.organ.snake;
 
-import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Animal;
-import com.gitee.drinkjava2.frog.brain.Organ;
-import com.gitee.drinkjava2.frog.util.RandomUtils;
+import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.organ.frog.FrogEyes;
 
 /**
  * SnakeEyes can only see 4 direction's frog
@@ -25,9 +24,8 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  */
 public class SnakeEyes {
 
-	public static class SeeUp extends Organ {// 只能看到上方青蛙
+	public static class SeeUp extends FrogEyes.SeeUp {// 只能看到上方青蛙
 		private static final long serialVersionUID = 1L;
-		public int seeDistance; // 眼睛能看到的距离
 
 		@Override
 		public void initOrgan(Animal a) { // 仅在Snake生成时这个方法会调用一次
@@ -38,25 +36,14 @@ public class SnakeEyes {
 		}
 
 		@Override
-		public Organ[] vary() {
-			seeDistance = RandomUtils.varyInLimit(seeDistance, 5, 20);
-			if (RandomUtils.percent(5)) { // 可视距离有5%的机率变异
-				seeDistance = seeDistance + 1 - 2 * RandomUtils.nextInt(2);
-				if (seeDistance < 1)
-					seeDistance = 1;
-				if (seeDistance > 50)
-					seeDistance = 50;
-			}
-			return new Organ[] { this };
-		}
-
-		@Override
 		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundFrogOrOutEdge(a.x, a.y + i)) {
 					activeInput(a, 30);
+					seeSomeThing = true;
 					return;
 				}
+			seeSomeThing = false;
 		}
 	}
 
@@ -68,8 +55,10 @@ public class SnakeEyes {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundFrogOrOutEdge(a.x, a.y - i)) {
 					activeInput(a, 30);
+					seeSomeThing = true;
 					return;
 				}
+			seeSomeThing = false;
 		}
 	}
 
@@ -81,8 +70,10 @@ public class SnakeEyes {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundFrogOrOutEdge(a.x - i, a.y)) {
 					activeInput(a, 30);
+					seeSomeThing = true;
 					return;
 				}
+			seeSomeThing = false;
 		}
 	}
 
@@ -94,8 +85,10 @@ public class SnakeEyes {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundFrogOrOutEdge(a.x + i, a.y)) {
 					activeInput(a, 30);
+					seeSomeThing = true;
 					return;
 				}
+			seeSomeThing = false;
 		}
 	}
 

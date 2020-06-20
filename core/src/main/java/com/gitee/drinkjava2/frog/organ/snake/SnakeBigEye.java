@@ -34,7 +34,6 @@ public class SnakeBigEye extends FrogBigEye {// 这个新版的眼睛有nxn个�
 	public void drawOnBrainPicture(Animal a, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
 		if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
 			return;
-		super.drawOnBrainPicture(a, pic);
 		float r2 = r / n; // r2是每个感光细胞的半径
 		float x0 = x - r;
 		float y0 = y - r; // x0,y0是眼睛的左上角

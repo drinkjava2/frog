@@ -71,11 +71,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 		}
 	}
 
-	public boolean active(Env v) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
+	public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
 		// 如果能量小于0、出界、与非食物的点重合则判死
-		if (!alive || energy < 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILLFROG) {
+		if (!alive) {
 			energy -= 1000; // 死掉的青蛙也要消耗能量，确保淘汰出局
-			alive = false;
+			return false;
+		}
+		if (energy < 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
+			energy -= 1000;
+			kill();
 			return false;
 		}
 		energy -= 20;
@@ -89,7 +93,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 		return alive;
 	}
 
-	public abstract void show(Graphics g);
+	public abstract void show(Graphics g);// 显示青蛙或蛇，子类要重写这个方法
+
+	public abstract void kill();// 杀死青蛙或蛇，子类要重写这个方法
 
 	@SuppressWarnings("unchecked")
 	public <T extends Organ> T findOrganByClass(Class<?> claz) {// 根据器官名寻找器官，但不是每个器官都有名字

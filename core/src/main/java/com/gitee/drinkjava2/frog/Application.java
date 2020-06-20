@@ -50,7 +50,7 @@ public class Application {
 			if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
 				y = Env.FROG_BRAIN_DISP_WIDTH + 41;
 			mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
-			brainPic.requestFocus();
+			brainPic.requestFocus(); 
 		} else {
 			button.setText("Show brain");
 			mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 120);
@@ -69,18 +69,20 @@ public class Application {
 		int buttonHeight = 22;
 		int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
 
-		// select frog or snake 显示青蛙或蛇的脑图
+		// select frog or snake 显示青蛙或蛇的RadioButton
 		JRadioButton radioFrog = new JRadioButton("Frog");
 		radioFrog.setBounds(buttonXpos + buttonWidth + 10, Env.ENV_HEIGHT + 8, 50, buttonHeight);
-		radioFrog.addActionListener(e -> selectFrog = radioFrog.isSelected());
+		radioFrog.addActionListener(e -> {
+			selectFrog = radioFrog.isSelected();
+			checkIfShowBrainPicture(button); 
+		});
 		JRadioButton radioSnake = new JRadioButton("Snake");
 
 		button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
 		ActionListener al = new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) {//显示或隐藏脑图
 				Env.SHOW_FIRST_ANIMAL_BRAIN = !Env.SHOW_FIRST_ANIMAL_BRAIN;
-				checkIfShowBrainPicture(button);
 				if (Env.SHOW_FIRST_ANIMAL_BRAIN && Env.SNAKE_MODE) {
 					radioFrog.setVisible(true);
 					radioSnake.setVisible(true);
@@ -88,15 +90,18 @@ public class Application {
 					radioFrog.setVisible(false);
 					radioSnake.setVisible(false);
 				}
+				checkIfShowBrainPicture(button);
 			}
-
 		};
 		checkIfShowBrainPicture(button);
 		button.addActionListener(al);
 		mainFrame.add(button);
 
 		radioSnake.setBounds(buttonXpos + buttonWidth + 60, Env.ENV_HEIGHT + 8, 80, buttonHeight);
-		radioSnake.addActionListener(e -> selectFrog = radioFrog.isSelected());
+		radioSnake.addActionListener(e -> {
+			selectFrog = radioFrog.isSelected();
+			checkIfShowBrainPicture(button);
+		});
 		ButtonGroup btnGroup = new ButtonGroup();
 		btnGroup.add(radioFrog);
 		btnGroup.add(radioSnake);
@@ -104,7 +109,7 @@ public class Application {
 		mainFrame.add(radioFrog);
 		mainFrame.add(radioSnake);
 
-		JButton stopButton = new JButton("Pause");// 按钮，暂停或继续
+		JButton stopButton = new JButton("Pause");// 暂停或继续按钮
 		stopButton.setBounds(buttonXpos, Env.ENV_HEIGHT + 35, buttonWidth, buttonHeight);
 		pauseAction = new ActionListener() {
 			@Override
@@ -121,7 +126,8 @@ public class Application {
 		stopButton.addActionListener(pauseAction);
 		mainFrame.add(stopButton);
 
-		final JSlider speedSlider = new JSlider(1, 10, (int) Math.round(Math.sqrt(Env.SHOW_SPEED))); // 速度条
+		// 速度条
+		final JSlider speedSlider = new JSlider(1, 10, (int) Math.round(Math.sqrt(Env.SHOW_SPEED)));
 		speedSlider.setBounds(buttonXpos - 50, stopButton.getY() + 25, buttonWidth + 100, buttonHeight);
 		ChangeListener slideAction = new ChangeListener() {
 			@Override
@@ -136,6 +142,7 @@ public class Application {
 		label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
 		mainFrame.add(label);
 
+		// 允许加入蛇进来
 		JCheckBox snakeModeCkBox = new JCheckBox("Snake Mode");
 		snakeModeCkBox.setBounds(buttonXpos, speedSlider.getY() + 25, 120, buttonHeight);
 		snakeModeCkBox.addActionListener(e -> {

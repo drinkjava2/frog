@@ -108,7 +108,7 @@ public class FrogEggTool {
 				float r = 40;
 				float h = 3;
 				egg.organs.add(new FrogMouth().setXYZRHN(0, 0, 0, 0, h, "Eat")); // Mouth不是感觉或输出器官，没有位置和大小
-				egg.organs.add(new FrogBigEye().setXYZRHN(190, 90, 500, r * 2, h, "BigEye"));// 大眼睛，永远加在第一位
+				egg.organs.add(new FrogBigEye().setXYZRHN(190, 90, 500, r * 2, h, "FrogBigEye"));// 大眼睛，永远加在第一位
 				egg.organs.add(new Active().setXYZRHN(500, 600, 500, r, h, "Active")); // 永远激活
 				egg.organs.add(new FrogMoves.MoveUp().setXYZRHN(800, 300, 500, r, h, "Up"));
 				egg.organs.add(new FrogMoves.MoveDown().setXYZRHN(800, 600, 500, r, h, "Down"));

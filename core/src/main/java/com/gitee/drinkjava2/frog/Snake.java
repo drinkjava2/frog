@@ -36,6 +36,12 @@ public class Snake extends Animal {
 	}
 
 	@Override
+	public void kill() {// 杀死蛇
+		this.alive = false;
+		Env.clearMaterial(x, y, Material.SNAKE);
+	}
+
+	@Override
 	public void show(Graphics g) {// 显示蛇的图象
 		if (!alive)
 			return;
@@ -43,12 +49,16 @@ public class Snake extends Animal {
 	}
 
 	public static void clearEnvSnakeMaterial(Animal snake) {// 这个方法清除Env中代表蛇的图像对应int的位
-		for (int i = -5; i < 6; i++)
+		for (int i = 0; i <= 5; i++) {
 			Env.clearMaterial(snake.x + i, snake.y - i, Material.SNAKE);
+			Env.clearMaterial(snake.x + i, snake.y + i, Material.SNAKE);
+		}
 	}
 
 	public static void setEnvSnakeMaterial(Animal snake) {// 这个方法清除Env中代表蛇的图像对应int的位
-		for (int i = -5; i < 6; i++)
+		for (int i = 0; i <= 5; i++) {
 			Env.setMaterial(snake.x + i, snake.y - i, Material.SNAKE);
+			Env.setMaterial(snake.x + i, snake.y + i, Material.SNAKE);
+		}
 	}
 }

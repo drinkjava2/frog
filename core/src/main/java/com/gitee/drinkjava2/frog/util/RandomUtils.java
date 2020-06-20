@@ -54,14 +54,11 @@ public class RandomUtils {
 			throw new IllegalArgumentException("Can not call randomPosInRandomOrgan method when has no organ");
 		Organ o = null;
 		if (percent(10)) {// 增加选中大眼睛的机率，因为里面感光细胞多
-			for (Organ og : a.organs) {
-				if (og instanceof FrogBigEye) {
-					o = og;
-					break;
-				}
-			}
+			Organ og = a.organs.get(1);// 第1个通常设定为大眼睛
+			if (og instanceof FrogBigEye) // 如果是蛙或蛇眼
+				o = og;
 		}
-		if (o == null)
+		if (o == null)// 有时候大眼晴没被程序员加进来，这时o为null
 			o = a.organs.get(1 + RandomUtils.nextInt(a.organs.size() - 1)); // 跳过第一个器官
 		if (o instanceof Line) {
 			return randomZoneInZone(((Line) o).bodyZone);

@@ -10,8 +10,11 @@
  */
 package com.gitee.drinkjava2.frog.organ.frog;
 
+import java.awt.Color;
+
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.brain.BrainPicture;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -26,6 +29,7 @@ public class FrogEyes {
 	public static class SeeUp extends Organ {// 只能看到上方食物
 		private static final long serialVersionUID = 1L;
 		public int seeDistance; // 眼睛能看到的距离
+		public transient boolean seeSomeThing = false;
 
 		@Override
 		public void initOrgan(Animal a) { // 仅在生成时这个方法会调用一次
@@ -49,12 +53,27 @@ public class FrogEyes {
 		}
 
 		@Override
+		public void drawOnBrainPicture(Animal a, BrainPicture pic) {// 把自已这个器官在脑图上显示出来，子类可以重写这个方法
+			if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
+				return;
+			if (seeSomeThing)
+				pic.setPicColor(Color.RED); // 缺省是黑色
+			else
+				pic.setPicColor(Color.BLACK); // 缺省是黑色
+			pic.drawZone(this);
+			if (this.name != null)
+				pic.drawText(x, y, z, String.valueOf(this.name));
+		}
+
+		@Override
 		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundAnyThingOrOutEdge(a.x, a.y + i)) {
 					activeInput(a, 30);
+					seeSomeThing = true;
 					return;
 				}
+			seeSomeThing = false;
 		}
 	}
 
@@ -66,8 +85,10 @@ public class FrogEyes {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundAnyThingOrOutEdge(a.x, a.y - i)) {
 					activeInput(a, 30);
+					seeSomeThing = true;
 					return;
 				}
+			seeSomeThing = false;
 		}
 	}
 
@@ -79,8 +100,10 @@ public class FrogEyes {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundAnyThingOrOutEdge(a.x - i, a.y)) {
 					activeInput(a, 30);
+					seeSomeThing = true;
 					return;
 				}
+			seeSomeThing = false;
 		}
 	}
 
@@ -92,8 +115,10 @@ public class FrogEyes {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundAnyThingOrOutEdge(a.x + i, a.y)) {
 					activeInput(a, 30);
+					seeSomeThing = true;
 					return;
 				}
+			seeSomeThing = false;
 		}
 	}
 

@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.objects.Material;
 
 /**
  * Snake has similar brain like Frog, snake eat frog <br>
@@ -32,6 +33,12 @@ public class Frog extends Animal {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void kill() {// 杀死蛙
+		this.alive = false;
+		Env.clearMaterial(x, y, Material.FROG_TAG);
 	}
 
 	@Override

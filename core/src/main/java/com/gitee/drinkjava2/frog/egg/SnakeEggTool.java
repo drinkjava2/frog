@@ -23,7 +23,7 @@ import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Snake;
 import com.gitee.drinkjava2.frog.organ.Active;
-import com.gitee.drinkjava2.frog.organ.frog.FrogBigEye;
+import com.gitee.drinkjava2.frog.organ.snake.SnakeBigEye;
 import com.gitee.drinkjava2.frog.organ.snake.SnakeEyes;
 import com.gitee.drinkjava2.frog.organ.snake.SnakeMouth;
 import com.gitee.drinkjava2.frog.organ.snake.SnakeMoves;
@@ -108,7 +108,7 @@ public class SnakeEggTool {
 				float r = 30;
 				float h = 3;
 				egg.organs.add(new SnakeMouth().setXYZRHN(0, 0, 0, 0, h, "Eat")); // SnakeMouth不是感觉或输出器官，没有位置和大小
-				egg.organs.add(new FrogBigEye().setXYZRHN(190, 90, 500, r * 2, h, "BigEye"));// 大眼睛，永远加在第1位
+				egg.organs.add(new SnakeBigEye().setXYZRHN(190, 90, 500, r * 2, h, "SnakeBigEye"));// 大眼睛，永远加在第1位
 				egg.organs.add(new Active().setXYZRHN(500, 600, 500, r, h, "Active")); // 永远激活
 				egg.organs.add(new SnakeMoves.MoveUp().setXYZRHN(800, 300, 500, r, h, "Up"));
 				egg.organs.add(new SnakeMoves.MoveDown().setXYZRHN(800, 600, 500, r, h, "Down"));
