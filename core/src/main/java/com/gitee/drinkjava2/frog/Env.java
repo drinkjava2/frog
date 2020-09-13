@@ -34,13 +34,13 @@ public class Env extends JPanel {
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除保存的青蛙蛋
 
-	public static final int FROG_EGG_QTY = 25; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
-	public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
+	public static final int FROG_PER_EGG = 1; // 每个青蛙蛋可以孵出几个青蛙
 
 	public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出动物落在地图上随机位置，而不是在蛋所在地
 
-	public static final int SCREEN = 1; // 分几屏测完
+	public static final int SCREEN = 100; // 分几屏测完
 
 	/** Frog's brain size is a 3D array of Cell */ // 脑空间是个三维Cell数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
 	public static final int FROG_BRAIN_XSIZE = 1000; // frog的脑在X方向长度
@@ -73,7 +73,7 @@ public class Env extends JPanel {
 
 	public static final boolean DELETE_SNAKE_EGGS = true;// 每次运行是否先删除保存的蛇蛋
 
-	public static boolean SNAKE_MODE = true; // 是否加小蛇加进来吃青蛙?
+	public static boolean SNAKE_MODE = false; // 是否加小蛇加进来吃青蛙?
 
 	public static final int SNAKE_EGG_QTY = 10; // 每轮下n个蛇蛋，可调，只有最优秀的前n个蛇们才允许下蛋
 
