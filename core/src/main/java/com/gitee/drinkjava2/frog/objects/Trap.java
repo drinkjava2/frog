@@ -45,9 +45,13 @@ public class Trap implements EnvObject {
 	public void active() {
 
 	}
+	
+	@Override
+	public void display() {  
+	}
 
 	public static boolean inTrap(Frog f) {
 		return f.x >= X1 && f.x <= X2 && f.y >= Y1 && f.y <= Y2;
 	}
-
+ 
 }

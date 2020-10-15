@@ -13,6 +13,7 @@ import com.gitee.drinkjava2.frog.brain.BrainPicture;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.egg.SnakeEggTool;
+import com.gitee.drinkjava2.frog.objects.EarthQuake;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
@@ -34,13 +35,13 @@ public class Env extends JPanel {
 	/** Delete eggs at beginning of each run */
 	public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除保存的青蛙蛋
 
-	public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int FROG_EGG_QTY = 25; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
-	public static final int FROG_PER_EGG = 1; // 每个青蛙蛋可以孵出几个青蛙
+	public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
 	public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出动物落在地图上随机位置，而不是在蛋所在地
 
-	public static final int SCREEN = 100; // 分几屏测完
+	public static final int SCREEN = 1; // 分几屏测完
 
 	/** Frog's brain size is a 3D array of Cell */ // 脑空间是个三维Cell数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
 	public static final int FROG_BRAIN_XSIZE = 1000; // frog的脑在X方向长度
@@ -73,7 +74,7 @@ public class Env extends JPanel {
 
 	public static final boolean DELETE_SNAKE_EGGS = true;// 每次运行是否先删除保存的蛇蛋
 
-	public static boolean SNAKE_MODE = false; // 是否加小蛇加进来吃青蛙?
+	public static boolean SNAKE_MODE = true; // 是否加小蛇加进来吃青蛙?
 
 	public static final int SNAKE_EGG_QTY = 10; // 每轮下n个蛇蛋，可调，只有最优秀的前n个蛇们才允许下蛋
 
@@ -98,7 +99,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-	public static EnvObject[] things = new EnvObject[] { new Food() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+	public static EnvObject[] things = new EnvObject[] { new Food(), new EarthQuake() };// 所有外界物体，如食物、地震等都放在这个things里面
 
 	public static final int TOTAL_SNAKE_QTY = SNAKE_EGG_QTY * SNAKE_PER_EGG; // 蛇的总数
 
@@ -107,6 +108,8 @@ public class Env extends JPanel {
 	public static List<Snake> snakes = new ArrayList<>(); // 这里存放所有待测的蛇，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
 	public static List<Egg> snake_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个蛇
+	
+	public static Image buffImg; //这是ENV内存图像区，画完后再显示，否则会闪烁
 
 	static {
 		System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -280,7 +283,7 @@ public class Env extends JPanel {
 		FrogEggTool.loadFrogEggs(); // 从磁盘加载蛙egg，或新建一批egg
 		if (SNAKE_MODE)
 			SnakeEggTool.loadSnakeEggs(); // 从磁盘加载蛇egg，或新建一批egg
-		Image buffImg = createImage(this.getWidth(), this.getHeight());
+		buffImg = createImage(this.getWidth(), this.getHeight());
 		Graphics g = buffImg.getGraphics();
 		long time0;// 计时用
 		int round = 1;
@@ -336,6 +339,8 @@ public class Env extends JPanel {
 					g.fillRect(0, 0, this.getWidth(), this.getHeight()); // 先清空虚拟环境
 					g.setColor(Color.BLACK);
 					drawWorld(g);// 画整个虚拟环境
+					for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
+						thing.display();
 					for (int j = 0; j < FROG_PER_SCREEN; j++) { // 显示青蛙
 						Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 						f.show(g);

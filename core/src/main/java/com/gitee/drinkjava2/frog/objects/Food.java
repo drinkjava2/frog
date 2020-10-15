@@ -107,4 +107,7 @@ public class Food implements EnvObject {
 		}
 	}
 
+	@Override
+	public void display() {  
+	}
 }

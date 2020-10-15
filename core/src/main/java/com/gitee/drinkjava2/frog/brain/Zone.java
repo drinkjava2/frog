@@ -56,7 +56,7 @@ public class Zone implements Serializable { // zone 代表脑空间中的一块�
 			this.z = Env.FROG_BRAIN_ZSIZE;
 	}
 
-	public Zone(float x, float y, float z, float r, float h) {// 用x,y,z, r来构造
+	public Zone(float x, float y, float z, float r, float h) {// 用x,y,z, r,h来构造
 		this.x = x;
 		this.y = y;
 		this.z = z;

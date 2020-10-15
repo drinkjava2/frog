@@ -47,6 +47,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 	public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
 	public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
 	public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
+	public int high=0; //青蛙跳在空中的高度, 用于听力测试
+	public int guaguaSound = 0; // 呱呱声
 
 	public Image animalImage;
 
@@ -123,6 +125,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 		return x < 0 || x >= Env.FROG_BRAIN_XSIZE || y < 0 || y >= Env.FROG_BRAIN_YSIZE || z < 0
 				|| z >= Env.FROG_BRAIN_ZSIZE;
 	}
+	
+	/** Check if animal close to a position */
+	public boolean isClosePosition(int x, int y, int r) {// 检查是否接近x,y点的r距形范转
+		return  Math.abs(this.x-x)<r && Math.abs(this.y-y)<r;
+	}
+	
 
 	/** Print debug info */
 	public String debugInfo() {// 输出Animal调试内容

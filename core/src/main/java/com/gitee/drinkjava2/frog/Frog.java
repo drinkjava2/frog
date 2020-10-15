@@ -10,6 +10,7 @@
  */
 package com.gitee.drinkjava2.frog;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.FileInputStream;
 
@@ -46,5 +47,16 @@ public class Frog extends Animal {
 		if (!alive)
 			return;
 		g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证蛇嘴巴显示在当前x,y处
+		if(high>0) { //如果跳起来了，画个小红点标记出来
+			g.setColor(Color.red);
+			int r=5;
+			g.drawArc(x-r+2, y-r, r, r, 0, 360);
+		}
+		
+		if(guaguaSound>0) { //如果呱呱叫了，画个大红圈标记出来
+			g.setColor(Color.red);
+			int r=200;
+			g.drawArc(x+22-r, y+22-r, r, r, 0, 360);
+		}
 	}
 }
