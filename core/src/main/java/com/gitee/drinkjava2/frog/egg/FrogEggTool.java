@@ -27,7 +27,7 @@ import com.gitee.drinkjava2.frog.organ.Active;
 import com.gitee.drinkjava2.frog.organ.frog.FrogBigEye;
 import com.gitee.drinkjava2.frog.organ.frog.FrogEyes;
 import com.gitee.drinkjava2.frog.organ.frog.FrogGuaGua;
-import com.gitee.drinkjava2.frog.organ.frog.FrogHear;
+import com.gitee.drinkjava2.frog.organ.frog.FrogEar;
 import com.gitee.drinkjava2.frog.organ.frog.FrogJump;
 import com.gitee.drinkjava2.frog.organ.frog.FrogMouth;
 import com.gitee.drinkjava2.frog.organ.frog.FrogMoves;
@@ -122,8 +122,9 @@ public class FrogEggTool {
 				egg.organs.add(new FrogEyes.SeeLeft().setXYZRHN(200 - 90, 500, 500, r, h, "SeeLeft"));
 				egg.organs.add(new FrogEyes.SeeRight().setXYZRHN(200 + 90, 500, 500, r, h, "SeeRight"));
 				egg.organs.add(new FrogGuaGua().setXYZRHN(350, 300, 500, r/2, h, "GuaGua")); //呱呱
-				egg.organs.add(new FrogHear().setXYZRHN(350,200, 500, r/2, h, "Hear")); //耳朵
-				egg.organs.add(new FrogJump().setXYZRHN(350,100, 500, r/2, h, "Jump")); //跳
+				egg.organs.add(new FrogEar().setXYZRHN(350,200, 500, r/2, h, "Hear")); //耳朵
+				egg.organs.add(new FrogJump().setXYZRHN(350,130, 500, r/2, h, "Jump")); //跳
+				egg.organs.add(new FrogJump().setXYZRHN(350,70, 500, r/2, h, "Jump")); //回地上
 
 				Env.frog_eggs.add(egg);
 			}

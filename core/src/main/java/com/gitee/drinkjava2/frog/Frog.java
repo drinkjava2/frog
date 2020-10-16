@@ -43,14 +43,14 @@ public class Frog extends Animal {
 	}
 
 	@Override
-	public void show(Graphics g) {// 显示蛇的图象
+	public void show(Graphics g) {// 显示蛙的图象
 		if (!alive)
 			return;
-		g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证蛇嘴巴显示在当前x,y处
-		if(high>0) { //如果跳起来了，画个小红点标记出来
-			g.setColor(Color.red);
+		g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证中心显示在当前x,y处
+		if(high>0) { //如果跳起来了，画个小黄标记出来
+			g.setColor(Color.YELLOW);
 			int r=5;
-			g.drawArc(x-r+2, y-r, r, r, 0, 360);
+			g.fillArc(x-r+2, y-r, r, r, 0, 360);
 		}
 		
 		if(guaguaSound>0) { //如果呱呱叫了，画个大红圈标记出来

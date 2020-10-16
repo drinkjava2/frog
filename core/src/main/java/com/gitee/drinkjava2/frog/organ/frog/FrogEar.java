@@ -17,22 +17,22 @@ import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.objects.EarthQuake;
 
 /**
- * GuaGua create sound
+ * Ear hear sound
  */
-public class FrogHear extends Organ {// 这个器官如果听到声音会激活
+public class FrogEar extends Organ {// 这个器官如果听到声音会激活
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void active(Animal a) {
-		if (((EarthQuake.activate > 0) && a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, 100))) {
+		if (((EarthQuake.activate > 0) && a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, 200))) {
 			activeInput(a, 40);
 			return;
 		}
-		for (Frog frog : Env.frogs) {
-			if (frog.guaguaSound > 0 && a.isClosePosition(frog.x, frog.y, 200)) {
-				activeInput(a, 40);
-			}
-		}
+//		for (Frog frog : Env.frogs) {
+//			if (frog.guaguaSound > 0 && a.isClosePosition(frog.x, frog.y, 200)) {
+//				activeInput(a, 40);
+//			}
+//		}
 	}
 
 }

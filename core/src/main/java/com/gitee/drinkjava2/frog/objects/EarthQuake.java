@@ -41,21 +41,21 @@ public class EarthQuake implements EnvObject {
 
 	@Override
 	public void active() {
-		if (activate == 0 && RandomUtils.percent(0.3f)) { //有小机率启动地震
+		if (activate == 0 && RandomUtils.percent(0.5f)) { //有小机率启动地震
 			activate = 1; 
 		}
 		
 		if (activate > 0)
 			activate ++; // 地震如果启动，强度就开始变大 
 
-		if(activate>100)
+		if(activate>50)
 			activate=0; //直到最大值后归零
  
 
-		if (activate > 90) {// 接近最大值，地震开始杀青蛙
+		if (activate > 5) {// 地震开始杀青蛙
 			for (Frog frog : Env.frogs) {
 				if (frog.high == 0)
-					frog.energy -= 100;
+					frog.energy -= 1000;
 			}
 		}
 	}
@@ -65,14 +65,14 @@ public class EarthQuake implements EnvObject {
 		if (activate>0) { // 地震前先发出小范围预警声，用红线表示声音范围
 			Graphics g = Env.buffImg.getGraphics();
 			g.setColor(Color.red);
-			int r = activate;
+			int r = 200;
 			g.drawArc(Env.ENV_WIDTH / 2 - r / 2, Env.ENV_HEIGHT / 2 - r / 2, r, r, 0, 360);
 		}
 
-		if (activate > 90 ) {// 接近最大值，地震开始，涂红屏幕
+		if (activate > 8 ) {// 接近最大值，地震开始，涂红屏幕
 			for (Frog frog : Env.frogs) {
 				if (frog.high == 0)
-					frog.energy -= 100;
+					frog.energy -= 2000;
 				Graphics g = Env.buffImg.getGraphics();
 				g.setColor(Color.pink); 
 				g.fillRect(0, 0, Env.ENV_WIDTH - 1, Env.ENV_HEIGHT - 1);
