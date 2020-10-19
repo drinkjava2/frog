@@ -48,7 +48,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 	public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
 	public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
 	public int high=0; //青蛙跳在空中的高度, 用于听力测试
-	public int guaguaSound = 0; // 呱呱叫，不是那个呱呱叫的意思，就是呱呱叫的意思
+	public static int guaguaRadius = 100; // 呱呱叫的传播半径
+	public boolean guagua = false; // 呱呱叫，不是那个呱呱叫的意思，就是呱呱叫的意思
 
 	public Image animalImage;
 
@@ -75,13 +76,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 	public void initAnimal() { // 初始化animal,通常只是调用每个organ的init方法
 		for (Organ org : organs)
 			org.initOrgan(this);// 每个新器官初始化，如果是Group类，它们会生成许多脑细胞
-		for (int i = 0; i <800; i++) {
+		for (int i = 0; i <200; i++) {
 			addRandomLines();			
 		}
 	}
 
 	public void addRandomLines() {// 有一定机率在器官间生成随机的神经连线
-		if (alive && RandomUtils.percent(0.2f)) {// 有很小的机率在青蛙活着时就创建新的器官
+		if (alive && RandomUtils.percent(5f)) {// 有很小的机率在青蛙活着时就创建新的器官
 			Line line = new Line();
 			line.initilized = false;
 			line.initOrgan(this);

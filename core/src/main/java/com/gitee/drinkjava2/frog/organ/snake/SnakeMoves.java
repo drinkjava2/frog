@@ -24,7 +24,7 @@ public class SnakeMoves {
 
 		@Override
 		public void active(Animal a) {
-			if (outputActive(a)) {
+			if (beActivedByCells(a)) {
 				Snake.clearEnvSnakeMaterial(a);
 				a.y--;
 				Snake.setEnvSnakeMaterial(a);
@@ -37,7 +37,7 @@ public class SnakeMoves {
 
 		@Override
 		public void active(Animal a) {
-			if (outputActive(a)) {
+			if (beActivedByCells(a)) {
 				Snake.clearEnvSnakeMaterial(a);
 				a.y++;
 				Snake.setEnvSnakeMaterial(a);
@@ -50,7 +50,7 @@ public class SnakeMoves {
 
 		@Override
 		public void active(Animal a) {
-			if (outputActive(a)) {
+			if (beActivedByCells(a)) {
 				Snake.clearEnvSnakeMaterial(a);
 				a.x--;
 				Snake.setEnvSnakeMaterial(a);
@@ -63,7 +63,7 @@ public class SnakeMoves {
 
 		@Override
 		public void active(Animal a) {
-			if (outputActive(a)) {
+			if (beActivedByCells(a)) {
 				Snake.clearEnvSnakeMaterial(a);
 				a.x++;
 				Snake.setEnvSnakeMaterial(a);

@@ -24,7 +24,7 @@ public class FrogMoves {
 
 		@Override
 		public void active(Animal a) {
-			if (outputActive(a)) {
+			if (beActivedByCells(a)) {
 				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
 				a.y--;
 				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
@@ -38,7 +38,7 @@ public class FrogMoves {
 
 		@Override
 		public void active(Animal a) {
-			if (outputActive(a)) {
+			if (beActivedByCells(a)) {
 				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
 				a.y++;
 				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
@@ -52,7 +52,7 @@ public class FrogMoves {
 
 		@Override
 		public void active(Animal a) {
-			if (outputActive(a)) {
+			if (beActivedByCells(a)) {
 				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
 				a.x--;
 				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
@@ -66,7 +66,7 @@ public class FrogMoves {
 
 		@Override
 		public void active(Animal a) {
-			if (outputActive(a)) {
+			if (beActivedByCells(a)) {
 				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);
 				a.x++;
 				Env.clearMaterial(a.x, a.y, Material.FROG_TAG);

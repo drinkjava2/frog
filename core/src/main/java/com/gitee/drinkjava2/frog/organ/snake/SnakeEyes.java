@@ -39,7 +39,7 @@ public class SnakeEyes {
 		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundFrogOrOutEdge(a.x, a.y + i)) {
-					activeInput(a, 30);
+					activeCells(a, 30);
 					seeSomeThing = true;
 					return;
 				}
@@ -54,7 +54,7 @@ public class SnakeEyes {
 		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundFrogOrOutEdge(a.x, a.y - i)) {
-					activeInput(a, 30);
+					activeCells(a, 30);
 					seeSomeThing = true;
 					return;
 				}
@@ -69,7 +69,7 @@ public class SnakeEyes {
 		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundFrogOrOutEdge(a.x - i, a.y)) {
-					activeInput(a, 30);
+					activeCells(a, 30);
 					seeSomeThing = true;
 					return;
 				}
@@ -84,7 +84,7 @@ public class SnakeEyes {
 		public void active(Animal a) {
 			for (int i = 1; i < seeDistance; i++)
 				if (Env.foundFrogOrOutEdge(a.x + i, a.y)) {
-					activeInput(a, 30);
+					activeCells(a, 30);
 					seeSomeThing = true;
 					return;
 				}

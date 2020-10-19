@@ -49,8 +49,8 @@ public class Organ extends Zone {
 	public void active(Animal a, Cell c) { // 这是Cell级别的方法，每个步长、每个细胞都要调用一次
 	}
 
-	/** If active in this organ's zone? */
-	public boolean outputActive(Animal a) { // 如果细胞能量>organActiveEnergy,则细胞能量减少，返回true(激活)标志
+	/** check if organ be actived by other cess*/
+	public boolean beActivedByCells(Animal a) { // 判断是否这个器官被某个细胞激活
 		for (Cell cell : a.cells)
 			if (cell.energy > organActiveEnergy && this.nearby(cell.output)) {
 				cell.organ.fat++;
@@ -60,8 +60,8 @@ public class Organ extends Zone {
 		return false;
 	}
 
-	/** If active in this organ's zone? */
-	public void activeInput(Animal a, float energy) { // 如果一个细胞输入触突位于这个器官内，则细胞能量增加激活
+	/** to active all cells nearby this orgain */
+	public void activeCells(Animal a, float energy) { // 某器官激活位于它这个区的所有细胞
 		for (Cell cell : a.cells)
 			if (cell.energy < 100)
 				if (this.nearby(cell.input)) {

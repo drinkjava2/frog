@@ -14,23 +14,16 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.brain.Organ;
 
 /**
- * Frog jump if FrogJump organ activate, to escape from earthquake， after a
- * short time, high restore to 0
- * 
- * 这个器官激活，青蛙会跳在空中，躲开地震波的伤害
- * 
+ * GuaGua create sound
  */
-public class FrogJump extends Organ {// FrogJump这个器官的作用就是让青蛙跳在空中
+public class FrogGuaGuaStop extends Organ {// FrogGuaGuaStop这个器官的唯一作用就是在激活时停止发出呱呱叫声
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void active(Animal a) {
-		if (beActivedByCells(a)) {
-			a.high = 1; // 跳起来了的青蛙用画小红点表示，见Frog.show()方法
+		if (this.beActivedByCells(a)) {
+			a.guagua = false;
 		}
-
-		if (a.high > 0) // 为了防止青蛙跳在空中不降落（青蛙=鸟?)，这里设定跳到空中的青蛙要扣能量，否则一直在空中怎么能做躲地震的试验
-			a.energy -= 100;
 	}
 
 }

@@ -21,13 +21,9 @@ public class FrogGuaGua extends Organ {// 呱呱这个器官的作用就是会�
 
 	@Override
 	public void active(Animal a) {
-//		if (outputActive(a)) {
-//			a.energy-=20;
-//			a.guaguaSound = 50;
+//		if (this.beActivedByCells(a)) {
+//			a.guagua = true;
 //		}
-//		a.guaguaSound --;
-//		if (a.guaguaSound  < 0)
-//			a.guaguaSound  = 0;
 	}
 
 }

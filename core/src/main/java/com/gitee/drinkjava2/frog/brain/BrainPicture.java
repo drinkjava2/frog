@@ -56,7 +56,7 @@ public class BrainPicture extends JPanel {
 		super();
 		this.setLayout(null);// 空布局
 		this.brainDispWidth = brainDispWidth;
-		scale = 0.5f * brainDispWidth / brainWidth;
+		scale = 0.6f * brainDispWidth / brainWidth;
 		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
 		buffImg = new BufferedImage(Env.FROG_BRAIN_DISP_WIDTH, Env.FROG_BRAIN_DISP_WIDTH, BufferedImage.TYPE_INT_RGB);
 		g = buffImg.getGraphics();

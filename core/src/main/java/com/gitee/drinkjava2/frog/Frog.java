@@ -53,10 +53,9 @@ public class Frog extends Animal {
 			g.fillArc(x-r+2, y-r, r, r, 0, 360);
 		}
 		
-		if(guaguaSound>0) { //如果呱呱叫了，画个大红圈标记出来
-			g.setColor(Color.red);
-			int r=200;
-			g.drawArc(x+22-r, y+22-r, r, r, 0, 360);
+		if(guagua) { //如果呱呱叫了，画个小红圈标记出来
+			g.setColor(Color.red); 
+			g.drawArc(x-8, y-8, 16, 16, 0, 360);
 		}
 	}
 }

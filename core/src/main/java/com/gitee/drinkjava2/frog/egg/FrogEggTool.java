@@ -25,9 +25,12 @@ import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.organ.Active;
 import com.gitee.drinkjava2.frog.organ.frog.FrogBigEye;
+import com.gitee.drinkjava2.frog.organ.frog.FrogDrop;
+import com.gitee.drinkjava2.frog.organ.frog.FrogEar;
 import com.gitee.drinkjava2.frog.organ.frog.FrogEyes;
 import com.gitee.drinkjava2.frog.organ.frog.FrogGuaGua;
-import com.gitee.drinkjava2.frog.organ.frog.FrogEar;
+import com.gitee.drinkjava2.frog.organ.frog.FrogGuaGuaStop;
+import com.gitee.drinkjava2.frog.organ.frog.FrogHearNothing;
 import com.gitee.drinkjava2.frog.organ.frog.FrogJump;
 import com.gitee.drinkjava2.frog.organ.frog.FrogMouth;
 import com.gitee.drinkjava2.frog.organ.frog.FrogMoves;
@@ -63,8 +66,7 @@ public class FrogEggTool {
 			so.close();
 			System.out.print("Fist frog has " + first.organs.size() + " organs,  energy=" + first.energy);
 			System.out.println(", Last frog has " + last.organs.size() + " organs,  energy=" + last.energy);
-			System.out.println(
-					"Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
+			System.out.println("Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}
@@ -98,8 +100,7 @@ public class FrogEggTool {
 			FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "frog_eggs.ser");
 			ObjectInputStream eggsInputStream = new ObjectInputStream(eggsFile);
 			Env.frog_eggs = (List<Egg>) eggsInputStream.readObject();
-			System.out.println("Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH
-					+ "frog_eggs.ser" + "'.\n");
+			System.out.println("Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH + "frog_eggs.ser" + "'.\n");
 			eggsInputStream.close();
 		} catch (Exception e) {
 			errorfound = true;
@@ -121,15 +122,17 @@ public class FrogEggTool {
 				egg.organs.add(new FrogEyes.SeeDown().setXYZRHN(200, 500 - 90, 500, r, h, "SeeDown"));
 				egg.organs.add(new FrogEyes.SeeLeft().setXYZRHN(200 - 90, 500, 500, r, h, "SeeLeft"));
 				egg.organs.add(new FrogEyes.SeeRight().setXYZRHN(200 + 90, 500, 500, r, h, "SeeRight"));
-				egg.organs.add(new FrogGuaGua().setXYZRHN(350, 300, 500, r/2, h, "GuaGua")); //呱呱
-				egg.organs.add(new FrogEar().setXYZRHN(350,200, 500, r/2, h, "Hear")); //耳朵
-				egg.organs.add(new FrogJump().setXYZRHN(350,130, 500, r/2, h, "Jump")); //跳
-				egg.organs.add(new FrogJump().setXYZRHN(350,70, 500, r/2, h, "Jump")); //回地上
+				egg.organs.add(new FrogGuaGua().setXYZRHN(650, 240, 500, r / 2, h, "GuaGua")); // 呱呱
+				egg.organs.add(new FrogGuaGuaStop().setXYZRHN(650, 180, 500, r / 2, h, "GuaGuaStop")); // 呱呱停叫
+				egg.organs.add(new FrogEar().setXYZRHN(650, 120, 500, r / 2, h, "Ear")); // 耳朵
+				egg.organs.add(new FrogHearNothing().setXYZRHN(650, 60, 500, r / 2, h, "HearNothing")); // 什么也没听到时激活
+
+				egg.organs.add(new FrogJump().setXYZRHN(750, 180, 500, r / 2, h, "Jump")); // 跳
+				egg.organs.add(new FrogDrop().setXYZRHN(750, 120, 500, r / 2, h, "Drop")); // 回地上
 
 				Env.frog_eggs.add(egg);
 			}
-			System.out.println("Fail to load frog egg file '" + Application.CLASSPATH + "frog_eggs.ser" + "', created "
-					+ Env.frog_eggs.size() + " eggs to do test.");
+			System.out.println("Fail to load frog egg file '" + Application.CLASSPATH + "frog_eggs.ser" + "', created " + Env.frog_eggs.size() + " eggs to do test.");
 		}
 
 	}

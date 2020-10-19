@@ -24,8 +24,8 @@ public class FrogDrop extends Organ {// FrogDrop这个器官的作用就是让�
 
 	@Override
 	public void active(Animal a) {
-		if (outputActive(a)) {
-			a.high = 0; // 跳起来了的青蛙用画小红点表示，见Frog.show()方法
+		if (beActivedByCells(a)) {
+			a.high = 0; // 跳起来了的青蛙用画小黄点表示，见Frog.show()方法，落回地上的没有小点
 		} 
 	}
 

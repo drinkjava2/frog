@@ -24,13 +24,15 @@ public class FrogEar extends Organ {// 这个器官如果听到声音会激活
 
 	@Override
 	public void active(Animal a) {
-		if (((EarthQuake.activate > 0) && a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, 200))) {
-			activeInput(a, 40);
+		if (((EarthQuake.activate > 0) && a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, EarthQuake.soundRadius))) {
+			activeCells(a, 30);
 			return;
 		}
+
 //		for (Frog frog : Env.frogs) {
-//			if (frog.guaguaSound > 0 && a.isClosePosition(frog.x, frog.y, 200)) {
-//				activeInput(a, 40);
+//			if (frog.guaguaSound && a.isClosePosition(frog.x, frog.y, frog.guaguaRange)) {
+//				activeCells(a, 30);
+//				return;
 //			}
 //		}
 	}
