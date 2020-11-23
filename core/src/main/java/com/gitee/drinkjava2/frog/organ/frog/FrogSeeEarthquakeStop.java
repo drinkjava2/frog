@@ -12,27 +12,21 @@ package com.gitee.drinkjava2.frog.organ.frog;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.objects.EarthQuake;
 
 /**
  * Ear hear sound
  */
-public class FrogHearNothing extends Organ {// 这个器官如果听到声音会激活
+public class FrogSeeEarthquakeStop extends Organ {// // 当青蛙位于震心附近时，且当看到震心停止活动时，这个器官会激活
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void active(Animal a) {
-		if (a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, EarthQuake.soundRadius)) {
-			return;
-		} else
-			for (Frog frog : Env.frogs) {
-				if (frog.guagua && a.isClosePosition(frog.x, frog.y, frog.guaguaRadius)) {
-					return;
-				}
-			}
-		activeCells(a, 30);
+        if(((EarthQuake.activate ==0) && a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, EarthQuake.centerRadius))){
+            activeCells(a, 30);
+            return;
+        }
 	}
 
 }

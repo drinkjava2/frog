@@ -14,16 +14,17 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.brain.Organ;
 
 /**
- * GuaGua stop GuaGua sound
+ * GuaGua create wawa sound
  */
-public class FrogGuaGuaStop extends Organ {// 呱呱这个器官的作用就是停止呱呱叫声
+public class FrogWaWa extends Organ {// FrogWaWa这个器官的唯一作用就是在激活时发出哇哇叫声
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void active(Animal a) {
-        if(this.beActivedByCells(a)){
-            a.guagua = false;
-        }
+		if (this.beActivedByCells(a)) {
+			a.wawa = true;
+			a.energy-=100;
+		}
 	}
 
 }

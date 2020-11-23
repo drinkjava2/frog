@@ -61,7 +61,7 @@ public class Organ extends Zone {
 	}
 
 	/** to active all cells nearby this orgain */
-	public void activeCells(Animal a, float energy) { // 某器官激活位于它这个区的所有细胞
+	public void activeCells(Animal a, float energy) { // 某器官激活触突位于它这个区的所有细胞
 		for (Cell cell : a.cells)
 			if (cell.energy < 100)
 				if (this.nearby(cell.input)) {

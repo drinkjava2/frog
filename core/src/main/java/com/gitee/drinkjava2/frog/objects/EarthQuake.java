@@ -30,7 +30,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  */
 public class EarthQuake implements EnvObject {
 	public static int activate = 0;
-	public static int soundRadius =150;
+	public static int centerRadius =130; //震心活动区半径，如果青蛙位于震心活动区内，就能看到地震是否已开始
 
 	@Override
 	public void build() {
@@ -65,10 +65,15 @@ public class EarthQuake implements EnvObject {
 		if (activate > 0) { // 地震杀掉所有地图上没有跳起的蛙
 			Graphics g = Env.buffImg.getGraphics();
 			g.setColor(Color.pink);
-			g.fillRect(0, 0, Env.ENV_WIDTH - 1, Env.ENV_HEIGHT - 1);
+			//g.fillRect(0, 0, Env.ENV_WIDTH - 1, Env.ENV_HEIGHT - 1);
+			g.drawRect(0, 0, Env.ENV_WIDTH - 1, Env.ENV_HEIGHT - 1);
+			g.drawLine(0, 0, Env.ENV_WIDTH - 1, Env.ENV_HEIGHT - 1);
+			g.drawLine(0, Env.ENV_WIDTH - 1, Env.ENV_HEIGHT - 1,0);
+			
+
 			
 			g.setColor(Color.blue); //但是地震的声音只位于小范围内，用红线表示声音范围，超出这个范围的青蛙是听不到地震的
-			g.drawArc(Env.ENV_WIDTH / 2 - soundRadius, Env.ENV_HEIGHT / 2 - soundRadius,soundRadius*2, soundRadius*2, 0, 360); 
+			g.drawRect(Env.ENV_WIDTH / 2 - centerRadius, Env.ENV_HEIGHT / 2 - centerRadius,centerRadius*2, centerRadius*2); 
 		}
 	}
 

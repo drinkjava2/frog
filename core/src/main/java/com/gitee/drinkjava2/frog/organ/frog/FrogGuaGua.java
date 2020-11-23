@@ -14,16 +14,17 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.brain.Organ;
 
 /**
- * GuaGua create sound
+ * GuaGua create GuaGua sound
  */
-public class FrogGuaGua extends Organ {// 呱呱这个器官的作用就是会发出呱呱叫声
+public class FrogGuaGua extends Organ {// 呱呱这个器官的作用就是会发出呱呱叫声，这个叫声会被其它蛙听到
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void active(Animal a) {
-//		if (this.beActivedByCells(a)) {
-//			a.guagua = true;
-//		}
+        if(this.beActivedByCells(a)){
+            a.guagua = true;
+            a.energy-=100;
+        }
 	}
 
 }

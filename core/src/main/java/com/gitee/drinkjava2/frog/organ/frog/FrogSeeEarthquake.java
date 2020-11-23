@@ -11,19 +11,23 @@
 package com.gitee.drinkjava2.frog.organ.frog;
 
 import com.gitee.drinkjava2.frog.Animal;
+import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.brain.Organ;
+import com.gitee.drinkjava2.frog.objects.EarthQuake;
 
 /**
- * GuaGua stop GuaGua sound
+ * Ear hear sound
  */
-public class FrogGuaGuaStop extends Organ {// 呱呱这个器官的作用就是停止呱呱叫声
-	private static final long serialVersionUID = 1L;
+public class FrogSeeEarthquake extends Organ {// 当青蛙位于震心附近时，这个器官能看到震心在活动
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public void active(Animal a) {
-        if(this.beActivedByCells(a)){
-            a.guagua = false;
+    @Override
+    public void active(Animal a) {
+        if(((EarthQuake.activate > 0) && a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, EarthQuake.centerRadius))){
+            activeCells(a, 30);
+            return;
         }
-	}
+
+    }
 
 }
