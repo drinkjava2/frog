@@ -23,10 +23,10 @@ public class FrogSeeEarthquakeStop extends Organ {// // 当青蛙位于震心附
 
 	@Override
 	public void active(Animal a) {
-        if(((EarthQuake.activate ==0) && a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, EarthQuake.centerRadius))){
+        if( EarthQuake.activate <= 0  && a.x<Env.ENV_WIDTH/2  ){
             activeCells(a, 30);
             return;
-        }
-	}
+        } 
+    }
 
 }

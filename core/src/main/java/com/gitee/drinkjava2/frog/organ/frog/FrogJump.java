@@ -20,7 +20,7 @@ import com.gitee.drinkjava2.frog.brain.Organ;
  * 这个器官激活，青蛙会跳在空中，躲开地震波的伤害
  * 
  */
-public class FrogJump extends Organ {// FrogJump这个器官的作用就是让青蛙跳在空中
+public class FrogJump extends Organ {// FrogJump这个器官的作用就是让青蛙跳在空中，地震来了如果跳在空中就不扣分
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -29,7 +29,7 @@ public class FrogJump extends Organ {// FrogJump这个器官的作用就是让�
 			a.high = 1; // 跳起来了的青蛙用画小红点表示，见Frog.show()方法
 		}
 
-		if (a.high > 0) // 为了防止青蛙跳在空中不降落（青蛙=鸟?)，这里设定跳到空中的青蛙要扣能量，否则一直在空中怎么能做躲地震的试验
+		if (a.high > 0) // 为了防止青蛙跳在空中不降落（青蛙=鸟?)，这里设定跳到空中要消耗能量，否则没有惩罚青蛙会一直呆在空中
 			a.energy -= 100;
 	}
 

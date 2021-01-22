@@ -19,7 +19,7 @@ import com.gitee.drinkjava2.frog.brain.Organ;
  * 这个器官激活，青蛙会回到地上
  * 
  */
-public class FrogDrop extends Organ {// FrogDrop这个器官的作用就是让青蛙回到地上
+public class FrogDrop extends Organ {// FrogDrop这个器官如果激活会让青蛙回到地上
 	private static final long serialVersionUID = 1L;
 
 	@Override

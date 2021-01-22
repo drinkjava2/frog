@@ -17,6 +17,7 @@ examples/**/build/
 *.log
 *.jar
 *.war
+*.ser
 *.ear
 *.zip
 *.tar.gz

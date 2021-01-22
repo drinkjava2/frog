@@ -18,16 +18,15 @@ import com.gitee.drinkjava2.frog.objects.EarthQuake;
 /**
  * Ear hear sound
  */
-public class FrogSeeEarthquake extends Organ {// 当青蛙位于震心附近时，这个器官能看到震心在活动
+public class FrogSeeEarthquake extends Organ {// 当青蛙位于左侧，能看到是否地震
     private static final long serialVersionUID = 1L;
 
     @Override
     public void active(Animal a) {
-        if(((EarthQuake.activate > 0) && a.isClosePosition(Env.ENV_WIDTH / 2, Env.ENV_HEIGHT / 2, EarthQuake.centerRadius))){
+        if( EarthQuake.activate > 0  && a.x<Env.ENV_WIDTH/2  ){
             activeCells(a, 30);
             return;
         }
-
     }
 
 }
