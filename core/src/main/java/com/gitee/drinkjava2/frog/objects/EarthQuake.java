@@ -54,7 +54,7 @@ public class EarthQuake implements EnvObject {
         if (activate > 0) {// 地震开始杀所有没跳在空中的青蛙
             for (Frog frog : Env.frogs) {
                 if (frog.high == 0)
-                    frog.energy -= 800;
+                    frog.energy -=1000;
             }
         }
     }
@@ -64,7 +64,6 @@ public class EarthQuake implements EnvObject {
         if (activate > 0) {//如果地震了，在地图上画出红框
             Graphics g = Env.buffImg.getGraphics();
             g.setColor(Color.RED);
-            g.drawRect(0, 0, Env.ENV_WIDTH / 2, Env.ENV_HEIGHT);
             g.drawRect(0, 0, Env.ENV_WIDTH - 1, Env.ENV_HEIGHT - 1);
         }
     }

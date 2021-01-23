@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import com.gitee.drinkjava2.frog.brain.BrainPicture;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.egg.SnakeEggTool;
@@ -17,6 +16,7 @@ import com.gitee.drinkjava2.frog.objects.EarthQuake;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
+import com.gitee.drinkjava2.frog.objects.Trap;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -61,7 +61,7 @@ public class Env extends JPanel {
 	public static final int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
 
 	/** Frog's brain display width on screen, not important */
-	public static final int FROG_BRAIN_DISP_WIDTH = 600; // Frog的脑图在屏幕上的显示大小,可调
+	public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
 	/** Steps of one test round */
 	public static final int STEPS_PER_ROUND = 2000;// 每轮测试步数,可调
@@ -74,7 +74,7 @@ public class Env extends JPanel {
 
 	public static final boolean DELETE_SNAKE_EGGS = true;// 每次运行是否先删除保存的蛇蛋
 
-	public static boolean SNAKE_MODE = true; // 是否加小蛇加进来吃青蛙?
+	public static boolean SNAKE_MODE = false; // 是否加小蛇加进来吃青蛙?
 
 	public static final int SNAKE_EGG_QTY = 10; // 每轮下n个蛇蛋，可调，只有最优秀的前n个蛇们才允许下蛋
 
@@ -99,7 +99,7 @@ public class Env extends JPanel {
 
 	public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-	public static EnvObject[] things = new EnvObject[] { new Food(), new EarthQuake() };// 所有外界物体，如食物、地震等都放在这个things里面
+	public static EnvObject[] things = new EnvObject[] { new Food(), new EarthQuake(), new Trap() };// 所有外界物体，如食物、地震等都放在这个things里面
 
 	public static final int TOTAL_SNAKE_QTY = SNAKE_EGG_QTY * SNAKE_PER_EGG; // 蛇的总数
 

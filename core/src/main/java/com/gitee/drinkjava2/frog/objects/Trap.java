@@ -22,10 +22,10 @@ import com.gitee.drinkjava2.frog.Frog;
  */
 @SuppressWarnings("all")
 public class Trap implements EnvObject {
-	private static final int X1 = Env.ENV_WIDTH / 2 - 350 / 2; // 陷阱左上角
-	private static final int Y1 = Env.ENV_HEIGHT / 2 - 20 / 2; // 陷阱左上角
-	private static final int X2 = Env.ENV_WIDTH / 2 + 350 / 2; // 陷阱右下角
-	private static final int Y2 = Env.ENV_HEIGHT / 2 + 20 / 2; // 陷阱右下角
+	private static final int X1 = Env.ENV_WIDTH / 2 - 2; // 陷阱左上角
+	private static final int Y1 = 0; // 陷阱左上角
+	private static final int X2 = Env.ENV_WIDTH / 2 +2; // 陷阱右下角
+	private static final int Y2 = Env.ENV_HEIGHT -1; // 陷阱右下角
 
 	@Override
 	public void build() {

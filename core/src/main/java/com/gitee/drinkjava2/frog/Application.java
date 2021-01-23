@@ -46,14 +46,14 @@ public class Application {
 	private static void checkIfShowBrainPicture(JButton button) {
 		if (Env.SHOW_FIRST_ANIMAL_BRAIN) {
 			button.setText("Hide brain");
-			int y = Env.ENV_HEIGHT + 120;
+			int y = Env.ENV_HEIGHT + 160;
 			if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
 				y = Env.FROG_BRAIN_DISP_WIDTH + 41;
 			mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
 			brainPic.requestFocus(); 
 		} else {
 			button.setText("Show brain");
-			mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 120);
+			mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 160);
 		}
 	}
 
@@ -64,7 +64,7 @@ public class Application {
 		mainFrame.add(env); // 添加虚拟环境Panel
 		mainFrame.add(brainPic); // 添加脑图Panel
 
-		JButton button = new JButton("Show brain");// 按钮，显示或隐藏脑图
+		JButton showBrainbutton = new JButton("Show brain");// 按钮，显示或隐藏脑图
 		int buttonWidth = 100;
 		int buttonHeight = 22;
 		int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
@@ -74,11 +74,11 @@ public class Application {
 		radioFrog.setBounds(buttonXpos + buttonWidth + 10, Env.ENV_HEIGHT + 8, 50, buttonHeight);
 		radioFrog.addActionListener(e -> {
 			selectFrog = radioFrog.isSelected();
-			checkIfShowBrainPicture(button); 
+			checkIfShowBrainPicture(showBrainbutton); 
 		});
 		JRadioButton radioSnake = new JRadioButton("Snake");
 
-		button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
+		showBrainbutton.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
 		ActionListener al = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {//显示或隐藏脑图
@@ -90,17 +90,18 @@ public class Application {
 					radioFrog.setVisible(false);
 					radioSnake.setVisible(false);
 				}
-				checkIfShowBrainPicture(button);
+				checkIfShowBrainPicture(showBrainbutton);
 			}
 		};
-		checkIfShowBrainPicture(button);
-		button.addActionListener(al);
-		mainFrame.add(button);
+		checkIfShowBrainPicture(showBrainbutton);
+		showBrainbutton.addActionListener(al);
+		mainFrame.add(showBrainbutton);
 
+		//小蛇或青蛙脑图显示切换开关
 		radioSnake.setBounds(buttonXpos + buttonWidth + 60, Env.ENV_HEIGHT + 8, 80, buttonHeight);
 		radioSnake.addActionListener(e -> {
 			selectFrog = radioFrog.isSelected();
-			checkIfShowBrainPicture(button);
+			checkIfShowBrainPicture(showBrainbutton);
 		});
 		ButtonGroup btnGroup = new ButtonGroup();
 		btnGroup.add(radioFrog);
@@ -157,7 +158,7 @@ public class Application {
 				radioSnake.setVisible(false);
 			}
 		});
-		snakeModeCkBox.setSelected(true);
+		snakeModeCkBox.setSelected(Env.SNAKE_MODE);
 		mainFrame.add(snakeModeCkBox);
    
 		mainFrame.setVisible(true);

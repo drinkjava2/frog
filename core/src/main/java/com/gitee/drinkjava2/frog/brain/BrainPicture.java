@@ -287,7 +287,7 @@ public class BrainPicture extends JPanel {
 		y1 = y;
 
 		g.setColor(picColor);
-		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale)));
+		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale*0.5)));
 		g.drawString(text, (int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
 				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 
