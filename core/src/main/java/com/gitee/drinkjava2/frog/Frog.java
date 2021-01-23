@@ -49,18 +49,8 @@ public class Frog extends Animal {
         g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证中心显示在当前x,y处
         if(high > 0){ //如果跳起来了，画个小黄标记出来
             g.setColor(Color.YELLOW);
-            int r = 5;
+            int r = 7;
             g.fillArc(x - r + 2, y - r, r, r, 0, 360);
-        }
-
-        if(guagua){ //如果呱呱叫了，画个小红框标记出来
-            g.setColor(Color.red);
-            g.drawRect(x - crockRadius, y - crockRadius, crockRadius + crockRadius, crockRadius + crockRadius);
-        }
-
-        if(wawa){ //如果哇哇叫了，画个小兰框标记出来
-            g.setColor(Color.blue);
-            g.drawRect(x - crockRadius, y - crockRadius, crockRadius + crockRadius, crockRadius + crockRadius);
-        }
+        } 
     }
 }

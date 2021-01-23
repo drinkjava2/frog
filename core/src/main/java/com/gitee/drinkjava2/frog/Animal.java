@@ -49,8 +49,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 	public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
 	public int high=0; //青蛙跳在空中的高度, 用于听力测试
 	public int crockRadius = 40; // 呱呱叫或哇哇叫的传播半径
-	public boolean guagua = false; // 呱呱叫，不是那个呱呱叫的意思，就是呱呱叫的意思
-    public boolean wawa = false; // 哇哇叫，哇哇叫和呱呱叫是两种不同的声音	
 
 	public Image animalImage;
 

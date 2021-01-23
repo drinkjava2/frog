@@ -32,6 +32,8 @@ public class Organ extends Zone {
 	public float organActiveEnergy = 1; // 输出器官激活需要消耗每个脑细胞多少能量
 	public float organOutputEnergy = 2; // 感觉器官激活会给每个脑细胞增加多少能量
 	public boolean initilized; // 通过这个标记判断是否需要手工给定它的参数初值
+	
+    public static boolean[] sound=new boolean[Env.FROG_BRAIN_XSIZE];
 
 	public boolean allowBorrow() { // 是否允许在精子中将这个器官借出
 		return false;
