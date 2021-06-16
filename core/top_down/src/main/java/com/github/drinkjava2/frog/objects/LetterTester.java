@@ -49,7 +49,7 @@ public class LetterTester implements EnvObject {
 			frog.prepareNewTraining();
 
 		if (index < STR.length()) {
-			BrainPicture.setNote("第" + (index + 1) + "个字训练");
+			BrainPicture.setNote("第" + (index + 1) + "个字训练:"+STR.charAt(index));
 			ear.hearSound(frog, index);
 			eye.seeImageWithOffset(frog, StringPixelUtils.getSanserif12Pixels(STR.substring(index, index + 1)),0,0);
 		} else {

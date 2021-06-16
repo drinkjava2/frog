@@ -23,5 +23,8 @@ examples/**/build/
 *.tar.gz
 *.rar
 
+# frog egg file
+*.ser
+
 # virtual machine crash logs
 hs_err_pid*

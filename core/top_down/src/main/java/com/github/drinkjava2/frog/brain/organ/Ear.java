@@ -21,6 +21,12 @@ import com.github.drinkjava2.frog.util.ColorUtils;
  * 
  * 耳朵的信号输入区能输入多少个信号取决于它的长度，它的每个输入点都与视觉视号正交
  * 
+ * 耳朵的输入区在2021年6月后改只取 0,2,4,6,8处的细胞作为输入点以获取更清晰反向激活信号，这样总共就是5个有效输入点
+ * 
+ * 耳朵目前只有一个, 以后可以在侧面再开一个耳朵，就可以达到5x5=25个声音的输入
+ * 
+ * 为简单化，耳朵的识别区和输入区重叠，而不是象人脑一样有单独的虚拟声音，将来在信号强度上作区分，直接听到的信号强度大，反向激活后得到的信号弱
+ * 
  * @author Yong Zhu
  * @since 2.0.2
  */
@@ -29,7 +35,7 @@ public class Ear extends Organ {// 耳朵位于脑的顶上，也是长方体
 	private static final long serialVersionUID = 1L;
 
 	public Ear() {
-		this.shape = new Cuboid(15, 2, Env.FROG_BRAIN_ZSIZE - 1, 1, 15, 1);// 手工固定耳区的大小
+		this.shape = new Cuboid(13, 5, Env.FROG_BRAIN_ZSIZE - 1, 10, 10, 1);// 手工固定耳区的大小
 		this.type = Organ.EAR;
 		this.organName = "Ear";
 		this.allowVary = false;// 不允许变异
@@ -37,9 +43,9 @@ public class Ear extends Organ {// 耳朵位于脑的顶上，也是长方体
 		this.color = ColorUtils.BLUE;
 	}
 
-	public void hearSound(Frog f, int code) {
+	public void hearSound(Frog f, int code) {//code取0~4，分听代表5个听力细胞的位置
 		Cuboid c = (Cuboid) this.shape;
-		f.getOrCreateCell(c.x, c.y + code*2, c.z).hasInput = true;
+		f.getOrCreateCell(c.x, c.y + code*2, c.z).hasInput = true; //听力细胞间隔一个分布
 	}
 
 	public int readcode(Frog f) {//找出收取光子数最多的点
@@ -47,8 +53,8 @@ public class Ear extends Organ {// 耳朵位于脑的顶上，也是长方体
 		int yPos = -1;
 		Cuboid c = (Cuboid) this.shape;
 		System.out.print("Ear received photons qty: ");
-		for (int y = 0; y < 10; y++) {
-			int sum = f.getOrCreateCell(c.x, c.y + y, c.z).photonSum;
+		for (int y = 0; y <=4; y++) {
+			int sum = f.getOrCreateCell(c.x, c.y + y*2, c.z).photonSum;
 			System.out.print(sum + ",");
 			if (sum > temp) {
 				yPos = y;
