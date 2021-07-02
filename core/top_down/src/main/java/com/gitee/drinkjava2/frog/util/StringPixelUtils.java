@@ -54,16 +54,31 @@ public class StringPixelUtils {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setFont(font);
 		FontMetrics fm = g2d.getFontMetrics();
-		int strHeight = fm.getAscent() + fm.getDescent() - 3;
+		int strHeight = fm.getAscent() + fm.getDescent() - 1;
 		int strWidth = fm.stringWidth(s);
-		g2d.drawString(s, 0, fm.getAscent() - fm.getLeading() - 2);
-		byte[][] b = new byte[strWidth][strHeight];
-		for (int y = 0; y < strHeight; y++)
+		g2d.drawString(s, 0, fm.getAscent() - fm.getLeading() -1);
+		
+        int ystart;//在命令行和eclipse下会有不同的空行，所以要用ystart和yend来获取有效象素行数
+        loop1: for (ystart = 0; ystart < strHeight; ystart++)
+            for (int x = 0; x < strWidth; x++) {
+                if (bi.getRGB(x, ystart) == -1)
+                    break loop1;
+            }
+        
+        int yend;
+        loop2: for (yend = strHeight; yend >= 0; yend--)
+            for (int x = 0; x < strWidth; x++) {
+                if (bi.getRGB(x, yend) == -1)
+                    break loop2;
+            }
+
+		byte[][] b = new byte[strWidth][yend-ystart+1];
+		for (int y = ystart; y <= yend; y++)
 			for (int x = 0; x < strWidth; x++)
-				if (bi.getRGB(x, y) == -1)
-					b[x][strHeight - y - 1] = 1;
+				if (bi.getRGB(x, y ) == -1)
+					b[x][yend-y] = 1;
 				else
-					b[x][strHeight - y - 1] = 0;
+					b[x][yend-y] = 0;
 		lettersMap.put(key, b);
 		return b;
 	}
