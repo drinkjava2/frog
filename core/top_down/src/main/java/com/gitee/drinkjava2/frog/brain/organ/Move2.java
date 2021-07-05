@@ -21,14 +21,14 @@ import com.gitee.drinkjava2.frog.brain.Organ;
  * 
  * @author Yong Zhu
  */
-public class MoveJelly extends Organ {
+public class Move2 extends Organ {
 	private static final long serialVersionUID = 1L;
 
-	public MoveJelly() {
+	public Move2() {
 		super();
-		this.shape = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE , Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
-		this.organName = "MoveJelly";
-		this.type = Organ.MOVE_JELLY; // Empty这个器官并不播种cell,它存在的唯一目的只是充当光子媒介，否则光子会一直走下去消失
+		this.shape = new Cuboid(11, 0, 0,  Env.FROG_BRAIN_XSIZE-11 , Env.FROG_BRAIN_YSIZE, 20);
+		this.organName = "MOVE2";
+		this.type = Organ.MOVE; // MOVE类型的细胞会保持光子的直线运动，并不在细胞上挖洞
 		this.allowVary = false;// 不允许变异
 		this.allowBorrow = false;// 不允许借出
 	}

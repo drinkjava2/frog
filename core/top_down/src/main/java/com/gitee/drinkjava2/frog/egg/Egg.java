@@ -18,7 +18,9 @@ import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.brain.organ.Ear;
 import com.gitee.drinkjava2.frog.brain.organ.Eye;
-import com.gitee.drinkjava2.frog.brain.organ.MoveJelly;
+import com.gitee.drinkjava2.frog.brain.organ.Move1;
+import com.gitee.drinkjava2.frog.brain.organ.Move2;
+import com.gitee.drinkjava2.frog.brain.organ.MoveDig;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -37,7 +39,9 @@ public class Egg implements Serializable {
 	public List<Organ> organs = new ArrayList<>();// NOSONAR
 
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
-		organs.add(new MoveJelly()); // MoveJelly即移动光子，也是果冻记忆细胞，本来可以分成两个器官的，图省事
+		organs.add(new Move1()); // Move即直线移动光子
+		organs.add(new Move2()); // Move即直线移动光子
+		organs.add(new MoveDig()); // MoveDig即直线移动光子的同时，也在下一个细胞上用光子打出洞来，这个演示里MoveDig是一个平面，也就是说信息只能保存在一个平面上
 		organs.add(new Eye()); // 眼是手工创建的，必有
 		organs.add(new Ear()); // 耳是手工创建的，这个是用来测试ABCD字母识别的
 	}

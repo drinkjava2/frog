@@ -2,12 +2,12 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>com.gitee.drinkjava2</groupId>
- <artifactId>frog005a</artifactId>
+ <artifactId>frog005b</artifactId>
  <packaging>jar</packaging>
  <version>1.0</version>
  
  <name>frog</name>
- <description>基于history\005_letter_test分支基础，进一步改进基于体全息存贮方案的模式识别，视觉部分不变，但是听力部分改为一个平面而不是锥面</description>
+ <description>005b是基于history\005_letter_test分支基础上，将体全息存贮方案改为面存贮方案的模式识别，这个方案中所有信息是保存在一个平面上。这个方案并不是否定体全息存贮，仅仅只是展示不同的思路。</description>
  <url>https://gitee.com/drinkjava2/jsqlbox/frog</url>
   
  <issueManagement>

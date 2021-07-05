@@ -25,7 +25,7 @@ public class Eye extends Organ {// 眼睛是长方体
 	private static final long serialVersionUID = 1L;
 
 	public Eye() {
-		this.shape = new Cuboid(0, 3, 2, 1, 13, 13);
+		this.shape = new Cuboid(0, 3, 14, 1, 13, 13);
 		this.type = Organ.EYE;
 		this.organName = "Eye";
 		this.allowVary = false;// 不允许变异
