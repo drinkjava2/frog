@@ -13,7 +13,14 @@ package com.gitee.drinkjava2.frog.brain;
 /**
  * Cell is the smallest unit of brain  
  * Cell是脑的最小单元， cell的行为由它的器官类型决定
- * 
+ *
+
+器官位置、方向、厚度、脑细胞分布直径、细胞发散或聚焦角度
+单个细胞方向、能量吸收曲线、能量发送曲线(阀值、是否永久激活、延时发送、脉冲式发送）、发送方向(正、反、双向)
+是否是视细胞、动作细胞
+触突(hole)？(固定式触突，或动态生成触突?)
+
+
  * @author Yong Zhu
  * @since 1.0
  */

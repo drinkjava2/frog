@@ -93,7 +93,7 @@ public class Frog {// 这个项目里大量用到全局public变量而不是私�
     }
 
     /** Check if cell exist */
-    public Cell getCell(int x, int y, int z) {// 返回指定脑ssf坐标的cell ，如果不存在，返回null
+    public Cell getCell(int x, int y, int z) {// 返回指定脑坐标的cell ，如果不存在，返回null
         if (cells[x] == null || cells[x][y] == null)
             return null;
         return cells[x][y][z];
@@ -114,6 +114,7 @@ public class Frog {// 这个项目里大量用到全局public变量而不是私�
         }
         return cell;
     }
+ 
 
     /** Check if x,y,z out of frog's brain bound */
     public static boolean outBrainBound(int x, int y, int z) {// 检查指定坐标是否超出frog脑空间界限
