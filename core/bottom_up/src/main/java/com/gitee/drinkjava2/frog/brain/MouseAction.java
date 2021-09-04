@@ -34,6 +34,7 @@ public class MouseAction implements MouseListener, MouseWheelListener, MouseMoti
 			buttonPressed = 0;
 		x = e.getPoint().x;
 		y = e.getPoint().y;
+		brainPic.requestFocus();
 	}
 
 	@Override

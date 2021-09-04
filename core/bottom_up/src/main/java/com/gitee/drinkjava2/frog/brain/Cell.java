@@ -28,7 +28,10 @@ public class Cell {
     public int x;
     public int y;
     public int z;
-
+    
+    // energy of cell
+    public float energy=0; // 每个细胞当前的能量值
+    
     public Cell(int x, int y, int z) {
         this.x = x;
         this.y = y;

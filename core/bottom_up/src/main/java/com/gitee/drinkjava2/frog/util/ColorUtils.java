@@ -29,7 +29,7 @@ public class ColorUtils {
 	public static final int GRAY = 7;
 
 	private static final Color[] rainbow = new Color[] { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN,
-			Color.BLUE, Color.MAGENTA,Color.GRAY };
+			Color.BLUE, Color.MAGENTA, Color.GRAY };
 
 	private static int nextColor = 0;
 
@@ -51,20 +51,21 @@ public class ColorUtils {
 	}
 
 	public static Color rainbowColor(float i) { // 根据数值大小范围，在8种彩虹色中取值
-		if (i == 0)
-			return Color.BLACK;
-		if (i == 1)
-			return Color.RED;
-		if (i <= 3)
-			return Color.ORANGE;
-		if (i <= 10)
-			return Color.YELLOW;
 		if (i <= 20)
-			return Color.GREEN;
+			return Color.GRAY;
+		if (i <= 30)
+			return Color.BLACK;
 		if (i <= 50)
-			return Color.CYAN;
-		if (i <= 100)
-			return Color.BLUE;
+			return Color.RED;
 		return Color.MAGENTA;
+	}
+
+	public static Color grayColor(float f) { // 根据数值大小范围0~1000，返回一个灰度色，越大越黑
+		if (f > 1000)
+			f = 1000;
+		int i1 = 255 - (int) Math.round(f * .255);
+		int i2 = 200 - (int) Math.round(f * .200);
+		int i3 = 150 - (int) Math.round(f * .150);
+		return new Color(i1, i2, i3);
 	}
 }

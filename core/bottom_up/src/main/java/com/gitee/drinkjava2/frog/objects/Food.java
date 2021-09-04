@@ -13,36 +13,35 @@ package com.gitee.drinkjava2.frog.objects;
 import static com.gitee.drinkjava2.frog.Env.ENV_HEIGHT;
 import static com.gitee.drinkjava2.frog.Env.ENV_WIDTH;
 import static com.gitee.drinkjava2.frog.Env.FOOD_QTY;
-import static com.gitee.drinkjava2.frog.Env.bricks;
 
+import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Food randomly scatter on Env
+ * 生成食物（静态食物或苍蝇，苍蝇如果Env中FOOD_CAN_MOVE=true,会向四个方向移动)
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class Food implements EnvObject {
 
-	@Override
-	public void build() {
-		for (int i = 0; i < FOOD_QTY; i++) // 生成食物
-			bricks[RandomUtils.nextInt(ENV_WIDTH)][RandomUtils.nextInt(ENV_HEIGHT)] = Material.FOOD;
-	}
+    @Override
+    public void build() {
+        for (int i = 0; i < FOOD_QTY; i++) // 生成食物
+            Env.setMaterial(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), Material.FOOD);
+    }
 
-	@Override
-	public void destory() {
-		for (int i = 0; i < ENV_WIDTH; i++) {// 清除食物
-			for (int j = 0; j < ENV_HEIGHT; j++)
-				if (bricks[i][j] == Material.FOOD)
-					bricks[i][j] = 0;
-		}
-	}
+    @Override
+    public void destory() {
+        for (int i = 0; i < ENV_WIDTH; i++) {// 清除食物
+            for (int j = 0; j < ENV_HEIGHT; j++)
+                Env.clearMaterial(i, j, Material.FOOD);
+        }
+    }
 
-	@Override
-	public void active(int screen) {
-		// Food do not have any active
-	}
+    @Override
+    public void active() {
+    }
 
 }

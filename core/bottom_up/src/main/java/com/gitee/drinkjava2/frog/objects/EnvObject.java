@@ -22,5 +22,5 @@ public interface EnvObject {
 
 	public void destory();// 从Env中清除本身物体，只在每屏测试完成后调用一次
 
-	public void active(int screen); // 每个步长都会调用一次这个方法
+	public void active(); // 每个步长都会调用一次这个方法
 }

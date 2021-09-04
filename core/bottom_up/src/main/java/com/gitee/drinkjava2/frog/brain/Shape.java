@@ -15,12 +15,13 @@ import java.io.Serializable;
 /**
  * Shape represents a 3d zone in brain
  * 
- * Shape用来表示脑内器官的形状,一个器官只能有一个shape
+ * Shape用来表示脑内器官的形状,一个器官只能有一个shape，但是多个器官可以在脑内重合，也就是说一个Cell可以属于多个器官
  * 
  * @author Yong Zhu
  * @since 2.0.2
  */
 public interface Shape extends Serializable {
 	/* Draw self on brain picture */
-	public void drawOnBrainPicture(BrainPicture pic); // 把自己在脑图上画出来 
+	public void drawOnBrainPicture(BrainPicture pic); // 把自己在脑图上画出来
+
 }

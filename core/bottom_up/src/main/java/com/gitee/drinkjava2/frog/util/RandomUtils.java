@@ -10,71 +10,83 @@
  */
 package com.gitee.drinkjava2.frog.util;
 
-import java.util.Random; 
+import java.util.Random;
 
 /**
  * Random Utilities used in this project
- * 
- * 随机数工具，最理想情况下，随机算法和遗传算法是Frog项目中仅有的两个算法。
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class RandomUtils {
 
-	private RandomUtils() {
-	}
+    private RandomUtils() {
+    }
 
-	private static final Random rand = new Random();
+    private static final Random rand = new Random();
 
-	public static int nextInt(int i) {//生成一个整数
-		return rand.nextInt(i);
-	}
+    public static int nextInt(int i) {
+        return rand.nextInt(i);
+    }
 
-	public static float nextFloat() {//生成一个实数
-		return rand.nextFloat();
-	}
+    public static float nextFloat() {
+        return rand.nextFloat();
+    }
 
-	public static boolean percent(float percent) {// 有百分之percent的机率为true
-		return rand.nextInt(100) < percent;
-	}
+    public static boolean percent(float percent) {// 有百分这percent的机率为true
+        return rand.nextFloat() * 100 < percent;
+    }
 
-  
-	public static int vary(int v, int percet) {//给定一个整数，有百分之percent的机率变异，变异范围由vary方法决定
-		if (percent(percet))
-			return vary(v);
-		return v;
-	}
+    public static int vary(int v, int percet) {
+        if (percent(percet))
+            return vary(v);
+        return v;
+    }
 
-	public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		if (percent(40))
-			v *= .98 + .04 * nextFloat(); // 0.98~1.02
-		if (percent(10))
-			v *= .95 + .103 * nextFloat(); // 0.95~1.053
-		else if (percent(5))
-			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
-		else if (percent(1))
-			v *= .05 + 1.5 * nextFloat(); // 0.5~2
-		return v;
-	}
+    public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+        if (percent(40))
+            v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
+        if (percent(10))
+            v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
+        else if (percent(5))
+            v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
+        else if (percent(2))
+            v += v * 4 * (nextFloat() - 0.5); // v=v+-2
+        else if (percent(1f))
+            v += v * 8 * (nextFloat() - 0.5); // v=v+-6
+        return v;
+    }
 
-	public static float vary(float v, int percet) {//给定一个实数，有百分之percent的机率变异，变异范围由vary方法决定
-		if (percent(percet))
-			return vary(v);
-		return v;
-	}
+    public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
+        if (percent(40))
+            v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
+        if (percent(10))
+            v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
+        else if (percent(5))
+            v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
+        else if (percent(2))
+            v += v * 4 * (nextFloat() - 0.5); // v=v+-2
+        else if (percent(1f))
+            v += v * 8 * (nextFloat() - 0.5); // v=v+-6
+        return v;
+    }
 
-	public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-		if (percent(40))
-			v *= .98 + .04 * nextFloat(); // 0.98~1.02
-		if (percent(10))
-			v *= .95 + .103 * nextFloat(); // 0.95~1.053
-		else if (percent(5))
-			v *= .08 + 0.45 * nextFloat(); // 0.8~1.25
-		else if (percent(1))
-			v *= .05 + 1.5 * nextFloat(); // 0.5~2
-		return v;
-	} 
- 
+    public static int varyInLimit(int v, int from, int to) {// 让返回值在from和to之间随机变异
+        int i = vary(v);
+        if (i < from)
+            i = from;
+        if (i > to)
+            i = to;
+        return i;
+    }
+
+    public static float varyInLimit(float v, float from, float to) {// 让返回值在from和to之间随机变异
+        float i = vary(v);
+        if (i < from)
+            i = from;
+        if (i > to)
+            i = to;
+        return i;
+    }
 
 }

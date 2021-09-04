@@ -38,22 +38,21 @@ public class Application {
 
     public static JFrame mainFrame = new JFrame();
     public static Env env = new Env();
-    public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_XSIZE,
-            Env.FROG_BRAIN_DISP_WIDTH);
+    public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_DISP_WIDTH);
     public static ActionListener pauseAction;
     public static boolean selectFrog = true;
 
     private static void checkIfShowBrainPicture(JButton button) {
-        if (Env.SHOW_FIRST_FROG_BRAIN) {
+        if (Env.SHOW_FIRST_ANIMAL_BRAIN) {
             button.setText("Hide brain");
-            int y = Env.ENV_HEIGHT + 160;
+            int y = Env.ENV_HEIGHT + 120;
             if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
                 y = Env.FROG_BRAIN_DISP_WIDTH + 41;
             mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
-            brainPic.requestFocus(); 
+            brainPic.requestFocus();
         } else {
             button.setText("Show brain");
-            mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 160);
+            mainFrame.setSize(Env.ENV_WIDTH + 20, Env.ENV_HEIGHT + 120);
         }
     }
 
@@ -64,22 +63,14 @@ public class Application {
         mainFrame.add(env); // 添加虚拟环境Panel
         mainFrame.add(brainPic); // 添加脑图Panel
 
-        JButton showBrainbutton = new JButton("Show brain");// 按钮，显示或隐藏脑图
+        JButton button = new JButton("Show brain");// 按钮，显示或隐藏脑图
         int buttonWidth = 100;
         int buttonHeight = 22;
         int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
+        button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
 
-        showBrainbutton.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
-        ActionListener al = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {//显示或隐藏脑图
-                Env.SHOW_FIRST_FROG_BRAIN = !Env.SHOW_FIRST_FROG_BRAIN;
-                checkIfShowBrainPicture(showBrainbutton);
-            }
-        };
-        checkIfShowBrainPicture(showBrainbutton);
-        showBrainbutton.addActionListener(al);
-        mainFrame.add(showBrainbutton);
+        checkIfShowBrainPicture(button);
+        mainFrame.add(button);
 
         JButton stopButton = new JButton("Pause");// 暂停或继续按钮
         stopButton.setBounds(buttonXpos, Env.ENV_HEIGHT + 35, buttonWidth, buttonHeight);
@@ -113,8 +104,7 @@ public class Application {
         final JLabel label = new JLabel("Speed:");
         label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
         mainFrame.add(label);
- 
-   
+
         mainFrame.setVisible(true);
         env.run();
     }
