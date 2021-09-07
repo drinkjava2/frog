@@ -71,8 +71,8 @@ public class BrainPicture extends JPanel {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_UP:// Y切面向上
 					yMask++;
-					if (yMask > Env.FROG_BRAIN_YSIZE)
-						yMask = Env.FROG_BRAIN_YSIZE;
+					if (yMask > Env.BRAIN_YSIZE)
+						yMask = Env.BRAIN_YSIZE;
 					break;
 				case KeyEvent.VK_DOWN:// Y切面向下
 					yMask--;
@@ -86,8 +86,8 @@ public class BrainPicture extends JPanel {
 					break;
 				case KeyEvent.VK_RIGHT:// x切面向右
 					xMask++;
-					if (xMask > Env.FROG_BRAIN_XSIZE)
-						xMask = Env.FROG_BRAIN_XSIZE;
+					if (xMask > Env.BRAIN_XSIZE)
+						xMask = Env.BRAIN_XSIZE;
 					break;
 				case ' ':// 暂停及继续
 					Application.pauseAction.actionPerformed(null);
@@ -164,12 +164,12 @@ public class BrainPicture extends JPanel {
 		x.cosθ-y.sinθ, x.sinθ+y.consθ, z
 	 -*/
 	public void drawLine(float px1, float py1, float pz1, float px2, float py2, float pz2) {
-		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
-		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-		double z1 = pz1 - Env.FROG_BRAIN_ZSIZE / 2;
-		double x2 = px2 - Env.FROG_BRAIN_XSIZE / 2;
-		double y2 = -py2 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-		double z2 = pz2 - Env.FROG_BRAIN_ZSIZE / 2;
+		double x1 = px1 - Env.BRAIN_XSIZE / 2;
+		double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+		double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+		double x2 = px2 - Env.BRAIN_XSIZE / 2;
+		double y2 = -py2 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+		double z2 = pz2 - Env.BRAIN_ZSIZE / 2;
 		x1 = x1 * scale;
 		y1 = y1 * scale;
 		z1 = z1 * scale;
@@ -216,9 +216,9 @@ public class BrainPicture extends JPanel {
 
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
 	public void drawPoint(float px1, float py1, float pz1, float r) {
-		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
-		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-		double z1 = pz1 - Env.FROG_BRAIN_ZSIZE / 2;
+		double x1 = px1 - Env.BRAIN_XSIZE / 2;
+		double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+		double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
 		x1 = x1 * scale;
 		y1 = y1 * scale;
 		z1 = z1 * scale;
@@ -249,9 +249,9 @@ public class BrainPicture extends JPanel {
 	}
 
 	public void drawText(float px1, float py1, float pz1, String text, float textSize) {
-		double x1 = px1 - Env.FROG_BRAIN_XSIZE / 2;
-		double y1 = -py1 + Env.FROG_BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-		double z1 = pz1 - Env.FROG_BRAIN_ZSIZE / 2;
+		double x1 = px1 - Env.BRAIN_XSIZE / 2;
+		double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+		double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
 		x1 = x1 * scale;
 		y1 = y1 * scale;
 		z1 = z1 * scale;
@@ -278,7 +278,7 @@ public class BrainPicture extends JPanel {
 
 	}
 
-	private static Cuboid brain = new Cuboid(0, 0, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_YSIZE, Env.FROG_BRAIN_ZSIZE);
+	private static Cuboid brain = new Cuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);
 
 	public void drawBrainPicture() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
 		if (!Env.SHOW_FIRST_ANIMAL_BRAIN)

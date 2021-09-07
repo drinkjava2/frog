@@ -115,7 +115,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
   
     /** Check if x,y,z out of animal's brain range */
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
-        return x < 0 || x >= Env.FROG_BRAIN_XSIZE || y < 0 || y >= Env.FROG_BRAIN_YSIZE || z < 0 || z >= Env.FROG_BRAIN_ZSIZE;
+        return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
   
 }

@@ -38,7 +38,7 @@ public class Application {
 
     public static JFrame mainFrame = new JFrame();
     public static Env env = new Env();
-    public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.FROG_BRAIN_XSIZE, Env.FROG_BRAIN_DISP_WIDTH);
+    public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.BRAIN_XSIZE, Env.FROG_BRAIN_DISP_WIDTH);
     public static ActionListener pauseAction;
     public static boolean selectFrog = true;
 

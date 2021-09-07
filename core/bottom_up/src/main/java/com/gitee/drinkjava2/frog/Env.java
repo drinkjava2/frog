@@ -41,9 +41,9 @@ public class Env extends JPanel {
 	public static final int SCREEN = 1; // 分几屏测完
 
 	/** Frog's brain size is a 3D array of Cell */ // 脑空间是个三维Cell数组，为节约内存，仅在用到数组元素时才去初始化这维，按需分配内存
-	public static final int FROG_BRAIN_XSIZE = 1000; // frog的脑在X方向长度
-	public static final int FROG_BRAIN_YSIZE = 1000; // frog的脑在Y方向长度
-	public static final int FROG_BRAIN_ZSIZE = 1000; // frog的脑在Z方向长度
+	public static final int BRAIN_XSIZE = 1000; // 脑在X方向长度
+	public static final int BRAIN_YSIZE = 1000; // 脑在Y方向长度
+	public static final int BRAIN_ZSIZE = 1000; // 脑在Z方向长度
 
 	/** SHOW first animal's brain structure */
 	public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -192,8 +192,7 @@ public class Env extends JPanel {
 				if (brick != 0) {
 					g.setColor(Material.color(brick));
                     if ((brick & Material.FOOD) > 0) {
-                        g.fillRoundRect(x, y, 4, 4, 2, 2); // 点模式 食物只有一个点太小，画大一点
-                        // g.drawString(String.valueOf(brick - Material.FOOD), x, y); // 数字雨模式
+                        g.fillRoundRect(x, y, 4, 4, 2, 2); //食物只有一个点太小，画大一点
                     } else
 						g.drawLine(x, y, x, y); // only 1 point
 				}

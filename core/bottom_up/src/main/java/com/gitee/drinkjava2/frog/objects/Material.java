@@ -15,38 +15,36 @@ import java.awt.Color;
 /**
  * Material store material types
  * 
- * 小于等于16384的位数用来标记青蛙序号，可利用Env.frogs.get(no-1)快速定位青蛙，其它各种材料用整数中其它位来表示
+ * 虚拟环境中每个点由一个int代表，多个材料可以同时出现在同一个点，每种材料用int中的一个bit位来表示，
+ * 小于等于16384的位数用来标记青蛙序号，可利用Env.frogs.get(no-1)获取青蛙对象，其它各种材料用整数中其它位来表示
  * 
  * @author Yong Zhu
  * @since 1.0
  */
 public class Material {// NOSONAR
 
-	public static final int FROG_TAG = 0b11111111111111; // 16383 小于等于16384的位数用来标记青蛙序号，可利用Env.frogs.get(no-1)快速定位青蛙
+    public static final int FROG_TAG = 0b11111111111111; // 16383 小于等于16384的位数用来标记青蛙序号，可利用Env.frogs.get(no-1)快速定位青蛙
 
-	private static int origin = FROG_TAG + 1; // 大于16384用来作为各种材料的标记
+    private static int material = FROG_TAG + 1; // 大于16384用来作为各种材料的标记
 
-	private static int nextLeftShift() {// 每次将origin左移1位
-		origin = origin << 1;
-		if (origin < 0)
-			throw new IllegalArgumentException("Material out of maximum range");
-		return origin;
-	}
+    public static final int FOOD = nextMaterial();
+    public static final int SNAKE = nextMaterial(); // 蛇的图形
+    public static final int KILL_ANIMAL = nextMaterial(); // if>=KILLFROG will kill animal
+    public static final int BRICK = nextMaterial();// brick will kill frog
+    public static final int TRAP = nextMaterial(); // trap will kill frog
 
-	public static final int FOOD = nextLeftShift(); 
+    private static int nextMaterial() {// 每次将material左移1位
+        material = material << 1;
+        if (material < 0)
+            throw new IllegalArgumentException("Material out of maximum range");
+        return material;
+    }
 
-	public static final int SNAKE = nextLeftShift(); // 蛇的图形
-	public static final int KILL_ANIMAL = nextLeftShift(); // if>=KILLFROG will kill animal
-	public static final int BRICK = nextLeftShift();// brick will kill frog
-	public static final int TRAP = nextLeftShift(); // trap will kill frog
-
-	// 大于INVISIBLE的材料不显示在环境里，但有可能被青蛙或蛇看到，这是为了简化模式识别，蛇显示为蛇图形，但实际上目前它在环境中用一根线条来代表，以简化模型
-
-	public static Color color(int material) {
-		if ((material & TRAP) > 0)
-			return Color.LIGHT_GRAY;
-		else
-			return Color.BLACK;
-	}
+    public static Color color(int material) {
+        if ((material & TRAP) > 0)
+            return Color.LIGHT_GRAY;
+        else
+            return Color.BLACK;
+    }
 
 }
