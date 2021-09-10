@@ -11,7 +11,7 @@ public class Application {
 	public static final String CLASSPATH;
 	static {
 		String classpath = new File("").getAbsolutePath();
-		int i = classpath.indexOf("\\frog\\");
+		int i = classpath.lastIndexOf("\\frog\\");
 		if (i > 0)
 			CLASSPATH = classpath.substring(0, i) + "\\frog\\";// windows
 		else

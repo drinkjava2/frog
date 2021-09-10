@@ -29,7 +29,7 @@ public class Application {
 
     static {
         String classpath = new File("").getAbsolutePath();
-        int i = classpath.indexOf("\\frog\\");
+        int i = classpath.lastIndexOf("\\frog\\");
         if (i > 0)
             CLASSPATH = classpath.substring(0, i) + "\\frog\\";// windows
         else
@@ -106,6 +106,7 @@ public class Application {
         mainFrame.add(label);
 
         mainFrame.setVisible(true);
+        mainFrame.setTitle("这是一个空框架，用随机生成基因的方式来实现细胞3D分裂还没开始做");
         env.run();
     }
 
