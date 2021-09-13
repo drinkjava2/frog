@@ -61,6 +61,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
+        this.egg = egg;
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             x = RandomUtils.nextInt(Env.ENV_WIDTH);
             y = RandomUtils.nextInt(Env.ENV_HEIGHT);
@@ -75,7 +76,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 this.x = Env.ENV_WIDTH - 1;
             if (this.y >= (Env.ENV_HEIGHT - 1))
                 this.y = Env.ENV_HEIGHT - 1;
-        } 
+        }
     }
 
     public void initAnimal() { // 初始化animal,通常只是调用每个organ的init方法 
