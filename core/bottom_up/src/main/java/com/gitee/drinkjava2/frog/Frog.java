@@ -14,7 +14,7 @@ import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Material;
 
 /**
- * Frog is child class of Animal 
+ * Frog is child class of Animal, Animal's name is Sam.
  * Frog是Animal的一个子类
  * 
  * @since 1.0

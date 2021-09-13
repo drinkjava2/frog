@@ -25,12 +25,9 @@ import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
- * Animal = cells <br/>
- * cells = actions + photons <br/>
+ * Animal is all artificial lives' father class
  * 
- * Animal's name is Sam.
- * 
- * 脑由一个cells三维数组组成，每个cell里可以存在多个行为，行为是由器官决定，同一个细胞可以存在多种行为。光子是信息的载体，永远不停留。
+ * Animal是所有动物（青蛙、蛇等）的父类, animal是由蛋孵出来的，蛋里保存着脑细胞结构生成的基因
  * 
  * @author Yong Zhu
  * 
@@ -39,6 +36,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
+    transient public Egg egg; //这个Animal是从哪个egg诞生出来的
 
     static {
         try {

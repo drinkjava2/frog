@@ -10,6 +10,8 @@
  */
 package com.gitee.drinkjava2.frog.brain;
 
+import java.util.List;
+
 /**
  * Cell is the smallest unit of brain  
  * Cell是脑的最小单元， cell的行为由它的器官类型决定
@@ -25,9 +27,12 @@ package com.gitee.drinkjava2.frog.brain;
  * @since 1.0
  */
 public class Cell {
-    public int x;
+    public int x; //x,y,z 是细胞的中心点
     public int y;
     public int z;
+    
+    //gene is a language created by random 
+    public List<String> gene; //基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中
     
     // energy of cell
     public float energy=0; // 每个细胞当前的能量值

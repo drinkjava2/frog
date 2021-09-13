@@ -11,6 +11,8 @@
 package com.gitee.drinkjava2.frog.egg;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
@@ -30,6 +32,10 @@ public class Egg implements Serializable {
 	private static final long serialVersionUID = 1L;
 	public int x; // 蛋的x位置
 	public int y; // 蛋的y位置
+	
+	// gene is a language similar like BASIC created by random 
+	// 基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中，和实际生物不同，每个细胞仅保存着蛋的指针，并不需要保存基因的完整副本，这样可以减少计算机内存使用
+    public List<String> gene= new ArrayList<>();
   
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
 		x = RandomUtils.nextInt(Env.ENV_WIDTH);
@@ -40,6 +46,7 @@ public class Egg implements Serializable {
 	public Egg(Animal a) { // 下蛋，每个器官会创建自已的副本或变异，可以是0或多个
 		x = a.x;
 		y = a.y;
+		gene.addAll(a.egg.gene); //下蛋就是把孵化出当前动物的蛋的基因拷贝到新蛋里		
 	}
 
 	/**
