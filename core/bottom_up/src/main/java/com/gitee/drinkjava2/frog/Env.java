@@ -30,7 +30,7 @@ public class Env extends JPanel {
 	public static int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
-	public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除保存的青蛙蛋
+	public static final boolean DELETE_FROG_EGGS = false;// 每次运行是否先删除保存的青蛙蛋
 
 	public static final int FROG_EGG_QTY = 25; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 

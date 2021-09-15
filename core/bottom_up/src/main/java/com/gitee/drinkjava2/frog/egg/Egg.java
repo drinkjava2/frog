@@ -19,11 +19,9 @@ import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
- * Egg is the static structure description of frog, can save as file, to build a
- * frog, first need build a egg.<br/>
+ * Egg is the static structure description of brain cells
  * 
- * 蛋存在的目的是为了以最小的字节数串行化存储Frog,它是Frog的生成算法描述，而不是Frog本身，这样一来Frog就不能"永生"了，因为每一个egg都不等同于
- * 它的母体， 而且每一次测试，大部分条件反射的建立都必须从头开始训练，类似于人类，无论人类社会有多聪明， 婴儿始终是一张白纸，需要花大量的时间从头学习。
+ * 蛋存在的目的是为了以最小的字节数串行化存储脑细胞,它是海量脑细胞的生成算法描述，而不是脑细胞本身
  * 
  * @author Yong Zhu
  * @since 1.0
@@ -37,19 +35,19 @@ public class Egg implements Serializable {
 	// 基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中，和实际生物每个细胞都要保存一份基因不同，程序中每个细胞仅保存着蛋的指针和当前基因链的行号，并不需要保存基因的副本，这样可以极大地减少内存占用
     public List<String> gene= new ArrayList<>();
   
-	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
+	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙d
 		x = RandomUtils.nextInt(Env.ENV_WIDTH);
 		y = RandomUtils.nextInt(Env.ENV_HEIGHT);
 	}
 
-	/** Create egg from frog */
+	/** Create egg from animal */
     public Egg(Animal a) { // 下蛋，每个器官会创建自已的副本或变异，可以是0或多个
         x = a.x;
         y = a.y;
         if (a.egg != null && a.egg.gene != null) {
             gene.addAll(a.egg.gene); //下蛋就是把孵化出此动物的蛋的基因拷贝到新蛋里，并有可能变异
             //TODO:基因变异
-        }        
+        } 
     }
 
 	/**

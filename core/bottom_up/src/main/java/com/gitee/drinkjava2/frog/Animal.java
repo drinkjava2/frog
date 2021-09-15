@@ -61,7 +61,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
-        this.egg = egg;
+        this.egg = egg; //重要，保存一个指针指向孵出它的蛋，蛋里有基因序列
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             x = RandomUtils.nextInt(Env.ENV_WIDTH);
             y = RandomUtils.nextInt(Env.ENV_HEIGHT);
