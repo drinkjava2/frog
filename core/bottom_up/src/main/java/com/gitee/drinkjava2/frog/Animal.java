@@ -36,7 +36,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
-    transient public Egg egg; //这个Animal是从哪个egg诞生出来的
+    transient public String gene; // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同。
 
     static {
         try {
@@ -61,7 +61,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
-        this.egg = egg; //重要，保存一个指针指向孵出它的蛋，蛋里有基因序列
+        this.gene = egg.gene; //重要，保存一个指针指向孵出它的蛋，蛋里有基因序列
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             x = RandomUtils.nextInt(Env.ENV_WIDTH);
             y = RandomUtils.nextInt(Env.ENV_HEIGHT);

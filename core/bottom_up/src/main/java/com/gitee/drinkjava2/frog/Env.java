@@ -178,6 +178,7 @@ public class Env extends JPanel {
 			for (int j = 0; j < loop; j++) {
 				Egg zygote = new Egg(frog_eggs.get(i), frog_eggs.get(RandomUtils.nextInt(frog_eggs.size())));
 				Frog f = new Frog(zygote);
+				f.gene+="test";
 				frogs.add(f);
 				f.no = frogs.size();
 			}
@@ -256,6 +257,8 @@ public class Env extends JPanel {
 				boolean allDead = false;
 
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
+				    System.out.println(frogs.size());
+				    System.out.println(frogs.get(0).gene);
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
 				}
