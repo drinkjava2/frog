@@ -178,7 +178,7 @@ public class Env extends JPanel {
 			for (int j = 0; j < loop; j++) {
 				Egg zygote = new Egg(frog_eggs.get(i), frog_eggs.get(RandomUtils.nextInt(frog_eggs.size())));
 				Frog f = new Frog(zygote);
-				f.gene+="test";
+				f.gene.add("test");
 				frogs.add(f);
 				f.no = frogs.size();
 			}
