@@ -90,7 +90,6 @@ public class FrogEggTool {
 			FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "frog_eggs.ser");
 			ObjectInputStream eggsInputStream = new ObjectInputStream(eggsFile);
 			Env.frog_eggs = (List<Egg>) eggsInputStream.readObject();
-			System.out.println(Env.frog_eggs.get(0).gene.size());
 			System.out.println("Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH
 					+ "frog_eggs.ser" + "'.\n");
 			eggsInputStream.close();

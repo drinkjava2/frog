@@ -257,8 +257,7 @@ public class Env extends JPanel {
 				boolean allDead = false;
 
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
-				    System.out.println(frogs.size());
-				    System.out.println(frogs.get(0).gene);
+				    //System.out.println(frogs.get(0).gene);
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
 				}
@@ -304,7 +303,6 @@ public class Env extends JPanel {
 					Graphics g2 = this.getGraphics();
 					g2.drawImage(buffImg, 0, 0, this);
 				}
-				// System.out.println(showFrog.debugInfo());// 打印输出Frog调试内容
 				if (SHOW_FIRST_ANIMAL_BRAIN)
 					Application.brainPic.drawBrainPicture();
 				checkIfPause();
