@@ -21,7 +21,8 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  * Egg is the static structure description of brain cells
  * 
  * 蛋存在的目的是为了以最小的字节数串行化存储脑细胞,它是海量脑细胞的生成算法描述，而不是脑细胞本身
- * 蛋和基因的关系：基因相当于染色体，不存在坐标位置。蛋则是基因的载体，有x,y坐标，表示在虚拟环境中蛋存在的位置。
+ * 蛋和基因的关系：基因是一种语言，相当于染色体，不存在坐标位置。蛋则是基因的载体，有x,y坐标，表示在虚拟环境中蛋存在的位置。
+ * 
  * 另外青蛙本身也是基因的载体，所以青蛙里有一个gene属性
  * 
  * @author Yong Zhu
@@ -33,7 +34,7 @@ public class Egg implements Serializable {
 	public int y; // 蛋的y位置
 	
 	// gene is a language similar like BASIC created by random 
-	// 基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中，和实际生物每个细胞都要保存一份基因不同，程序中每个细胞仅保存着蛋的指针和当前基因链的行号，并不需要保存基因的副本，这样可以极大地减少内存占用
+	// 基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中，和实际生物每个细胞都要保存一份基因不同，程序中每个细胞仅保存着基因的指针和当前细胞位于基因链中的行号，并不需要保存基因的副本，这样可以极大地减少内存占用
     public ArrayList<String> gene =new ArrayList<>();
   
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙d
@@ -55,7 +56,8 @@ public class Egg implements Serializable {
 	public Egg(Egg a, Egg b) {
 		x = a.x;
 		y = a.y;
-		gene.addAll(a.gene); //TODO join a and b's gene
+		gene.addAll(a.gene); 
+		//TODO 将两个蛋的基因混合
 	}
 
 }

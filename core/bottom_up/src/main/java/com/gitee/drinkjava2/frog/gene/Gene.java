@@ -15,10 +15,10 @@ import com.gitee.drinkjava2.frog.brain.Cell;
 /**
  * Gene is a language, here give the keywords of this language
  * 
- * Gene是一个大自然随机生成的语言，有着类似于BASIC的语法。这个类里定义语言的关键字常量和对这些关键字的解析行为, 
+ * Gene是一个仿造大自然随机生成的语言。它采用类似BASIC的语法,只有少数几个字键字。这个类里定义语言的关键字常量和对这些关键字的解析行为, 
  * 这个语言主要的作用是实现分裂造形，包括 身体结构造形（不重要，但先实现这个)和脑细胞结构造形(重点)
  * 
- * Gene语法的每行由若干部分组成，第一部分是关键字，占2格，第二、三、四等部分是可选内容，由关键字决定，如
+ * Gene语法的每行由若干部分组成，第一部分是关键字，占2格，第二、三、四等部分是可选内容，由关键字决定，如:
  * 
  * 10 100 表示跳转到100行语句执行
  * 11 表示结束执行，停止细胞分裂
@@ -27,15 +27,14 @@ import com.gitee.drinkjava2.frog.brain.Cell;
  * @since 2021-09-16
  */
 public class Gene {// NOSONAR 
-    private static int index = 9;
+    private static int index = 9; //关键字是一个两位数字字符，从10开始依次往下排。关键字没有可读性，今后可以考虑写一个方法将关键字代码转为可读的语句
     public static final int FIRST_CODE = 10;
 
-    //关键字用数字代表，从10开始依次往下排
     public static final String GOTO = nextKeyword(); //GOTO关键字
     public static final String END = nextKeyword(); //结束执行
-    public static final String SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有27个方向
+    public static final String SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向
     public static final String LIFE = nextKeyword(); //细胞分裂寿命,  0表示可以无限分裂    
-    public static final String IF = nextKeyword(); //IF关键字
+    public static final String IF = nextKeyword(); //IF关键字，暂没用到
     public static final int LASTCODE = index; //关键字个数
 
     static private String nextKeyword() {
