@@ -10,8 +10,6 @@
  */
 package com.gitee.drinkjava2.frog.brain;
 
-import java.util.List;
-
 /**
  * Cell is the smallest unit of brain  
  * Cell是脑的最小单元， cell的行为由它的器官类型决定
@@ -26,24 +24,31 @@ import java.util.List;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Cell {
-    public int x; //x,y,z 是细胞的中心点
+public class Cell { //cell数量非常庞大，不需要序列化
+    public int x; //x,y,z 是细胞的中心点在脑中的位置
     public int y;
     public int z;
-    
-    //gene is a language created by random 
-    public List<String> gene; //基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中
-    
+
+    public int geneLine; //指向青蛙基因单例中的行号。每个细胞的基因都相同，但是不同的是在基因链中的行号
+
+    public int splitCount; //从受精卵开始分裂到当前细胞时的分裂次数
+
+    public int splitLimit; //从受精卵开始分裂到当前细胞时，基因中决定的细胞分裂次数限制值
+
     // energy of cell
-    public float energy=0; // 每个细胞当前的能量值
-    
-    public Cell(int x, int y, int z) {
+    public float energy = 0; // 每个细胞当前的能量值
+
+    public Cell(int x, int y, int z, int geneLine, int splitCount, int splitLimit) {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.geneLine = geneLine;
+        this.splitCount = splitCount;
+        this.splitLimit = splitLimit;
     }
 
-    public void act() { //cell执行行动
+    public void act() {
+        //TODO:细胞动作
     }
 
 }

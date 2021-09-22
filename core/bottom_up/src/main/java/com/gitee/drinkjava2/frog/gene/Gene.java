@@ -27,13 +27,13 @@ import com.gitee.drinkjava2.frog.brain.Cell;
  * @since 2021-09-16
  */
 public class Gene {// NOSONAR 
-    private static int index = 9; //关键字是一个两位数字字符，从10开始依次往下排。关键字没有可读性，今后可以考虑写一个方法将关键字代码转为可读的语句
+    private static int index = 9; //关键字是一个两位数字字符，从10开始依次往下排。关键字没有可读性。但是如果需要阅读以后可以写一个方法将关键字代码转为可读的语句
     public static final int FIRST_CODE = 10;
 
     public static final String GOTO = nextKeyword(); //GOTO关键字
     public static final String END = nextKeyword(); //结束执行
-    public static final String SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向
-    public static final String LIFE = nextKeyword(); //细胞分裂寿命,  0表示可以无限分裂    
+    public static final String SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向等
+    public static final String SPLIT_LIMIT = nextKeyword(); //细胞分裂寿命,  0表示可以无限分裂    
     public static final String IF = nextKeyword(); //IF关键字，暂没用到
     public static final int LASTCODE = index; //关键字个数
 
