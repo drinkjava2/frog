@@ -47,6 +47,11 @@ public class Cell { //cell数量非常庞大，不需要序列化
         this.splitLimit = splitLimit;
     }
 
+    public Cell clone() {
+        Cell cell=new Cell(x,y,z, geneLine, splitCount, splitLimit);
+        return cell;
+    }
+    
     public void act() {
         //TODO:细胞动作
     }

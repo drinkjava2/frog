@@ -10,6 +10,7 @@
  */
 package com.gitee.drinkjava2.frog.gene;
 
+import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.brain.Cell;
 
 /**
@@ -28,21 +29,53 @@ import com.gitee.drinkjava2.frog.brain.Cell;
  */
 public class Gene {// NOSONAR 
     private static int index = 9; //关键字是一个两位数字字符，从10开始依次往下排。关键字没有可读性。但是如果需要阅读以后可以写一个方法将关键字代码转为可读的语句
-    public static final int FIRST_CODE = 10;
 
-    public static final String GOTO = nextKeyword(); //GOTO关键字
-    public static final String END = nextKeyword(); //结束执行
-    public static final String SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向等
-    public static final String SPLIT_LIMIT = nextKeyword(); //细胞分裂寿命,  0表示可以无限分裂    
-    public static final String IF = nextKeyword(); //IF关键字，暂没用到
-    public static final int LASTCODE = index; //关键字个数
+    public static final int FIRST_KEYWORD = 10;
+    public static final int GOTO = nextKeyword(); //GOTO关键字=10
+    public static final int END = nextKeyword(); //结束执行=11
+    public static final int SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向等
+    public static final int SPLIT_LIMIT = nextKeyword(); //细胞分裂寿命,  0表示可以无限分裂    
+    public static final int IF = nextKeyword(); //IF关键字，暂没用到
+    public static final int LAST_KEYWORD = index; //最后一个关键字
 
-    static private String nextKeyword() {
-        return "" + ++index;
+    static private int nextKeyword() {
+        return ++index;
     }
 
-    public static void exec(Cell cell) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
-        //TODO 执行细胞分裂行为
+    //execute gene language 
+    public static void exec(Animal animal, Cell cell) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
+        if(cell.geneLine<0 || cell.geneLine >= animal.gene.size())
+            return;
+        
+        String oneLine = animal.gene.get(cell.geneLine);
+        int code = Integer.parseInt(oneLine.substring(0, 2));
+        if (END == code) //如果是END, 结束分裂
+            return;
+
+        int param;
+        try {
+            param = Integer.parseInt(oneLine.substring(2));
+        } catch (NumberFormatException e) { //如果GOTO参数不对，扣除青蛙能量
+            animal.energy -= 300;
+            return;
+        }
+
+        if (GOTO == code) {
+            if (param < 0 || param >= animal.gene.size()) {//行号太大、太小都不行
+                animal.energy -= 300;
+                return;
+            }
+            cell.geneLine = param;
+        } else if (SPLIT_LIMIT == code) {//重定义细胞寿命
+            cell.splitLimit=param;
+            cell.geneLine++;
+        }else if (SPLIT == code) { //执行细胞分裂
+            cell.splitLimit=param;
+            cell.geneLine++;
+        }
     }
 
+    public static void main(String[] args) {
+        System.out.println("1234".substring(2));
+    }
 }
