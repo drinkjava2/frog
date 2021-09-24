@@ -10,6 +10,8 @@
  */
 package com.gitee.drinkjava2.frog.brain;
 
+import com.gitee.drinkjava2.frog.Animal;
+
 /**
  * Cell is the smallest unit of brain  
  * Cell是脑的最小单元， cell的行为由它的器官类型决定
@@ -47,11 +49,43 @@ public class Cell { //cell数量非常庞大，不需要序列化
         this.splitLimit = splitLimit;
     }
 
-    public Cell clone() {
-        Cell cell=new Cell(x,y,z, geneLine, splitCount, splitLimit);
-        return cell;
+    public void cloneAtDirects(Animal animal, int direction) {//在多个方向上分裂克隆
+        int xx = x;
+        int yy = y;
+        int zz = z;
+        if ((direction & 1) > 0) {//上
+            zz++;
+            clone(animal, xx, yy, zz);
+        }
+        if ((direction & 1) > 0) {//下
+            zz--;
+            clone(animal, xx, yy, zz);
+        }
+        if ((direction & 1) > 0) {//左
+            xx--;
+            clone(animal, xx, yy, zz);
+        }
+        if ((direction & 1) > 0) {//右
+            xx++;
+            clone(animal, xx, yy, zz);
+        }
+        if ((direction & 1) > 0) {//前
+            yy--;
+            clone(animal, xx, yy, zz);
+        }
+        if ((direction & 1) > 0) {//后
+            yy++;
+            clone(animal, xx, yy, zz);
+        }
     }
-    
+
+    public void clone(Animal animal, int xx, int yy, int zz) {//在指定坐标克隆当前细胞
+        if (animal.outBrainRange(xx, yy, zz))
+            return;
+        Cell cell = new Cell(xx, yy, zz, geneLine, splitCount, splitLimit);
+        animal.cells.add(cell);
+    }
+
     public void act() {
         //TODO:细胞动作
     }

@@ -44,15 +44,16 @@ public class Gene {// NOSONAR
 
     //execute gene language 
     public static void exec(Animal animal, Cell cell) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
-        if(cell.geneLine<0 || cell.geneLine >= animal.gene.size())
-            return;
-        
-        String oneLine = animal.gene.get(cell.geneLine);
-        int code = Integer.parseInt(oneLine.substring(0, 2));
-        if (END == code) //如果是END, 结束分裂
+        if (cell.geneLine < 0 || cell.geneLine >= animal.gene.size())
             return;
 
-        int param;
+        String oneLine = animal.gene.get(cell.geneLine);
+        int code = Integer.parseInt(oneLine.substring(0, 2));
+        if (code == END) {//如果是END, 结束分裂
+            cell.geneLine = -1;//geneLine改为-1,以后直接跳过这个细胞，不再执行上面的Integer.parseInt
+            return;
+        }
+        int param; //每行基因分为代码和参数两个部分，参数通常是一个整数
         try {
             param = Integer.parseInt(oneLine.substring(2));
         } catch (NumberFormatException e) { //如果GOTO参数不对，扣除青蛙能量
@@ -60,18 +61,20 @@ public class Gene {// NOSONAR
             return;
         }
 
-        if (GOTO == code) {
+        if (code == GOTO) {
             if (param < 0 || param >= animal.gene.size()) {//行号太大、太小都不行
                 animal.energy -= 300;
                 return;
             }
             cell.geneLine = param;
-        } else if (SPLIT_LIMIT == code) {//重定义细胞寿命
-            cell.splitLimit=param;
+        } else if (code == SPLIT_LIMIT) {//重定义细胞寿命
+            cell.splitLimit = param;
             cell.geneLine++;
-        }else if (SPLIT == code) { //执行细胞分裂
-            cell.splitLimit=param;
+        } else if (code == SPLIT) { //执行细胞分裂
             cell.geneLine++;
+            if(param<0 || param >63) //如果是分裂的话，param应该随机生成落在0~63之内，每个二进制的一个位代表1个分裂方向，共有上下左右前后6个方向
+                return;
+            cell.cloneAtDirects(animal, param);//cell在参数代表的方向进行分裂克隆，可以同时在多个方向克隆出多个细胞
         }
     }
 
