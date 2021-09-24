@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cell;
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.gene.Gene;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -79,7 +80,20 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    public void initAnimal() { // 初始化animal,通常只是调用每个organ的init方法 
+    private static final int CELLS_LIMIT=1000;
+    
+    public void initAnimal() { // 初始化animal,生成脑细胞是在这一步 
+        Cell cell = new Cell(Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 0); //第一个细胞生成于脑的中心，它的基因语言指针指向起始0行位置
+        this.cells.add(cell);
+        int oldCellsQTY;
+        int newCellsQTY;
+        do {
+            oldCellsQTY = this.cells.size();
+            Gene.run(this, cell); //重要，开始调用基因这门语言，启动细胞的分裂,这个分裂是在一个时间周期内完成，以后要改进为利用图形卡的加速功能并发执行以加快分裂速度
+            newCellsQTY = this.cells.size();
+        } while (oldCellsQTY != newCellsQTY || newCellsQTY > CELLS_LIMIT); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
+        if (newCellsQTY > CELLS_LIMIT) //如果细胞分裂到达极限值CELLS_LIMIT才停止，说明很可能有无限循环分裂的癌细胞存在，这个生物应扣分淘汰掉
+            this.energy -= 5000;
     }
  
 

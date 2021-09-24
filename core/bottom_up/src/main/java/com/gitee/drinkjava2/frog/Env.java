@@ -41,9 +41,9 @@ public class Env extends JPanel {
 	public static final int SCREEN = 1; // 分几屏测完
 
 	/** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，但不采用3维数组，而是在animal中用一个List<Cell>来存贮表示,这样可以避免内存占用太大
-	public static final int BRAIN_XSIZE = 1000; // 脑在X方向长度
-	public static final int BRAIN_YSIZE = 1000; // 脑在Y方向长度
-	public static final int BRAIN_ZSIZE = 1000; // 脑在Z方向长度
+	public static final int BRAIN_XSIZE = 200; // 脑在X方向长度
+	public static final int BRAIN_YSIZE = 200; // 脑在Y方向长度
+	public static final int BRAIN_ZSIZE = 200; // 脑在Z方向长度
 
 	/** SHOW first animal's brain structure */
 	public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -178,7 +178,6 @@ public class Env extends JPanel {
 			for (int j = 0; j < loop; j++) {
 				Egg zygote = new Egg(frog_eggs.get(i), frog_eggs.get(RandomUtils.nextInt(frog_eggs.size())));
 				Frog f = new Frog(zygote);
-				f.gene.add("test");
 				frogs.add(f);
 				f.no = frogs.size();
 			}
@@ -247,7 +246,7 @@ public class Env extends JPanel {
 		long time0;// 计时用
 		int round = 1;
 		do {
-			rebuildFrogs();
+			rebuildFrogs(); // 根据蛙蛋重新孵化出蛙
 			for (current_screen = 0; current_screen < SCREEN; current_screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
 				Env.food_ated = 0; // 先清0吃食物数
 				Env.frog_ated = 0;// 先清0吃蛙数
@@ -260,8 +259,10 @@ public class Env extends JPanel {
 				    //System.out.println(frogs.get(0).gene);
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
+					System.out.println(f.cells.size());
 				}
 
+				
 				for (step = 0; step < STEPS_PER_ROUND; step++) {
 					for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
 						thing.active();
@@ -308,7 +309,7 @@ public class Env extends JPanel {
 				checkIfPause();
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
-					f.cells = null; // 清空frog脑细胞所占用的内存
+					f.cells.clear(); // 清空frog脑细胞所占用的内存
 				}
 				StringBuilder sb = new StringBuilder("Round: ");
 				sb.append(round).append(", screen:").append(current_screen).append(", speed:").append(Env.SHOW_SPEED)

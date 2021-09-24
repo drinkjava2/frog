@@ -149,7 +149,7 @@ public class BrainPicture extends JPanel {
     public void drawCell(Cell c) {//画出细胞
         if (c == null)
             return;
-        drawPoint(c.x, c.y, c.z, scale);
+        drawPoint(c.x, c.y, c.z, scale*5);
     }
 
 	/*-
@@ -301,12 +301,10 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
 
-		for (Cell cell : a.cells) {
-			if (cell != null && cell.energy > 20) {
-				setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度表示活跃度 
-					drawCell(cell);
-			}
-		}
+        for (Cell cell : a.cells) {
+            setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度表示活跃度 
+            drawCell(cell);
+        }
 
 		g.setColor(Color.black);
 		if (note != null) // 全局注释

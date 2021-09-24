@@ -14,7 +14,7 @@ import com.gitee.drinkjava2.frog.Animal;
 
 /**
  * Cell is the smallest unit of brain  
- * Cell是脑的最小单元， cell的行为由它的器官类型决定
+ * Cell是脑的最小单元， cell的行为由它的触突参数决定。脑的功能由cell的位置和cell的行为决定
  *
 
 器官位置、方向、厚度、脑细胞分布直径、细胞发散或聚焦角度
@@ -49,31 +49,31 @@ public class Cell { //cell数量非常庞大，不需要序列化
         this.splitLimit = splitLimit;
     }
 
-    public void cloneAtDirects(Animal animal, int direction) {//在多个方向上分裂克隆
+    public void split(Animal animal, int direction) {//细胞在一个或多个方向上分裂克隆，有6（对应立方体的6个面)、7(包含本身点)、27(包含立方体侧边、项点方向)等选项，这里先采用6个方向的方案
         int xx = x;
         int yy = y;
         int zz = z;
         if ((direction & 1) > 0) {//上
             zz++;
-            clone(animal, xx, yy, zz);
+            clone(animal, xx, yy, zz); //简单在指定隔壁位置克隆，暂不采用推开其它细胞的高运算量方案，这个要等图型卡加速用上后再考虑推开其它细胞
         }
-        if ((direction & 1) > 0) {//下
+        if ((direction & 0b10) > 0) {//下
             zz--;
             clone(animal, xx, yy, zz);
         }
-        if ((direction & 1) > 0) {//左
+        if ((direction & 0b100) > 0) {//左
             xx--;
             clone(animal, xx, yy, zz);
         }
-        if ((direction & 1) > 0) {//右
+        if ((direction & 0b1000) > 0) {//右
             xx++;
             clone(animal, xx, yy, zz);
         }
-        if ((direction & 1) > 0) {//前
+        if ((direction & 0b10000) > 0) {//前
             yy--;
             clone(animal, xx, yy, zz);
         }
-        if ((direction & 1) > 0) {//后
+        if ((direction & 0b100000) > 0) {//后
             yy++;
             clone(animal, xx, yy, zz);
         }
