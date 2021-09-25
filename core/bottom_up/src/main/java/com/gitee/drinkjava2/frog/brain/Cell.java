@@ -77,6 +77,7 @@ public class Cell { //cell数量非常庞大，不需要序列化
             yy++;
             clone(animal, xx, yy, zz);
         }
+        animal.energy+=20;
     }
 
     public void clone(Animal animal, int xx, int yy, int zz) {//在指定坐标克隆当前细胞

@@ -37,7 +37,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
-    transient public ArrayList<String> gene; // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同。
+    transient public ArrayList<String> gene = new ArrayList<>(); // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同
 
     static {
         try {
@@ -48,7 +48,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     /** brain cells */
-    public List<Cell> cells = new ArrayList<>(); 
+    public List<Cell> cells = new ArrayList<>();
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -57,12 +57,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
 
-    public int animalMaterial=Material.FROG_TAG;
-    public Image animalImage= Animal.FROG_IMAGE;
-    
+    public int animalMaterial = Material.FROG_TAG;
+    public Image animalImage = Animal.FROG_IMAGE;
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
-        this.gene = egg.gene; //重要，保存一个指针指向孵出它的蛋，蛋里有基因序列
+        this.gene.addAll(egg.gene); //动物的基因是蛋的基因的拷贝
+        Gene.mutation(this); //但是有小概率基因突变
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             x = RandomUtils.nextInt(Env.ENV_WIDTH);
             y = RandomUtils.nextInt(Env.ENV_HEIGHT);
@@ -80,8 +80,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    private static final int CELLS_LIMIT=1000;
-    
+    private static final int CELLS_LIMIT = 50;
+
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步 
         Cell cell = new Cell(Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 0); //第一个细胞生成于脑的中心，它的基因语言指针指向起始0行位置
         this.cells.add(cell);
@@ -93,9 +93,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             newCellsQTY = this.cells.size();
         } while (oldCellsQTY != newCellsQTY || newCellsQTY > CELLS_LIMIT); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
         if (newCellsQTY > CELLS_LIMIT) //如果细胞分裂到达极限值CELLS_LIMIT才停止，说明很可能有无限循环分裂的癌细胞存在，这个生物应扣分淘汰掉
-            this.energy -= 5000;
+            this.energy = Integer.MIN_VALUE;
     }
- 
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
         // 如果能量小于0、出界、与非食物的点重合则判死
@@ -125,10 +124,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         this.alive = false;
         Env.clearMaterial(x, y, animalMaterial);
     }
-  
+
     /** Check if x,y,z out of animal's brain range */
     public boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
-  
+
 }

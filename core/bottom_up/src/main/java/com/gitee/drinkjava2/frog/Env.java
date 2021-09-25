@@ -15,6 +15,7 @@ import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
+import com.gitee.drinkjava2.frog.util.Systemout;
 
 /**
  * Env is the living space of frog. draw it on JPanel
@@ -41,9 +42,9 @@ public class Env extends JPanel {
 	public static final int SCREEN = 1; // 分几屏测完
 
 	/** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，但不采用3维数组，而是在animal中用一个List<Cell>来存贮表示,这样可以避免内存占用太大
-	public static final int BRAIN_XSIZE = 200; // 脑在X方向长度
-	public static final int BRAIN_YSIZE = 200; // 脑在Y方向长度
-	public static final int BRAIN_ZSIZE = 200; // 脑在Z方向长度
+	public static final int BRAIN_XSIZE = 20; // 脑在X方向长度
+	public static final int BRAIN_YSIZE = 20; // 脑在Y方向长度
+	public static final int BRAIN_ZSIZE = 20; // 脑在Z方向长度
 
 	/** SHOW first animal's brain structure */
 	public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -239,30 +240,36 @@ public class Env extends JPanel {
 		return frogs.get(current_screen * FROG_PER_SCREEN);
 	}
 
+	public static long lastTime=System.currentTimeMillis();
 	public void run() {
+	    Systemout.println(111);
 		FrogEggTool.loadFrogEggs(); // 从磁盘加载蛙egg，或新建一批egg
+		  Systemout.println(222);
 		Image buffImg = createImage(this.getWidth(), this.getHeight());
+		  Systemout.println(333);
 		Graphics g = buffImg.getGraphics();
 		long time0;// 计时用
 		int round = 1;
+		Systemout.println(1);
 		do {
-			rebuildFrogs(); // 根据蛙蛋重新孵化出蛙
+		    Systemout.println(2);
+			rebuildFrogs(); // 根据蛙蛋重新孵化出蛙，注意基因变异有可能在孵化过程中发生
+			Systemout.println(3);
 			for (current_screen = 0; current_screen < SCREEN; current_screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
 				Env.food_ated = 0; // 先清0吃食物数
 				Env.frog_ated = 0;// 先清0吃蛙数
 				time0 = System.currentTimeMillis();
 				for (EnvObject thing : things) // 创建食物、陷阱等物体
 					thing.build();
+				Systemout.println(4);
 				boolean allDead = false;
-
-				for (int j = 0; j < FROG_PER_SCREEN; j++) {
-				    //System.out.println(frogs.get(0).gene);
+				for (int j = 0; j < FROG_PER_SCREEN; j++) { 
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
-					System.out.println(f.cells.size());
+					Systemout.println(j+"= cellsQTY:"+f.cells.size() + ", geneQTY:"+f.gene.size());
+		               System.out.println(System.currentTimeMillis()-lastTime);
 				}
-
-				
+				Systemout.println(5);
 				for (step = 0; step < STEPS_PER_ROUND; step++) {
 					for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
 						thing.active();
@@ -303,7 +310,9 @@ public class Env extends JPanel {
 						Application.brainPic.drawBrainPicture();
 					Graphics g2 = this.getGraphics();
 					g2.drawImage(buffImg, 0, 0, this);
+					Systemout.println(6);
 				}
+				Systemout.println(7);
 				if (SHOW_FIRST_ANIMAL_BRAIN)
 					Application.brainPic.drawBrainPicture();
 				checkIfPause();
@@ -311,11 +320,13 @@ public class Env extends JPanel {
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
 					f.cells.clear(); // 清空frog脑细胞所占用的内存
 				}
+				Systemout.println(8);
 				StringBuilder sb = new StringBuilder("Round: ");
 				sb.append(round).append(", screen:").append(current_screen).append(", speed:").append(Env.SHOW_SPEED)
 						.append(", ").append(", 用时: ").append(System.currentTimeMillis() - time0).append("ms, ");
 				sb.append(foodAtedCount());
 
+				Systemout.println(9);
 				Application.mainFrame.setTitle(sb.toString());
 				// for (EnvObject thing : things)// 去除食物、陷阱等物体
 				// thing.destory();
@@ -323,9 +334,12 @@ public class Env extends JPanel {
 					for (int j = 0; j < ENV_HEIGHT; j++)
 						bricks[i][j] = 0;
 				}
+				Systemout.println(10);
 			}
 			round++;
-			FrogEggTool.layEggs(); 
+			Systemout.println(11);
+			FrogEggTool.layEggs(); //能量高的青蛙才有权下蛋
+			Systemout.println(12);
 		} while (true);
 	}
 

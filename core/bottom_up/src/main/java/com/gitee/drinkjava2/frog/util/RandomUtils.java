@@ -26,6 +26,8 @@ public class RandomUtils {
     private static final Random rand = new Random();
 
     public static int nextInt(int i) {
+        if(i==0)
+            return 0;
         return rand.nextInt(i);
     }
 

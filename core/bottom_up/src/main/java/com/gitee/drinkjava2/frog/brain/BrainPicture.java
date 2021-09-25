@@ -149,7 +149,7 @@ public class BrainPicture extends JPanel {
     public void drawCell(Cell c) {//画出细胞
         if (c == null)
             return;
-        drawPoint(c.x, c.y, c.z, scale*5);
+        drawPoint(c.x, c.y, c.z, scale/10);
     }
 
 	/*-
