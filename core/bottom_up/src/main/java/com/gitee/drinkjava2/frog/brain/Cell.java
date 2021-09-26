@@ -31,7 +31,7 @@ public class Cell { //cell数量非常庞大，不需要序列化
     public int y;
     public int z;
 
-    public int geneLine; //指向青蛙基因单例中的行号。每个细胞的基因都相同，但是不同的是在基因链中的行号
+    public int geneIndex; //指向青蛙基因单例中的行号。每个细胞的基因都相同，但是不同的是在基因链中的行号
 
     public int splitCount; //从受精卵开始分裂到当前细胞时的分裂次数
 
@@ -40,11 +40,11 @@ public class Cell { //cell数量非常庞大，不需要序列化
     // energy of cell
     public float energy = 0; // 每个细胞当前的能量值
 
-    public Cell(int x, int y, int z, int geneLine, int splitCount, int splitLimit) {
+    public Cell(int x, int y, int z, int geneIndex, int splitCount, int splitLimit) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.geneLine = geneLine;
+        this.geneIndex = geneIndex;
         this.splitCount = splitCount;
         this.splitLimit = splitLimit;
     }
@@ -77,13 +77,12 @@ public class Cell { //cell数量非常庞大，不需要序列化
             yy++;
             clone(animal, xx, yy, zz);
         }
-        animal.energy+=20;
     }
 
     public void clone(Animal animal, int xx, int yy, int zz) {//在指定坐标克隆当前细胞
         if (animal.outBrainRange(xx, yy, zz))
             return;
-        Cell cell = new Cell(xx, yy, zz, geneLine, splitCount, splitLimit);
+        Cell cell = new Cell(xx, yy, zz, geneIndex, splitCount, splitLimit);
         animal.cells.add(cell);
     }
 
