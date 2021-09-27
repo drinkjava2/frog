@@ -20,6 +20,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cell;
+import com.gitee.drinkjava2.frog.brain.Cell3D;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.gene.Gene;
 import com.gitee.drinkjava2.frog.objects.Material;
@@ -49,6 +50,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     /** brain cells */
     public List<Cell> cells = new ArrayList<>();
+
+    public Cell3D cell3D = new Cell3D();
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -122,7 +125,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步 
-        Cell cell = new Cell(Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 0); //第一个细胞生成于脑的中心，它的基因语言指针指向起始0行位置
+        Cell cell = new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 0); //第一个细胞生成于脑的中心，它的基因语言指针指向起始0行位置
         this.cells.add(cell);
         int oldCellsQTY;
         int newCellsQTY;
@@ -165,7 +168,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     /** Check if x,y,z out of animal's brain range */
-    public boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
+    public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
 

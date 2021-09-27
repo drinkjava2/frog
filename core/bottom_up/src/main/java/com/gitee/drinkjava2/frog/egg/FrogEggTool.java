@@ -54,9 +54,9 @@ public class FrogEggTool {
 			so.writeObject(Env.frog_eggs);
 			so.close();
 			System.out.print("Fist frog energy=" + first.energy);
-			System.out.println(", Last frog energy=" + last.energy);
+			System.out.print(", Last frog energy=" + last.energy);
 			System.out.println(
-					"Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
+					". Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
 		} catch (IOException e) {
 			System.out.println(e);
 		}

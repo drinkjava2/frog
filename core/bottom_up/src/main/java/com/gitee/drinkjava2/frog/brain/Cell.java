@@ -40,13 +40,16 @@ public class Cell { //cell数量非常庞大，不需要序列化
     // energy of cell
     public float energy = 0; // 每个细胞当前的能量值
 
-    public Cell(int x, int y, int z, int geneIndex, int splitCount, int splitLimit) {
+    public Cell(Animal animal, int x, int y, int z, int geneIndex, int splitCount, int splitLimit) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.geneIndex = geneIndex;
         this.splitCount = splitCount;
         this.splitLimit = splitLimit;
+        animal.cells.add(this);
+        animal.cell3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
+        animal.normalAward(); //TODO: 调试用，待删
     }
 
     public void split(Animal animal, int direction) {//细胞在一个或多个方向上分裂克隆，有6（对应立方体的6个面)、7(包含本身点)、27(包含立方体侧边、项点方向)等选项，这里先采用6个方向的方案
@@ -80,10 +83,9 @@ public class Cell { //cell数量非常庞大，不需要序列化
     }
 
     public void clone(Animal animal, int xx, int yy, int zz) {//在指定坐标克隆当前细胞
-        if (animal.outBrainRange(xx, yy, zz))
+        if (Animal.outBrainRange(xx, yy, zz))
             return;
-        Cell cell = new Cell(xx, yy, zz, geneIndex, splitCount, splitLimit);
-        animal.cells.add(cell);
+        new Cell(animal, xx, yy, zz, geneIndex, splitCount, splitLimit); 
     }
 
     public void act() {

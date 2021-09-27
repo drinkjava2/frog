@@ -41,7 +41,7 @@ public class Env extends JPanel {
 
 	public static final int SCREEN = 1; // 分几屏测完
 
-	/** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，但不采用3维数组，而是在animal中用一个List<Cell>来存贮表示,这样可以避免内存占用太大
+	/** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用一个List<Cell>来存贮表示的同时，也用一个Cell3D动态数组来表示
 	public static final int BRAIN_XSIZE = 20; // 脑在X方向长度
 	public static final int BRAIN_YSIZE = 20; // 脑在Y方向长度
 	public static final int BRAIN_ZSIZE = 20; // 脑在Z方向长度
