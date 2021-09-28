@@ -9,13 +9,14 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import com.gitee.drinkjava2.frog.brain.Cells3D;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
+import com.gitee.drinkjava2.frog.gene.Gene;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
+import com.gitee.drinkjava2.frog.util.Systemout;
 
 /**
  * Env is the living space of frog. draw it on JPanel
@@ -42,11 +43,11 @@ public class Env extends JPanel {
 	public static final int SCREEN = 1; // 分几屏测完
 
 	/** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用一个List<Cell>来存贮表示的同时，也用一个Cell3D动态数组来表示
-	public static final int BRAIN_XSIZE = 20; // 脑在X方向长度
-	public static final int BRAIN_YSIZE = 20; // 脑在Y方向长度
-	public static final int BRAIN_ZSIZE = 20; // 脑在Z方向长度
+	public static final int BRAIN_XSIZE = 40; // 脑在X方向长度
+	public static final int BRAIN_YSIZE = 40; // 脑在Y方向长度
+	public static final int BRAIN_ZSIZE = 40; // 脑在Z方向长度
 	
-    public static final int CELLS_MAX_QTY = 100; //脑细胞总数不能超过这个值
+    public static final int CELLS_MAX_QTY = 200; //脑细胞总数不能超过这个值
 
 	/** SHOW first animal's brain structure */
 	public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -307,6 +308,11 @@ public class Env extends JPanel {
 				checkIfPause();
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
+                    if (j == 0) {
+                        Systemout.println("======== cells: "+f.cells.size()+" =========");
+                        Gene.printGene(f);
+                    }
+					
 					f.cells=null; // 清空frog脑细胞所占用的内存
 					f.cells3D=null;
 				}

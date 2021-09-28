@@ -22,20 +22,22 @@ import com.gitee.drinkjava2.frog.Env;
  * @since 1.0
  */
 public class Cells3D {
+    private Animal animal;
     public int[][][] cells = new int[Env.BRAIN_XSIZE][][]; // 为了节约内存，先只初始化三维数组的x维，另两维用到时再分配
 
-    public Cells3D() { 
+    public Cells3D(Animal animal) { 
+        this.animal=animal;
     } 
 
     /** check if cell exist at position (x,y,z) */
-    public boolean ifExistCell(Animal animal, int x, int y, int z) {// 返回指定脑坐标的cell ，如果不存在，返回null
+    public boolean existCell(int x, int y, int z) {// 返回指定脑坐标的cell ，如果不存在，返回null
         if (cells[x] == null || cells[x][y] == null)
             return false;
         return cells[x][y][z]>0; //arrayIndex为0时是空，为1时表示animal.cells[0];
     }
     
     /** Get a cell at position (x,y,z), if not exist, return null */
-    public Cell getCell(Animal animal, int x, int y, int z) {// 返回指定脑坐标的cell ，如果不存在，返回null
+    public Cell getCell(int x, int y, int z) {// 返回指定脑坐标的cell ，如果不存在，返回null
         if (cells[x] == null || cells[x][y] == null)
             return null;
         int arrayIndex=cells[x][y][z]; //arrayIndex为0时是空，为1时表示animal.cells[0];

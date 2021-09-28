@@ -51,7 +51,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells */
     public List<Cell> cells = new ArrayList<>();
 
-    public Cells3D cells3D = new Cells3D();
+    public Cells3D cells3D = new Cells3D(this);
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -139,7 +139,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
         // 如果能量小于0、出界、与非食物的点重合则判死
         if (!alive) {
-            energy =MIN_ENERGY_LIMIT; // 死掉的青蛙也要消耗能量，确保淘汰出局
+            energy = MIN_ENERGY_LIMIT; // 死掉的青蛙也要消耗能量，确保淘汰出局
             return false;
         }
         if (energy < 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {

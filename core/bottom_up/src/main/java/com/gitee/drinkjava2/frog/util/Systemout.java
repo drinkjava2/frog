@@ -23,7 +23,7 @@ public class Systemout {
             System.out.print(obj);
     }
 
-    public static void printdln(Object obj) {
+    public static void println(Object obj) {
         if (allowPrint)
             System.out.println(obj);
     }

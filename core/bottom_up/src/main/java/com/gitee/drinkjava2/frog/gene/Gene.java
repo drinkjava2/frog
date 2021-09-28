@@ -84,7 +84,7 @@ public class Gene {// NOSONAR
 
         if (code == GOTO) {
             if (param < 0 || param >= animal.gene.size()) {//行号太大、太小都不行
-                animal.bigPenalty();
+                animal.normalPenalty();
                 return;
             }
             cell.geneIndex = param;
@@ -93,6 +93,7 @@ public class Gene {// NOSONAR
             cell.geneIndex++;
         } else if (code == SPLIT) { //执行细胞分裂
             cell.geneIndex++;
+            cell.splitCount++;
             if (param < 0 || param > 63) //如果是分裂的话，param应该随机生成落在0~63之内，每个二进制的一个位代表1个分裂方向，共有上下左右前后6个方向
                 return;
             cell.split(animal, param);//cell在参数代表的方向进行分裂克隆，可以同时在多个方向克隆出多个细胞
