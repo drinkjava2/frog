@@ -48,7 +48,7 @@ public class Cell { //cell数量非常庞大，不需要序列化
         this.splitCount = splitCount;
         this.splitLimit = splitLimit;
         animal.cells.add(this);
-        animal.cell3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
+        animal.cells3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
         animal.normalAward(); //TODO: 调试用，待删
     }
 

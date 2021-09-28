@@ -140,9 +140,9 @@ public class Gene {// NOSONAR
             genes.addAll(RandomUtils.nextInt(genes.size()), genes.subList(0, RandomUtils.nextInt(genes.size() / 3)));
         }
 
-        if (genes.size() > 0 && RandomUtils.percent(1)) { //批量删除，一次删除不超过基因长度的1/5
-            genes.subList(0, RandomUtils.nextInt(genes.size() / 5)).clear();
-        }
+//        if (genes.size() > 0 && RandomUtils.percent(1)) { //批量删除，一次删除不超过基因长度的1/5
+//            genes.subList(0, RandomUtils.nextInt(genes.size() / 5)).clear();
+//        }
     }
 
 }

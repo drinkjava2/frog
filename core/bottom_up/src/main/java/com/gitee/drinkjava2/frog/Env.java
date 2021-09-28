@@ -9,13 +9,13 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import com.gitee.drinkjava2.frog.brain.Cells3D;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
-import com.gitee.drinkjava2.frog.util.Systemout;
 
 /**
  * Env is the living space of frog. draw it on JPanel
@@ -45,6 +45,8 @@ public class Env extends JPanel {
 	public static final int BRAIN_XSIZE = 20; // 脑在X方向长度
 	public static final int BRAIN_YSIZE = 20; // 脑在Y方向长度
 	public static final int BRAIN_ZSIZE = 20; // 脑在Z方向长度
+	
+    public static final int CELLS_MAX_QTY = 100; //脑细胞总数不能超过这个值
 
 	/** SHOW first animal's brain structure */
 	public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -305,7 +307,8 @@ public class Env extends JPanel {
 				checkIfPause();
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
-					f.cells.clear(); // 清空frog脑细胞所占用的内存
+					f.cells=null; // 清空frog脑细胞所占用的内存
+					f.cells3D=null;
 				}
 				StringBuilder sb = new StringBuilder("Round: ");
 				sb.append(round).append(", screen:").append(current_screen).append(", speed:").append(Env.SHOW_SPEED)

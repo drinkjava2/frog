@@ -20,7 +20,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cell;
-import com.gitee.drinkjava2.frog.brain.Cell3D;
+import com.gitee.drinkjava2.frog.brain.Cells3D;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.gene.Gene;
 import com.gitee.drinkjava2.frog.objects.Material;
@@ -51,7 +51,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells */
     public List<Cell> cells = new ArrayList<>();
 
-    public Cell3D cell3D = new Cell3D();
+    public Cells3D cells3D = new Cells3D();
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -82,8 +82,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 this.y = Env.ENV_HEIGHT - 1;
         }
     }
-
-    private static final int CELLS_LIMIT = 50;
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 20000;
     private static final int MAX_ENERGY_LIMIT = Integer.MAX_VALUE - 20000;
@@ -133,19 +131,19 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             oldCellsQTY = this.cells.size();
             Gene.run(this, cell); //重要，开始调用基因这门语言，启动细胞的分裂,这个分裂是在一个时间周期内完成，以后要改进为利用图形卡的加速功能并发执行以加快分裂速度
             newCellsQTY = this.cells.size();
-        } while (oldCellsQTY != newCellsQTY && newCellsQTY < CELLS_LIMIT); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
-        if (newCellsQTY > CELLS_LIMIT) //如果细胞分裂到达极限值CELLS_LIMIT才停止，说明很可能有无限循环分裂的癌细胞存在，这个生物应扣分淘汰掉
-            this.energy = Integer.MIN_VALUE;
+        } while (oldCellsQTY != newCellsQTY && newCellsQTY < Env.CELLS_MAX_QTY); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
+        if (newCellsQTY > Env.CELLS_MAX_QTY) //如果细胞分裂到达极限值CELLS_LIMIT才停止，说明很可能有无限循环分裂的癌细胞存在，这个生物应扣分淘汰掉
+            this.energy = MIN_ENERGY_LIMIT;
     }
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
         // 如果能量小于0、出界、与非食物的点重合则判死
         if (!alive) {
-            energy -= 1000; // 死掉的青蛙也要消耗能量，确保淘汰出局
+            energy =MIN_ENERGY_LIMIT; // 死掉的青蛙也要消耗能量，确保淘汰出局
             return false;
         }
         if (energy < 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
-            energy -= 1000;
+            energy = MIN_ENERGY_LIMIT;
             kill();
             return false;
         }

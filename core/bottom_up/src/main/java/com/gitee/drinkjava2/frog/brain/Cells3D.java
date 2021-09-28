@@ -14,17 +14,17 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
 
 /**
- * Cell3D is 3D array of cells  
+ * Cells3D is 3D array of cells  
  * 
- * Cell3D 是一个三维动态数组，把animal中的cells list用三维数组的方式动态存放，以方便快速定位三维空间中的细胞，同时也不预占用大量内存
+ * Cells3D 是一个三维动态数组，把animal中的cells list用三维数组的方式动态存放，以方便快速定位三维空间中的细胞
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Cell3D {
+public class Cells3D {
     public int[][][] cells = new int[Env.BRAIN_XSIZE][][]; // 为了节约内存，先只初始化三维数组的x维，另两维用到时再分配
 
-    public Cell3D() { 
+    public Cells3D() { 
     } 
 
     /** check if cell exist at position (x,y,z) */
