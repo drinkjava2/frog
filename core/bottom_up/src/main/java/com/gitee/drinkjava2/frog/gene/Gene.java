@@ -44,7 +44,7 @@ public class Gene {// NOSONAR
     public static String[] TEXT = new String[LAST_KEYWORD + 1]; //这里存放关键字的文字解释，供打印输出用
     static {
         TEXT[GOTO] = "GOTO";
-        //TEXT[END] = "END";
+        TEXT[END] = "END";
         TEXT[SPLIT] = "SPLIT";
         TEXT[SPLIT_LIMIT] = "SPLIT_LIMIT";
         TEXT[IF] = "IF";
@@ -120,20 +120,20 @@ public class Gene {// NOSONAR
     public static void mutation(Animal animal) {//基因随机突变，分为：新增、删除、拷贝、改变、参数改变等情况 
         List<String> genes = animal.gene;
 
-        if (RandomUtils.percent(5)) //新增，注：5这个魔数以后要写在基因里,成为基因的一部分，下同 
+        if (RandomUtils.percent(10)) //新增，注：5这个魔数以后要写在基因里,成为基因的一部分，下同 
             genes.add(RandomUtils.nextInt(genes.size()), randomGene(animal));
 
         if (genes.size() > 0 && RandomUtils.percent(3)) //删除
             genes.remove(RandomUtils.nextInt(genes.size()));
 
-        if (genes.size() > 0 && RandomUtils.percent(3)) //改变
+        if (genes.size() > 0 && RandomUtils.percent(5)) //改变
             genes.set(RandomUtils.nextInt(genes.size()), randomGene(animal));
 
         if (genes.size() > 0 && RandomUtils.percent(5)) { //改变参数
             int index = RandomUtils.nextInt(genes.size());
             String gene = genes.get(index);
             int code = Integer.parseInt(gene.substring(0, 2));
-            int param = randomParam(animal, code);
+            int param = randomParam(animal, code); //参数是与code相关的，不同的code其合理参数范围是不一样的
             genes.set(index, "" + code + param);
         }
 
