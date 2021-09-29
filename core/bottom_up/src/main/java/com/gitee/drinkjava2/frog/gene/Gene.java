@@ -44,7 +44,7 @@ public class Gene {// NOSONAR
     public static String[] TEXT = new String[LAST_KEYWORD + 1]; //这里存放关键字的文字解释，供打印输出用
     static {
         TEXT[GOTO] = "GOTO";
-        TEXT[END] = "END";
+        //TEXT[END] = "END";
         TEXT[SPLIT] = "SPLIT";
         TEXT[SPLIT_LIMIT] = "SPLIT_LIMIT";
         TEXT[IF] = "IF";
@@ -62,10 +62,10 @@ public class Gene {// NOSONAR
             System.out.println(i++ + " " + TEXT[code] + " " + paramStr);
         }
     }
- 
-    //execute gene language 
+
+    //execute gene language for one cell only 
     public static void run(Animal animal, Cell cell) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
-        if (cell.geneIndex < 0 || cell.geneIndex >= animal.gene.size())
+        if (cell.geneIndex < 0 || cell.geneIndex >= animal.gene.size() || cell.splitCount >= cell.splitLimit)
             return;
 
         String oneLine = animal.gene.get(cell.geneIndex);
@@ -105,7 +105,7 @@ public class Gene {// NOSONAR
         if (code == GOTO) {
             param = RandomUtils.nextInt(animal.gene.size());
         } else if (code == SPLIT_LIMIT) {//细胞寿命
-            param = RandomUtils.nextInt(60); //注： 细胞寿命60这个参数以后要写在基因里
+            param = RandomUtils.nextInt(2) + 1; //注： 细胞寿命这个参数以后要写在基因里
         } else if (code == SPLIT) { //细胞分裂
             param = RandomUtils.nextInt(64);
         }
@@ -137,13 +137,13 @@ public class Gene {// NOSONAR
             genes.set(index, "" + code + param);
         }
 
-        if (genes.size() > 0 && RandomUtils.percent(1)) { //批量拷贝,一次拷贝不超过基因长度的1/3
+        if (genes.size() > 0 && RandomUtils.percent(2)) { //批量拷贝,一次拷贝不超过基因长度的1/3
             genes.addAll(RandomUtils.nextInt(genes.size()), genes.subList(0, RandomUtils.nextInt(genes.size() / 3)));
         }
 
-//        if (genes.size() > 0 && RandomUtils.percent(1)) { //批量删除，一次删除不超过基因长度的1/5
-//            genes.subList(0, RandomUtils.nextInt(genes.size() / 5)).clear();
-//        }
+        if (genes.size() > 0 && RandomUtils.percent(2)) { //批量删除，一次删除不超过基因长度的1/3
+            genes.subList(0, RandomUtils.nextInt(genes.size() / 3)).clear();
+        }
     }
 
 }

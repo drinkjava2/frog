@@ -47,7 +47,7 @@ public class Env extends JPanel {
 	public static final int BRAIN_YSIZE = 40; // 脑在Y方向长度
 	public static final int BRAIN_ZSIZE = 40; // 脑在Z方向长度
 	
-    public static final int CELLS_MAX_QTY = 200; //脑细胞总数不能超过这个值
+    public static final int CELLS_MAX_QTY = 2000; //脑细胞总数不能超过这个值
 
 	/** SHOW first animal's brain structure */
 	public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
