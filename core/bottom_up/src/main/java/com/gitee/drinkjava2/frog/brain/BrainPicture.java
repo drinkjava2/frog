@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.AwardPenalty.BrainShapeAwardPenalty;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
 
 /**
@@ -244,6 +245,36 @@ public class BrainPicture extends JPanel {
 				round(r * scale));
 	}
 
+	/** 画一个圆 */
+	   public void drawCircle(float px1, float py1, float pz1, float r) {//这个方法实际和上面的一样的，只是改成了drawOval
+	        double x1 = px1 - Env.BRAIN_XSIZE / 2;
+	        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+	        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+	        x1 = x1 * scale;
+	        y1 = y1 * scale;
+	        z1 = z1 * scale;
+	        double x, y, z;
+	        y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
+	        z = y1 * sin(xAngle) + z1 * cos(xAngle);
+	        y1 = y;
+	        z1 = z;
+
+	        x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
+	        // z = z1 * cos(yAngle) - x1 * sin(yAngle);
+	        x1 = x;
+	        // z1 = z;
+
+	        x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
+	        y = x1 * sin(zAngle) + y1 * cos(zAngle);
+	        x1 = x;
+	        y1 = y;
+
+	        g.setColor(picColor);
+	        g.drawOval(round((float) x1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset - r * scale * .5f),
+	                round((float) y1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - r * scale * .5f), round(r * scale),
+	                round(r * scale));
+	    }
+	   
 	public void drawText(float px1, float py1, float pz1, String text) {
 		drawText(px1, py1, pz1, text, 12);
 	}
@@ -301,8 +332,11 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
 
-        for (Cell cell : a.cells) {
-            setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度表示活跃度 
+		setPicColor(Color.gray);
+		BrainShapeAwardPenalty.showShapeInBrain(this);//这行显示脑形状这个模子
+		
+        for (Cell cell : a.cells) { //这里开始画出细胞
+            setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度级表示细胞能量大小 
             drawCell(cell);
         }
 

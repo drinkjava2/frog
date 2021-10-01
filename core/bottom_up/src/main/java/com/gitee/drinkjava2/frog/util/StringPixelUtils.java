@@ -68,9 +68,9 @@ public class StringPixelUtils {
 		return b;
 	}
 
-	/*- 这个是测试输出，平时不需要用 
+	//*- 这个是测试输出，平时不需要用 
 	public static void main(String[] args) {
-		byte[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "Test点阵输出");
+		byte[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "FROG");
 		int w = c.length;
 		int h = c[0].length;
 	
@@ -84,5 +84,5 @@ public class StringPixelUtils {
 			System.out.println();
 		}
 	}
-	*/
+	//*/
 }
