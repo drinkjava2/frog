@@ -77,14 +77,14 @@ public class Gene {// NOSONAR
         int param; //每行基因分为代码和参数两个部分，参数暂定为一个整数
         try {
             param = Integer.parseInt(oneLine.substring(2));
-        } catch (NumberFormatException e) { //除了END等关键字外，下面的code都需要参数, 如果参数不是整数扣除青蛙能量
-            animal.bigPenalty();
+        } catch (NumberFormatException e) { //除了END等关键字外，下面的code都需要参数, 如果参数不是整数杀死青蛙
+            animal.kill();
             return;
         }
 
         if (code == GOTO) {
             if (param < 0 || param >= animal.gene.size()) {//行号太大、太小都不行
-                animal.normalPenalty();
+                animal.kill();
                 return;
             }
             cell.geneIndex = param;

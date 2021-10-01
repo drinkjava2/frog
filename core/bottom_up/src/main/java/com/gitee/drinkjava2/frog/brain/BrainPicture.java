@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.AwardPenalty.BrainShapeAwardPenalty;
+import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
 
 /**
@@ -333,7 +333,7 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 0, 0, 1);
 
 		setPicColor(Color.gray);
-		BrainShapeAwardPenalty.showShapeInBrain(this);//这行显示脑形状这个模子
+		BrainShapeJudge.show(this);//这行显示脑形状这个模子
 		
         for (Cell cell : a.cells) { //这里开始画出细胞
             setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度级表示细胞能量大小 

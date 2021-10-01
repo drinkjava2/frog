@@ -87,9 +87,8 @@ public class Cell { //cell数量非常庞大，不需要序列化
         if (animal.cells3D.existCell(xx, yy, zz)) {
            // animal.tinyPenalty();
         } else {
-            //if(splitCount<splitLimit)
-            new Cell(animal, xx, yy, zz, geneIndex, splitCount, splitLimit);
-             animal.normalAward();
+            if(splitCount<splitLimit)
+                new Cell(animal, xx, yy, zz, geneIndex, splitCount, splitLimit);
         }
     }
 

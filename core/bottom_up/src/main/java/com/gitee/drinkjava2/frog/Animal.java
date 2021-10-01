@@ -86,41 +86,17 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 20000;
     private static final int MAX_ENERGY_LIMIT = Integer.MAX_VALUE - 20000;
 
-    public void bigAward() {//energy大小是环境对animal唯一的奖罚，也是animal唯一的下蛋竟争标准。调用下面6个方法来进行不同程度的奖罚
-        energy += 5000;
-        if (energy > MAX_ENERGY_LIMIT)
-            energy = MAX_ENERGY_LIMIT;
-    }
+    //energy大小是环境对animal唯一的奖罚，也是animal唯一的下蛋竟争标准。调用下面6个方法来进行不同程度的奖罚
 
-    public void normalAward() {
-        energy += 50;
-        if (energy > MAX_ENERGY_LIMIT)
-            energy = MAX_ENERGY_LIMIT;
-    }
-
-    public void tinyAward() {
-        energy++;
-        if (energy > MAX_ENERGY_LIMIT)
-            energy = MAX_ENERGY_LIMIT;
-    }
-
-    public void bigPenalty() {
-        energy -= 5000;
-        if (energy < MIN_ENERGY_LIMIT)
-            energy = MIN_ENERGY_LIMIT;
-    }
-
-    public void normalPenalty() {
-        energy -= 50;
-        if (energy < MIN_ENERGY_LIMIT)
-            energy = MIN_ENERGY_LIMIT;
-    }
-
-    public void tinyPenalty() {
-        energy--;
-        if (energy < MIN_ENERGY_LIMIT)
-            energy = MIN_ENERGY_LIMIT;
-    }
+    //@formatter:off 下面几行是重要的奖罚方法，会经常调整或注释掉，集中放在一起，不要格式化为多行
+    public void bigAward()      { energy += 5000;   if (energy > MAX_ENERGY_LIMIT)energy = MAX_ENERGY_LIMIT; }
+    public void normalAward()   { energy += 50;     if (energy > MAX_ENERGY_LIMIT)energy = MAX_ENERGY_LIMIT; }
+    public void tinyAward()     { energy += 1;      if (energy > MAX_ENERGY_LIMIT)energy = MAX_ENERGY_LIMIT; }
+    public void bigPenalty()    { energy -= 5000;   if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
+    public void normalPenalty() { energy -= 50;     if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
+    public void tinyPenalty()   { energy -= 1 ;     if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
+    public void kill() {this.alive = false; this.energy = MIN_ENERGY_LIMIT;  Env.clearMaterial(x, y, animalMaterial); } //kill是最大的惩罚
+    //@formatter:on
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步 
         this.cells.add(new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 20));//第一个细胞生成于脑的中心，它的基因指针指向起始0行
@@ -130,7 +106,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             oldCellsQTY = this.cells.size();
             for (int i = 0; i < oldCellsQTY; i++) {//重要，开始对每一个细胞调用基因这门语言，启动细胞的分裂,这个分裂是在一个时间周期内完成，以后要改进为利用图形卡的加速功能并发执行以加快分裂速度
                 Gene.run(this, cells.get(i));
-            }    
+            }
             newCellsQTY = this.cells.size();
         } while (oldCellsQTY != newCellsQTY && newCellsQTY < Env.CELLS_MAX_QTY); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
         if (newCellsQTY > Env.CELLS_MAX_QTY) //如果细胞分裂到达极限值CELLS_LIMIT才停止，说明很可能有无限循环分裂的癌细胞存在，这个生物应扣分淘汰掉
@@ -140,11 +116,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
         // 如果能量小于0、出界、与非食物的点重合则判死
         if (!alive) {
-            energy = MIN_ENERGY_LIMIT; // 死掉的青蛙也要消耗能量，确保淘汰出局
+            energy = MIN_ENERGY_LIMIT; // 死掉的青蛙确保淘汰出局
             return false;
         }
         if (energy < 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
-            energy = MIN_ENERGY_LIMIT;
             kill();
             return false;
         }
@@ -160,12 +135,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return;
         g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
-
-    public void kill() {// 杀死当前动物
-        this.alive = false;
-        Env.clearMaterial(x, y, animalMaterial);
-    }
-
+ 
     /** Check if x,y,z out of animal's brain range */
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
