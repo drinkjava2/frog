@@ -35,30 +35,49 @@ public class Gene {// NOSONAR
 
     public static final int FIRST_KEYWORD = 10;
     public static final int GOTO = nextKeyword(); //GOTO关键字=10
-    public static final int END = nextKeyword(); //结束执行=11
+    //    public static final int END = nextKeyword(); //结束执行=11
     public static final int SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向等
     public static final int SPLIT_LIMIT = nextKeyword(); //细胞分裂寿命,  0表示可以无限分裂    
-    public static final int IF = nextKeyword(); //IF关键字，暂没用到
+    //    public static final int IF = nextKeyword(); //IF关键字，暂没用到
     public static final int LAST_KEYWORD = index; //最后一个关键字
 
     public static String[] TEXT = new String[LAST_KEYWORD + 1]; //这里存放关键字的文字解释，供打印输出用
     static {
         TEXT[GOTO] = "GOTO";
-        TEXT[END] = "END";
+        //      TEXT[END] = "END";
         TEXT[SPLIT] = "SPLIT";
         TEXT[SPLIT_LIMIT] = "SPLIT_LIMIT";
-        TEXT[IF] = "IF";
+        //    TEXT[IF] = "IF";
     }
 
     static private int nextKeyword() {
         return ++index;
     }
 
+    static final StringBuilder sb = new StringBuilder(); //用来将方向转为可读的英文缩写
+
     public static void printGene(Animal animal) {
         int i = 0;
         for (String s : animal.gene) {
             int code = Integer.parseInt(s.substring(0, 2));
             String paramStr = s.substring(2);
+            if (code == SPLIT) {
+                sb.setLength(0);
+                int direction = Integer.parseInt(paramStr);
+                if ((direction & 1) > 0)
+                    sb.append("U");//上
+                if ((direction & 0b10) > 0)
+                    sb.append("D");//下
+                if ((direction & 0b100) > 0)
+                    sb.append("L");//左
+                if ((direction & 0b1000) > 0)
+                    sb.append("R");//右
+                if ((direction & 0b10000) > 0)
+                    sb.append("F");//前
+                if ((direction & 0b100000) > 0)
+                    sb.append("B");//后
+                paramStr = sb.toString();
+            }
             System.out.println(i++ + " " + TEXT[code] + " " + paramStr);
         }
     }
@@ -70,10 +89,10 @@ public class Gene {// NOSONAR
 
         String oneLine = animal.gene.get(cell.geneIndex);
         int code = Integer.parseInt(oneLine.substring(0, 2));
-        if (code == END) {//如果是END, 结束分裂，参数就不需要解读了
-            cell.geneIndex = -1;//改为-1,以后直接跳过这个细胞，不再执行上面的Integer.parseInt
-            return;
-        }
+        //        if (code == END) {//如果是END, 结束分裂，参数就不需要解读了
+        //            cell.geneIndex = -1;//改为-1,以后直接跳过这个细胞，不再执行上面的Integer.parseInt
+        //            return;
+        //        }
         int param; //每行基因分为代码和参数两个部分，参数暂定为一个整数
         try {
             param = Integer.parseInt(oneLine.substring(2));
@@ -105,9 +124,11 @@ public class Gene {// NOSONAR
         if (code == GOTO) {
             param = RandomUtils.nextInt(animal.gene.size());
         } else if (code == SPLIT_LIMIT) {//细胞寿命
-            param = RandomUtils.nextInt(2) + 1; //注： 细胞寿命这个参数以后要写在基因里
-        } else if (code == SPLIT) { //细胞分裂
-            param = RandomUtils.nextInt(64);
+            param = RandomUtils.nextInt(10) + 1; //注： 细胞寿命这个魔数以后要写在基因里
+        } else if (code == SPLIT) { //细胞分裂，暂定只有6个方向，用整数的6个位表示
+            param = RandomUtils.nextInt(2);
+            for (int j = 0; j < 5; j++)
+                param = param * 2 + RandomUtils.nextInt(2);
         }
         return param;
     }
@@ -137,12 +158,12 @@ public class Gene {// NOSONAR
             genes.set(index, "" + code + param);
         }
 
-        if (genes.size() > 0 && RandomUtils.percent(2)) { //批量拷贝,一次拷贝不超过基因长度的1/3
-            genes.addAll(RandomUtils.nextInt(genes.size()), genes.subList(0, RandomUtils.nextInt(genes.size() / 3)));
+        if (genes.size() > 0 && RandomUtils.percent(5)) { //批量拷贝,一次拷贝不超过基因长度的1/2
+            genes.addAll(RandomUtils.nextInt(genes.size()), genes.subList(0, RandomUtils.nextInt(genes.size() / 2)));
         }
 
-        if (genes.size() > 0 && RandomUtils.percent(2)) { //批量删除，一次删除不超过基因长度的1/3
-            genes.subList(0, RandomUtils.nextInt(genes.size() / 3)).clear();
+        if (genes.size() > 0 && RandomUtils.percent(5)) { //批量删除，一次删除不超过基因长度的1/2
+            genes.subList(0, RandomUtils.nextInt(genes.size() / 2)).clear();
         }
     }
 

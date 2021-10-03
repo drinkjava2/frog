@@ -55,8 +55,10 @@ public class BrainShapeJudge {//NOSONAR
 
     public static void judge(Animal animal) {//检查animal的脑细胞是否位于brainShape的范围内 
         for (Cell c : animal.cells) {
-            if (shape[c.x][c.y][c.z])
+            if (shape[c.x][c.y][c.z]) {
                 animal.normalAward();
+                
+            }
             else
                 animal.normalPenalty();
         }

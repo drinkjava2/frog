@@ -32,15 +32,15 @@ public class Env extends JPanel {
 	public static int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
 	/** Delete eggs at beginning of each run */
-	public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除保存的青蛙蛋
+	public static final boolean DELETE_FROG_EGGS = false;// 每次运行是否先删除保存的青蛙蛋
 
-	public static final int FROG_EGG_QTY = 25; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+	public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
 	public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
-	public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出动物落在地图上随机位置，而不是在蛋所在地
-
-	public static final int SCREEN = 1; // 分几屏测完
+	public static final int SCREEN = 4; // 分几屏测完
+	
+    public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出动物落在地图上随机位置，而不是在蛋所在地
 
 	/** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用一个List<Cell>来存贮表示的同时，也用一个Cell3D动态数组来表示
 	public static final int BRAIN_XSIZE = 100; // 脑在X方向长度
@@ -136,21 +136,6 @@ public class Env extends JPanel {
 			return true;
 		else
 			return false;
-	}
-
-	public static boolean foundAndAteFrog(int x, int y) {// 如果x,y有青蛙，将其杀死，返回true
-		if (x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT)
-			return false;// 如果出界返回false;
-		int frogNo = Env.bricks[x][y] & Material.FROG_TAG;
-		if (frogNo > 0) {
-			Frog f = frogs.get(frogNo - 1);
-			if (f.alive) {
-				Env.frog_ated++;
-				f.kill();
-				return true;
-			}
-		}
-		return false;
 	}
 
     public static void setMaterial(int x, int y, int material) {

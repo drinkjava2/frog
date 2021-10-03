@@ -58,23 +58,23 @@ public class Cell { //cell数量非常庞大，不需要序列化
         if ((direction & 1) > 0) {//上
             zz++;
             clone(animal, xx, yy, zz); //简单在指定隔壁位置克隆，暂不采用推开其它细胞的高运算量方案，这个要等图型卡加速用上后再考虑推开其它细胞
-        }
+        } else
         if ((direction & 0b10) > 0) {//下
             zz--;
             clone(animal, xx, yy, zz);
-        }
+        }else
         if ((direction & 0b100) > 0) {//左
             xx--;
             clone(animal, xx, yy, zz);
-        }
+        }else
         if ((direction & 0b1000) > 0) {//右
             xx++;
             clone(animal, xx, yy, zz);
-        }
+        }else
         if ((direction & 0b10000) > 0) {//前
             yy--;
             clone(animal, xx, yy, zz);
-        }
+        }else
         if ((direction & 0b100000) > 0) {//后
             yy++;
             clone(animal, xx, yy, zz);
