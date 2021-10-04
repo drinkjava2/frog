@@ -30,6 +30,7 @@ public class Cell { //cell数量非常庞大，不需要序列化
     public int x; //x,y,z 是细胞的中心点在脑中的位置
     public int y;
     public int z;
+    public int i; //i是细胞的一个变量
 
     public int geneIndex; //指向青蛙基因单例中的行号。每个细胞的基因都相同，但是不同的是在基因链中的行号
 
@@ -58,23 +59,23 @@ public class Cell { //cell数量非常庞大，不需要序列化
         if ((direction & 1) > 0) {//上
             zz++;
             clone(animal, xx, yy, zz); //简单在指定隔壁位置克隆，暂不采用推开其它细胞的高运算量方案，这个要等图型卡加速用上后再考虑推开其它细胞
-        } else
+        }  else
         if ((direction & 0b10) > 0) {//下
             zz--;
             clone(animal, xx, yy, zz);
-        }else
+        } else
         if ((direction & 0b100) > 0) {//左
             xx--;
             clone(animal, xx, yy, zz);
-        }else
+        }   else
         if ((direction & 0b1000) > 0) {//右
             xx++;
             clone(animal, xx, yy, zz);
-        }else
+        }   else
         if ((direction & 0b10000) > 0) {//前
             yy--;
             clone(animal, xx, yy, zz);
-        }else
+        }   else
         if ((direction & 0b100000) > 0) {//后
             yy++;
             clone(animal, xx, yy, zz);

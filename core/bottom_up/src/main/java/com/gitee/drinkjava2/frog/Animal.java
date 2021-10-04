@@ -100,7 +100,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     //@formatter:on
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步 
-        this.cells.add(new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 100));//第一个细胞生成于脑的中心，它的基因指针指向起始0行
+        this.cells.add(new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 10));//第一个细胞生成于脑的中心，它的基因指针指向起始0行
         int oldCellsQTY;
         int newCellsQTY;
         do {
@@ -109,9 +109,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 Gene.run(this, cells.get(i));
             }
             newCellsQTY = this.cells.size();
+            //Application.brainPic.drawBrainPicture();
         } while (oldCellsQTY != newCellsQTY && newCellsQTY < Env.CELLS_MAX_QTY); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
         BrainShapeJudge.judge(this); //重要，对细胞的形状是否符合模子的形状进行能量奖励或扣分
-        this.energy-=gene.size(); //基因长的如果和基因短的同样形状，要扣分
+        this.energy-=gene.size()/2; //基因长的如果和基因短的同样形状，要扣分
         if (newCellsQTY > Env.CELLS_MAX_QTY) //如果细胞分裂到达极限值CELLS_LIMIT才停止，说明很可能有无限循环分裂的癌细胞存在，这个生物应扣分淘汰掉
             this.energy = MIN_ENERGY_LIMIT;
     }
