@@ -29,8 +29,7 @@ import com.gitee.drinkjava2.frog.Animal;
 public class Cell { //cell数量非常庞大，不需要序列化
     public int x; //x,y,z 是细胞的中心点在脑中的位置
     public int y;
-    public int z;
-    public int i; //i是细胞的一个变量
+    public int z; 
 
     public int geneIndex; //指向青蛙基因单例中的行号。每个细胞的基因都相同，但是不同的是在基因链中的行号
 

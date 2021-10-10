@@ -39,10 +39,6 @@ public class Gene {// NOSONAR
     public static final int END = nextKeyword(); //结束执行=11
     public static final int SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向等
     public static final int SPLIT_LIMIT = nextKeyword(); //细胞分裂寿命,  0表示可以无限分裂
-    public static final int SET_I0 = nextKeyword(); //给I变量赋值，I初值是0
-    public static final int I_PLUS1 = nextKeyword(); //给I变量加1    
-    public static final int IF_I_BIG = nextKeyword(); //IF I > 
-    public static final int IF_I_LESS = nextKeyword(); //IF I <
     public static final int IF_X_BIG = nextKeyword(); //IF X > 细胞在脑中的X位置大于
     public static final int IF_X_LESS = nextKeyword(); //IF X <
     public static final int IF_Y_BIG = nextKeyword(); //IF Y > 
@@ -63,10 +59,6 @@ public class Gene {// NOSONAR
         TEXT[END] = "END";
         TEXT[SPLIT] = "SPLIT";
         TEXT[SPLIT_LIMIT] = "SPLIT_LIMIT";
-        TEXT[SET_I0] = "I=0";
-        TEXT[I_PLUS1] = "I++";
-        TEXT[IF_I_BIG] = "IF I>";
-        TEXT[IF_I_LESS] = "IF I<";
         TEXT[IF_X_BIG] = "IF X>";
         TEXT[IF_X_LESS] = "IF X<";
         TEXT[IF_Y_BIG] = "IF Y>";
@@ -100,8 +92,7 @@ public class Gene {// NOSONAR
                 if ((direction & 0b100000) > 0)
                     sb.append("B");//后
                 paramStr = sb.toString();
-            } else if (code == I_PLUS1 || code == SET_I0)
-                paramStr = "";
+            }
             System.out.println(i++ + " " + TEXT[code] + " " + paramStr);
         }
     }
@@ -134,9 +125,10 @@ public class Gene {// NOSONAR
                 animal.kill();
                 return;
             }
-            if(cell.splitCount<10)
+            if (cell.splitCount < 10)
                 cell.geneIndex = param;
-            else cell.geneIndex++;
+            else
+                cell.geneIndex++;
         } else if (code == SPLIT_LIMIT) {//重定义细胞寿命
             cell.splitLimit = param;
             cell.geneIndex++;
@@ -146,15 +138,9 @@ public class Gene {// NOSONAR
             if (param < 0 || param > 63) //如果是分裂的话，param应该随机生成落在0~63之内，每个二进制的一个位代表1个分裂方向，共有上下左右前后6个方向
                 return;
             cell.split(animal, param);//cell在参数代表的方向进行分裂克隆，可以同时在多个方向克隆出多个细胞
-        } else if (code == SET_I0) {
-            cell.i = 0;
-        } else if (code == I_PLUS1) {
-            cell.i++;
         }
         //下面是执行IF语句，如果条件成立，执行下一行，否则跳过下一行
         //@formatter:off
-        else if (code == IF_I_BIG) { if (cell.i > param)cell.geneIndex++;else cell.geneIndex += 2; }
-        else if (code == IF_I_LESS) { if (cell.i < param)cell.geneIndex++;else cell.geneIndex += 2; }
         else if (code == IF_X_BIG) { if (cell.x > param)cell.geneIndex++;else cell.geneIndex += 2; }
         else if (code == IF_X_LESS) { if (cell.x < param)cell.geneIndex++;else cell.geneIndex += 2; }
         else if (code == IF_Y_BIG) { if (cell.y > param)cell.geneIndex++;else cell.geneIndex += 2; }
@@ -181,7 +167,7 @@ public class Gene {// NOSONAR
             param = RandomUtils.nextInt(2);
             for (int j = 0; j < 5; j++)
                 param = param * 2 + RandomUtils.nextInt(2);
-        } else if (code >= SET_I0 && code <= IF_SPLIT_LESS) {
+        } else if (code >= IF_X_BIG && code <= IF_SPLIT_LESS) {
             param = RandomUtils.nextInt(Env.BRAIN_XSIZE);
         }
         return param;
@@ -190,7 +176,7 @@ public class Gene {// NOSONAR
     public static void mutation(Animal animal) {//基因随机突变，分为：新增、删除、拷贝、改变、参数改变等情况 
         List<String> genes = animal.gene;
         float percent = 5; //注：percent这个魔数以后要写在基因里,成为基因的一部分
-        if (RandomUtils.percent(percent*3))
+        if (RandomUtils.percent(percent * 3))
             genes.add(RandomUtils.nextInt(genes.size()), randomGeneCode(animal));
 
         if (genes.size() > 0 && RandomUtils.percent(percent)) //删除
@@ -214,9 +200,9 @@ public class Gene {// NOSONAR
         if (genes.size() > 0 && RandomUtils.percent(percent)) { //批量删除，一次删除不超过基因长度的1/2
             genes.subList(0, RandomUtils.nextInt(genes.size() / 2)).clear();
         }
-        
+
         //TODO: 分叉，在任意位置分叉，即拷贝相同一段内容，但是沿不同方向开始分裂
-        
+
     }
 
 }
