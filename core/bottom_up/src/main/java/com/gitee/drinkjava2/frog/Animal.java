@@ -50,8 +50,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     /** brain cells */
-    public List<Cell> cells = new ArrayList<>();
 
+    public List<Cell> cells = new ArrayList<>();
     public Cells3D cells3D = new Cells3D(this);
 
     public int x; // animal在Env中的x坐标
@@ -66,7 +66,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
         this.gene.addAll(egg.gene); //动物的基因是蛋的基因的拷贝
-        Gene.mutation(this); //但是有小概率基因突变
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             x = RandomUtils.nextInt(Env.ENV_WIDTH);
             y = RandomUtils.nextInt(Env.ENV_HEIGHT);
@@ -100,7 +99,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     //@formatter:on
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步 
-        this.cells.add(new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 10));//第一个细胞生成于脑的中心，它的基因指针指向起始0行
+        new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 50);//第一个细胞生成于脑的中心，它的基因指针指向起始0行
         int oldCellsQTY;
         int newCellsQTY;
         do {
@@ -109,12 +108,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 Gene.run(this, cells.get(i));
             }
             newCellsQTY = this.cells.size();
-            //Application.brainPic.drawBrainPicture();
+            //Application.brainPic.drawBrainPicture(); //慢动作放映生成每个细胞过程
         } while (oldCellsQTY != newCellsQTY && newCellsQTY < Env.CELLS_MAX_QTY); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
         BrainShapeJudge.judge(this); //重要，对细胞的形状是否符合模子的形状进行能量奖励或扣分
-        this.energy-=gene.size()/2; //基因长的如果和基因短的同样形状，要扣分
+        this.energy -= gene.size() / 2; //基因长的如果和基因短的同样形状，要扣分
         if (newCellsQTY > Env.CELLS_MAX_QTY) //如果细胞分裂到达极限值CELLS_LIMIT才停止，说明很可能有无限循环分裂的癌细胞存在，这个生物应扣分淘汰掉
             this.energy = MIN_ENERGY_LIMIT;
+        Gene.mutation(this); //有小概率基因突变
     }
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
@@ -139,10 +139,16 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return;
         g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
- 
+
     /** Check if x,y,z out of animal's brain range */
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
 
+    public Cell getOneRandomCell() {
+        if (cells.isEmpty())
+            return null;
+        return cells.get(RandomUtils.nextInt(cells.size()));
+
+    }
 }

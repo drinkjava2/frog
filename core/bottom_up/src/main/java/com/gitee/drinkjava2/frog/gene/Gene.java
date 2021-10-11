@@ -10,6 +10,7 @@
  */
 package com.gitee.drinkjava2.frog.gene;
 
+import java.awt.Color;
 import java.util.List;
 
 import com.gitee.drinkjava2.frog.Animal;
@@ -32,41 +33,22 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  * @since 2021-09-16
  */
 public class Gene {// NOSONAR 
+
     private static int index = 9; //关键字是一个两位数字字符，从10开始依次往下排。关键字没有可读性，调试时要用printGene方法将关键字转为可读的语句
+    public static String[] TEXT = new String[20]; //这里存放关键字的文字解释，供打印输出用
 
     public static final int FIRST_KEYWORD = 10;
-    public static final int GOTO = nextKeyword(); //GOTO关键字=10
-    public static final int END = nextKeyword(); //结束执行=11
-    public static final int SPLIT = nextKeyword(); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向等
-    public static final int SPLIT_LIMIT = nextKeyword(); //细胞分裂寿命,  0表示可以无限分裂
-    public static final int IF_X_BIG = nextKeyword(); //IF X > 细胞在脑中的X位置大于
-    public static final int IF_X_LESS = nextKeyword(); //IF X <
-    public static final int IF_Y_BIG = nextKeyword(); //IF Y > 
-    public static final int IF_Y_LESS = nextKeyword(); //IF X <
-    public static final int IF_Z_BIG = nextKeyword(); //IF Z > 
-    public static final int IF_Z_LESS = nextKeyword(); //IF Z <
-    public static final int IF_SPLIT_BIG = nextKeyword(); //IF SPLIT > 细胞的分裂数大于 
-    public static final int IF_SPLIT_LESS = nextKeyword(); //IF SPLIT < 
+    public static final int GOTO = nextKeyword("GOTO"); //GOTO关键字=10
+    public static final int END = nextKeyword("END"); //结束执行=11
+    public static final int SPLIT = nextKeyword("SPLIT"); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向等
+    public static final int SPLIT_LIMIT = nextKeyword("SPLIT_LIMIT"); //细胞分裂寿命,  0表示可以无限分裂
+    public static final int NEW_CELL = nextKeyword("NEW_CELL"); //在新位置新创建一个细胞，而不是由其它细胞分裂出来
     public static final int LAST_KEYWORD = index; //最后一个关键字
 
-    static private int nextKeyword() {
-        return ++index;
-    }
-
-    public static String[] TEXT = new String[LAST_KEYWORD + 1]; //这里存放关键字的文字解释，供打印输出用
-    static {
-        TEXT[GOTO] = "GOTO";
-        TEXT[END] = "END";
-        TEXT[SPLIT] = "SPLIT";
-        TEXT[SPLIT_LIMIT] = "SPLIT_LIMIT";
-        TEXT[IF_X_BIG] = "IF X>";
-        TEXT[IF_X_LESS] = "IF X<";
-        TEXT[IF_Y_BIG] = "IF Y>";
-        TEXT[IF_Y_LESS] = "IF Y<";
-        TEXT[IF_Z_BIG] = "IF Z>";
-        TEXT[IF_Z_LESS] = "IF Z<";
-        TEXT[IF_SPLIT_BIG] = "IF SPLIT >";
-        TEXT[IF_SPLIT_LESS] = "IF SPLIT <";
+    static private int nextKeyword(String explain) {
+        index++;
+        TEXT[index] = explain;
+        return index;
     }
 
     static final StringBuilder sb = new StringBuilder(); //用来将方向转为可读的英文缩写 
@@ -98,66 +80,57 @@ public class Gene {// NOSONAR
     }
 
     //execute gene language for one cell only 
-    public static void run(Animal animal, Cell cell) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
-        if (cell.geneIndex < 0)
-            return;
-        if (cell.geneIndex >= animal.gene.size() || cell.splitCount >= cell.splitLimit) {
-            cell.geneIndex = 0;
-            return;
-        }
+    public static int run(Animal animal, Cell cell) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
+        if (cell.geneIndex < 0 || cell.geneIndex >= animal.gene.size() || cell.splitCount >= cell.splitLimit)
+            return cell.geneIndex;
 
         String oneLine = animal.gene.get(cell.geneIndex);
         int code = Integer.parseInt(oneLine.substring(0, 2));
         if (code == END) {//如果是END, 结束分裂，参数就不需要解读了
             cell.geneIndex = -1;//改为-1,以后直接跳过这个细胞，不再执行上面的Integer.parseInt
-            return;
+            return cell.geneIndex;
         }
         int param; //每行基因分为代码和参数两个部分，参数暂定为一个整数
         try {
             param = Integer.parseInt(oneLine.substring(2));
         } catch (NumberFormatException e) { //除了END等关键字外，下面的code都需要参数, 如果参数不是整数杀死青蛙
             animal.kill();
-            return;
+            return cell.geneIndex;
         }
+        cell.geneIndex++;
 
         if (code == GOTO) {
             if (param < 0 || param >= animal.gene.size()) {//行号太大、太小都不行
                 animal.kill();
-                return;
+                return cell.geneIndex;
             }
-            if (cell.splitCount < 10)
-                cell.geneIndex = param;
-            else
-                cell.geneIndex++;
+            cell.geneIndex = param;
+            return cell.geneIndex;
         } else if (code == SPLIT_LIMIT) {//重定义细胞寿命
             cell.splitLimit = param;
-            cell.geneIndex++;
-        } else if (code == SPLIT) { //执行细胞分裂
-            cell.geneIndex++;
+            return cell.geneIndex;
+        } else if (code == SPLIT) { //执行细胞分裂 
             cell.splitCount++;
             if (param < 0 || param > 63) //如果是分裂的话，param应该随机生成落在0~63之内，每个二进制的一个位代表1个分裂方向，共有上下左右前后6个方向
-                return;
+                return cell.geneIndex;
             cell.split(animal, param);//cell在参数代表的方向进行分裂克隆，可以同时在多个方向克隆出多个细胞
+        } else if (code == NEW_CELL) { //执行细胞分裂 
+           int x=param /1000000;
+           int y=(param -x*1000000)/1000;
+           int z=param % 1000;
+           Cell c= new Cell(animal, x, y, z, cell.geneIndex, 0, 50);
+           c.color=Color.RED;
         }
-        //下面是执行IF语句，如果条件成立，执行下一行，否则跳过下一行
-        //@formatter:off
-        else if (code == IF_X_BIG) { if (cell.x > param)cell.geneIndex++;else cell.geneIndex += 2; }
-        else if (code == IF_X_LESS) { if (cell.x < param)cell.geneIndex++;else cell.geneIndex += 2; }
-        else if (code == IF_Y_BIG) { if (cell.y > param)cell.geneIndex++;else cell.geneIndex += 2; }
-        else if (code == IF_Y_LESS) { if (cell.y < param)cell.geneIndex++;else cell.geneIndex += 2; }
-        else if (code == IF_Z_BIG) { if (cell.z > param)cell.geneIndex++;else cell.geneIndex += 2; }
-        else if (code == IF_Z_LESS) { if (cell.z < param)cell.geneIndex++;else cell.geneIndex += 2; }
-        else if (code == IF_SPLIT_BIG) { if (cell.splitCount > param)cell.geneIndex++;else cell.geneIndex += 2; }
-        else if (code == IF_SPLIT_LESS) { if (cell.splitCount < param)cell.geneIndex++;else cell.geneIndex += 2; }
-        //@formatter:on
+        return cell.geneIndex;
     }
 
     private static String randomGeneCode(Animal animal) {//生成一个随机的基因行
-        int code = RandomUtils.nextInt(LAST_KEYWORD + 1 - FIRST_KEYWORD) + FIRST_KEYWORD;
+        //        int code = RandomUtils.nextInt(LAST_KEYWORD + 1 - FIRST_KEYWORD) + FIRST_KEYWORD;
+        int code = RandomUtils.nextInt(LAST_KEYWORD   - FIRST_KEYWORD) + FIRST_KEYWORD;
         return "" + code + randomGeneParam(animal, code);
     }
 
-    private static int randomGeneParam(Animal animal, int code) {//根据基因code生成一个随机合理参数
+    public static int randomGeneParam(Animal animal, int code) {//根据基因code生成一个随机合理参数
         int param = 0;
         if (code == GOTO) {
             param = RandomUtils.nextInt(animal.gene.size());
@@ -167,8 +140,29 @@ public class Gene {// NOSONAR
             param = RandomUtils.nextInt(2);
             for (int j = 0; j < 5; j++)
                 param = param * 2 + RandomUtils.nextInt(2);
-        } else if (code >= IF_X_BIG && code <= IF_SPLIT_LESS) {
-            param = RandomUtils.nextInt(Env.BRAIN_XSIZE);
+        } else if (code == NEW_CELL) { //新的细胞坐标位置参数，用一个整数表示, 值为 X*1000000 + Y*1000 + Z
+            if (animal.cells.isEmpty()) { //如果animal没有细胞，位置取脑的中间
+                return Env.BRAIN_XSIZE / 2 * 1000000 + Env.BRAIN_YSIZE / 2 * 1000 + Env.BRAIN_ZSIZE / 2;
+            } else { //如果脑细胞已有了，随机取一个脑细胞，返回它的一个相邻坐标位置
+                Cell c = animal.getOneRandomCell();
+                int x = c.x;
+                int y = c.y;
+                int z = c.z;
+                int d = RandomUtils.nextInt(6);
+                if (d == 0) //上
+                    z++;
+                else if (d == 1) //下
+                    z--;
+                else if (d == 2) //左
+                    x--;
+                else if (d == 3) //右
+                    x++;
+                else if (d == 4) //前
+                    y--;
+                else if (d == 5) //后
+                    y++;
+                return x * 1000000 + y * 1000 + z;
+            }
         }
         return param;
     }

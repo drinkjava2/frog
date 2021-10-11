@@ -10,6 +10,8 @@
  */
 package com.gitee.drinkjava2.frog.brain;
 
+import java.awt.Color;
+
 import com.gitee.drinkjava2.frog.Animal;
 
 /**
@@ -30,6 +32,7 @@ public class Cell { //cell数量非常庞大，不需要序列化
     public int x; //x,y,z 是细胞的中心点在脑中的位置
     public int y;
     public int z; 
+    public Color color; //这个颜色只是用于调试
 
     public int geneIndex; //指向青蛙基因单例中的行号。每个细胞的基因都相同，但是不同的是在基因链中的行号
 
@@ -47,8 +50,10 @@ public class Cell { //cell数量非常庞大，不需要序列化
         this.geneIndex = geneIndex;
         this.splitCount = splitCount;
         this.splitLimit = splitLimit;
-        animal.cells.add(this);
-        animal.cells3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
+        if (!Animal.outBrainRange(x, y, z)) {
+            animal.cells.add(this);
+            animal.cells3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
+        }
     }
 
     public void split(Animal animal, int direction) {//细胞在一个或多个方向上分裂克隆，有6（对应立方体的6个面)、7(包含本身点)、27(包含立方体侧边、项点方向)等选项，这里先采用6个方向的方案

@@ -110,7 +110,6 @@ public class Application {
         mainFrame.add(label);
 
         mainFrame.setVisible(true);
-        mainFrame.setTitle("这是一个空框架，用随机生成基因的方式来实现细胞3D分裂还没开始做");
         env.run();
     }
 

@@ -336,7 +336,10 @@ public class BrainPicture extends JPanel {
 		BrainShapeJudge.show(this);//这行显示脑形状这个模子
 		
         for (Cell cell : a.cells) { //这里开始画出细胞
-            setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度级表示细胞能量大小 
+            if (cell.color != null)
+                setPicColor(cell.color);
+            else
+                setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度级表示细胞能量大小 
             drawCell(cell);
         }
 
