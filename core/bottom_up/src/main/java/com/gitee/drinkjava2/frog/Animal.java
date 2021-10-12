@@ -99,16 +99,21 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     //@formatter:on
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步 
-        new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 50);//第一个细胞生成于脑的中心，它的基因指针指向起始0行
-        int oldCellsQTY, newCellsQTY, start, end;
+        new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 10);//第一个细胞生成于脑的中心，它的基因指针指向起始0行
+        int oldCellsQTY, newCellsQTY, start = 0, end = 0;
         do {
             oldCellsQTY = this.cells.size();
-            for (int i = 0; i < oldCellsQTY; i++) {//重要，开始对每一个细胞调用基因这门语言，启动细胞的分裂,这个分裂是在一个时间周期内完成，以后要改进为利用图形卡的加速功能并发执行以加快分裂速度
+            for (end = start; end < gene.size()-1; end++) {
+                if(Gene.toCode(gene.get(end))==Gene.NEW_CELL)break;
+            }
+
+            for (int i = 0; i < cells.size(); i++) {//重要，开始对每一个细胞调用基因这门语言，启动细胞的分裂,这个分裂是在一个时间周期内完成，以后要改进为利用图形卡的加速功能并发执行以加快分裂速度
                 Gene.run(this, cells.get(i));
             }
+            start=end;
             newCellsQTY = this.cells.size();
             //Application.brainPic.drawBrainPicture(); //慢动作放映生成每个细胞过程
-        } while (oldCellsQTY != newCellsQTY && newCellsQTY < Env.CELLS_MAX_QTY); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
+        } while (oldCellsQTY != newCellsQTY && newCellsQTY < Env.CELLS_MAX_QTY && start<cells.size()); //直到所有细胞都停止分裂或细胞分裂超过CELLS_LIMIT个才停止
         BrainShapeJudge.judge(this); //重要，对细胞的形状是否符合模子的形状进行能量奖励或扣分
         this.energy -= gene.size() / 2; //基因长的如果和基因短的同样形状，要扣分
         if (newCellsQTY > Env.CELLS_MAX_QTY) //如果细胞分裂到达极限值CELLS_LIMIT才停止，说明很可能有无限循环分裂的癌细胞存在，这个生物应扣分淘汰掉

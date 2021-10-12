@@ -24,10 +24,10 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  * Gene是一个仿造大自然随机生成的语言。它采用类似BASIC的语法,只有少数几个字键字。这个类里定义语言的关键字常量和对这些关键字的解析行为, 
  * 这个语言主要的作用是实现分裂造形，包括 身体结构造形（不重要，但先实现这个)和脑细胞结构造形(重点)
  * 
- * Gene语法的每行由若干部分组成，第一部分是关键字，占2格，第二、三、四等部分是可选内容，由关键字决定，如:
+ * Gene语法的每行由一个long编码表示，高32位是关键字，低32位是参数，由关键字决定，如:
  * 
- * 10100 表示跳转到100行语句执行, 即10(=GOTO) + 100(行号) 
- * 110 表示结束执行，停止细胞分裂, 即11(结束) + 0(参数)
+ * 10 + 100 表示跳转到100行语句执行, 即10(=GOTO) + 100(行号) 
+ * 11 + 0 表示结束执行，停止细胞分裂, 即11(结束) + 0(参数)
  * 
  * @author Yong Zhu
  * @since 2021-09-16
@@ -53,25 +53,38 @@ public class Gene {// NOSONAR
 
     static final StringBuilder sb = new StringBuilder(); //用来将方向转为可读的英文缩写 
 
+    public static int toCode(Long gene) {
+        return (int) (gene >> 32);
+    }
+
+    public static int toParam(Long gene) {
+        return (int) (gene & 0xffffffffL);
+    }
+
+    public static long toGene(int code, int param) {
+        long code_ = code;
+        return (code_ << 32) + param;
+    }
+
     public static void printGene(Animal animal) {
         int i = 0;
-        for (long s : animal.gene) {
-            int code = (int) (s >> 32);
-            int param = (int) (s & 0xffffffffL);
+        for (long gene : animal.gene) {
+            int code = toCode(gene);
+            int param = toParam(gene);
             String paramStr = "" + param;
             if (code == SPLIT) {
                 sb.setLength(0);
                 if ((param & 1) > 0)
                     sb.append("U");//上
-                if ((param & 0b10) > 0)
+                else if ((param & 0b10) > 0)
                     sb.append("D");//下
-                if ((param & 0b100) > 0)
+                else if ((param & 0b100) > 0)
                     sb.append("L");//左
-                if ((param & 0b1000) > 0)
+                else if ((param & 0b1000) > 0)
                     sb.append("R");//右
-                if ((param & 0b10000) > 0)
+                else if ((param & 0b10000) > 0)
                     sb.append("F");//前
-                if ((param & 0b100000) > 0)
+                else if ((param & 0b100000) > 0)
                     sb.append("B");//后
                 paramStr = sb.toString();
             }
@@ -80,17 +93,16 @@ public class Gene {// NOSONAR
     }
 
     //execute gene language for one cell only 
-    public static int run(Animal animal, Cell cell) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
+    public static void run(Animal animal, Cell cell) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
         if (cell.geneIndex < 0 || cell.geneIndex >= animal.gene.size() || cell.splitCount >= cell.splitLimit)
-            return cell.geneIndex;
-
+            return;
         long gene = animal.gene.get(cell.geneIndex);
-        int code = (int) (gene >> 32);
-        int param = (int) (gene & 0xffffffffL);
+        int code = toCode(gene);
+        int param = toParam(gene);
 
         if (code == END) {//如果是END, 结束分裂，参数就不需要解读了
             cell.geneIndex = -1;//改为-1,以后直接跳过这个细胞，不再执行上面的Integer.parseInt
-            return cell.geneIndex;
+            return;
         }
 
         cell.geneIndex++;
@@ -98,26 +110,26 @@ public class Gene {// NOSONAR
         if (code == GOTO) {
             if (param < 0 || param >= animal.gene.size()) {//行号太大、太小都不行
                 animal.kill();
-                return cell.geneIndex;
+                return;
             }
             cell.geneIndex = param;
-            return cell.geneIndex;
+            return;
         } else if (code == SPLIT_LIMIT) {//重定义细胞寿命
             cell.splitLimit = param;
-            return cell.geneIndex;
+            return;
         } else if (code == SPLIT) { //执行细胞分裂 
             cell.splitCount++;
             if (param < 0 || param > 63) //如果是分裂的话，param应该随机生成落在0~63之内，每个二进制的一个位代表1个分裂方向，共有上下左右前后6个方向
-                return cell.geneIndex;
+                return;
             cell.split(animal, param);//cell在参数代表的方向进行分裂克隆，可以同时在多个方向克隆出多个细胞
-        } else if (code == NEW_CELL) { //执行细胞分裂 
+        } else if (code == NEW_CELL) { //新建一个细胞，从头开始分裂，它的splitCount=0;
             int x = param / 1000000;
             int y = (param - x * 1000000) / 1000;
             int z = param % 1000;
-            Cell c = new Cell(animal, x, y, z, cell.geneIndex, 0, 50);
+            Cell c = new Cell(animal, x, y, z, cell.geneIndex, 0, 10);
             c.color = Color.RED;
         }
-        return cell.geneIndex;
+        return;
     }
 
     private static Long randomGeneCode(Animal animal) {//生成一个随机的基因行
@@ -163,8 +175,14 @@ public class Gene {// NOSONAR
         return param;
     }
 
-    public static void mutation(Animal animal) {//基因随机突变，分为：新增、删除、拷贝、改变、参数改变等情况 
+    public static void mutation(Animal animal) {//基因随机突变，分为：新增、删除、拷贝、改变、参数改变等情况
         List<Long> genes = animal.gene;
+
+        if (RandomUtils.percent(5)) {
+            genes.add(toGene(NEW_CELL, randomGeneParam(animal, NEW_CELL)));
+            return;
+        }
+
         float percent = 5; //注：percent这个魔数以后要写在基因里,成为基因的一部分
         if (RandomUtils.percent(percent * 3))
             genes.add(RandomUtils.nextInt(genes.size()), randomGeneCode(animal));
@@ -178,7 +196,7 @@ public class Gene {// NOSONAR
         if (genes.size() > 0 && RandomUtils.percent(percent)) { //改变参数
             int index = RandomUtils.nextInt(genes.size());
             long gene = genes.get(index);
-            long code = gene >> 32;
+            long code = toCode(gene);
             int param = randomGeneParam(animal, code); //参数是与code相关的，不同的code其合理参数范围是不一样的
             genes.set(index, (code << 32) + param);
         }
@@ -187,8 +205,15 @@ public class Gene {// NOSONAR
             genes.addAll(RandomUtils.nextInt(genes.size()), genes.subList(0, RandomUtils.nextInt(genes.size() / 2)));
         }
 
-        if (genes.size() > 0 && RandomUtils.percent(percent)) { //批量删除，一次删除不超过基因长度的1/2
-            genes.subList(0, RandomUtils.nextInt(genes.size() / 2)).clear();
+        if (genes.size() > 0 && RandomUtils.percent(percent)) { //批量删除
+            int start = RandomUtils.nextInt(genes.size());
+            int end = RandomUtils.nextInt(genes.size());
+            if (start > end) {
+                int tmp = start;
+                start = end;
+                end = tmp;
+            }
+            genes.subList(start, end).clear();
         }
 
         //TODO: 分叉，在任意位置分叉，即拷贝相同一段内容，但是沿不同方向开始分裂 
