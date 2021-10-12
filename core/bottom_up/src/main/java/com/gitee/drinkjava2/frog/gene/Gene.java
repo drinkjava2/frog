@@ -126,7 +126,7 @@ public class Gene {// NOSONAR
 
     private static String randomGeneCode(Animal animal) {//生成一个随机的基因行
         //        int code = RandomUtils.nextInt(LAST_KEYWORD + 1 - FIRST_KEYWORD) + FIRST_KEYWORD;
-        int code = RandomUtils.nextInt(LAST_KEYWORD   - FIRST_KEYWORD) + FIRST_KEYWORD;
+        int code = RandomUtils.nextInt(LAST_KEYWORD    - FIRST_KEYWORD) + FIRST_KEYWORD;
         return "" + code + randomGeneParam(animal, code);
     }
 

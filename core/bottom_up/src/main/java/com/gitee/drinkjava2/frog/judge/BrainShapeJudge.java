@@ -59,7 +59,6 @@ public class BrainShapeJudge {//NOSONAR
                 animal.normalAward();
             } else {
                 animal.normalPenalty();
-                animal.normalPenalty();
             }
         }
     }

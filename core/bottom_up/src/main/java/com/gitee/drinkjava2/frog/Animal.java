@@ -93,15 +93,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void normalAward()   { energy += 50;     if (energy > MAX_ENERGY_LIMIT)energy = MAX_ENERGY_LIMIT; }
     //public void tinyAward()     { energy += 1;      if (energy > MAX_ENERGY_LIMIT)energy = MAX_ENERGY_LIMIT; }
     //public void bigPenalty()    { energy -= 5000;   if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
-    public void normalPenalty() { energy -= 50;     if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
+    public void normalPenalty() { energy -= 100;     if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
     //public void tinyPenalty()   { energy -= 1 ;     if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
     public void kill() {this.alive = false; this.energy = MIN_ENERGY_LIMIT;  Env.clearMaterial(x, y, animalMaterial); } //kill是最大的惩罚
     //@formatter:on
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步 
         new Cell(this, Env.BRAIN_XSIZE / 2, Env.BRAIN_YSIZE / 2, Env.BRAIN_ZSIZE / 2, 0, 0, 50);//第一个细胞生成于脑的中心，它的基因指针指向起始0行
-        int oldCellsQTY;
-        int newCellsQTY;
+        int oldCellsQTY,newCellsQTY,start, end;
         do {
             oldCellsQTY = this.cells.size();
             for (int i = 0; i < oldCellsQTY; i++) {//重要，开始对每一个细胞调用基因这门语言，启动细胞的分裂,这个分裂是在一个时间周期内完成，以后要改进为利用图形卡的加速功能并发执行以加快分裂速度
