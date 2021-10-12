@@ -16,7 +16,6 @@ import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
-import com.gitee.drinkjava2.frog.util.Systemout;
 
 /**
  * Env is the living space of frog. draw it on JPanel
@@ -294,7 +293,7 @@ public class Env extends JPanel {
 				for (int j = 0; j < FROG_PER_SCREEN; j++) {
 					Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
                     if (j == 0) {
-                        Systemout.println("======== cells: "+f.cells.size()+" =========");
+                        System.out.println("======== cells: "+f.cells.size()+" =========");
                         Gene.printGene(f);
                     }
 					

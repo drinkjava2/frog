@@ -55,23 +55,23 @@ public class Gene {// NOSONAR
 
     public static void printGene(Animal animal) {
         int i = 0;
-        for (String s : animal.gene) {
-            int code = Integer.parseInt(s.substring(0, 2));
-            String paramStr = s.substring(2);
+        for (long s : animal.gene) {
+            int code = (int) (s >> 32);
+            int param = (int) (s & 0xffffffffL);
+            String paramStr = "" + param;
             if (code == SPLIT) {
                 sb.setLength(0);
-                int direction = Integer.parseInt(paramStr);
-                if ((direction & 1) > 0)
+                if ((param & 1) > 0)
                     sb.append("U");//上
-                if ((direction & 0b10) > 0)
+                if ((param & 0b10) > 0)
                     sb.append("D");//下
-                if ((direction & 0b100) > 0)
+                if ((param & 0b100) > 0)
                     sb.append("L");//左
-                if ((direction & 0b1000) > 0)
+                if ((param & 0b1000) > 0)
                     sb.append("R");//右
-                if ((direction & 0b10000) > 0)
+                if ((param & 0b10000) > 0)
                     sb.append("F");//前
-                if ((direction & 0b100000) > 0)
+                if ((param & 0b100000) > 0)
                     sb.append("B");//后
                 paramStr = sb.toString();
             }
@@ -84,19 +84,15 @@ public class Gene {// NOSONAR
         if (cell.geneIndex < 0 || cell.geneIndex >= animal.gene.size() || cell.splitCount >= cell.splitLimit)
             return cell.geneIndex;
 
-        String oneLine = animal.gene.get(cell.geneIndex);
-        int code = Integer.parseInt(oneLine.substring(0, 2));
+        long gene = animal.gene.get(cell.geneIndex);
+        int code = (int) (gene >> 32);
+        int param = (int) (gene & 0xffffffffL);
+
         if (code == END) {//如果是END, 结束分裂，参数就不需要解读了
             cell.geneIndex = -1;//改为-1,以后直接跳过这个细胞，不再执行上面的Integer.parseInt
             return cell.geneIndex;
         }
-        int param; //每行基因分为代码和参数两个部分，参数暂定为一个整数
-        try {
-            param = Integer.parseInt(oneLine.substring(2));
-        } catch (NumberFormatException e) { //除了END等关键字外，下面的code都需要参数, 如果参数不是整数杀死青蛙
-            animal.kill();
-            return cell.geneIndex;
-        }
+
         cell.geneIndex++;
 
         if (code == GOTO) {
@@ -115,22 +111,22 @@ public class Gene {// NOSONAR
                 return cell.geneIndex;
             cell.split(animal, param);//cell在参数代表的方向进行分裂克隆，可以同时在多个方向克隆出多个细胞
         } else if (code == NEW_CELL) { //执行细胞分裂 
-           int x=param /1000000;
-           int y=(param -x*1000000)/1000;
-           int z=param % 1000;
-           Cell c= new Cell(animal, x, y, z, cell.geneIndex, 0, 50);
-           c.color=Color.RED;
+            int x = param / 1000000;
+            int y = (param - x * 1000000) / 1000;
+            int z = param % 1000;
+            Cell c = new Cell(animal, x, y, z, cell.geneIndex, 0, 50);
+            c.color = Color.RED;
         }
         return cell.geneIndex;
     }
 
-    private static String randomGeneCode(Animal animal) {//生成一个随机的基因行
-        //        int code = RandomUtils.nextInt(LAST_KEYWORD + 1 - FIRST_KEYWORD) + FIRST_KEYWORD;
-        int code = RandomUtils.nextInt(LAST_KEYWORD    - FIRST_KEYWORD) + FIRST_KEYWORD;
-        return "" + code + randomGeneParam(animal, code);
+    private static Long randomGeneCode(Animal animal) {//生成一个随机的基因行
+        long code = RandomUtils.nextInt(LAST_KEYWORD - FIRST_KEYWORD) + FIRST_KEYWORD;
+        int param = randomGeneParam(animal, code);
+        return (code << 32) + param;
     }
 
-    public static int randomGeneParam(Animal animal, int code) {//根据基因code生成一个随机合理参数
+    public static int randomGeneParam(Animal animal, long code) {//根据基因code生成一个随机合理参数
         int param = 0;
         if (code == GOTO) {
             param = RandomUtils.nextInt(animal.gene.size());
@@ -168,7 +164,7 @@ public class Gene {// NOSONAR
     }
 
     public static void mutation(Animal animal) {//基因随机突变，分为：新增、删除、拷贝、改变、参数改变等情况 
-        List<String> genes = animal.gene;
+        List<Long> genes = animal.gene;
         float percent = 5; //注：percent这个魔数以后要写在基因里,成为基因的一部分
         if (RandomUtils.percent(percent * 3))
             genes.add(RandomUtils.nextInt(genes.size()), randomGeneCode(animal));
@@ -181,10 +177,10 @@ public class Gene {// NOSONAR
 
         if (genes.size() > 0 && RandomUtils.percent(percent)) { //改变参数
             int index = RandomUtils.nextInt(genes.size());
-            String gene = genes.get(index);
-            int code = Integer.parseInt(gene.substring(0, 2));
+            long gene = genes.get(index);
+            long code = gene >> 32;
             int param = randomGeneParam(animal, code); //参数是与code相关的，不同的code其合理参数范围是不一样的
-            genes.set(index, "" + code + param);
+            genes.set(index, (code << 32) + param);
         }
 
         if (genes.size() > 0 && RandomUtils.percent(percent)) { //批量拷贝,一次拷贝不超过基因长度的1/2
@@ -195,8 +191,6 @@ public class Gene {// NOSONAR
             genes.subList(0, RandomUtils.nextInt(genes.size() / 2)).clear();
         }
 
-        //TODO: 分叉，在任意位置分叉，即拷贝相同一段内容，但是沿不同方向开始分裂
-
+        //TODO: 分叉，在任意位置分叉，即拷贝相同一段内容，但是沿不同方向开始分裂 
     }
-
 }

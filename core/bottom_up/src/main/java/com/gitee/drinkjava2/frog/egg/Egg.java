@@ -35,7 +35,7 @@ public class Egg implements Serializable {
 	
 	// gene is a language similar like BASIC created by random 
 	// 基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中，和实际生物每个细胞都要保存一份基因不同，程序中每个细胞仅保存着基因的指针和当前细胞位于基因链中的行号，并不需要保存基因的副本，这样可以极大地减少内存占用
-    public ArrayList<String> gene =new ArrayList<>();
+    public ArrayList<Long> gene =new ArrayList<>();
   
 	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙d
 		x = RandomUtils.nextInt(Env.ENV_WIDTH);
