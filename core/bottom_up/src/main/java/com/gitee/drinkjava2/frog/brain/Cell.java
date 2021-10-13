@@ -51,8 +51,13 @@ public class Cell { //cell数量非常庞大，不需要序列化
         this.splitCount = splitCount;
         this.splitLimit = splitLimit;
         if (!Animal.outBrainRange(x, y, z)) {
+            Cell c= animal.cells3D.getCell(x, y, z);
+            if(c!=null)
+                animal.normalPenalty();
+            else {
             animal.cells.add(this);
             animal.cells3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
+            }
         }
     }
 

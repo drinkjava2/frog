@@ -37,12 +37,13 @@ public class Gene {// NOSONAR
     private static int index = 9; //关键字是一个两位数字字符，从10开始依次往下排。关键字没有可读性，调试时要用printGene方法将关键字转为可读的语句
     public static String[] TEXT = new String[20]; //这里存放关键字的文字解释，供打印输出用
 
-    public static final int FIRST_KEYWORD = 10;
     public static final int GOTO = nextKeyword("GOTO"); //GOTO关键字=10
     public static final int END = nextKeyword("END"); //结束执行=11
     public static final int SPLIT = nextKeyword("SPLIT"); //执行细胞分裂， 分裂方向由第二部分的数值决定，一个细胞有可能同时在多个方向分裂出多个细胞，有6个或27个方向等
     public static final int SPLIT_LIMIT = nextKeyword("SPLIT_LIMIT"); //细胞分裂寿命,  0表示可以无限分裂
     public static final int NEW_CELL = nextKeyword("NEW_CELL"); //在新位置新创建一个细胞，而不是由其它细胞分裂出来
+
+    public static final int FIRST_KEYWORD = NEW_CELL;
     public static final int LAST_KEYWORD = index; //最后一个关键字
 
     static private int nextKeyword(String explain) {
@@ -132,6 +133,21 @@ public class Gene {// NOSONAR
         return;
     }
 
+    public static void run(Animal animal) { //对于给定的细胞，由基因、这个细胞所处的行号、细胞的分裂寿命、细胞已分裂的次数、以及细胞所处的身体坐标、以及细胞周围是否有细胞包围来决定它的下一步分裂行为
+        for (int i = 0; i < animal.gene.size(); i++) {
+            long gene = animal.gene.get(i);
+            int code = toCode(gene);
+            int param = toParam(gene);
+            if (code == NEW_CELL) { //新建一个细胞
+                int x = param / 1000000;
+                int y = (param - x * 1000000) / 1000;
+                int z = param % 1000;
+                Cell c = new Cell(animal, x, y, z, i, 0, 10);
+                c.color = Color.RED;
+            }
+        }
+    }
+
     private static Long randomGeneCode(Animal animal) {//生成一个随机的基因行
         long code = RandomUtils.nextInt(LAST_KEYWORD - FIRST_KEYWORD) + FIRST_KEYWORD;
         int param = randomGeneParam(animal, code);
@@ -156,19 +172,9 @@ public class Gene {// NOSONAR
                 int x = c.x;
                 int y = c.y;
                 int z = c.z;
-                int d = RandomUtils.nextInt(6);
-                if (d == 0) //上
-                    z++;
-                else if (d == 1) //下
-                    z--;
-                else if (d == 2) //左
-                    x--;
-                else if (d == 3) //右
-                    x++;
-                else if (d == 4) //前
-                    y--;
-                else if (d == 5) //后
-                    y++;
+                x+=RandomUtils.nextInt(5)-2;
+                y+=RandomUtils.nextInt(5)-2;
+                z+=RandomUtils.nextInt(5)-2;
                 return x * 1000000 + y * 1000 + z;
             }
         }
@@ -178,7 +184,7 @@ public class Gene {// NOSONAR
     public static void mutation(Animal animal) {//基因随机突变，分为：新增、删除、拷贝、改变、参数改变等情况
         List<Long> genes = animal.gene;
 
-        if (RandomUtils.percent(5)) {
+        if (RandomUtils.percent(10)) {
             genes.add(toGene(NEW_CELL, randomGeneParam(animal, NEW_CELL)));
             return;
         }
@@ -216,6 +222,5 @@ public class Gene {// NOSONAR
             genes.subList(start, end).clear();
         }
 
-        //TODO: 分叉，在任意位置分叉，即拷贝相同一段内容，但是沿不同方向开始分裂 
     }
 }
