@@ -133,6 +133,13 @@ The basic principle of these two modes is based on the back propagation of signa
 Located in the history\005a1 directory, the demonstration uses a combination of 5 initials and 5 finals to associate with the recognition of 25 images, which can reduce the number of voice input areas. Its other purpose is to demonstrate that the working mode of volume holographic storage can process signals in multiple directions at the same time. The resolution of this demo is very poor, only about half of the recognition rate, but I do not intend to continue to improve.
 ![result12](result12_letter_test2.png)  
 
+2021-10-13 Failed cell division attempts  
+This time I wanted to imitate the division of biological cells, starting from a cell to divide into any specified 3D shape, and designing split, goto and other genetic commands, but doing it and doing it can’t produce results, and the cells run around like fleas. I didn't listen to my orders, and finally decided to give up. The algorithm of cell division is too difficult. The advantage of cell division is that it is more "like" organisms, and it is estimated that the length of genes can be reduced by the principle of fractal. Genes are equivalent to a computer language with loops and conditional judgments.  
+Finally, the goal of generating three-dimensional shapes is accomplished with the help of simple genetic algorithms. The cells are randomly generated in adjacent positions and the coordinates of each cell are recorded in the gene. Only one gene command is deleted, which is random generate cell.
+Using genetic algorithms to generate arbitrary shapes is like a painter who is drawing, but he doesn’t know what he is painting. He just listens to the scores of the people next to him. If he paints well, he scores a high score, and if he paints badly, he scores a low score. The loop continues, and the final content of the painting is only determined by the person who scores it. There is still room for improvement in speed, such as allowing new cells to have more mutation rates.  
+![result13](result13_frog3d.gif)
+The purpose of generating three-dimensional shapes is to prepare for the generation of three-dimensional brain structures. The neural network space should be three-dimensional, so that it will be very convenient to realize pattern recognition. However, the early random connection structure lost the spatial position information. The problem of the three-dimensional holographic demonstration is that it is Hand-designed, optimization is difficult.
+
 ## License  
 [Apache 2.0] (http://www.apache.org/licenses/LICENSE-2.0)  
   
