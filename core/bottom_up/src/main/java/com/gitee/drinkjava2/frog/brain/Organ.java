@@ -10,36 +10,26 @@
  */
 package com.gitee.drinkjava2.frog.brain;
 
-import java.awt.Color;
-
 import com.gitee.drinkjava2.frog.Animal;
 
 /**
- * Cell is the smallest unit of brain  
- * Cell是脑的最小单元， cell的行为由它的触突参数决定。脑的功能由cell的位置和cell的行为决定
- *
-
-器官位置、方向、厚度、脑细胞分布直径、细胞发散或聚焦角度
-单个细胞方向、能量吸收曲线、能量发送曲线(阀值、是否永久激活、延时发送、脉冲式发送）、发送方向(正、反、双向)
-是否是视细胞、动作细胞
-触突(hole)？(固定式触突，或动态生成触突?)
-
-
+ * Organ is a zone represents a group of similar cells
+ * Organ器官表示一组相似参数的细胞, 器官的作用是影响细胞的行为，器官可以包含多个细胞，一个细胞也可以被多个器官包含
+ * 从这个版本开始，器官和细胞一样，由基因决定随机生成，不再是手工排列了
+ * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Cell { //cell数量非常庞大，不需要序列化
-    public int x; //x,y,z 是细胞的中心点在脑中的位置
+public class Organ { //organ数量也很多，不需要序列化
+    public int x; //x,y,z 是organ的中心点在脑中的位置
     public int y;
     public int z; 
-    public Color color; //这个颜色只是用于调试
-
+    public int r;//organ的半径
+    
+    
     public int geneIndex; //指向青蛙基因单例中的行号，保留这个是为了将来可能的用进废退做准备，即细胞对生存的影响反过来对基因变异率发生作用 
     
-    // energy of cell
-    public float energy = 0; // 每个细胞当前的能量值
-
-    public Cell(Animal animal, int x, int y, int z, int geneIndex) {
+    public Organ(Animal animal, int x, int y, int z, int geneIndex) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -49,14 +39,10 @@ public class Cell { //cell数量非常庞大，不需要序列化
             if(c!=null)
                 animal.normalPenalty();
             else {
-            animal.cells.add(this);
-            animal.cells3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
+//            animal.cells.add(this);
+//            animal.cells3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
             }
         }
     }
- 
-    public void act() {
-        //TODO:细胞动作
-    }
-
+   
 }
