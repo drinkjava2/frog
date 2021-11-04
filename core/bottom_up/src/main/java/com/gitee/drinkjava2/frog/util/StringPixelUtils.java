@@ -27,7 +27,7 @@ import java.util.Map;
  * @since 2.0.2
  */
 public class StringPixelUtils {
-	private static final Map<String, byte[][]> lettersMap = new HashMap<>();
+	private static final Map<String, byte[][]> lettersMap = new HashMap<>();//cache
 
 	public static byte[][] getSanserif10Pixels(String s) {
 		return getStringPixels(Font.SANS_SERIF, Font.PLAIN, 10, s);
@@ -41,35 +41,51 @@ public class StringPixelUtils {
 		return getStringPixels(Font.SANS_SERIF, Font.ITALIC, 10, s);
 	}
 
-	/* 在内存 BufferedImage里输出文本并获取它的像素点 */
-	public static byte[][] getStringPixels(String fontName, int fontStyle, int fontSize, String s) {
-		String key = new StringBuilder(fontName).append("_").append(fontStyle).append("_").append(fontSize).append("_")
-				.append(s).toString();
-		if (lettersMap.containsKey(key))
-			return lettersMap.get(key);
-		Font font = new Font(fontName, fontStyle, fontSize);
+    /* 在内存 BufferedImage里输出文本并获取它的像素点 */
+    public static byte[][] getStringPixels(String fontName, int fontStyle, int fontSize, String s) {
+        String key = new StringBuilder(fontName).append("_").append(fontStyle).append("_").append(fontSize).append("_")
+                .append(s).toString();
+        if (lettersMap.containsKey(key))
+            return lettersMap.get(key);
+        Font font = new Font(fontName, fontStyle, fontSize);
 
-		BufferedImage bi = new BufferedImage(fontSize * 10, fontSize * 50, BufferedImage.TYPE_INT_RGB);
-		Graphics g = bi.getGraphics();
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setFont(font);
-		FontMetrics fm = g2d.getFontMetrics();
-		int strHeight = fm.getAscent() + fm.getDescent() - 3;
-		int strWidth = fm.stringWidth(s);
-		g2d.drawString(s, 0, fm.getAscent() - fm.getLeading() - 1);
-		byte[][] b = new byte[strWidth][strHeight];
-		for (int y = 0; y < strHeight; y++)
-			for (int x = 0; x < strWidth; x++)
-				if (bi.getRGB(x, y) == -1)
-					b[x][strHeight - y - 1] = 1;
-				else
-					b[x][strHeight - y - 1] = 0;
-		lettersMap.put(key, b);
-		return b;
-	}
+        BufferedImage bi = new BufferedImage(fontSize * 10, fontSize * 50, BufferedImage.TYPE_INT_RGB);
+        Graphics g = bi.getGraphics();
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setFont(font);
+        FontMetrics fm = g2d.getFontMetrics();
+        int strHeight = fm.getAscent() + fm.getDescent() - 1;
+        int strWidth = fm.stringWidth(s);
+        g2d.drawString(s, 0, fm.getAscent() - fm.getLeading() -1);
+        
+        int ystart;//改进：在命令行和eclipse下会有不同的空行，所以要用ystart和yend来限定只获取有效象素行数
+        loop1: for (ystart = 0; ystart < strHeight; ystart++)
+            for (int x = 0; x < strWidth; x++) {
+                if (bi.getRGB(x, ystart) == -1)
+                    break loop1;
+            }
+        
+        int yend;
+        loop2: for (yend = strHeight; yend >= 0; yend--)
+            for (int x = 0; x < strWidth; x++) {
+                if (bi.getRGB(x, yend) == -1)
+                    break loop2;
+            }
+
+        byte[][] b = new byte[strWidth][yend-ystart+1];
+        for (int y = ystart; y <= yend; y++)
+            for (int x = 0; x < strWidth; x++)
+                if (bi.getRGB(x, y ) == -1)
+                    b[x][yend-y] = 1;
+                else
+                    b[x][yend-y] = 0;
+        lettersMap.put(key, b);
+        return b;
+    }
 
 	//*- 这个是测试输出，平时不需要用 
 	public static void main(String[] args) {
+	    System.out.println("===============");
 		byte[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "FROG");
 		int w = c.length;
 		int h = c[0].length;
@@ -83,6 +99,7 @@ public class StringPixelUtils {
 			}
 			System.out.println();
 		}
+		System.out.println("===============");
 	}
 	//*/
 }

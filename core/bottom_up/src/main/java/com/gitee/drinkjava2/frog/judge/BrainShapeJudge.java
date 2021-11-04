@@ -42,6 +42,7 @@ public class BrainShapeJudge {//NOSONAR
                 }
             }
         }
+
         for (int z = 0; z < 2; z++)
             for (int x = 0; x < 33; x++) { //再划一条线把字连起来，目前细胞不能隔空分裂，只能在紧邻位置分裂
                 Point3D p = new Point3D(C.x + x, C.y, C.z + z);
