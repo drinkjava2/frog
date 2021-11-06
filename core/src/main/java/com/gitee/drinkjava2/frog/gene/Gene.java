@@ -87,7 +87,7 @@ public class Gene {// NOSONAR
                 int x = param / 1000000;
                 int y = (param - x * 1000000) / 1000;
                 int z = param % 1000;
-                Cell c = new Cell(animal, x, y, z, i);
+                Cell c = new Cell(animal, x, y, z);
                 c.color = Color.RED;
             }
         }

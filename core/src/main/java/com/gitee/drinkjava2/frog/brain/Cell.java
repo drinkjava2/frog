@@ -34,16 +34,13 @@ public class Cell { //cell数量非常庞大，不需要序列化
     public int z; 
     public Color color; //这个颜色只是用于调试
 
-    public int geneIndex; //指向青蛙基因单例中的行号，保留这个是为了将来可能的用进废退做准备，即细胞对生存的影响反过来对基因变异率发生作用 
-    
     // energy of cell
     public float energy = 0; // 每个细胞当前的能量值
 
-    public Cell(Animal animal, int x, int y, int z, int geneIndex) {
+    public Cell(Animal animal, int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.geneIndex = geneIndex; 
         if (!Animal.outBrainRange(x, y, z)) {
             Cell c= animal.cells3D.getCell(x, y, z);
             if(c!=null)

@@ -42,9 +42,9 @@ public class Env extends JPanel {
     public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出动物落在地图上随机位置，而不是在蛋所在地
 
 	/** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用一个List<Cell>来存贮表示的同时，也用一个Cell3D动态数组来表示
-	public static final int BRAIN_XSIZE = 100; // 脑在X方向长度，取值最大为1000
-	public static final int BRAIN_YSIZE = 100; // 脑在Y方向长度，取值最大为1000
-	public static final int BRAIN_ZSIZE = 100; // 脑在Z方向长度，取值最大为1000
+	public static final int BRAIN_XSIZE = 16; // 脑在X方向长度，取值最大为1000
+	public static final int BRAIN_YSIZE = 16; // 脑在Y方向长度，取值最大为1000
+	public static final int BRAIN_ZSIZE = 16; // 脑在Z方向长度，取值最大为1000
 	
     public static final int CELLS_MAX_QTY = 4000; //脑细胞总数不能超过这个值
 

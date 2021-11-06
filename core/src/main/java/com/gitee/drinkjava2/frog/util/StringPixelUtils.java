@@ -83,7 +83,7 @@ public class StringPixelUtils {
         return b;
     }
 
-	//*- 这个是测试输出，平时不需要用 
+	/*- 这个是测试输出，平时不需要用 
 	public static void main(String[] args) {
 	    System.out.println("===============");
 		byte[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "FROG");
@@ -101,5 +101,5 @@ public class StringPixelUtils {
 		}
 		System.out.println("===============");
 	}
-	//*/
+	*/
 }

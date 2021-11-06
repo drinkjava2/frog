@@ -67,8 +67,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
 
-    public int animalMaterial = Material.FROG_TAG;
-    public Image animalImage = Animal.FROG_IMAGE;
+    public int animalMaterial;
+    public Image animalImage;
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
         this.gene.addAll(egg.gene); //动物的基因是蛋的基因的拷贝
