@@ -18,7 +18,7 @@ import com.gitee.drinkjava2.frog.util.StringPixelUtils;
  *  这个类的show方法在绘脑图时调用，在脑图里显示脑细胞群的三维形状，用空心圆来表示，这个三维形状就像是一个模子，细胞长在这个模子里的有奖，否则扣分
  */
 public class BrainShapeJudge {//NOSONAR
-    private static Point3D C = new Point3D(2, 2, Env.BRAIN_ZSIZE / 2); //C是中心点
+    private static Point3D C = new Point3D(0, 0, Env.BRAIN_ZSIZE / 2); //C是中心点
     private static boolean[][][] shape = new boolean[Env.BRAIN_XSIZE][Env.BRAIN_YSIZE][Env.BRAIN_ZSIZE];
     private static List<Point3D> pointList = new ArrayList<>(); //pointList存放上面shape的所有有效点，用来加快显示循环而不用遍历三维数组
     static {
@@ -49,14 +49,14 @@ public class BrainShapeJudge {//NOSONAR
             if (shape[c.x][c.y][c.z]) {
                 animal.normalAward();
             } else {
-                animal.normalPenalty();
+               animal.normalPenalty();
             }
         }
     }
 
     public static void show(BrainPicture pic) {// 在脑图上显示当前形状
         for (Point3D p : pointList)
-            pic.drawCircle(p.x, p.y, p.z, 1);
+            pic.drawCircle(p.x+0.5f, p.y+0.5f, p.z+0.5f, 1);
     }
 
 }

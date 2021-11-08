@@ -150,7 +150,7 @@ public class BrainPicture extends JPanel {
     public void drawCell(Cell c) {//画出细胞
         if (c == null)
             return;
-        drawPoint(c.x, c.y, c.z, 1);
+        drawPoint(c.x+0.5f, c.y+0.5f, c.z+0.5f, 1);
     }
 
 	/*-
@@ -322,7 +322,6 @@ public class BrainPicture extends JPanel {
 		g.setColor(BLACK); // 画边框
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 		setPicColor(BLACK);
-		drawCuboid(brain);// 先把脑的框架画出来
 		drawText(100, 0, 0, "x");
 		drawText(0, 100, 0, "y");
 		drawText(0, 0, 100, "z");
@@ -343,7 +342,11 @@ public class BrainPicture extends JPanel {
             drawCell(cell);
         }
 
-		g.setColor(Color.black);
+		
+		setPicColor(Color.black);
+	    drawCuboid(brain);// 最后把脑的框架画出来
+	    
+	    g.setColor(Color.black);
 		if (note != null) // 全局注释
 			g.drawString(note, 30, 55);
 		Graphics g2 = this.getGraphics();

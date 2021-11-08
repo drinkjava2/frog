@@ -23,9 +23,9 @@ import com.gitee.drinkjava2.frog.brain.Cell;
 import com.gitee.drinkjava2.frog.brain.Cells3D;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.gene.Gene;
 import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
+import com.gitee.drinkjava2.frog.util.EightTreeUtil;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -40,7 +40,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
-    transient public ArrayList<Long> gene = new ArrayList<>(); // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同
+    transient public ArrayList<Integer> gene = new ArrayList<>(); // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同
 
     static {
         try {
@@ -54,11 +54,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public List<Cell> cells = new ArrayList<>();
     public Cells3D cells3D = new Cells3D(this);
 
-
     /** brain organs */
     public List<Organ> organs = new ArrayList<>();
     public Cells3D organ3D = new Cells3D(this);
-    
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -89,26 +87,33 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 20000;
-    private static final int MAX_ENERGY_LIMIT = Integer.MAX_VALUE - 20000;
+    private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
+    private static final int MAX_ENERGY_LIMIT = Integer.MAX_VALUE - 5000;
 
-    //energy大小是环境对animal唯一的奖罚，也是animal唯一的下蛋竟争标准。调用下面6个方法来进行不同程度的奖罚
+    //energy大小是环境对animal唯一的奖罚，也是animal唯一的下蛋竟争标准。调用下面几个方法来进行不同程度的奖罚
 
-    //@formatter:off 下面几行是重要的奖罚方法，会经常调整或注释掉，集中放在一起，不要格式化为多行
-   // public void bigAward()      { energy += 5000;   if (energy > MAX_ENERGY_LIMIT)energy = MAX_ENERGY_LIMIT; }
-    public void normalAward()   { energy += 50;     if (energy > MAX_ENERGY_LIMIT)energy = MAX_ENERGY_LIMIT; }
-    //public void tinyAward()     { energy += 1;      if (energy > MAX_ENERGY_LIMIT)energy = MAX_ENERGY_LIMIT; }
-    //public void bigPenalty()    { energy -= 5000;   if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
-    public void normalPenalty() { energy -= 100;     if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
-    //public void tinyPenalty()   { energy -= 1 ;     if (energy < MIN_ENERGY_LIMIT)energy = MIN_ENERGY_LIMIT; }
-    public void kill() {this.alive = false; this.energy = MIN_ENERGY_LIMIT;  Env.clearMaterial(x, y, animalMaterial); } //kill是最大的惩罚
+    public void adjustEnergy(int en) {
+        energy += en;
+        if (energy > MAX_ENERGY_LIMIT)
+            energy = MAX_ENERGY_LIMIT;
+        if (energy < MIN_ENERGY_LIMIT)
+            energy = MIN_ENERGY_LIMIT;
+    }
+
+    //@formatter:off 下面几行是重要的奖罚方法，会经常调整或注释掉，集中放在一起，不要格式化为多行   
+    public void bigAward()      { adjustEnergy(500);}
+    public void normalAward()   { adjustEnergy(50);}
+    public void tinyAward()     { adjustEnergy(1);}
+    public void bigPenalty()    { adjustEnergy(-500);}
+    public void normalPenalty() { adjustEnergy(-100);}
+    public void tinyPenalty()   { adjustEnergy(-1);}
+    public void kill() {  this.alive = false; adjustEnergy(-5000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
-    public void initAnimal() { // 初始化animal,生成脑细胞是在这一步
-        
-        Gene.run(this); //运行基因语言，生成细胞
+    public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
+        geneMutation(); //有小概率基因突变
+        createCellsFromGene(); //运行基因语言，生成脑细胞
         BrainShapeJudge.judge(this); //重要，对细胞的形状是否符合模子的形状进行能量奖励或扣分
-        Gene.mutation(this); //有小概率基因突变
     }
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
@@ -117,11 +122,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             energy = MIN_ENERGY_LIMIT; // 死掉的青蛙确保淘汰出局
             return false;
         }
-        if (energy < 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
+        if (energy <=  MIN_ENERGY_LIMIT || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
             kill();
             return false;
         }
-        energy -= 20;
+        //energy -= 20;
         // 依次调用每个cell的active方法
         //for (Cell cell : cells)
         //    cell.organ.active(this, cell);
@@ -143,6 +148,18 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         if (cells.isEmpty())
             return null;
         return cells.get(RandomUtils.nextInt(cells.size()));
+    }
 
+    private void geneMutation() { //基因变异
+
+    }
+
+    private void createCellsFromGene() {//根据基因生成细胞
+        for (int i = 0; i < EightTreeUtil.EIGHT_TREE.length; i++) {
+            int[] p = EightTreeUtil.EIGHT_TREE[i];
+            if (p[3] == 1) {
+                new Cell(this, p[0], p[1], p[2]);
+            }
+        }
     }
 }

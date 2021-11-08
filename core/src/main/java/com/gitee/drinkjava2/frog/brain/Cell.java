@@ -31,7 +31,7 @@ import com.gitee.drinkjava2.frog.Animal;
 public class Cell { //cell数量非常庞大，不需要序列化
     public int x; //x,y,z 是细胞的中心点在脑中的位置
     public int y;
-    public int z; 
+    public int z;
     public Color color; //这个颜色只是用于调试
 
     // energy of cell
@@ -42,16 +42,16 @@ public class Cell { //cell数量非常庞大，不需要序列化
         this.y = y;
         this.z = z;
         if (!Animal.outBrainRange(x, y, z)) {
-            Cell c= animal.cells3D.getCell(x, y, z);
-            if(c!=null)
-                animal.normalPenalty();
-            else {
-            animal.cells.add(this);
-            animal.cells3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
+            Cell c = animal.cells3D.getCell(x, y, z);
+            if (c != null) {
+                //animal.normalPenalty();
+            } else {
+                animal.cells.add(this);
+                animal.cells3D.putCell(this, animal.cells.size()); //在cell3D中登记cell序号
             }
         }
     }
- 
+
     public void act() {
         //TODO:细胞动作
     }
