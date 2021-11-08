@@ -331,9 +331,6 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
 
-		setPicColor(Color.gray);
-		BrainShapeJudge.show(this);//这行显示脑形状这个模子
-		
         for (Cell cell : a.cells) { //这里开始画出细胞
             if (cell.color != null)
                 setPicColor(cell.color);
@@ -342,7 +339,9 @@ public class BrainPicture extends JPanel {
             drawCell(cell);
         }
 
-		
+        setPicColor(Color.gray);
+        BrainShapeJudge.show(this);//这行显示脑形状这个模子
+        
 		setPicColor(Color.black);
 	    drawCuboid(brain);// 最后把脑的框架画出来
 	    

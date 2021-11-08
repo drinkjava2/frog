@@ -32,7 +32,7 @@ public class Env extends JPanel {
     /** Delete eggs at beginning of each run */
     public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除保存的青蛙蛋
 
-    public static final int FROG_EGG_QTY = 25; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
