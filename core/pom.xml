@@ -7,7 +7,7 @@
  <version>10.0</version>
  
  <name>frog</name>
- <description>这个分支目标是由遗传算法来自动排列脑细胞和触突参数，以实现模式识别功能，并与上下左右运动细胞、进食奖罚感觉细胞结合起来，实现吃掉无毒蘑菇，避开有毒蘑菇这个任务</description>
+ <description>当前目标是由遗传算法来自动排列脑细胞和触突参数，以实现模式识别功能，并与上下左右运动细胞、进食奖罚感觉细胞结合起来，实现吃掉无毒蘑菇，避开有毒蘑菇这个任务</description>
  <url>https://gitee.com/drinkjava2/jsqlbox/frog</url>
   
  <issueManagement>

@@ -23,7 +23,6 @@ import com.gitee.drinkjava2.frog.brain.Cell;
 import com.gitee.drinkjava2.frog.brain.Cells3D;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -113,7 +112,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         geneMutation(); //有小概率基因突变
         createCellsFromGene(); //运行基因语言，生成脑细胞
-        BrainShapeJudge.judge(this); //对细胞的形状是否符合模子的形状进行能量奖励或扣分
     }
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
