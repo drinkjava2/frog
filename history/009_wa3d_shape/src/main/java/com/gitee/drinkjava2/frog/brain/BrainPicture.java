@@ -330,7 +330,7 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 1, 0, 0);
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
-
+		
         for (Cell cell : a.cells) { //这里开始画出细胞
             if (cell.color != null)
                 setPicColor(cell.color);
