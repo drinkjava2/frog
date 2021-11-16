@@ -23,6 +23,7 @@ import com.gitee.drinkjava2.frog.brain.Cell;
 import com.gitee.drinkjava2.frog.brain.Cells3D;
 import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -112,6 +113,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         geneMutation(); //有小概率基因突变
         createCellsFromGene(); //运行基因语言，生成脑细胞
+        BrainShapeJudge.judge(this);
     }
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
@@ -148,68 +150,33 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return cells.get(RandomUtils.nextInt(cells.size()));
     }
 
-    public void geneMutation() { //基因变异
-        //new gene
+    public void geneMutation() { //基因变异 
         if (RandomUtils.percent(10)) { //随机新增基因, 在基因里插入一个8叉树位置号,表示这个位置的8叉树整个节点会被敲除
-            int randomIndex = RandomUtils.nextInt(Tree8Util.TREE8_NODE_QTY);
-            if (gene.isEmpty())
-                gene.add(randomIndex);
-            else {
-                if (!gene.contains(randomIndex)) {//如已存在则不插入，插入时按从小到大排序
-                    int found = -1;
-                    for (int i = 0; i < gene.size(); i++) {
-                        if (gene.get(i) > randomIndex) {
-                            found = i;
-                            break;
-                        }
+            Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
+            int randomIndex = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
+            int count = -1;
+            for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
+                if (Tree8Util.ENABLE[i]) {
+                    count++;
+                    if (count >= randomIndex && !gene.contains(i)) {
+                        gene.add(i);
+                        break;
                     }
-                    if (found == -1)
-                        gene.add(randomIndex);
-                    else
-                        gene.add(found, randomIndex);
                 }
             }
         }
-
-        //delete gene
-        if (RandomUtils.percent(5)) {//随机删除基因
-            if (gene.isEmpty())
-                return;
-            gene.remove(RandomUtils.nextInt(gene.size()));
-        }
     }
 
-    private void createCellsFromGene() {//根据基因生成细胞 
-        Tree8Util.resetTree8Enable(); //清除全局变量8叉树上的标记
-
-        for (int g : gene) {//开始根据基因，把要敲除的8叉树节点作个标记
-            int gSize = Tree8Util.TREE8[g][1]; //
-            for (int i = g; i < Tree8Util.TREE8_NODE_QTY; i++) {
-                int iSize = Tree8Util.TREE8[i][1];
-                if (i > g && iSize >= gSize)
-                    break;
-                else
-                    Tree8Util.TREE8[i][0] = 0; //0表示作敲除标记
+    private void createCellsFromGene() {//根据基因生成细胞  
+        Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记 
+        for (int i = 0; i < Tree8Util.ENABLE.length; i++) {//再根据敲剩下的8叉树最小节点成生细胞
+            if (Tree8Util.ENABLE[i]) {
+                int[] node = Tree8Util.TREE8[i];
+                if (node[0] == 1) {
+                    new Cell(this, node[1], node[2], node[3]);
+                }
             }
         }
-
-        for (int[] node : Tree8Util.TREE8) {//再根据敲剩下的8叉树最小节点成生细胞
-            if (node[0] == 1 && node[1] == 1) { //如果有效,且size==1
-                new Cell(this, node[2], node[3], node[4]);
-            }
-        }
-
     }
 
-    /*- 
-    public static void main(String[] args) {//测试方法，待删 
-        Frog f = new Frog(new Egg());
-        for (int i = 0; i < 99999; i++) {
-            f.geneMutation();
-        }
-        System.out.println(f.gene);
-        System.out.println(f.gene.size());
-        System.out.println(Tree8Util.TREE8.length);
-    }
-    */
 }

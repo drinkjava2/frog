@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
 
 /**
@@ -329,7 +330,7 @@ public class BrainPicture extends JPanel {
 		drawLine(0, 0, 0, 1, 0, 0);
 		drawLine(0, 0, 0, 0, 1, 0);
 		drawLine(0, 0, 0, 0, 0, 1);
-
+		
         for (Cell cell : a.cells) { //这里开始画出细胞
             if (cell.color != null)
                 setPicColor(cell.color);
@@ -339,6 +340,7 @@ public class BrainPicture extends JPanel {
         }
 
         setPicColor(Color.gray);
+        BrainShapeJudge.show(this);//这行显示脑形状这个模子
         
 		setPicColor(Color.black);
 	    drawCuboid(brain);// 最后把脑的框架画出来
