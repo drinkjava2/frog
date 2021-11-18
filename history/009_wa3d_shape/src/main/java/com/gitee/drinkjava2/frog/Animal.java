@@ -169,7 +169,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     private void createCellsFromGene() {//根据基因生成细胞  
         Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记 
-        for (int i = 0; i < Tree8Util.ENABLE.length; i++) {//再根据敲剩下的8叉树最小节点成生细胞
+        for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树最小节点成生细胞
             if (Tree8Util.ENABLE[i]) {
                 int[] node = Tree8Util.TREE8[i];
                 if (node[0] == 1) {

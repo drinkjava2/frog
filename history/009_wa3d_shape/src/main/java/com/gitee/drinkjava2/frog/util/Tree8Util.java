@@ -10,7 +10,7 @@
  */
 package com.gitee.drinkjava2.frog.util;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.gitee.drinkjava2.frog.Env;
 
@@ -27,7 +27,7 @@ public class Tree8Util {
     //EIGHT_TREE store a pre-order Traversal tree array  
     public static final int NODE_QTY = calculateNodeSize(Env.BRAIN_CUBE_SIZE);
 
-    public static int[][] TREE8 = new int[NODE_QTY][4]; //八叉数用数组表示，第一维是深度树的行号，第二维是一个整数数组,内容是深度树表示的八叉树细胞的enable, size, x, y, z值
+    public static int[][] TREE8 = new int[NODE_QTY][4]; //八叉数用数组表示，第一维是深度树的行号，第二维是一个整数数组,内容是深度树表示的八叉树细胞的size, x, y, z值
 
     public static boolean[] ENABLE = new boolean[NODE_QTY]; //这里记录树的敲除记录，被敲除的节点用false表示
 
@@ -35,7 +35,7 @@ public class Tree8Util {
 
     private static int index = 0;
     static {
-        tree8Split(new Cube(0, 0, 0, Env.BRAIN_CUBE_SIZE));
+        tree8Split(0, 0, 0, Env.BRAIN_CUBE_SIZE);
     }
 
     static int calculateNodeSize(int n) {//计算8叉树全展开的总节点数
@@ -45,22 +45,22 @@ public class Tree8Util {
     }
 
     //if cube can split, then split it to 8 small cubes
-    private static void tree8Split(Cube c) {//如立方体可分裂，就继续递归分裂成8个
-        TREE8[index++] = new int[]{c.size, c.x, c.y, c.z}; //这里size类似于深度树中的level，只不过是size从大到小，level是从小到大，原理一样
-        if (c.size == 1)
+    private static void tree8Split(int x, int y, int z, int size) {//如立方体可分裂，就继续递归分裂成8个
+        TREE8[index++] = new int[]{size, x, y, z}; //这里size类似于深度树中的level，只不过是size从大到小，level是从小到大，原理一样
+        if (size == 1)
             return;
-        int size = c.size / 2;//每个细胞可以分裂成8个size为原来1/2的小细胞
-        tree8Split(new Cube(c.x, c.y, c.z, size));//开始分裂成8个
-        tree8Split(new Cube(c.x + size, c.y, c.z, size));
-        tree8Split(new Cube(c.x, c.y + size, c.z, size));
-        tree8Split(new Cube(c.x + size, c.y + size, c.z, size));
-        tree8Split(new Cube(c.x, c.y, c.z + size, size));
-        tree8Split(new Cube(c.x + size, c.y, c.z + size, size));
-        tree8Split(new Cube(c.x, c.y + size, c.z + size, size));
-        tree8Split(new Cube(c.x + size, c.y + size, c.z + size, size));
+        int half = size / 2;//每个细胞可以分裂成8个size为原来1/2的小细胞
+        tree8Split(x, y, z, half);
+        tree8Split(x + half, y, z, half);
+        tree8Split(x, y + half, z, half);
+        tree8Split(x + half, y + half, z, half);
+        tree8Split(x, y, z + half, half);
+        tree8Split(x + half, y, z + half, half);
+        tree8Split(x, y + half, z + half, half);
+        tree8Split(x + half, y + half, z + half, half);
     }
 
-    public static void knockNodesByGene(ArrayList<Integer> gene) {//根据基因，把要敲除的8叉树节点作个标记0
+    public static void knockNodesByGene(List<Integer> gene) {//根据基因，把要敲除的8叉树节点作个标记0
         for (int i = 0; i < Tree8Util.NODE_QTY; i++)
             ENABLE[i] = true;
         ENABLE_NODE_QTY = NODE_QTY;
