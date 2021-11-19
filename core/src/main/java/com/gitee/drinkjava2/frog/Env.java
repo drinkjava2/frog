@@ -89,7 +89,7 @@ public class Env extends JPanel {
 
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{new Food()};// 所有外界物体，如食物、字母测试工具都放在这个things里面 
+    public static EnvObject[] things = new EnvObject[]{ };// 所有外界物体，如食物、字母测试工具都放在这个things里面 
 
     static {
         System.out.println("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
@@ -293,13 +293,6 @@ public class Env extends JPanel {
                 checkIfPause();
                 for (int j = 0; j < FROG_PER_SCREEN; j++) {
                     Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
-                    if (j == 0) {
-                        System.out.println("======== cells: " + f.cells.size() + " =========");
-                        //Gene.printGene(f);
-                    }
-
-                    f.cells = null; // 清空frog脑细胞所占用的内存
-                    f.cells3D = null;
                 }
                 StringBuilder sb = new StringBuilder("Round: ");
                 sb.append(round).append(", screen:").append(current_screen).append(", speed:").append(Env.SHOW_SPEED).append(", ").append(", 用时: ").append(System.currentTimeMillis() - time0)

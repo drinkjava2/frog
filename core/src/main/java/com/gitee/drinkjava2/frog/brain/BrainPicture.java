@@ -20,7 +20,7 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
-import com.gitee.drinkjava2.frog.util.ColorUtils;
+import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
@@ -34,383 +34,376 @@ import com.gitee.drinkjava2.frog.util.ColorUtils;
  */
 @SuppressWarnings("all")
 public class BrainPicture extends JPanel {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final float D90 = (float) (Math.PI / 2);
+    private static final float D90 = (float) (Math.PI / 2);
 
-	Color picColor = RED;
-	int brainDispWidth; // screen display piexls width
-	float scale; // brain scale
-	int xOffset = 0; // brain display x offset compare to screen
-	int yOffset = 0; // brain display y offset compare to screen
-	float xAngle = D90 * .8f; // brain rotate on x axis
-	float yAngle = D90 / 4; // brain rotate on y axis
-	float zAngle = 0;// brain rotate on z axis
-	int xMask = -1;// x Mask
-	int yMask = -1;// y Mask
-	BufferedImage buffImg;
-	Graphics g;
-	String note;
-	public KeyAdapter keyAdapter;
+    Color picColor = RED;
+    int brainDispWidth; // screen display piexls width
+    float scale; // brain scale
+    int xOffset = 0; // brain display x offset compare to screen
+    int yOffset = 0; // brain display y offset compare to screen
+    float xAngle = D90 * .8f; // brain rotate on x axis
+    float yAngle = D90 / 4; // brain rotate on y axis
+    float zAngle = 0;// brain rotate on z axis
+    int xMask = -1;// x Mask
+    int yMask = -1;// y Mask
+    BufferedImage buffImg;
+    Graphics g;
+    String note;
+    public KeyAdapter keyAdapter;
 
-	public BrainPicture(int x, int y, float brainWidth, int brainDispWidth) {
-		super();
-		this.setLayout(null);// 空布局
-		this.brainDispWidth = brainDispWidth;
-		scale = 0.5f * brainDispWidth / brainWidth;
-		this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
-		buffImg = new BufferedImage(Env.FROG_BRAIN_DISP_WIDTH, Env.FROG_BRAIN_DISP_WIDTH, BufferedImage.TYPE_INT_RGB);
-		g = buffImg.getGraphics();
-		MouseAction act = new MouseAction(this);
-		this.addMouseListener(act); // 添加鼠标动作监听
-		this.addMouseWheelListener(act);// 添加鼠标滚轮动作监听
-		this.addMouseMotionListener(act);// 添加鼠标移动动作监听
+    public BrainPicture(int x, int y, float brainWidth, int brainDispWidth) {
+        super();
+        this.setLayout(null);// 空布局
+        this.brainDispWidth = brainDispWidth;
+        scale = 0.5f * brainDispWidth / brainWidth;
+        this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
+        buffImg = new BufferedImage(Env.FROG_BRAIN_DISP_WIDTH, Env.FROG_BRAIN_DISP_WIDTH, BufferedImage.TYPE_INT_RGB);
+        g = buffImg.getGraphics();
+        MouseAction act = new MouseAction(this);
+        this.addMouseListener(act); // 添加鼠标动作监听
+        this.addMouseWheelListener(act);// 添加鼠标滚轮动作监听
+        this.addMouseMotionListener(act);// 添加鼠标移动动作监听
 
-		keyAdapter = new KeyAdapter() {// 处理t,f,l,r，x键盘命令
-			@Override
-			public void keyPressed(KeyEvent e) {
-				switch (e.getKeyCode()) {
-				case KeyEvent.VK_UP:// Y切面向上
-					yMask++;
-					if (yMask > Env.BRAIN_YSIZE)
-						yMask = Env.BRAIN_YSIZE;
-					break;
-				case KeyEvent.VK_DOWN:// Y切面向下
-					yMask--;
-					if (yMask < 0)
-						yMask = 0;
-					break;
-				case KeyEvent.VK_LEFT:// x切面向左
-					xMask--;
-					if (xMask < 0)
-						xMask = 0;
-					break;
-				case KeyEvent.VK_RIGHT:// x切面向右
-					xMask++;
-					if (xMask > Env.BRAIN_XSIZE)
-						xMask = Env.BRAIN_XSIZE;
-					break;
-				case ' ':// 暂停及继续
-					Application.pauseAction.actionPerformed(null);
-					break;
-				case 'T':// 顶视
-					xAngle = 0;
-					yAngle = 0;
-					zAngle = 0;
-					break;
-				case 'F':// 前视
-					xAngle = D90;
-					yAngle = 0;
-					zAngle = 0;
-					break;
-				case 'L':// 左视
-					xAngle = D90;
-					yAngle = D90;
-					zAngle = 0;
-					break;
-				case 'R':// 右视
-					xAngle = D90;
-					yAngle = -D90;
-					zAngle = 0;
-					break;
-				case 'X':// 斜视
-					xAngle = D90 * .8f;
-					yAngle = D90 / 4;
-					zAngle = 0;
-					break;
-				default:
-				}
-			}
-		};
-		addKeyListener(keyAdapter);
-		this.setFocusable(true);
-	}
-
-	public void drawCuboid(Cuboid c) {// 在脑图上画一个长立方体框架，视角是TopView
-		drawCuboid(c.x, c.y, c.z, c.xe, c.ye, c.ze);
-	}
-
-	public void drawCuboid(float x, float y, float z, float xe, float ye, float ze) {// 在脑图上画一个长立方体框架，视角是TopView
-		drawLine(x, y, z, x + xe, y, z);// 画立方体的下面边
-		drawLine(x + xe, y, z, x + xe, y + ye, z);
-		drawLine(x + xe, y + ye, z, x, y + ye, z);
-		drawLine(x, y + ye, z, x, y, z);
-
-		drawLine(x, y, z, x, y, z + ze);// 画立方体的中间边
-		drawLine(x + xe, y, z, x + xe, y, z + ze);
-		drawLine(x + xe, y + ye, z, x + xe, y + ye, z + ze);
-		drawLine(x, y + ye, z, x, y + ye, z + ze);
-
-		drawLine(x, y, z + ze, x + xe, y, z + ze);// 画立方体的上面边
-		drawLine(x + xe, y, z + ze, x + xe, y + ye, z + ze);
-		drawLine(x + xe, y + ye, z + ze, x, y + ye, z + ze);
-		drawLine(x, y + ye, z + ze, x, y, z + ze);
-	}
-
-    public void drawCell(Cell c) {//画出细胞
-        if (c == null)
-            return;
-        drawPoint(c.x+0.5f, c.y+0.5f, c.z+0.5f, 1);
+        keyAdapter = new KeyAdapter() {// 处理t,f,l,r，x键盘命令
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()){
+                case KeyEvent.VK_UP:// Y切面向上
+                    yMask++;
+                    if (yMask > Env.BRAIN_YSIZE)
+                        yMask = Env.BRAIN_YSIZE;
+                    break;
+                case KeyEvent.VK_DOWN:// Y切面向下
+                    yMask--;
+                    if (yMask < 0)
+                        yMask = 0;
+                    break;
+                case KeyEvent.VK_LEFT:// x切面向左
+                    xMask--;
+                    if (xMask < 0)
+                        xMask = 0;
+                    break;
+                case KeyEvent.VK_RIGHT:// x切面向右
+                    xMask++;
+                    if (xMask > Env.BRAIN_XSIZE)
+                        xMask = Env.BRAIN_XSIZE;
+                    break;
+                case ' ':// 暂停及继续
+                    Application.pauseAction.actionPerformed(null);
+                    break;
+                case 'T':// 顶视
+                    xAngle = 0;
+                    yAngle = 0;
+                    zAngle = 0;
+                    break;
+                case 'F':// 前视
+                    xAngle = D90;
+                    yAngle = 0;
+                    zAngle = 0;
+                    break;
+                case 'L':// 左视
+                    xAngle = D90;
+                    yAngle = D90;
+                    zAngle = 0;
+                    break;
+                case 'R':// 右视
+                    xAngle = D90;
+                    yAngle = -D90;
+                    zAngle = 0;
+                    break;
+                case 'X':// 斜视
+                    xAngle = D90 * .8f;
+                    yAngle = D90 / 4;
+                    zAngle = 0;
+                    break;
+                default:
+                }
+            }
+        };
+        addKeyListener(keyAdapter);
+        this.setFocusable(true);
     }
 
-	/*-
-	  画线，固定以top视角的角度，所以只需要从x1,y1画一条到x2,y2的直线	
-		绕 x 轴旋转 θ
-		x, y.cosθ-zsinθ, y.sinθ+z.cosθ
-	
-		绕 y 轴旋转 θ 
-		z.sinθ+x.cosθ,  y,  z.cosθ-x.sinθ	
-		
-		 绕 z 轴旋转 θ
-		x.cosθ-y.sinθ, x.sinθ+y.consθ, z
-	 -*/
-	public void drawLine(float px1, float py1, float pz1, float px2, float py2, float pz2) {
-		double x1 = px1 - Env.BRAIN_XSIZE / 2;
-		double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-		double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
-		double x2 = px2 - Env.BRAIN_XSIZE / 2;
-		double y2 = -py2 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-		double z2 = pz2 - Env.BRAIN_ZSIZE / 2;
-		x1 = x1 * scale;
-		y1 = y1 * scale;
-		z1 = z1 * scale;
-		x2 = x2 * scale;
-		y2 = y2 * scale;
-		z2 = z2 * scale;
-		double x, y, z;
-		y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
-		z = y1 * sin(xAngle) + z1 * cos(xAngle);
-		y1 = y;
-		z1 = z;
+    public void drawCuboid(Cuboid c) {// 在脑图上画一个长立方体框架，视角是TopView
+        drawCuboid(c.x, c.y, c.z, c.xe, c.ye, c.ze);
+    }
 
-		x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
-		// z = z1 * cos(yAngle) - x1 * sin(yAngle);
-		x1 = x;
-		// z1 = z;
+    public void drawCuboid(float x, float y, float z, float xe, float ye, float ze) {// 在脑图上画一个长立方体框架，视角是TopView
+        drawLine(x, y, z, x + xe, y, z);// 画立方体的下面边
+        drawLine(x + xe, y, z, x + xe, y + ye, z);
+        drawLine(x + xe, y + ye, z, x, y + ye, z);
+        drawLine(x, y + ye, z, x, y, z);
 
-		x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
-		y = x1 * sin(zAngle) + y1 * cos(zAngle);
-		x1 = x;
-		y1 = y;
+        drawLine(x, y, z, x, y, z + ze);// 画立方体的中间边
+        drawLine(x + xe, y, z, x + xe, y, z + ze);
+        drawLine(x + xe, y + ye, z, x + xe, y + ye, z + ze);
+        drawLine(x, y + ye, z, x, y + ye, z + ze);
 
-		y = y2 * cos(xAngle) - z2 * sin(xAngle);// 绕x轴转
-		z = y2 * sin(xAngle) + z2 * cos(xAngle);
-		y2 = y;
-		z2 = z;
+        drawLine(x, y, z + ze, x + xe, y, z + ze);// 画立方体的上面边
+        drawLine(x + xe, y, z + ze, x + xe, y + ye, z + ze);
+        drawLine(x + xe, y + ye, z + ze, x, y + ye, z + ze);
+        drawLine(x, y + ye, z + ze, x, y, z + ze);
+    }
 
-		x = z2 * sin(yAngle) + x2 * cos(yAngle);// 绕y轴转
-		// z = z2 * cos(yAngle) - x2 * sin(yAngle);
-		x2 = x;
-		// z2 = z;
+    /*-
+      画线，固定以top视角的角度，所以只需要从x1,y1画一条到x2,y2的直线	
+    	绕 x 轴旋转 θ
+    	x, y.cosθ-zsinθ, y.sinθ+z.cosθ
+    
+    	绕 y 轴旋转 θ 
+    	z.sinθ+x.cosθ,  y,  z.cosθ-x.sinθ	
+    	
+    	 绕 z 轴旋转 θ
+    	x.cosθ-y.sinθ, x.sinθ+y.consθ, z
+     -*/
+    public void drawLine(float px1, float py1, float pz1, float px2, float py2, float pz2) {
+        double x1 = px1 - Env.BRAIN_XSIZE / 2;
+        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+        double x2 = px2 - Env.BRAIN_XSIZE / 2;
+        double y2 = -py2 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z2 = pz2 - Env.BRAIN_ZSIZE / 2;
+        x1 = x1 * scale;
+        y1 = y1 * scale;
+        z1 = z1 * scale;
+        x2 = x2 * scale;
+        y2 = y2 * scale;
+        z2 = z2 * scale;
+        double x, y, z;
+        y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
+        z = y1 * sin(xAngle) + z1 * cos(xAngle);
+        y1 = y;
+        z1 = z;
 
-		x = x2 * cos(zAngle) - y2 * sin(zAngle);// 绕z轴转
-		y = x2 * sin(zAngle) + y2 * cos(zAngle);
-		x2 = x;
-		y2 = y;
+        x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
+        // z = z1 * cos(yAngle) - x1 * sin(yAngle);
+        x1 = x;
+        // z1 = z;
 
-		g.setColor(picColor);
-		g.drawLine((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
-				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset,
-				(int) round(x2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
-				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
-	}
+        x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
+        y = x1 * sin(zAngle) + y1 * cos(zAngle);
+        x1 = x;
+        y1 = y;
 
-	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
-	public void drawPoint(float px1, float py1, float pz1, float r) {
-		double x1 = px1 - Env.BRAIN_XSIZE / 2;
-		double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-		double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
-		x1 = x1 * scale;
-		y1 = y1 * scale;
-		z1 = z1 * scale;
-		double x, y, z;
-		y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
-		z = y1 * sin(xAngle) + z1 * cos(xAngle);
-		y1 = y;
-		z1 = z;
+        y = y2 * cos(xAngle) - z2 * sin(xAngle);// 绕x轴转
+        z = y2 * sin(xAngle) + z2 * cos(xAngle);
+        y2 = y;
+        z2 = z;
 
-		x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
-		// z = z1 * cos(yAngle) - x1 * sin(yAngle);
-		x1 = x;
-		// z1 = z;
+        x = z2 * sin(yAngle) + x2 * cos(yAngle);// 绕y轴转
+        // z = z2 * cos(yAngle) - x2 * sin(yAngle);
+        x2 = x;
+        // z2 = z;
 
-		x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
-		y = x1 * sin(zAngle) + y1 * cos(zAngle);
-		x1 = x;
-		y1 = y;
+        x = x2 * cos(zAngle) - y2 * sin(zAngle);// 绕z轴转
+        y = x2 * sin(zAngle) + y2 * cos(zAngle);
+        x2 = x;
+        y2 = y;
 
-		g.setColor(picColor);
-		g.fillOval(round((float) x1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset - r * scale * .5f),
-				round((float) y1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - r * scale * .5f), round(r * scale),
-				round(r * scale));
-	}
+        g.setColor(picColor);
+        g.drawLine((int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset, (int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset, (int) round(x2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
+                (int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
+    }
 
-	/** 画一个圆 */
-	   public void drawCircle(float px1, float py1, float pz1, float r) {//这个方法实际和上面的一样的，只是改成了drawOval
-	        double x1 = px1 - Env.BRAIN_XSIZE / 2;
-	        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-	        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
-	        x1 = x1 * scale;
-	        y1 = y1 * scale;
-	        z1 = z1 * scale;
-	        double x, y, z;
-	        y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
-	        z = y1 * sin(xAngle) + z1 * cos(xAngle);
-	        y1 = y;
-	        z1 = z;
+    /** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
+    public void drawPoint(float px1, float py1, float pz1, float r) {
+        double x1 = px1 - Env.BRAIN_XSIZE / 2;
+        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+        x1 = x1 * scale;
+        y1 = y1 * scale;
+        z1 = z1 * scale;
+        double x, y, z;
+        y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
+        z = y1 * sin(xAngle) + z1 * cos(xAngle);
+        y1 = y;
+        z1 = z;
 
-	        x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
-	        // z = z1 * cos(yAngle) - x1 * sin(yAngle);
-	        x1 = x;
-	        // z1 = z;
+        x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
+        // z = z1 * cos(yAngle) - x1 * sin(yAngle);
+        x1 = x;
+        // z1 = z;
 
-	        x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
-	        y = x1 * sin(zAngle) + y1 * cos(zAngle);
-	        x1 = x;
-	        y1 = y;
+        x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
+        y = x1 * sin(zAngle) + y1 * cos(zAngle);
+        x1 = x;
+        y1 = y;
 
-	        g.setColor(picColor);
-	        g.drawOval(round((float) x1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset - r * scale * .5f),
-	                round((float) y1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - r * scale * .5f), round(r * scale),
-	                round(r * scale));
-	    }
-	   
-	public void drawText(float px1, float py1, float pz1, String text) {
-		drawText(px1, py1, pz1, text, 12);
-	}
+        g.setColor(picColor);
+        g.fillOval(round((float) x1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset - r * scale * .5f), round((float) y1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - r * scale * .5f), round(r * scale),
+                round(r * scale));
+    }
 
-	public void drawText(float px1, float py1, float pz1, String text, float textSize) {
-		double x1 = px1 - Env.BRAIN_XSIZE / 2;
-		double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-		double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
-		x1 = x1 * scale;
-		y1 = y1 * scale;
-		z1 = z1 * scale;
-		double x, y, z;
-		y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
-		z = y1 * sin(xAngle) + z1 * cos(xAngle);
-		y1 = y;
-		z1 = z;
+    /** 画一个圆 */
+    public void drawCircle(float px1, float py1, float pz1, float r) {//这个方法实际和上面的一样的，只是改成了drawOval
+        double x1 = px1 - Env.BRAIN_XSIZE / 2;
+        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+        x1 = x1 * scale;
+        y1 = y1 * scale;
+        z1 = z1 * scale;
+        double x, y, z;
+        y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
+        z = y1 * sin(xAngle) + z1 * cos(xAngle);
+        y1 = y;
+        z1 = z;
 
-		x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
-		// z = z1 * cos(yAngle) - x1 * sin(yAngle);
-		x1 = x;
-		// z1 = z;
+        x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
+        // z = z1 * cos(yAngle) - x1 * sin(yAngle);
+        x1 = x;
+        // z1 = z;
 
-		x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
-		y = x1 * sin(zAngle) + y1 * cos(zAngle);
-		x1 = x;
-		y1 = y;
+        x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
+        y = x1 * sin(zAngle) + y1 * cos(zAngle);
+        x1 = x;
+        y1 = y;
 
-		g.setColor(picColor);
-		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale)));
-		g.drawString(text, (int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset,
-				(int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
+        g.setColor(picColor);
+        g.drawOval(round((float) x1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset - r * scale * .5f), round((float) y1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset - r * scale * .5f), round(r * scale),
+                round(r * scale));
+    }
 
-	}
+    public void drawText(float px1, float py1, float pz1, String text) {
+        drawText(px1, py1, pz1, text, 12);
+    }
 
-	private static Cuboid brain = new Cuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);
+    public void drawText(float px1, float py1, float pz1, String text, float textSize) {
+        double x1 = px1 - Env.BRAIN_XSIZE / 2;
+        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+        x1 = x1 * scale;
+        y1 = y1 * scale;
+        z1 = z1 * scale;
+        double x, y, z;
+        y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
+        z = y1 * sin(xAngle) + z1 * cos(xAngle);
+        y1 = y;
+        z1 = z;
 
-	public void drawBrainPicture() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
-		if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
-			return;
-		Animal a = Env.getShowAnimal(); // 显示第一个青蛙或蛇
-		if (a == null || !a.alive)
-			return;
-		g.setColor(WHITE);// 先清空旧图
-		g.fillRect(0, 0, brainDispWidth, brainDispWidth);
-		g.setColor(BLACK); // 画边框
-		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
-		setPicColor(BLACK);
-		drawText(100, 0, 0, "x");
-		drawText(0, 100, 0, "y");
-		drawText(0, 0, 100, "z");
+        x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
+        // z = z1 * cos(yAngle) - x1 * sin(yAngle);
+        x1 = x;
+        // z1 = z;
 
-		setPicColor(RED);
-		drawLine(0, 0, 0, 1, 0, 0);
-		drawLine(0, 0, 0, 0, 1, 0);
-		drawLine(0, 0, 0, 0, 0, 1);
-		
-        for (Cell cell : a.cells) { //这里开始画出细胞
-            if (cell.color != null)
-                setPicColor(cell.color);
-            else
-                setPicColor(ColorUtils.grayColor(cell.energy));// 用灰度级表示细胞能量大小 
-            drawCell(cell);
+        x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
+        y = x1 * sin(zAngle) + y1 * cos(zAngle);
+        x1 = x;
+        y1 = y;
+
+        g.setColor(picColor);
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale)));
+        g.drawString(text, (int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset, (int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
+
+    }
+
+    private static Cuboid brain = new Cuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);
+
+    public void drawBrainPicture() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
+        if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
+            return;
+        Animal a = Env.getShowAnimal(); // 显示第一个青蛙或蛇
+        if (a == null || !a.alive)
+            return;
+        g.setColor(WHITE);// 先清空旧图
+        g.fillRect(0, 0, brainDispWidth, brainDispWidth);
+        g.setColor(BLACK); // 画边框
+        g.drawRect(0, 0, brainDispWidth, brainDispWidth);
+        setPicColor(BLACK);
+        drawText(100, 0, 0, "x");
+        drawText(0, 100, 0, "y");
+        drawText(0, 0, 100, "z");
+
+        setPicColor(RED);
+        drawLine(0, 0, 0, 1, 0, 0);
+        drawLine(0, 0, 0, 0, 1, 0);
+        drawLine(0, 0, 0, 0, 0, 1);
+
+ 
+        setPicColor(Color.LIGHT_GRAY); //开始画出属性不为0的细胞
+        if(RandomUtils.percent(10));
+        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {  
+            for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++) {
+                for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+                    if (a.cells[x][y][z] > 0) {
+                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 1);
+                    }
+                }
+            }
         }
 
-        setPicColor(Color.gray);
-        BrainShapeJudge.show(this);//这行显示脑形状这个模子
-        
-		setPicColor(Color.black);
-	    drawCuboid(brain);// 最后把脑的框架画出来
-	    
-	    g.setColor(Color.black);
-		if (note != null) // 全局注释
-			g.drawString(note, 30, 55);
-		Graphics g2 = this.getGraphics();
-		g2.drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
-	}
+        setPicColor(Color.BLACK);
+        BrainShapeJudge.show(this);//这行显示目标形状这个模子
+ 
+        drawCuboid(brain);// 最后把脑的框架画出来
 
-	public static void setNote(String note) {
-		Application.brainPic.note = note;
-	}
+        g.setColor(Color.black);
+        if (note != null) // 全局注释
+            g.drawString(note, 30, 55);
+        Graphics g2 = this.getGraphics();
+        g2.drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
+    }
 
-	// getters & setters
-	public float getScale() {
-		return scale;
-	}
+    public static void setNote(String note) {
+        Application.brainPic.note = note;
+    }
 
-	public void setScale(float scale) {
-		this.scale = scale;
-	}
+    // getters & setters
+    public float getScale() {
+        return scale;
+    }
 
-	public float getxAngle() {
-		return xAngle;
-	}
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
 
-	public void setxAngle(float xAngle) {
-		this.xAngle = xAngle;
-	}
+    public float getxAngle() {
+        return xAngle;
+    }
 
-	public float getyAngle() {
-		return yAngle;
-	}
+    public void setxAngle(float xAngle) {
+        this.xAngle = xAngle;
+    }
 
-	public void setyAngle(float yAngle) {
-		this.yAngle = yAngle;
-	}
+    public float getyAngle() {
+        return yAngle;
+    }
 
-	public float getzAngle() {
-		return zAngle;
-	}
+    public void setyAngle(float yAngle) {
+        this.yAngle = yAngle;
+    }
 
-	public void setzAngle(float zAngle) {
-		this.zAngle = zAngle;
-	}
+    public float getzAngle() {
+        return zAngle;
+    }
 
-	public void setPicColor(Color color) {
-		this.picColor = color;
-	}
+    public void setzAngle(float zAngle) {
+        this.zAngle = zAngle;
+    }
 
-	public Color getPicColor() {
-		return picColor;
-	}
+    public void setPicColor(Color color) {
+        this.picColor = color;
+    }
 
-	public int getxOffset() {
-		return xOffset;
-	}
+    public Color getPicColor() {
+        return picColor;
+    }
 
-	public void setxOffset(int xOffset) {
-		this.xOffset = xOffset;
-	}
+    public int getxOffset() {
+        return xOffset;
+    }
 
-	public int getyOffset() {
-		return yOffset;
-	}
+    public void setxOffset(int xOffset) {
+        this.xOffset = xOffset;
+    }
 
-	public void setyOffset(int yOffset) {
-		this.yOffset = yOffset;
-	}
+    public int getyOffset() {
+        return yOffset;
+    }
+
+    public void setyOffset(int yOffset) {
+        this.yOffset = yOffset;
+    }
 
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.brain.BrainPicture;
-import com.gitee.drinkjava2.frog.brain.Cell;
 import com.gitee.drinkjava2.frog.util.Point3D;
 import com.gitee.drinkjava2.frog.util.StringPixelUtils;
 
@@ -45,18 +44,23 @@ public class BrainShapeJudge {//NOSONAR
     }
 
     public static void judge(Animal animal) {//检查animal的脑细胞是否位于brainShape的范围内 
-        for (Cell c : animal.cells) {
-            if (shape[c.x][c.y][c.z]) {
-                animal.bigAward();
-            } else {
-               animal.normalPenalty();
+        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {
+            for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++) {
+                for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+                    if (animal.cells[x][y][z] > 0)
+                        if (shape[x][y][z]) {
+                            animal.bigAward();
+                        } else {
+                            animal.normalPenalty();
+                        }
+                }
             }
         }
     }
 
     public static void show(BrainPicture pic) {// 在脑图上显示当前形状
         for (Point3D p : pointList)
-            pic.drawCircle(p.x+0.5f, p.y+0.5f, p.z+0.5f, 1);
+            pic.drawCircle(p.x + 0.5f, p.y + 0.5f, p.z + 0.5f, 1);
     }
 
 }

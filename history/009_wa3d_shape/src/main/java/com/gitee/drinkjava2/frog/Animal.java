@@ -15,13 +15,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.gitee.drinkjava2.frog.brain.Cell;
-import com.gitee.drinkjava2.frog.brain.Cells3D;
-import com.gitee.drinkjava2.frog.brain.Organ;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
@@ -40,7 +36,7 @@ import com.gitee.drinkjava2.frog.util.Tree8Util;
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
-    transient public ArrayList<Integer> gene = new ArrayList<>(); // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同
+    public ArrayList<Integer> gene = new ArrayList<>(); // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同
 
     static {
         try {
@@ -51,12 +47,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     /** brain cells */
-    public List<Cell> cells = new ArrayList<>();
-    public Cells3D cells3D = new Cells3D(this);
-
-    /** brain organs */
-    public List<Organ> organs = new ArrayList<>();
-    public Cells3D organ3D = new Cells3D(this);
+    public long[][][] cells=new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; 
+    public float[][][] engerys=new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
+ 
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -136,19 +129,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
-        g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+       // g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
 
     /** Check if x,y,z out of animal's brain range */
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
-
-    public Cell getOneRandomCell() {
-        if (cells.isEmpty())
-            return null;
-        return cells.get(RandomUtils.nextInt(cells.size()));
-    }
+ 
 
     public void geneMutation() { //基因变异 
         if (RandomUtils.percent(10)) { //随机新增基因, 在基因里插入一个8叉树位置号,表示这个位置的8叉树整个节点会被敲除
@@ -173,10 +161,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             if (Tree8Util.ENABLE[i]) {
                 int[] node = Tree8Util.TREE8[i];
                 if (node[0] == 1) {
-                    new Cell(this, node[1], node[2], node[3]);
+                    cells[node[1]][node[2]][node[3]]=1; 
                 }
             }
         }
-    }
+    } 
 
 }
