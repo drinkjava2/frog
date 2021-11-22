@@ -36,7 +36,8 @@ import com.gitee.drinkjava2.frog.util.Tree8Util;
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
-    public ArrayList<Integer> gene = new ArrayList<>(); // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同
+    public static int GENE_NUMBERS=5; //有多少条基因
+    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同
 
     static {
         try {
@@ -47,9 +48,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     /** brain cells */
-    public long[][][] cells=new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; 
-    public float[][][] engerys=new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
- 
+    public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
+    public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -62,7 +62,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public Image animalImage;
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
-        this.gene.addAll(egg.gene); //动物的基因是蛋的基因的拷贝
+        for (int i = 0; i <GENE_NUMBERS; i++) {
+            ArrayList<Integer> gene = new ArrayList<>();
+            genes.add(gene);
+        }
+        int i = 0;
+        for (ArrayList<Integer> gene : egg.genes) //动物的基因是蛋的基因的拷贝 
+            genes.get(i++).addAll(gene);
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             x = RandomUtils.nextInt(Env.ENV_WIDTH);
             y = RandomUtils.nextInt(Env.ENV_HEIGHT);
@@ -104,7 +110,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     //@formatter:on
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
+        System.out.println("=============debug================");
+        for (ArrayList<Integer> gene : genes)
+            System.out.println("genesize=" + gene.size());
         geneMutation(); //有小概率基因突变
+        for (ArrayList<Integer> gene : genes)
+            System.out.println("genesize=" + gene.size());
         createCellsFromGene(); //运行基因语言，生成脑细胞
         BrainShapeJudge.judge(this);
     }
@@ -129,26 +140,27 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
-       // g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+        // g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
 
     /** Check if x,y,z out of animal's brain range */
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
- 
 
     public void geneMutation() { //基因变异 
         if (RandomUtils.percent(10)) { //随机新增基因, 在基因里插入一个8叉树位置号,表示这个位置的8叉树整个节点会被敲除
-            Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
-            int randomIndex = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
-            int count = -1;
-            for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
-                if (Tree8Util.ENABLE[i]) {
-                    count++;
-                    if (count >= randomIndex && !gene.contains(i)) {
-                        gene.add(i);
-                        break;
+            for (ArrayList<Integer> gene : genes) {
+                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
+                int randomIndex = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
+                int count = -1;
+                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
+                    if (Tree8Util.ENABLE[i]) {
+                        count++;
+                        if (count >= randomIndex && !gene.contains(i)) {
+                            gene.add(i);
+                            break;
+                        }
                     }
                 }
             }
@@ -156,15 +168,17 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     private void createCellsFromGene() {//根据基因生成细胞  
-        Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记 
-        for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树最小节点成生细胞
-            if (Tree8Util.ENABLE[i]) {
-                int[] node = Tree8Util.TREE8[i];
-                if (node[0] == 1) {
-                    cells[node[1]][node[2]][node[3]]=1; 
+        for (ArrayList<Integer> gene : genes) {
+            Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
+            for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树最小节点成生细胞
+                if (Tree8Util.ENABLE[i]) {
+                    int[] node = Tree8Util.TREE8[i];
+                    if (node[0] == 1) {
+                        cells[node[1]][node[2]][node[3]] = 1;
+                    }
                 }
             }
         }
-    } 
+    }
 
 }
