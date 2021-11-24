@@ -265,10 +265,6 @@ public class BrainPicture extends JPanel {
                 round(r * scale));
     }
 
-    public void drawText(float px1, float py1, float pz1, String text) {
-        drawText(px1, py1, pz1, text, 12);
-    }
-
     public void drawText(float px1, float py1, float pz1, String text, float textSize) {
         double x1 = px1 - Env.BRAIN_XSIZE / 2;
         double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
@@ -310,15 +306,6 @@ public class BrainPicture extends JPanel {
         g.fillRect(0, 0, brainDispWidth, brainDispWidth);
         g.setColor(BLACK); // 画边框
         g.drawRect(0, 0, brainDispWidth, brainDispWidth);
-        setPicColor(BLACK);
-        drawText(100, 0, 0, "x");
-        drawText(0, 100, 0, "y");
-        drawText(0, 0, 100, "z");
-
-        setPicColor(RED);
-        drawLine(0, 0, 0, 1, 0, 0);
-        drawLine(0, 0, 0, 0, 1, 0);
-        drawLine(0, 0, 0, 0, 0, 1);
 
         setPicColor(Color.LIGHT_GRAY);
         if (RandomUtils.percent(10))
@@ -326,16 +313,21 @@ public class BrainPicture extends JPanel {
         for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {
             for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++) {
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
-                    if ((a.cells[x][y][z] & 1) != 0) {
-                        setPicColor(Color.LIGHT_GRAY); //开始画出细胞第1位参数，即细胞存在
-                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 1f);
+                    if (a.cells[x][y][z] != 0) {
+
+                        if ((a.cells[x][y][z] & 1) != 0) {
+                            setPicColor(Color.LIGHT_GRAY); //开始画出细胞第1位参数，即细胞存在
+                            drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 1f);
+                        }
+
                         if ((a.cells[x][y][z] & 2) != 0) {
                             setPicColor(Color.GREEN); //开始画出细胞第2位参数，即细胞为绿色
-                            drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.75f);
+                            drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.6f);
                         }
+
                         if ((a.cells[x][y][z] & 4) != 0) {
-                            setPicColor(Color.RED); //开始画出细胞第1位参数，即细胞存在
-                            drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.5f);
+                            setPicColor(Color.RED); //开始画出细胞第3位参数，即细胞为红色
+                            drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.3f);
                         }
                     }
                 }
@@ -346,6 +338,15 @@ public class BrainPicture extends JPanel {
         BrainShapeJudge.show(this);//这行显示目标形状这个模子
 
         drawCuboid(brain);// 最后把脑的框架画出来
+
+        setPicColor(BLACK); //把x,y,z坐标画出来
+        drawText(Env.BRAIN_CUBE_SIZE, 0, 0, "x", 2);
+        drawText(0, Env.BRAIN_CUBE_SIZE, 0, "y", 2);
+        drawText(0, 0, Env.BRAIN_CUBE_SIZE, "z", 2);
+        setPicColor(RED); 
+        drawLine(0, 0, 0, Env.BRAIN_CUBE_SIZE, 0, 0);
+        drawLine(0, 0, 0, 0, Env.BRAIN_CUBE_SIZE, 0);
+        drawLine(0, 0, 0, 0, 0, Env.BRAIN_CUBE_SIZE);
 
         g.setColor(Color.black);
         if (note != null) // 全局注释

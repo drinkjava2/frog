@@ -148,8 +148,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void geneMutation() { //基因变异,注意这一个算法同时变异所有条基因，目前最多允许64条基因
-        if (RandomUtils.percent(10)) { //随机新增基因, 在基因里插入一个8叉树位置号,表示这个位置的8叉树整个节点会被敲除
-            for (int g = 0; g < GENE_NUMBERS; g++) {//依次对每条基因对应的参数，在相应的细胞处把细胞参数位置1
+        for (int g = 0; g < GENE_NUMBERS; g++) {//依次对每条基因对应的参数，在相应的细胞处把细胞参数位置1
+            if (RandomUtils.percent(10)) { //随机新增基因, 在基因里插入一个8叉树位置号,表示这个位置的8叉树整个节点会被敲除
                 ArrayList<Integer> gene = genes.get(g);
                 Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
                 int randomIndex = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
@@ -171,7 +171,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     private void createCellsFromGene() {//根据基因生成细胞参数  
         long geneMask = 1;
         for (int g = 0; g < GENE_NUMBERS; g++) {//依次对每条基因对应的参数，在相应的细胞处把细胞参数位置1
-            ArrayList<Integer> gene = genes.get(0);
+            ArrayList<Integer> gene = genes.get(g);
             Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
             for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树最小节点标记细胞参数位
                 if (Tree8Util.ENABLE[i]) {
