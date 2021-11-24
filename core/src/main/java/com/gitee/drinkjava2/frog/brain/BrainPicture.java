@@ -320,14 +320,23 @@ public class BrainPicture extends JPanel {
         drawLine(0, 0, 0, 0, 1, 0);
         drawLine(0, 0, 0, 0, 0, 1);
 
- 
-        setPicColor(Color.LIGHT_GRAY); //开始画出属性不为0的细胞
-        if(RandomUtils.percent(10));
-        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {  
+        setPicColor(Color.LIGHT_GRAY);
+        if (RandomUtils.percent(10))
+            ;
+        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {
             for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++) {
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
-                    if (a.cells[x][y][z] > 0) {
-                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 1);
+                    if ((a.cells[x][y][z] & 1) != 0) {
+                        setPicColor(Color.LIGHT_GRAY); //开始画出细胞第1位参数，即细胞存在
+                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 1f);
+                        if ((a.cells[x][y][z] & 2) != 0) {
+                            setPicColor(Color.GREEN); //开始画出细胞第2位参数，即细胞为绿色
+                            drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.75f);
+                        }
+                        if ((a.cells[x][y][z] & 4) != 0) {
+                            setPicColor(Color.RED); //开始画出细胞第1位参数，即细胞存在
+                            drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.5f);
+                        }
                     }
                 }
             }
@@ -335,7 +344,7 @@ public class BrainPicture extends JPanel {
 
         setPicColor(Color.BLACK);
         BrainShapeJudge.show(this);//这行显示目标形状这个模子
- 
+
         drawCuboid(brain);// 最后把脑的框架画出来
 
         g.setColor(Color.black);
