@@ -45,19 +45,21 @@ public class FrogEggTool {
 		sortFrogsOrderByEnergyDesc();
 		Frog first = Env.frogs.get(0);
 		Frog last = Env.frogs.get(Env.frogs.size() - 1);
-		try {
-			Env.frog_eggs.clear();
-			for (int i = 0; i < Env.FROG_EGG_QTY; i++)
-				Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
-			FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");
-			ObjectOutputStream so = new ObjectOutputStream(fo);
-			so.writeObject(Env.frog_eggs);
-			so.close();
-			System.out.print("Fist frog energy=" + first.energy);
-			System.out.print(", Last frog energy=" + last.energy);
-			System.out.println(
-					". Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
-		} catch (IOException e) {
+        try {
+            Env.frog_eggs.clear();
+            for (int i = 0; i < Env.FROG_EGG_QTY; i++)
+                Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
+            System.out.print("Fist frog energy=" + first.energy);
+            System.out.print(", Last frog energy=" + last.energy);
+            if (Env.SAVE_EGGS_FILE) {
+                FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");
+                ObjectOutputStream so = new ObjectOutputStream(fo);
+                so.writeObject(Env.frog_eggs);
+                so.close();
+                System.out.print(". Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
+            }
+            System.out.println();
+        } catch (IOException e) {
 			System.out.println(e);
 		}
 	}
