@@ -49,9 +49,9 @@ public class BrainShapeJudge {//NOSONAR
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
                     if ((animal.cells[x][y][z] & 1) != 0)
                         if (shape[x][y][z]) {
-                            animal.bigAward();
+                            animal.award5000();
                         } else {
-                            animal.normalPenalty();
+                            animal.penalty500();
                         }
                 }
             }

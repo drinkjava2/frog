@@ -15,16 +15,16 @@ public class BrainColorJudge {
             for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++) {
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
                     if ((animal.cells[x][y][z] & 2) != 0)
-                        if (x == HALF) {
-                            animal.bigAward();
+                        if (x == HALF && (animal.cells[x][y][z] & 1) != 0) {
+                            animal.award500();
                         } else {
-                            animal.normalPenalty();
+                            animal.penalty1();
                         }
                     if ((animal.cells[x][y][z] & 4) != 0)
-                        if (y == HALF) {
-                            animal.bigAward();
+                        if (y == HALF && (animal.cells[x][y][z] & 1) != 0) {
+                            animal.award50();
                         } else {
-                            animal.normalPenalty();
+                            animal.penalty1();
                         }
                 }
             }

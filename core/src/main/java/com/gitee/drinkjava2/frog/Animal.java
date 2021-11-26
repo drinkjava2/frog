@@ -103,12 +103,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     //@formatter:off 下面几行是重要的奖罚方法，会经常调整或注释掉，集中放在一起，不要格式化为多行   
-    public void bigAward()      { adjustEnergy(5000);}
-    public void normalAward()   { adjustEnergy(50);}
-    public void tinyAward()     { adjustEnergy(1);}
-    public void bigPenalty()    { adjustEnergy(-500);}
-    public void normalPenalty() { adjustEnergy(-10);}
-    public void tinyPenalty()   { adjustEnergy(-1);}
+    public void award5000()      { adjustEnergy(5000);}
+    public void award500()   { adjustEnergy(500);}
+    public void award50()     { adjustEnergy(50);}
+    public void award1()   { adjustEnergy(1);}
+    
+    public void penalty5000()    { adjustEnergy(-5000);}
+    public void penalty500() { adjustEnergy(-500);}
+    public void penalty50()   { adjustEnergy(-50);}
+    public void penalty1()   { adjustEnergy(-1);}
     public void kill() {  this.alive = false; adjustEnergy(-5000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 

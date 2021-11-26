@@ -313,6 +313,7 @@ public class BrainPicture extends JPanel {
         for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {
             for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++) {
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+                    if(x>=xMask && y>=yMask)
                     if (a.cells[x][y][z] != 0) {
 
                         if ((a.cells[x][y][z] & 1) != 0) {

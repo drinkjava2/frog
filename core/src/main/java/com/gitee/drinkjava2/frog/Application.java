@@ -94,7 +94,7 @@ public class Application {
         mainFrame.add(stopButton);
 
         // 速度条
-        final JSlider speedSlider = new JSlider(1, 10, (int) Math.round(Math.sqrt(Env.SHOW_SPEED)));
+        final JSlider speedSlider = new JSlider(1, 10, (int) Math.round(Math.pow(Env.SHOW_SPEED, 1.0/3)));
         speedSlider.setBounds(buttonXpos - 50, stopButton.getY() + 25, buttonWidth + 100, buttonHeight);
         ChangeListener slideAction = new ChangeListener() {
             @Override
