@@ -21,18 +21,18 @@ public class BrainShapeJudge {//NOSONAR
     private static boolean[][][] shape = new boolean[Env.BRAIN_XSIZE][Env.BRAIN_YSIZE][Env.BRAIN_ZSIZE];
     private static List<Point3D> pointList = new ArrayList<>(); //pointList存放上面shape的所有有效点，用来加快显示循环而不用遍历三维数组
     static {
-        putPixiel("蛙");
+        putPixiel("🐟");
     }
 
     private static void putPixiel(String str) {
-        byte[][] c = StringPixelUtils.getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, str); //要把frog二维像素变成立体的三维点放到points里和pointsList里供使用
+        byte[][] c = StringPixelUtils.getStringPixels(Font.SANS_SERIF, Font.PLAIN,16, str); //要把frog二维像素变成立体的三维点放到points里和pointsList里供使用
         int w = c.length;
         int h = c[0].length;
         for (int z = 0; z < 5; z++) {
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     if (c[x][y] > 0) {
-                        Point3D p = new Point3D(C.x + x, C.y + y, C.z + z);
+                        Point3D p = new Point3D(C.x + x, C.y + y+2, C.z + z);
                         if (!Animal.outBrainRange(p.x, p.y, p.z)) {
                             shape[p.x][p.y][p.z] = true;
                             pointList.add(p);

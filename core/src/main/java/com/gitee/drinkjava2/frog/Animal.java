@@ -39,7 +39,7 @@ import com.gitee.drinkjava2.frog.util.Tree8Util;
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
-    public static int GENE_NUMBERS = 3; //目前有多少条基因，因为cell是个long型，所以最多允许64条
+    public static int GENE_NUMBERS = 4; //目前有多少条基因，因为cell是个long型，所以最多允许64条
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // Animal的基因只保存一份，这是人工生命与实际生物（每个细胞都保留一份基因）的最大不同
 
     static {

@@ -44,7 +44,7 @@ public class Env extends JPanel {
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用一个List<Cell>来存贮表示的同时，也用一个Cell3D动态数组来表示
 
-    public static final int BRAIN_CUBE_SIZE = 8; //脑立方边长大小，必须是2的幂数如4,8,16...
+    public static final int BRAIN_CUBE_SIZE = 16; //脑立方边长大小，必须是2的幂数如4,8,16...
     public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度，取值最大为1000
     public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度，取值最大为1000
     public static final int BRAIN_ZSIZE = BRAIN_CUBE_SIZE; // 脑在Z方向长度，取值最大为1000
@@ -55,7 +55,7 @@ public class Env extends JPanel {
     public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
 
     /** Draw first frog's brain after some steps */
-    public static int DRAW_BRAIN_AFTER_STEPS = 1; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
+    public static int DRAW_BRAIN_AFTER_STEPS = 0; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
 
     /** Environment x width, unit: pixels */
     public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
