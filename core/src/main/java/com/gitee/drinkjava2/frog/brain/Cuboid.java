@@ -13,13 +13,13 @@ package com.gitee.drinkjava2.frog.brain;
 /**
  * Cuboid represents a rectangular prism 3d zone in brain
  * 
- * Cuboid是一个长方体，通常用来表示脑内器官的形状。另一个功能类似的形装是Cone锥形体。
+ * Cuboid是一个长方体，通常用来表示脑内器官的形状
  * 
  * @author Yong Zhu
  * @since 2.0.2
  */
 @SuppressWarnings("all")
-public class Cuboid implements Shape {
+public class Cuboid   {
 	private static final long serialVersionUID = 1L;
 
 	public float x;// x,y,z是长方体的左下角坐标
@@ -50,10 +50,6 @@ public class Cuboid implements Shape {
 		this.ye = c.ye;
 		this.ze = c.ze;
 	}
-
-	@Override
-	public void drawOnBrainPicture(BrainPicture pic) {
-		pic.drawCuboid(this);
-	}
+ 
 
 }

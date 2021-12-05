@@ -19,8 +19,6 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
-import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only

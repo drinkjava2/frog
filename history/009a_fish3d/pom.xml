@@ -2,9 +2,9 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>com.gitee.drinkjava2</groupId>
- <artifactId>frog010</artifactId>
+ <artifactId>frog009a</artifactId>
  <packaging>jar</packaging>
- <version>10.0</version>
+ <version>9.0</version>
  
  <name>frog</name>
  <description>当前目标是由遗传算法来自动排列脑细胞和触突参数，以实现模式识别功能，并与上下左右运动细胞、进食奖罚感觉细胞结合起来，实现吃掉无毒蘑菇，避开有毒蘑菇这个任务</description>
