@@ -24,6 +24,7 @@ import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.util.LocalFileUtils;
+import com.gitee.drinkjava2.frog.util.Logger;
 
 /**
  * FrogEggTool save/load frog eggs to file
@@ -49,18 +50,16 @@ public class FrogEggTool {
             Env.frog_eggs.clear();
             for (int i = 0; i < Env.FROG_EGG_QTY; i++)
                 Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
-            System.out.print("Fist frog energy=" + first.energy);
-            System.out.print(", Last frog energy=" + last.energy);
+			Logger.info("Fist frog energy={}, Last frog energy={}", first.energy, last.energy);
             if (Env.SAVE_EGGS_FILE) {
                 FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");
                 ObjectOutputStream so = new ObjectOutputStream(fo);
                 so.writeObject(Env.frog_eggs);
                 so.close();
-                System.out.print(". Saved " + Env.frog_eggs.size() + " eggs to file '" + Application.CLASSPATH + "frog_eggs.ser'");
+				Logger.info(". Saved {} eggs to file '{}frog_eggs.ser'", Env.frog_eggs.size(), Application.CLASSPATH);
             }
-            System.out.println();
         } catch (IOException e) {
-			System.out.println(e);
+			Logger.error(e);
 		}
 	}
 
@@ -78,7 +77,7 @@ public class FrogEggTool {
 	}
 
 	public static void deleteEggs() {
-		System.out.println("Delete exist egg file: '" + Application.CLASSPATH + "frog_eggs.ser'");
+		Logger.info("Delete exist egg file: '{}frog_eggs.ser'", Application.CLASSPATH);
 		LocalFileUtils.deleteFile(Application.CLASSPATH + "frog_eggs.ser");
 	}
 
@@ -92,7 +91,7 @@ public class FrogEggTool {
 			FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "frog_eggs.ser");
 			ObjectInputStream eggsInputStream = new ObjectInputStream(eggsFile);
 			Env.frog_eggs = (List<Egg>) eggsInputStream.readObject();
-			System.out.println("Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH
+			Logger.info("Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH
 					+ "frog_eggs.ser" + "'.\n");
 			eggsInputStream.close();
 		} catch (Exception e) {
@@ -105,7 +104,7 @@ public class FrogEggTool {
 				//TODO
 				Env.frog_eggs.add(egg);
 			}
-			System.out.println("Fail to load frog egg file '" + Application.CLASSPATH + "frog_eggs.ser" + "', created "
+			Logger.info("Fail to load frog egg file '" + Application.CLASSPATH + "frog_eggs.ser" + "', created "
 					+ Env.frog_eggs.size() + " eggs to do test.");
 		}
 
