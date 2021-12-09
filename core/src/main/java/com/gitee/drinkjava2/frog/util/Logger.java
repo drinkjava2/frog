@@ -1,3 +1,13 @@
+/*
+ * Copyright 2021 the original author or authors. 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+ * applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+ * OF ANY KIND, either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package com.gitee.drinkjava2.frog.util;
 
 import java.io.IOException;
@@ -10,9 +20,20 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
+ * This logger tool is merged from gitee, see https://gitee.com/drinkjava2/frog/pulls/4
+ *
+ * Usually a logger tool is used like below:
+ * Logger log = LoggerFactory.getLogger(Xxxx.class);
+ * log.info("some msg");
+ * 
+ * But to simplify, in this project direct use Logger static method:
+ * Logger.info("some msg");
+ * 
  * @Description: 简版控制台日志打印
+ * @author luancx
  * @Date: 2021/12/07
  */
+@SuppressWarnings("all")
 public class Logger {
     private static final String LEV_EL = "debug";
     private static final int LEVEL_INT;

@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.util.ColorUtils;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
@@ -308,25 +309,12 @@ public class BrainPicture extends JPanel {
         for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
             for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--) {
                 for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
-                    if (x >= xMask && y >= yMask)
-                        if ((a.cells[x][y][z] & 1) != 0) {
-                            setPicColor(Color.LIGHT_GRAY); //开始画出细胞第1位参数，即细胞存在
-                            drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 1f);
-
-                            if ((a.cells[x][y][z] & 2) != 0) {
-                                setPicColor(Color.GREEN); //开始画出细胞第2位参数，即细胞为绿色
-                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.8f);
+                    if (x >= xMask && y >= yMask && a.cells[x][y][z] != 0)
+                        for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
+                            if ((a.cells[x][y][z] & (1 << i)) != 0) {
+                                setPicColor(ColorUtils.colorByCode(i)); //开始画出细胞第i位参数，用不同颜色直径圆表示
+                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, i == 0 ? 0.8f : 0.5f - i * 0.07f);
                             }
-
-                            if ((a.cells[x][y][z] & 4) != 0) {
-                                setPicColor(Color.RED); //开始画出细胞第3位参数，即细胞为红色
-                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.6f);
-                            }
-                            if ((a.cells[x][y][z] & 8) != 0) {
-                                setPicColor(Color.YELLOW); //开始画出细胞第3位参数，即细胞为红色
-                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.3f);
-                            }
-
                         }
                 }
             }

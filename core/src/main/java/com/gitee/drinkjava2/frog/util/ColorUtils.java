@@ -19,53 +19,44 @@ import java.awt.Color;
  * @since 1.0
  */
 public class ColorUtils {
-	public static final int RED = 0;
-	public static final int ORANGE = 1;
-	public static final int YELLOW = 2;
-	public static final int GREEN = 3;
-	public static final int CYAN = 4;
-	public static final int BLUE = 5;
-	public static final int MAGENTA = 6;
-	public static final int GRAY = 7;
 
-	private static final Color[] rainbow = new Color[] { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN,
-			Color.BLUE, Color.MAGENTA, Color.GRAY };
+    private static final Color[] rainbow = new Color[]{Color.GRAY, Color.GREEN, Color.RED, Color.BLUE, Color.YELLOW, Color.ORANGE, Color.MAGENTA, Color.CYAN};
 
-	private static int nextColor = 0;
+    private static int nextColor = 0;
 
-	private ColorUtils() {// default private constr
-	}
+    private ColorUtils() {// default private constr
+    }
 
-	public static int nextColorCode() {
-		return nextColor++;
-	}
+    public static int nextColorCode() {
+        return nextColor++;
+    }
 
-	public static Color nextRainbowColor() {// 返回下一个彩虹色
-		if (nextColor == rainbow.length)
-			nextColor = 0;
-		return rainbow[nextColor++];
-	}
+    public static Color nextRainbowColor() {// 返回下一个彩虹色
+        if (nextColor == rainbow.length)
+            nextColor = 0;
+        return rainbow[nextColor++];
+    }
 
-	public static Color colorByCode(int i) {// 数值取模后返回一个固定彩虹色
-		return rainbow[i % rainbow.length];
-	}
+    public static Color colorByCode(int i) {// 数值取模后返回一个固定彩虹色
+        return rainbow[i % rainbow.length];
+    }
 
-	public static Color rainbowColor(float i) { // 根据数值大小范围，在8种彩虹色中取值
-		if (i <= 20)
-			return Color.GRAY;
-		if (i <= 30)
-			return Color.BLACK;
-		if (i <= 50)
-			return Color.RED;
-		return Color.MAGENTA;
-	}
+    public static Color rainbowColor(float i) { // 根据数值大小范围，在8种彩虹色中取值
+        if (i <= 20)
+            return Color.GRAY;
+        if (i <= 30)
+            return Color.BLACK;
+        if (i <= 50)
+            return Color.RED;
+        return Color.MAGENTA;
+    }
 
-	public static Color grayColor(float f) { // 根据数值大小范围0~1000，返回一个灰度色，越大越黑
-		if (f > 1000)
-			f = 1000;
-		int i1 = 255 - (int) Math.round(f * .255);
-		int i2 = 200 - (int) Math.round(f * .200);
-		int i3 = 150 - (int) Math.round(f * .150);
-		return new Color(i1, i2, i3);
-	}
+    public static Color grayColor(float f) { // 根据数值大小范围0~1000，返回一个灰度色，越大越黑
+        if (f > 1000)
+            f = 1000;
+        int i1 = 255 - (int) Math.round(f * .255);
+        int i2 = 200 - (int) Math.round(f * .200);
+        int i3 = 150 - (int) Math.round(f * .150);
+        return new Color(i1, i2, i3);
+    }
 }
