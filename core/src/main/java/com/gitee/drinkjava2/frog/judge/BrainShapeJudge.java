@@ -16,7 +16,7 @@ import com.gitee.drinkjava2.frog.util.StringPixelUtils;
  *  这个类的show方法在绘脑图时调用，在脑图里显示脑细胞群的三维形状，用空心圆来表示，这个三维形状就像是一个模子，细胞长在这个模子里的有奖，否则扣分
  */
 public class BrainShapeJudge {//NOSONAR
-    private static int[] C = new int[] {0, 0, Env.BRAIN_ZSIZE / 2}; //C是中心点
+    private static int[] C = new int[] {0, 0, Env.BRAIN_CUBE_SIZE / 2}; //C是中心点
     private static boolean[][][] shape = new boolean[Env.BRAIN_XSIZE][Env.BRAIN_YSIZE][Env.BRAIN_ZSIZE];
     private static List<int[]> pointList = new ArrayList<>(); //pointList存放上面shape的所有有效点，用来加快显示循环而不用遍历三维数组
     static {
@@ -24,7 +24,7 @@ public class BrainShapeJudge {//NOSONAR
     }
 
     private static void putPixiel(String str) {
-        byte[][] c = StringPixelUtils.getStringPixels(Font.SANS_SERIF, Font.PLAIN,16, str); //要把frog二维像素变成立体的三维点放到points里和pointsList里供使用
+        byte[][] c = StringPixelUtils.getStringPixels(Font.SANS_SERIF, Font.PLAIN, Env.BRAIN_CUBE_SIZE , str); //要把frog二维像素变成立体的三维点放到points里和pointsList里供使用
         int w = c.length;
         int h = c[0].length;
         for (int z = 0; z < 5; z++) {
@@ -48,9 +48,9 @@ public class BrainShapeJudge {//NOSONAR
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
                     if ((animal.cells[x][y][z] & 1) != 0)
                         if (shape[x][y][z]) {
-                            animal.award5000();
+                            animal.awardAAAA();
                         } else {
-                            animal.penalty500();
+                            animal.penaltyAAA();
                         }
                 }
             }

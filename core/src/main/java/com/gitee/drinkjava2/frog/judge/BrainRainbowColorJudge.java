@@ -12,15 +12,16 @@ import com.gitee.drinkjava2.frog.brain.Cells;
 public class BrainRainbowColorJudge {
 
     public static void judge(Animal animal) {//检查颜色与小鱼图像重合，且呈斑马纹色彩分布，是就加分，否则扣分
+        int colorWidth = Env.BRAIN_CUBE_SIZE / Cells.GENE_NUMBERS; //每条彩带宽度
         for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++)
             for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++)
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++)
                     for (int i = 1; i <= Cells.GENE_NUMBERS; i++)
-                        if ((animal.cells[x][y][z] & (1 << i)) != 0)
-                            if ((animal.cells[x][y][z] & 1) != 0 && x >= i * 2 && x <= (i * 2 + 1))
-                                animal.award50();
+                        if ((animal.cells[x][y][z] & (1 << i)) != 0) //如果色彩存
+                            if ((animal.cells[x][y][z] & 1) != 0 && x >= (i - 1) * colorWidth && x < (i * colorWidth))
+                                animal.awardAA();
                             else
-                                animal.penalty1();
+                                animal.penaltyA();
     }
 
 }

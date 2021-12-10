@@ -20,17 +20,15 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * This logger tool is merged from gitee, see https://gitee.com/drinkjava2/frog/pulls/4
- *
  * Usually a logger tool is used like below:
  * Logger log = LoggerFactory.getLogger(Xxxx.class);
  * log.info("some msg");
  * 
- * But to simplify, in this project direct use Logger static method:
+ * But to simplify, in this project directly use static method:
  * Logger.info("some msg");
  * 
- * @Description: 简版控制台日志打印
- * @author luancx
+ * @Description: 简版控制台日志打印，从码云上合并来，见 https://gitee.com/drinkjava2/frog/pulls/4
+ * @author 栾成翔
  * @Date: 2021/12/07
  */
 @SuppressWarnings("all")

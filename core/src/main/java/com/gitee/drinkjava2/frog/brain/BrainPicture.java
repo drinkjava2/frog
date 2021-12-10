@@ -313,7 +313,7 @@ public class BrainPicture extends JPanel {
                         for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
                             if ((a.cells[x][y][z] & (1 << i)) != 0) {
                                 setPicColor(ColorUtils.colorByCode(i)); //开始画出细胞第i位参数，用不同颜色直径圆表示
-                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, i == 0 ? 0.8f : 0.5f - i * 0.07f);
+                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, i == 0 ? 0.8f : 0.5f - i * 0.05f);
                             }
                         }
                 }

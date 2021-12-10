@@ -45,7 +45,7 @@ public class Env extends JPanel {
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用一个List<Cell>来存贮表示的同时，也用一个Cell3D动态数组来表示
 
-    public static final int BRAIN_CUBE_SIZE = 16; //脑立方边长大小，必须是2的幂数如4,8,16...
+    public static final int BRAIN_CUBE_SIZE = 8; //脑立方边长大小，必须是2的幂数如4,8,16...
     public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度，取值最大为1000
     public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度，取值最大为1000
     public static final int BRAIN_ZSIZE = BRAIN_CUBE_SIZE; // 脑在Z方向长度，取值最大为1000
