@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -29,40 +30,46 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  * @since 1.0
  */
 public class Egg implements Serializable {
-	private static final long serialVersionUID = 1L;
-	public int x; // 蛋的x位置
-	public int y; // 蛋的y位置
-	
-	// gene is a language similar like BASIC created by random 
-	// 基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中，和实际生物每个细胞都要保存一份基因不同，程序中每个细胞仅保存着基因的指针和当前细胞位于基因链中的行号，并不需要保存基因的副本，这样可以极大地减少内存占用
-    public ArrayList<ArrayList<Integer>> genes =new ArrayList<>();
-    
-    
-  
-	public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙d
-		x = RandomUtils.nextInt(Env.ENV_WIDTH);
-		y = RandomUtils.nextInt(Env.ENV_HEIGHT); 
-	}
+    private static final long serialVersionUID = 1L;
+    public int x; // 蛋的x位置
+    public int y; // 蛋的y位置
 
-	/** Create egg from animal */
+    // gene is a language similar like BASIC created by random 
+    // 基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中，和实际生物每个细胞都要保存一份基因不同，程序中每个细胞仅保存着基因的指针和当前细胞位于基因链中的行号，并不需要保存基因的副本，这样可以极大地减少内存占用
+    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>();
+
+    public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙d
+        x = RandomUtils.nextInt(Env.ENV_WIDTH);
+        y = RandomUtils.nextInt(Env.ENV_HEIGHT);
+    }
+
+    /** Create egg from animal */
     public Egg(Animal a) { // 下蛋，每个器官会创建自已的副本或变异，可以是0或多个
         x = a.x;
         y = a.y;
         for (ArrayList<Integer> gene : a.genes) {//下蛋就是把动物的基因拷贝到新蛋里，并有可能变异
-            ArrayList<Integer> g=new ArrayList<>();
+            ArrayList<Integer> g = new ArrayList<>();
             g.addAll(gene);
             genes.add(g);
         }
     }
 
-	/**
-	 * Create a egg by join 2 eggs, x+y=zygote 模拟X、Y 染色体合并，两个蛋生成一个新的蛋
-	 */
-	public Egg(Egg a, Egg b) {
-		x = a.x;
-		y = a.y;
-		genes.addAll(a.genes); 
-		//TODO 将两个蛋的基因混合
-	}
+    /**
+     * Create a egg by join 2 eggs, x+y=zygote 模拟X、Y 染色体合并，两个蛋生成一个新的蛋
+     */
+    public Egg(Egg a, Egg b) {//两个蛋的基因混合, 生成一个新蛋
+        x = a.x;
+        y = a.y;
+        genes.addAll(a.genes);
+        if (!genes.isEmpty() &&  b != null)
+            for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
+                if (RandomUtils.percent(10)) {
+                    ArrayList<Integer> agene = a.genes.get(i);
+                    ArrayList<Integer> bgene = b.genes.get(i);
+                    if (!bgene.isEmpty())
+                        agene.add(bgene.get(RandomUtils.nextInt(bgene.size())));
+                }
+            }
+    }
 
 }

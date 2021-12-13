@@ -112,12 +112,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void awardAAAA()      { changeEnergy(8000);}
     public void awardAAA()   { changeEnergy(800);}
-    public void awardAA()     { changeEnergy(80);}     //TODO:如果改为20，就可能出现缺色，所以下面要用细胞8叉树从底向上扩张的算法把缺色补上
+    public void awardAA()     { changeEnergy(20);}     //TODO:如果改为20，就可能出现缺色，所以下面要用细胞8叉树从底向上扩张的算法把缺色补上
     public void awardA()   { changeEnergy(1);}
     
     public void penaltyAAAA()    { changeEnergy(-8000);}
     public void penaltyAAA() { changeEnergy(-800);}
-    public void penaltyAA()   { changeEnergy(-80);}
+    public void penaltyAA()   { changeEnergy(-20);}
     public void penaltyA()   { changeEnergy(-1);}
     public void kill() {  this.alive = false; changeEnergy(-5);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on

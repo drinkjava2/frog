@@ -101,7 +101,6 @@ public class FrogEggTool {
 			Env.frog_eggs.clear();
 			for (int j = 0; j < Env.FROG_EGG_QTY; j++) {
 				Egg egg = new Egg();
-				//TODO
 				Env.frog_eggs.add(egg);
 			}
 			Logger.info("Fail to load frog egg file '" + Application.CLASSPATH + "frog_eggs.ser" + "', created "
