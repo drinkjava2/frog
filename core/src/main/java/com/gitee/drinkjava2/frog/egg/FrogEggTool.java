@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -42,7 +43,11 @@ public class FrogEggTool {
 	 * 用能量的多少来简化生存竟争模拟，每次下蛋数量固定为EGG_QTY个
 	 */
 	public static void layEggs() {
-
+	    for (Frog frog : Env.frogs) {
+            for (ArrayList<Integer> gene : frog.genes) {//基因多的青蛙也要适当扣点分，防止蛋文件太大
+                frog.energy-=gene.size();
+            }
+        }
 		sortFrogsOrderByEnergyDesc();
 		Frog first = Env.frogs.get(0);
 		Frog last = Env.frogs.get(Env.frogs.size() - 1);

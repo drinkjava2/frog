@@ -64,16 +64,16 @@ public class Tree8Util {
         for (int i = 0; i < Tree8Util.NODE_QTY; i++)
             ENABLE[i] = true;
         ENABLE_NODE_QTY = NODE_QTY;
-        for (int g : gene) {
+        for (int g : gene) {//g是要敲除的节点的行号
             if (Tree8Util.ENABLE[g]) {
-                int gSize = Tree8Util.TREE8[g][0]; //
-                for (int i = g; i < Tree8Util.NODE_QTY; i++) {
+                int gSize = Tree8Util.TREE8[g][0]; //gSize是节点对应的立方体边长
+                for (int i = g; i < Tree8Util.NODE_QTY; i++) {//从这个g节点开始，往下找节点
                     int iSize = Tree8Util.TREE8[i][0];
-                    if (i > g && iSize >= gSize)
+                    if (i > g && iSize >= gSize) //如果除了第一个节点外，边长与g相同或大于g的边长，说明节点不是g的子节点，退出
                         break;
-                    else {
-                        if (Tree8Util.ENABLE[i]) {
-                            ENABLE_NODE_QTY--;
+                    else {//否则就是g的子节点，需要敲除
+                        if (Tree8Util.ENABLE[i]) { //如是还没敲除
+                            ENABLE_NODE_QTY--; //有效节点数减1，这个
                             Tree8Util.ENABLE[i] = false; //作敲除标记
                         }
                     }

@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -20,6 +21,7 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
+import com.gitee.drinkjava2.frog.util.Tree8Util;
 
 /**
  * BrainPicture show first frog's brain structure, for debug purpose only
@@ -295,13 +297,57 @@ public class BrainPicture extends JPanel {
 
     private static Cuboid brain = new Cuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);
 
+    
+    
     public void drawBrainPicture() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
         if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
             return;
+        if(Env.show_split_detail)
+            drawSplitDetail();
+        else 
+            drawBrainStructure();
+    }
+    
+    public void drawSplitDetail() {// 在这个方法里绘制脑细胞分裂的显示步聚，即从一个细胞开始分裂成最终脑结构的每一步
+        Animal a = Env.getShowAnimal(); // 第一个青蛙或蛇
+
+        for (int i = Env.BRAIN_CUBE_SIZE; i >= 1; i /= 2) {
+            g.setColor(WHITE);// 先清空旧图, g是buffImg，绘在内存中
+            g.fillRect(0, 0, brainDispWidth, brainDispWidth);
+            g.setColor(BLACK); // 画边框
+            g.drawRect(0, 0, brainDispWidth, brainDispWidth);
+
+            for (int geneIndex = 0; geneIndex < Cells.GENE_NUMBERS; geneIndex++) {
+                ArrayList<Integer> gene = a.genes.get(geneIndex);
+                Tree8Util.knockNodesByGene(gene);
+                for (int j = 0; j < Tree8Util.NODE_QTY; j++) {
+                    if (Tree8Util.ENABLE[j]) {
+                        int[] node = Tree8Util.TREE8[j];
+                        int size = node[0];
+                        if (size == i && Env.display_gene[geneIndex]) {//如果允许显示的话, 显示当前层级的节点
+                            setPicColor(ColorUtils.colorByCode(geneIndex));
+                            drawPoint(node[1] + size / 2, node[2] + size / 2, node[3] + size / 2, size * (0.5f - geneIndex * 0.05f));
+                        }
+                    }
+                }
+            }
+            g.setColor(BLACK);
+            drawCuboid(brain);// 把脑的框架画出来
+            this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片 
+            if (!Env.show_split_detail)
+                return;
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+    
+    public void drawBrainStructure() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
         Animal a = Env.getShowAnimal(); // 显示第一个青蛙或蛇
         if (a == null || !a.alive)
             return;
-        g.setColor(WHITE);// 先清空旧图
+        g.setColor(WHITE);// 先清空旧图, g是buffImg，绘在内存中
         g.fillRect(0, 0, brainDispWidth, brainDispWidth);
         g.setColor(BLACK); // 画边框
         g.drawRect(0, 0, brainDispWidth, brainDispWidth);
@@ -310,10 +356,10 @@ public class BrainPicture extends JPanel {
             for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--) {
                 for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
                     if (x >= xMask && y >= yMask && a.cells[x][y][z] != 0)
-                        for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
-                            if ((a.cells[x][y][z] & (1 << i)) != 0) {
-                                setPicColor(ColorUtils.colorByCode(i)); //开始画出细胞第i位参数，用不同颜色直径圆表示
-                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, i == 0 ? 0.8f : 0.5f - i * 0.05f);
+                        for (int geneIndex = 0; geneIndex < Cells.GENE_NUMBERS; geneIndex++) {
+                            if ((a.cells[x][y][z] & (1 << geneIndex)) != 0 && Env.display_gene[geneIndex]) {
+                                setPicColor(ColorUtils.colorByCode(geneIndex)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
+                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, geneIndex == 0 ? 0.8f : 0.5f - geneIndex * 0.05f);
                             }
                         }
                 }
@@ -337,8 +383,7 @@ public class BrainPicture extends JPanel {
         g.setColor(Color.black);
         if (note != null) // 全局注释
             g.drawString(note, 30, 55);
-        Graphics g2 = this.getGraphics();
-        g2.drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
+        this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
     }
 
     public static void setNote(String note) {

@@ -18,6 +18,6 @@ package com.gitee.drinkjava2.frog.brain;
  */
 @SuppressWarnings("all")
 public class Cells   { 
-    public static int GENE_NUMBERS = 7; //目前有多少条基因，每个脑细胞用是一个long来存储，所以最多允许64条基因，每个基因控制一个细胞的参数
+    public static int GENE_NUMBERS = 5; //目前有多少条基因，每个脑细胞用是一个long来存储，所以最多允许64条基因，每个基因控制一个细胞的参数
     
 }

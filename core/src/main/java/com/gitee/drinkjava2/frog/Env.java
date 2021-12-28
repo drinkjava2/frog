@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
@@ -39,13 +40,13 @@ public class Env extends JPanel {
     /** Delete eggs at beginning of each run */
     public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
 
-    public static final boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
+    public static boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
 
     public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出动物落在地图上随机位置，而不是在蛋所在地
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用一个List<Cell>来存贮表示的同时，也用一个Cell3D动态数组来表示
 
-    public static final int BRAIN_CUBE_SIZE = 8; //脑立方边长大小，必须是2的幂数如4,8,16...
+    public static final int BRAIN_CUBE_SIZE = 16; //脑立方边长大小，必须是2的幂数如4,8,16...
     public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度，取值最大为1000
     public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度，取值最大为1000
     public static final int BRAIN_ZSIZE = BRAIN_CUBE_SIZE; // 脑在Z方向长度，取值最大为1000
@@ -93,12 +94,18 @@ public class Env extends JPanel {
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
     public static EnvObject[] things = new EnvObject[]{ };// 所有外界物体，如食物、字母测试工具都放在这个things里面
-
+    
+    public static boolean show_split_detail=false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
+    
+    public static boolean[] display_gene=new boolean[Cells.GENE_NUMBERS]; //脑最多有64个基因，这里用来控制哪些基因需要显示在脑图上
+    
     static {
         Logger.info("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
         Logger.info("脑图快捷键： T:顶视  F：前视  L:左视  R:右视  X:斜视  方向键：剖视  空格:暂停  鼠标：缩放旋转平移");
         if (DELETE_FROG_EGGS)
             FrogEggTool.deleteEggs();
+        for (int i = 0; i < display_gene.length; i++) 
+            display_gene[i]=true;
     }
 
     public Env() {

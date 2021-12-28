@@ -1,17 +1,21 @@
 package com.gitee.drinkjava2.frog;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.gitee.drinkjava2.frog.brain.BrainPicture;
+import com.gitee.drinkjava2.frog.brain.Cells;
 
 /**
  * Application's main method start the program
@@ -40,7 +44,7 @@ public class Application {
     public static boolean selectFrog = true;
 
     private static void checkIfShowBrainPicture(JButton button) {
-        int y = Env.ENV_HEIGHT + 130;
+        int y = Env.ENV_HEIGHT + 150;
         if (Env.SHOW_FIRST_ANIMAL_BRAIN) {
             button.setText("Hide brain"); 
             if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
@@ -55,7 +59,7 @@ public class Application {
 
     public static void main(String[] args) {
         mainFrame.setLayout(null);
-        mainFrame.setSize(Env.ENV_WIDTH + 200, Env.ENV_HEIGHT + 100); // 窗口大小
+        mainFrame.setSize(Env.ENV_WIDTH + 200, Env.ENV_HEIGHT + 150); // 窗口大小
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 关闭时退出程序
         mainFrame.add(env); // 添加虚拟环境Panel
         mainFrame.add(brainPic); // 添加脑图Panel
@@ -92,7 +96,7 @@ public class Application {
         };
         stopButton.addActionListener(pauseAction);
         mainFrame.add(stopButton);
-
+  
         // 速度条
         final JSlider speedSlider = new JSlider(1, 10, (int) Math.round(Math.pow(Env.SHOW_SPEED, 1.0/3)));
         speedSlider.setBounds(buttonXpos - 50, stopButton.getY() + 25, buttonWidth + 100, buttonHeight);
@@ -109,6 +113,55 @@ public class Application {
         label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
         mainFrame.add(label);
 
+ 
+        
+        //是否把egg文件存盘
+        JCheckBox saveFileCheckBox = new JCheckBox("Save egg file");
+        saveFileCheckBox.setBounds(buttonXpos, Env.ENV_HEIGHT + 80, 120, 22);
+        ActionListener saveAction = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (saveFileCheckBox.isSelected())
+                    Env.SAVE_EGGS_FILE = true;
+                else
+                    Env.SAVE_EGGS_FILE = false;
+            }
+        };
+        saveFileCheckBox.addActionListener(saveAction);
+        mainFrame.add(saveFileCheckBox); 
+        
+        //基因维数显示控制
+        for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
+            JRadioButton geneRadio=new JRadioButton();
+            geneRadio.setBounds(buttonXpos+300+i*20, Env.ENV_HEIGHT + 8, 20, 22);
+            geneRadio.setSelected(true);
+            geneRadio.setName(""+i);
+            ActionListener geneRadioAction = new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int i= Integer.parseInt(geneRadio.getName());
+                    if (geneRadio.isSelected())
+                        Env.display_gene[i]=true;
+                    else
+                        Env.display_gene[i]=false;
+                }
+            };
+            geneRadio.addActionListener(geneRadioAction);
+            mainFrame.add(geneRadio);
+        }
+        
+        //是否显示分裂过程
+        JCheckBox showSplitDetailCheckBox = new JCheckBox("Show split detail");
+        showSplitDetailCheckBox.setBounds(buttonXpos+300, Env.ENV_HEIGHT + 40, 120, 22);
+        ActionListener detailAction = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (showSplitDetailCheckBox.isSelected())
+                    Env.show_split_detail = true;
+                else
+                    Env.show_split_detail = false;
+            }
+        };
+        showSplitDetailCheckBox.addActionListener(detailAction);
+        mainFrame.add(showSplitDetailCheckBox); 
+        
         mainFrame.setVisible(true);
         env.run();
     }
