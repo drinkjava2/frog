@@ -318,7 +318,7 @@ public class BrainPicture extends JPanel {
             g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
             for (int geneIndex = 0; geneIndex < Cells.GENE_NUMBERS; geneIndex++) {
-                ArrayList<Integer> gene = a.blackGenes.get(geneIndex);
+                ArrayList<Integer> gene = a.genes.get(geneIndex);
                 Tree8Util.knockNodesByGene(gene);
                 for (int j = 0; j < Tree8Util.NODE_QTY; j++) {
                     if (Tree8Util.enable[j]) {

@@ -83,5 +83,7 @@ public class Tree8Util {
             }
         }
     }
-
+public static void main(String[] args) {
+    System.out.println(calculateNodeSize(64));
+}
 }

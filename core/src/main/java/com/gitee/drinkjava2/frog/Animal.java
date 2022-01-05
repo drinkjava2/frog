@@ -31,8 +31,8 @@ import com.gitee.drinkjava2.frog.util.Tree8Util;
  * Animal is all artificial lives' father class
  * Animal only keep one copy of genes from egg, not store gene in cell  
  * Animal是所有动物（青蛙、蛇等）的父类, animal是由蛋孵出来的，蛋里保存着脑细胞结构生成的基因, Animal只保存一份基因而不是每个细胞都保存一份基因，这是人工生命与实际生物的最大不同
- * 基因是一个list<list>结构, 每一条list代表一条由深度树方式存储的基因树，分表控制细胞的一个参数，用cells长整的一位表示，比如genes.get(0)是控制细胞的存在，即cells三维数组的元素的最低位
- * 从2022-01-03起，新增白节点概念，每个参数要用两条基因来表示，一条基因保存黑节点，即要删除的节点， 另条基因保存白节点，即要新增的节点，如果节点冲突，以底层的分支为准。
+ * 基因是一个list<list>结构, 每一条list代表一条由深度树方式存储的基因树，分表控制细胞的一个参数，当cell用长整数表示时最多可以表达支持64个参数
+ * 从2022-01-05起，新增黑白节点概念，每个基因用一个整数表示，白节点用8叉树序号左移1位并加1表示，黑节点用8叉树序号左移1位表示,也就是说最低位用来表示黑白
  * 
  * 
  * @author Yong Zhu
@@ -42,8 +42,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
     
-    public ArrayList<ArrayList<Integer>> blackGenes = new ArrayList<>(); // 黑基因保存黑节点，黑节点下的所有子节点要被删除，直到碰到白节点为止
-   public ArrayList<ArrayList<Integer>> whiteGenes = new ArrayList<>(); // 白基因保存白节点，白节点下的所有子节点要被删除，直到碰到黑节点为止
+    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体
 
     static {
         try {
@@ -69,15 +68,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
         for (int i = 0; i < GENE_NUMBERS; i++) {
-            blackGenes.add(new ArrayList<>());
-            whiteGenes.add(new ArrayList<>());
+            genes.add(new ArrayList<>());
         }
         int i = 0;
-        for (ArrayList<Integer> gene : egg.blackGenes)//动物的基因是蛋的基因的拷贝 
-            blackGenes.get(i++).addAll(gene);
+        for (ArrayList<Integer> gene : egg.genes)//动物的基因是蛋的基因的拷贝 
+            genes.get(i++).addAll(gene);
         i = 0;
-        for (ArrayList<Integer> gene : egg.whiteGenes)//动物的基因是蛋的基因的拷贝 
-            whiteGenes.get(i++).addAll(gene);        
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             x = RandomUtils.nextInt(Env.ENV_WIDTH);
             y = RandomUtils.nextInt(Env.ENV_HEIGHT);
@@ -156,26 +152,31 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void geneMutation() { //基因变异,注意这一个算法同时变异所有条基因，目前最多允许64条基因
         for (int g = 0; g < GENE_NUMBERS; g++) {//依次对每条基因对应的参数，在相应的细胞处把细胞参数位置1
-            if (RandomUtils.percent(10)) { //随机新增基因, 在基因里插入一个8叉树位置号,表示这个位置的8叉树整个节点会被敲除
-                ArrayList<Integer> gene = blackGenes.get(g);
-                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
-                int randomIndex = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
-                int count = -1;
-                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
-                    if (Tree8Util.enable[i]) {
-                        count++;
-                        if (count >= randomIndex && !gene.contains(i)) {
-                            gene.add(i);
-                            break;
-                        }
-                    }
-                }
+            if (RandomUtils.percent(10)) { //随机新增基因
+                ArrayList<Integer> gene = genes.get(g);
+                int x = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
+                if (!gene.contains(x))
+                    gene.add(x);
+                
+                
+//                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
+//                int randomIndex = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
+//                int count = -1;
+//                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
+//                    if (Tree8Util.enable[i]) {
+//                        count++;
+//                        if (count >= randomIndex && !gene.contains(i)) {
+//                            gene.add(i);
+//                            break;
+//                        }
+//                    }
+//                }
             }
         }
 
         for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因
-            if (RandomUtils.percent(3)) {
-                ArrayList<Integer> gene = blackGenes.get(g);
+            if (RandomUtils.percent(2)) {
+                ArrayList<Integer> gene = genes.get(g);
                 if (!gene.isEmpty())
                     gene.remove(RandomUtils.nextInt(gene.size()));
             }
@@ -185,7 +186,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     private void createCellsFromGene() {//根据基因生成细胞参数  
         long geneMask = 1;
         for (int g = 0; g < GENE_NUMBERS; g++) {//依次对每条基因对应的参数，在相应的细胞处把细胞参数位置1
-            ArrayList<Integer> gene = blackGenes.get(g);
+            ArrayList<Integer> gene = genes.get(g);
             Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
             for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树最小节点标记细胞参数位
                 if (Tree8Util.enable[i]) {

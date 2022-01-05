@@ -44,7 +44,7 @@ public class FrogEggTool {
 	 */
 	public static void layEggs() {
 	    for (Frog frog : Env.frogs) {
-            for (ArrayList<Integer> gene : frog.blackGenes) {//基因多的青蛙也要适当扣点分，防止蛋文件太大
+            for (ArrayList<Integer> gene : frog.genes) {//基因多的青蛙也要适当扣点分，防止蛋文件太大
                 frog.energy-=gene.size();
             }
         }
