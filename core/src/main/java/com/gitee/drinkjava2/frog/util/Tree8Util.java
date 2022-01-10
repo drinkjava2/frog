@@ -31,9 +31,7 @@ public class Tree8Util {
     
     public static boolean[] enable = new boolean[NODE_QTY]; //这里临时记录树的敲除记录，被敲除的节点用false表示
     
-    public static int[] minSize = new int[NODE_QTY]; //这里临时记录控制节点的最小基因size。一个节点可以由多个基因覆盖，但只有最小size的基因有效，即距离最近原则
-
-    public static int ENABLE_NODE_QTY = NODE_QTY; //这里临时记录未被敲除的总节点数，好用来下次继续敲除
+    public static int enableNodeQTY = NODE_QTY; //这里临时记录未被敲除的总节点数，好用来下次继续敲除
 
     private static int index = 0;
     static {
@@ -65,7 +63,7 @@ public class Tree8Util {
     public static void knockNodesByGene(List<Integer> gene) {//根据基因，把要敲除的8叉树节点作个标记0
         for (int i = 0; i < Tree8Util.NODE_QTY; i++)
             enable[i] = true;
-        ENABLE_NODE_QTY = NODE_QTY;
+        enableNodeQTY = NODE_QTY;
         for (int g : gene) {//g是要敲除的节点的行号
             if (Tree8Util.enable[g]) {
                 int gSize = Tree8Util.TREE8[g][0]; //gSize是节点对应的立方体边长
@@ -75,7 +73,7 @@ public class Tree8Util {
                         break;
                     else {//否则就是g的子节点，需要敲除
                         if (Tree8Util.enable[i]) { //如是还没敲除
-                            ENABLE_NODE_QTY--; //有效节点数减1，这个
+                            enableNodeQTY--; //有效节点数减1，这个
                             Tree8Util.enable[i] = false; //作敲除标记
                         }
                     }
@@ -83,7 +81,5 @@ public class Tree8Util {
             }
         }
     }
-public static void main(String[] args) {
-    System.out.println(calculateNodeSize(64));
-}
+
 }

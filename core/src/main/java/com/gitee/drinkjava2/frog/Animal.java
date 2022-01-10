@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.BrainRainbowColorJudge;
-import com.gitee.drinkjava2.frog.judge.BrainShapeJudge;
+import com.gitee.drinkjava2.frog.judge.FlowerJudge;
+import com.gitee.drinkjava2.frog.judge.RainBowFishJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -32,7 +32,6 @@ import com.gitee.drinkjava2.frog.util.Tree8Util;
  * Animal only keep one copy of genes from egg, not store gene in cell  
  * Animal是所有动物（青蛙、蛇等）的父类, animal是由蛋孵出来的，蛋里保存着脑细胞结构生成的基因, Animal只保存一份基因而不是每个细胞都保存一份基因，这是人工生命与实际生物的最大不同
  * 基因是一个list<list>结构, 每一条list代表一条由深度树方式存储的基因树，分表控制细胞的一个参数，当cell用长整数表示时最多可以表达支持64个参数
- * 从2022-01-05起，新增黑白节点概念，每个基因用一个整数表示，白节点用8叉树序号左移1位并加1表示，黑节点用8叉树序号左移1位表示,也就是说最低位用来表示黑白
  * 
  * 
  * @author Yong Zhu
@@ -41,7 +40,7 @@ import com.gitee.drinkjava2.frog.util.Tree8Util;
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
     public static BufferedImage FROG_IMAGE;
     public static BufferedImage snakeImage;
-    
+
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体
 
     static {
@@ -94,8 +93,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         geneMutation(); //有小概率基因突变
         createCellsFromGene(); //运行基因语言，生成脑细胞
-        BrainShapeJudge.judge(this); //外界判断，对这个动物打分
-        BrainRainbowColorJudge.judge(this);
+        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
+        FlowerJudge.judge(this);//外界对是否长得象小花儿打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -154,23 +153,18 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         for (int g = 0; g < GENE_NUMBERS; g++) {//依次对每条基因对应的参数，在相应的细胞处把细胞参数位置1
             if (RandomUtils.percent(10)) { //随机新增基因
                 ArrayList<Integer> gene = genes.get(g);
-                int x = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
-                if (!gene.contains(x))
-                    gene.add(x);
-                
-                
-//                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
-//                int randomIndex = RandomUtils.nextInt(Tree8Util.ENABLE_NODE_QTY);
-//                int count = -1;
-//                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
-//                    if (Tree8Util.enable[i]) {
-//                        count++;
-//                        if (count >= randomIndex && !gene.contains(i)) {
-//                            gene.add(i);
-//                            break;
-//                        }
-//                    }
-//                }
+                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
+                int randomIndex = RandomUtils.nextInt(Tree8Util.enableNodeQTY);
+                int count = -1;
+                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
+                    if (Tree8Util.enable[i]) {
+                        count++;
+                        if (count >= randomIndex && !gene.contains(i)) {
+                            gene.add(i);
+                            break;
+                        }
+                    }
+                }
             }
         }
 

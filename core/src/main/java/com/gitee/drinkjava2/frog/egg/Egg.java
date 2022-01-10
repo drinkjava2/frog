@@ -61,15 +61,15 @@ public class Egg implements Serializable {
         x = a.x;
         y = a.y;
         genes.addAll(a.genes);
-        if (!genes.isEmpty() &&  b != null)
-            for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
-                if (RandomUtils.percent(3)) {
-                    ArrayList<Integer> agene = a.genes.get(i);
-                    ArrayList<Integer> bgene = b.genes.get(i);
-                    if (!bgene.isEmpty())
-                        agene.add(bgene.get(RandomUtils.nextInt(bgene.size())));
-                }
-            }
+//        if (!genes.isEmpty() &&  b != null)
+//            for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
+//                if (RandomUtils.percent(3)) {
+//                    ArrayList<Integer> agene = a.genes.get(i);
+//                    ArrayList<Integer> bgene = b.genes.get(i);
+//                    if (!bgene.isEmpty())
+//                        agene.add(bgene.get(RandomUtils.nextInt(bgene.size())));
+//                }
+//            }
     }
 
 }
