@@ -22,7 +22,6 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.judge.FlowerJudge;
-import com.gitee.drinkjava2.frog.judge.RainBowFishJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -57,7 +56,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
-    public long energy = 100000; // 青蛙的能量为0则死掉
+    public long energy = 1000000000; // 青蛙的能量为0则死掉
     public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
     public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
@@ -92,9 +91,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         geneMutation(); //有小概率基因突变
+        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
+            energy -= gene.size();
         createCellsFromGene(); //运行基因语言，生成脑细胞
-        RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
-        //FlowerJudge.judge(this);//外界对是否长得象小花儿打分
+        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
+        FlowerJudge.judge(this);//外界对是否长得象小花儿打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -109,14 +110,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             energy = MIN_ENERGY_LIMIT;
     }
 
-    public void awardAAAA()      { changeEnergy(8000);}
-    public void awardAAA()   { changeEnergy(1000);}
-    public void awardAA()     { changeEnergy(100);}     //TODO:如果改为20，就可能出现缺色，所以下面要用细胞8叉树从底向上扩张的算法把缺色补上
+    public void awardAAAA()      { changeEnergy(20);}
+    public void awardAAA()   { changeEnergy(10);}
+    public void awardAA()     { changeEnergy(5);}     //TODO:如果改为奖罚值，就可能出现缺色，这个要在基因变异算法（从上到下，从下到上）和环境本身奖罚合理性上下功夫
     public void awardA()   { changeEnergy(2);}
     
-    public void penaltyAAAA()    { changeEnergy(-8000);}
-    public void penaltyAAA() { changeEnergy(-1000);}
-    public void penaltyAA()   { changeEnergy(-100);}
+    public void penaltyAAAA()    { changeEnergy(-20);}
+    public void penaltyAAA() { changeEnergy(-10);}
+    public void penaltyAA()   { changeEnergy(-5);}
     public void penaltyA()   { changeEnergy(-2);}
     public void kill() {  this.alive = false; changeEnergy(-5);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
@@ -150,14 +151,33 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void geneMutation() { //基因变异,注意这一个算法同时变异所有条基因，目前最多允许64条基因
-        for (int g = 0; g < GENE_NUMBERS; g++) {//依次对每条基因对应的参数，在相应的细胞处把细胞参数位置1
-            if (RandomUtils.percent(10)) { //随机新增基因
+        for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阴节点基因
+            if (RandomUtils.percent(10)) {
                 ArrayList<Integer> gene = genes.get(g);
-                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
-                int randomIndex = RandomUtils.nextInt(Tree8Util.enableNodeQTY);
+                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阴节点基因只添加阳节点上
+                int randomIndex = RandomUtils.nextInt(Tree8Util.keepNodeQTY);
                 int count = -1;
                 for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
-                    if (Tree8Util.keep[i]>=0) {
+                    if (Tree8Util.keep[i] >= 0) {
+                        count++;
+                        if (count >= randomIndex && !gene.contains(-i)) {
+                            gene.add(-i);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阳节点基因
+            if (RandomUtils.percent(5)) {
+                ArrayList<Integer> gene = genes.get(g);
+                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阳节点基因只添加在阴节点上 
+                int yinNodeQTY = Tree8Util.NODE_QTY - Tree8Util.keepNodeQTY; //阴节点总数
+                int randomIndex = RandomUtils.nextInt(yinNodeQTY);
+                int count = -1;
+                for (int i = 0; i < yinNodeQTY; i++) {
+                    if (Tree8Util.keep[i] < 0) {
                         count++;
                         if (count >= randomIndex && !gene.contains(i)) {
                             gene.add(i);
@@ -168,8 +188,29 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             }
         }
 
-        for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因
-            if (RandomUtils.percent(2)) {
+//        for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异将阳节点向上提升一级，相当于单个细胞的自底向上扩散式生长
+//            if (RandomUtils.percent(3)) {
+//                ArrayList<Integer> gene = genes.get(g);
+//                int randomIndex = RandomUtils.nextInt(gene.size());
+//                if (randomIndex > 0 && gene.get(randomIndex) > 0) {//如基因是阳基因，且节点不是顶节点
+//                    int size = Tree8Util.TREE8[randomIndex][0];
+//                    gene.remove(randomIndex); //先删除底层这个阳基因                    
+//                    for (int i = randomIndex - 1; i > 0; i--) {
+//                        if (Tree8Util.TREE8[i][0] > size) { //深度树只要大于size就是它的父节点
+//                            if (!gene.contains(i))
+//                                gene.add(i);
+//                            int x = gene.indexOf(-i);//如果有阴节点也删除
+//                            if (x > 0)
+//                                gene.remove(x);
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+        for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因，这样可以去除无用的拉圾基因，防止基因无限增大
+            if (RandomUtils.percent(10)) {
                 ArrayList<Integer> gene = genes.get(g);
                 if (!gene.isEmpty())
                     gene.remove(RandomUtils.nextInt(gene.size()));
@@ -179,14 +220,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     private void createCellsFromGene() {//根据基因生成细胞参数  
         long geneMask = 1;
-        for (int g = 0; g < GENE_NUMBERS; g++) {//依次对每条基因对应的参数，在相应的细胞处把细胞参数位置1
+        for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，最多有64维，也就是最多有64条基因
             ArrayList<Integer> gene = genes.get(g);
             Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
-            for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树最小节点标记细胞参数位
-                if (Tree8Util.keep[i]>=0) {
+            for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树keep标记生成细胞参数
+                if (Tree8Util.keep[i] >= 0) {
                     int[] node = Tree8Util.TREE8[i];
                     if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在三维空间对间数组的位置把当前基因geneMask置1
-                        cells[node[1]][node[2]][node[3]] = cells[node[1]][node[2]][node[3]] | geneMask;
+                        cells[node[1]][node[2]][node[3]] = cells[node[1]][node[2]][node[3]] | geneMask; //在相应的细胞处把细胞参数位置1
                     }
                 }
             }

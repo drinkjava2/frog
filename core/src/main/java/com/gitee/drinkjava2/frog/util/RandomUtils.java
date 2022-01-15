@@ -25,10 +25,17 @@ public class RandomUtils {
 
     private static final Random rand = new Random();
 
-    public static int nextInt(int i) {
+    public static int nextInt(int i) {//返回随机整数，最小为0，最大为n-1
         if(i==0)
             return 0;
         return rand.nextInt(i);
+    }
+    
+    public static int nextNegOrPosInt(int n) {//返回随机整数，最小为-(n-1)，最大为n-1
+        int x = nextInt(n);
+        if (percent(50))
+            return x;
+        return -x;
     }
 
     public static float nextFloat() {

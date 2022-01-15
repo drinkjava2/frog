@@ -43,11 +43,6 @@ public class FrogEggTool {
 	 * 用能量的多少来简化生存竟争模拟，每次下蛋数量固定为EGG_QTY个
 	 */
 	public static void layEggs() {
-	    for (Frog frog : Env.frogs) {
-            for (ArrayList<Integer> gene : frog.genes) {//基因多的青蛙也要适当扣点分，防止蛋文件太大
-                frog.energy-=gene.size();
-            }
-        }
 		sortFrogsOrderByEnergyDesc();
 		Frog first = Env.frogs.get(0);
 		Frog last = Env.frogs.get(Env.frogs.size() - 1);
