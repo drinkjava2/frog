@@ -93,8 +93,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         geneMutation(); //有小概率基因突变
         createCellsFromGene(); //运行基因语言，生成脑细胞
-        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
-        FlowerJudge.judge(this);//外界对是否长得象小花儿打分
+        RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
+        //FlowerJudge.judge(this);//外界对是否长得象小花儿打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -157,7 +157,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 int randomIndex = RandomUtils.nextInt(Tree8Util.enableNodeQTY);
                 int count = -1;
                 for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
-                    if (Tree8Util.enable[i]) {
+                    if (Tree8Util.keep[i]>=0) {
                         count++;
                         if (count >= randomIndex && !gene.contains(i)) {
                             gene.add(i);
@@ -183,7 +183,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             ArrayList<Integer> gene = genes.get(g);
             Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
             for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树最小节点标记细胞参数位
-                if (Tree8Util.enable[i]) {
+                if (Tree8Util.keep[i]>=0) {
                     int[] node = Tree8Util.TREE8[i];
                     if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在三维空间对间数组的位置把当前基因geneMask置1
                         cells[node[1]][node[2]][node[3]] = cells[node[1]][node[2]][node[3]] | geneMask;

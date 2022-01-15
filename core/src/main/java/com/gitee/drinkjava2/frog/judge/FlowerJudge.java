@@ -33,8 +33,8 @@ public class FlowerJudge extends RainBowFishJudge {//NOSONAR
                 for (int x = 0; x < w; x++) {
                     if (c[x][y] > 0) {
                         int[] p = new int[]{C[0] + x, C[1] + y + 2, C[2] + z};
-                        if (!Animal.outBrainRange(p[0], p[1], p[2])) {
-                            shape[p[0]][p[1]][p[2]] = true;
+                        if (!Animal.outBrainRange(p[0], p[1]-2, p[2])) {//减2是把花朵向下移两格
+                            shape[p[0]][p[1]-2][p[2]] = true;
                             pointList.add(p);
                         }
                     }

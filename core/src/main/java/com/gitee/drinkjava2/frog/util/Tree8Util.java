@@ -29,7 +29,8 @@ public class Tree8Util {
 
     public static int[][] TREE8 = new int[NODE_QTY][4]; //八叉数用数组表示，第一维是深度树的行号，第二维是一个整数数组,内容是深度树表示的八叉树细胞的size, x, y, z值
     
-    public static boolean[] enable = new boolean[NODE_QTY]; //这里临时记录树的敲除记录，被敲除的节点用false表示
+    public static byte[] keep = new byte[NODE_QTY]; //这里临时记录树的敲除记录，大于等于0的值表示要keep, 负数节点表示要敲除
+    private static byte[] keep0 = new byte[NODE_QTY]; //这里保存初值为0的数组常量，可以用System.arraycopy(enable0, 0, enable, 0, NODE_QTY)快速清空enable数组
     
     public static int enableNodeQTY = NODE_QTY; //这里临时记录未被敲除的总节点数，好用来下次继续敲除
 
@@ -60,21 +61,20 @@ public class Tree8Util {
         tree8Split(x + half, y + half, z + half, half);
     }
 
-    public static void knockNodesByGene(List<Integer> gene) {//根据基因，把要敲除的8叉树节点作个标记0
-        for (int i = 0; i < Tree8Util.NODE_QTY; i++)
-            enable[i] = true;
+    public static void knockNodesByGene(List<Integer> gene) {//根据基因，把要敲除的8叉树节点作个标记0 
+        System.arraycopy(keep0, 0, keep, 0, NODE_QTY);
         enableNodeQTY = NODE_QTY;
         for (int g : gene) {//g是要敲除的节点的行号
-            if (Tree8Util.enable[g]) {
+            if (Tree8Util.keep[g]>=0) {
                 int gSize = Tree8Util.TREE8[g][0]; //gSize是节点对应的立方体边长
                 for (int i = g; i < Tree8Util.NODE_QTY; i++) {//从这个g节点开始，往下找节点
                     int iSize = Tree8Util.TREE8[i][0];
                     if (i > g && iSize >= gSize) //如果除了第一个节点外，边长与g相同或大于g的边长，说明节点不是g的子节点，退出
                         break;
                     else {//否则就是g的子节点，需要敲除
-                        if (Tree8Util.enable[i]) { //如是还没敲除
+                        if (Tree8Util.keep[i]>=0) { //如是还没敲除
                             enableNodeQTY--; //有效节点数减1，这个
-                            Tree8Util.enable[i] = false; //作敲除标记
+                            Tree8Util.keep[i] = -1; //作敲除标记
                         }
                     }
                 }
