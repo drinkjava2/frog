@@ -31,7 +31,7 @@ public class Tree8Util {
 
     public static byte[] keep = new byte[NODE_QTY]; //这里临时记录树的敲除记录，大于等于0的值表示要keep, 负数节点表示要敲除
 
-    private static byte[] KEEP = new byte[NODE_QTY]; //这里保存初值为0的数组常量，可以用System.arraycopy(enable0, 0, enable, 0, NODE_QTY)快速清空enable数组
+    private static byte[] KEEP = new byte[NODE_QTY]; //这里保存初值为0的数组常量，可以用System.arraycopy(KEEP, 0, keep, 0, NODE_QTY)快速清空enable数组
 
     public static int keepNodeQTY = NODE_QTY; //这里临时记录需keep的节点总数，好用来继续敲除，初始值是全部节点
 

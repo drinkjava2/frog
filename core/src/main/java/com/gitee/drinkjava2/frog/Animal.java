@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.RainBowFishJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -93,9 +92,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         geneMutation(); //有小概率基因突变
         for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
             energy -= gene.size();
-        createCellsFromGene(); //运行基因语言，生成脑细胞
-         RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
-       // FlowerJudge.judge(this);//外界对是否长得象小花儿打分
+        createCellsFromGene(); //根据基因分裂生成脑细胞
+        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
+        //FlowerJudge.judge(this);//外界对是否长得象小花儿打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -123,27 +122,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void kill() {  this.alive = false; changeEnergy(-5);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
-    public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
-        // 如果能量小于0、出界、与非食物的点重合则判死
-        if (!alive) {
-            energy = MIN_ENERGY_LIMIT; // 死掉的青蛙确保淘汰出局
-            return false;
-        }
-        if (energy <= 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
-            kill();
-            return false;
-        }
-        //energy -= 20;
-        // 依次调用每个cell的active方法
-        //for (Cell cell : cells)
-        //    cell.organ.active(this, cell);
-        return alive;
-    }
-
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
-        // g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+        //g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
 
     /** Check if x,y,z out of animal's brain range */
@@ -189,27 +171,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             }
         }
 
-//        for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异将阳节点向上提升一级，相当于单个细胞的自底向上扩散式生长
-//            if (RandomUtils.percent(3)) {
-//                ArrayList<Integer> gene = genes.get(g);
-//                int randomIndex = RandomUtils.nextInt(gene.size());
-//                if (randomIndex > 0 && gene.get(randomIndex) > 0) {//如基因是阳基因，且节点不是顶节点
-//                    int size = Tree8Util.TREE8[randomIndex][0];
-//                    gene.remove(randomIndex); //先删除底层这个阳基因                    
-//                    for (int i = randomIndex - 1; i > 0; i--) {
-//                        if (Tree8Util.TREE8[i][0] > size) { //深度树只要大于size就是它的父节点
-//                            if (!gene.contains(i))
-//                                gene.add(i);
-//                            int x = gene.indexOf(-i);//如果有阴节点也删除
-//                            if (x > 0)
-//                                gene.remove(x);
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
         for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因，这样可以去除无用的拉圾基因，防止基因无限增大
             if (RandomUtils.percent(10)) {
                 ArrayList<Integer> gene = genes.get(g);
@@ -234,6 +195,77 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             }
             geneMask <<= 1;
         }
+    }
+
+    private static final int XY_CENTER = Env.BRAIN_CUBE_SIZE / 2;
+    private static final int Z_TOP = Env.BRAIN_CUBE_SIZE - 1;
+
+    public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，最复杂的这个方法写在最下面
+        // 如果能量小于0、出界、与非食物的点重合则判死
+        if (!alive) {
+            energy = MIN_ENERGY_LIMIT; // 死掉的青蛙确保淘汰出局
+            return false;
+        }
+        if (energy <= 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
+            kill();
+            return false;
+        }
+
+        //依次激活每个细胞，模拟并行激活，这个是依次x,y,z方向激活，可能会产会顺序驱逐信号的bug，以后要考虑改成随机或跳行次序激活
+        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++)
+            for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++)
+                for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+                    long c = cells[x][y][z];
+                    float energy = energys[x][y][z];
+                    float engeryChange = 0; //细胞会增加或消耗的总量
+                    long pos = 1;
+
+                    if (energy < 0) //如细胞能量小于0，表示过分消耗了，需时间来慢慢回填
+                        energy += 0.1;
+
+                    if (z == Z_TOP && (c & pos) > 0) {//感光细胞，将光信号能量存贮到细胞里, 感光细胞只能出现在最上层
+                        if (Env.foundAnyThingOrOutEdge(this.x + x - XY_CENTER, this.y + y - XY_CENTER)) {
+                            energys[x][y][z] = 100;
+                        } else {
+                            energys[x][y][z] = 0;
+                        }
+                    }
+
+                    pos <<= 1;
+                    if (z == 0 && (c & pos) > 0) {//向上运动细胞，只能出现在底层，任意位置都可
+                        engeryChange++;
+                        this.y++;
+                    }
+
+                    pos <<= 1;
+                    if (z == 0 && (c & pos) > 0) {//向下运动细胞，只能出现在底层，任意位置都可
+                        engeryChange++;
+                        this.y--;
+                    }
+
+                    pos <<= 1;
+                    if (z == 0 && (c & pos) > 0) {//向左运动细胞，只能出现在底层，任意位置都可
+                        engeryChange++;
+                        this.x--;
+                    }
+
+                    pos <<= 1;
+                    if (z == 0 && (c & pos) > 0) {//向右运动细胞，只能出现在底层，任意位置都可
+                        engeryChange++;
+                        this.x++;
+                    }
+
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 3; j++) {
+                            pos <<= 1;
+                            if (energy>0 && (c & pos) > 0) {//一类固定角度的传输型参数，即能量以指定角度传送到它的相邻细胞
+                                //TODO
+                            }
+                        }
+
+                    energys[x][y][z] -= engeryChange;
+                }
+        return alive;
     }
 
 }

@@ -11,7 +11,7 @@ import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.util.StringPixelUtils;
 
 /**
- * judge method be called in animal's initAnimal method 
+ * FlowerJudge to judge if it's a flower, judge method be called in animal's initAnimal method 
  * 
  *  这个类的judge方法在动物的初始化后被调用，根据脑细胞群的三维结构和参数来对动物进行奖罚，即加减它的能量值，这是一个临时类，只是用来检验细胞三维成形功能，以后可能改名或删除
  *  这个类的show方法在绘脑图时调用，在脑图里显示脑细胞群的三维形状和参数，用不同颜色直径的空心圆来表示不同参数，judge方法就像是一个模子，细胞长在这个模子里的有奖，否则扣分
