@@ -17,10 +17,12 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.judge.RainBowFishJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -52,6 +54,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells */
     public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
     public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
+
+    public List<byte[]> photons = new ArrayList<>(); //每个光子是由一个byte数组表示，依次是x,y,z坐标、dx,dy,dz坐标余数(即小数后256分之几）,mz,my,mz运动方向矢量，能量值，速度
+
+    public List<byte[]> photons2 = new ArrayList<>();// photons2是个临时空间，用来中转存放一下每遍光子运算后的结果，用双鬼拍门来替代单个链表的增删，每个list只增不减以优化速度
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -119,7 +125,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void penaltyAAA() { changeEnergy(-10);}
     public void penaltyAA()   { changeEnergy(-5);}
     public void penaltyA()   { changeEnergy(-2);}
-    public void kill() {  this.alive = false; changeEnergy(-5);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
+    public void kill() { this.alive = false; changeEnergy(-500000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
     public void show(Graphics g) {// 显示当前动物
@@ -202,69 +208,82 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，最复杂的这个方法写在最下面
         // 如果能量小于0、出界、与非食物的点重合则判死
-        if (!alive) {
-            energy = MIN_ENERGY_LIMIT; // 死掉的青蛙确保淘汰出局
+        if (!alive)
             return false;
-        }
         if (energy <= 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
             kill();
             return false;
         }
 
+        //TODO：1.视觉光子产生，如果位于眼睛处有细胞，产生光子
+
+        //TODO:2.光子循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动
+
+        //TODO:3.根据青蛙移动的矢量汇总出移动方向和步数，实际移动青蛙
+        
+        //TODO：4.如果青蛙与食物位置重合，在所有奖励细胞处产生光子,即奖励信号的发生，奖励细胞的位置和数量不是指定的，而是进化出来的
+        
+        //TODO：5.如果青蛙与有毒食物位置重合，在所有痛觉细胞处产生光子,即惩罚信号的发生，痛觉细胞的位置和数量不是指定的，而是进化出来的
+
+        //===============================================================================================
+        //现在的分水岭是以光子为循环主体，还是以细胞作为循环主体??? 前者的话，细胞是光子的中转站，后者的话，细胞之间互相用光子挖洞，可以不把光子模拟出来
+        //===============================================================================================
+        
+        
         //依次激活每个细胞，模拟并行激活，这个是依次x,y,z方向激活，可能会产会顺序驱逐信号的bug，以后要考虑改成随机或跳行次序激活
-        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++)
-            for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++)
-                for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
-                    long c = cells[x][y][z];
-                    float energy = energys[x][y][z];
-                    float engeryChange = 0; //细胞会增加或消耗的总量
-                    long pos = 1;
-
-                    if (energy < 0) //如细胞能量小于0，表示过分消耗了，需时间来慢慢回填
-                        energy += 0.1;
-
-                    if (z == Z_TOP && (c & pos) > 0) {//感光细胞，将光信号能量存贮到细胞里, 感光细胞只能出现在最上层
-                        if (Env.foundAnyThingOrOutEdge(this.x + x - XY_CENTER, this.y + y - XY_CENTER)) {
-                            energys[x][y][z] = 100;
-                        } else {
-                            energys[x][y][z] = 0;
-                        }
-                    }
-
-                    pos <<= 1;
-                    if (z == 0 && (c & pos) > 0) {//向上运动细胞，只能出现在底层，任意位置都可
-                        engeryChange++;
-                        this.y++;
-                    }
-
-                    pos <<= 1;
-                    if (z == 0 && (c & pos) > 0) {//向下运动细胞，只能出现在底层，任意位置都可
-                        engeryChange++;
-                        this.y--;
-                    }
-
-                    pos <<= 1;
-                    if (z == 0 && (c & pos) > 0) {//向左运动细胞，只能出现在底层，任意位置都可
-                        engeryChange++;
-                        this.x--;
-                    }
-
-                    pos <<= 1;
-                    if (z == 0 && (c & pos) > 0) {//向右运动细胞，只能出现在底层，任意位置都可
-                        engeryChange++;
-                        this.x++;
-                    }
-
-                    for (int i = 0; i < 3; i++)
-                        for (int j = 0; j < 3; j++) {
-                            pos <<= 1;
-                            if (energy>0 && (c & pos) > 0) {//一类固定角度的传输型参数，即能量以指定角度传送到它的相邻细胞
-                                //TODO
-                            }
-                        }
-
-                    energys[x][y][z] -= engeryChange;
-                }
+        //        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++)
+        //            for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++)
+        //                for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+        //                    long c = cells[x][y][z];
+        //                    float energy = energys[x][y][z];
+        //                    float wasteEnergy = 0; //细胞会增加或消耗的总量
+        //                    long pos = 1;
+        //
+        //                    if (energy < 0) //如细胞能量小于0，表示过分消耗了，需时间来慢慢回填
+        //                        energy += 0.1;
+        //
+        //                    if (z == Z_TOP && (c & pos) > 0) {//感光细胞，将光信号能量存贮到细胞里, 感光细胞只能出现在最上层
+        //                        if (Env.foundAnyThingOrOutEdge(this.x + x - XY_CENTER, this.y + y - XY_CENTER)) {
+        //                            energys[x][y][z] = 100;
+        //                        } else {
+        //                            energys[x][y][z] = 0;
+        //                        }
+        //                    }
+        //
+        //                    pos <<= 1;
+        //                    if (z == 0 && (c & pos) > 0) {//向上运动细胞，只能出现在底层，任意位置都可
+        //                        wasteEnergy++;
+        //                        this.y++;
+        //                    }
+        //
+        //                    pos <<= 1;
+        //                    if (z == 0 && (c & pos) > 0) {//向下运动细胞，只能出现在底层，任意位置都可
+        //                        wasteEnergy++;
+        //                        this.y--;
+        //                    }
+        //
+        //                    pos <<= 1;
+        //                    if (z == 0 && (c & pos) > 0) {//向左运动细胞，只能出现在底层，任意位置都可
+        //                        wasteEnergy++;
+        //                        this.x--;
+        //                    }
+        //
+        //                    pos <<= 1;
+        //                    if (z == 0 && (c & pos) > 0) {//向右运动细胞，只能出现在底层，任意位置都可
+        //                        wasteEnergy++;
+        //                        this.x++;
+        //                    }
+        //
+        //                    for (int i = 0; i < 3; i++)
+        //                        for (int j = 0; j < 3; j++) {
+        //                            pos <<= 1;
+        //                            if (energy > 0 && (c & pos) > 0) {//一类固定角度的传输型参数，即能量以指定角度传送到它的相邻细胞
+        //                                //TODO
+        //                            }
+        //                        }
+        //
+        //                    energys[x][y][z] -= wasteEnergy;
+        //                }
         return alive;
     }
 
