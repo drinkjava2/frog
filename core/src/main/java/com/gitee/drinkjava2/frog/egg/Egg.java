@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -34,11 +33,11 @@ public class Egg implements Serializable {
     public int x; // 蛋的x位置
     public int y; // 蛋的y位置
 
-    // gene is a language similar like BASIC created by random 
-    // 基因是随机生成的一种类似Basic语言的字符串符列，保存在蛋中，和实际生物每个细胞都要保存一份基因不同，程序中每个细胞仅保存着基因的指针和当前细胞位于基因链中的行号，并不需要保存基因的副本，这样可以极大地减少内存占用
+    // gene record the 8-tree structure of brain cells
+    // 基因是随机生成的8叉树数据结构，和实际生物每个细胞都要保存一份基因不同，程序中每个脑细胞并不需要保存基因的副本，这样可以极大地减少内存占用
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>();
 
-    public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙d
+    public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
         x = RandomUtils.nextInt(Env.ENV_WIDTH);
         y = RandomUtils.nextInt(Env.ENV_HEIGHT);
     }
@@ -60,16 +59,7 @@ public class Egg implements Serializable {
     public Egg(Egg a, Egg b) {//两个蛋的基因混合, 生成一个新蛋
         x = a.x;
         y = a.y;
-        genes.addAll(a.genes);
-//        if (!genes.isEmpty() &&  b != null)
-//            for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
-//                if (RandomUtils.percent(3)) {
-//                    ArrayList<Integer> agene = a.genes.get(i);
-//                    ArrayList<Integer> bgene = b.genes.get(i);
-//                    if (!bgene.isEmpty())
-//                        agene.add(bgene.get(RandomUtils.nextInt(bgene.size())));
-//                }
-//            }
+        genes.addAll(a.genes); //TODO: 两个蛋的基因混合
     }
 
 }

@@ -10,7 +10,7 @@
  */
 package com.gitee.drinkjava2.frog;
 
-import static com.gitee.drinkjava2.frog.brain.Cells.GENE_NUMBERS;
+import static com.gitee.drinkjava2.frog.brain.Cells.*;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -99,8 +99,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
             energy -= gene.size();
         createCellsFromGene(); //根据基因分裂生成脑细胞
-        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
-        //FlowerJudge.judge(this);//外界对是否长得象小花儿打分
+        RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -203,8 +202,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    private static final int XY_CENTER = Env.BRAIN_CUBE_SIZE / 2;
-    private static final int Z_TOP = Env.BRAIN_CUBE_SIZE - 1;
+    private static final int BRAIN_CENTER = Env.BRAIN_CUBE_SIZE / 2;
+    private static final int BRAIN_TOP = Env.BRAIN_CUBE_SIZE - 1;
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，最复杂的这个方法写在最下面
         // 如果能量小于0、出界、与非食物的点重合则判死
@@ -220,16 +219,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         //TODO:2.光子循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动
 
         //TODO:3.根据青蛙移动的矢量汇总出移动方向和步数，实际移动青蛙
-        
+
         //TODO：4.如果青蛙与食物位置重合，在所有奖励细胞处产生光子,即奖励信号的发生，奖励细胞的位置和数量不是指定的，而是进化出来的
-        
+
         //TODO：5.如果青蛙与有毒食物位置重合，在所有痛觉细胞处产生光子,即惩罚信号的发生，痛觉细胞的位置和数量不是指定的，而是进化出来的
 
         //===============================================================================================
         //现在的分水岭是以光子为循环主体，还是以细胞作为循环主体??? 前者的话，细胞是光子的中转站，后者的话，细胞之间互相用光子挖洞，可以不把光子模拟出来
         //===============================================================================================
-        
-        
+
         //依次激活每个细胞，模拟并行激活，这个是依次x,y,z方向激活，可能会产会顺序驱逐信号的bug，以后要考虑改成随机或跳行次序激活
         //        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++)
         //            for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++)

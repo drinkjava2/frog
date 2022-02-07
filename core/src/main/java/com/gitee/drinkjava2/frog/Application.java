@@ -132,7 +132,7 @@ public class Application {
         //基因维数显示控制
         for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
             JRadioButton geneRadio=new JRadioButton();
-            geneRadio.setBounds(buttonXpos+300+i*20, Env.ENV_HEIGHT + 8, 20, 22);
+            geneRadio.setBounds(buttonXpos+300+i*16, Env.ENV_HEIGHT + 8, 20, 22);
             geneRadio.setSelected(true);
             geneRadio.setName(""+i);
             ActionListener geneRadioAction = new ActionListener() {
