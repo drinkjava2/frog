@@ -187,6 +187,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
+    private void createPhoton(byte x, byte y, byte z, byte dx, byte dy, byte dz, byte mx, byte my, byte mz, byte energy, byte speed) {
+        photons.add(new byte[]{x, y, z, dx, dy, dz, mx, my, mz, energy, speed});
+    }
+
     private void createCellsFromGene() {//根据基因生成细胞参数  
         long geneMask = 1;
         for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，最多有64维，也就是最多有64条基因
@@ -216,13 +220,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        //TODO：1.视觉光子产生，如果位于眼睛处有细胞，产生光子 
-        if (Food.smell[x][y] > 0) { //如果闻到香味，说明食物在附近，才允许开启眼睛，以免没食物时也要启动空循环
-            for (int xx = x - Food.SMELL_RANGE; xx <= x + Food.SMELL_RANGE; xx++)
-                for (int yy = y - Food.SMELL_RANGE; yy <= y + Food.SMELL_RANGE; yy++)  
-                    if (Env.insideEnv(xx, yy)) {
+        //TODO：1.视觉光子产生 
+        if (Food.smell[x][y] > 0) { //这是程序优化，如果闻到香味，说明食物在附近，才允许开启眼睛，以免没食物时也要启动循环
+            for (int xx = -Food.SMELL_RANGE; xx <= Food.SMELL_RANGE; xx++)
+                for (int yy = -Food.SMELL_RANGE; yy <= Food.SMELL_RANGE; yy++)
+                    if (Env.foundAnyThingOrOutEdge(xx, yy)) {
 
-                    } 
+                    }
         }
 
         //TODO:2.光子循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动

@@ -36,8 +36,10 @@ public enum Food implements EnvObject {
         for (int i = 0; i < FOOD_QTY; i++) { // 随机位置生成食物
             int x = RandomUtils.nextInt(ENV_WIDTH);
             int y = RandomUtils.nextInt(ENV_HEIGHT);
-            Env.setMaterial(x, y, Material.FOOD); //在环境里标记上FOOD
-            changeSmell(x, y, 1); //产生此食物的香气
+            if (!Env.hasMaterial(x, y, Material.FOOD)) {
+                Env.setMaterial(x, y, Material.FOOD); //在环境里标记上FOOD
+                changeSmell(x, y, 1); //产生此食物的香气
+            }
         }
     }
 
@@ -63,7 +65,7 @@ public enum Food implements EnvObject {
     }
 
     public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
-        if (Env.insideEnv(x, y) && (Env.bricks[x][y] & Material.FOOD) > 0) {
+        if (Env.hasMaterial(x, y, Material.FOOD)) {
             Env.food_ated++;
             Env.clearMaterial(x, y, Material.FOOD);//在环境里清除FOOD
             changeSmell(x, y, -1); //仅清除此食物产生的香气

@@ -1,6 +1,5 @@
 package com.gitee.drinkjava2.frog;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;

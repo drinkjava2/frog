@@ -42,14 +42,14 @@ public class Env extends JPanel {
 
     public static boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
 
-    public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出动物落在地图上随机位置，而不是在蛋所在地
+    public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出青蛙落在地图上随机位置，而不是在蛋所在地
 
-    /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用一个List<Cell>来存贮表示的同时，也用一个Cell3D动态数组来表示
-
-    public static final int BRAIN_CUBE_SIZE = 8; //脑立方边长大小，必须是2的幂数如4,8,16...
-    public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度，取值最大为1000
-    public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度，取值最大为1000
-    public static final int BRAIN_ZSIZE = BRAIN_CUBE_SIZE; // 脑在Z方向长度，取值最大为1000
+    /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用三维数组来表示
+    public static final int BRAIN_CUBE_SIZE = 8; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
+    
+    public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度
+    public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度
+    public static final int BRAIN_ZSIZE = BRAIN_CUBE_SIZE; // 脑在Z方向长度
 
     public static final int CELLS_MAX_QTY = 4000; //脑细胞总数不能超过这个值
 
@@ -70,11 +70,12 @@ public class Env extends JPanel {
 
     /** Steps of one test round */
     public static final int STEPS_PER_ROUND = 20;// 每轮测试步数,可调
-    public static int step;// 当前测试步数
 
     public static final int FOOD_QTY = 1500; // 食物数量, 可调
 
     // 以下是程序内部变量，不要手工修改它们
+    public static int step; // 当前测试步数
+    
     public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 蛇的总数
 
     public static final int FROG_PER_SCREEN = TOTAL_FROG_QTY / SCREEN; // 每屏显示几个青蛙，这个数值由其它常量计算得来
