@@ -93,7 +93,7 @@ public class Env extends JPanel {
 
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{new Food() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{Food.FOOD };// 所有外界物体，如食物、字母测试工具都放在这个things里面
     
     public static boolean show_split_detail=false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
     
@@ -128,15 +128,6 @@ public class Env extends JPanel {
 
     public static boolean foundAnyThingOrOutEdge(int x, int y) {// 如果指定点看到任意东西或超出边界，返回true
         return x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT || Env.bricks[x][y] != 0;
-    }
-
-    public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
-        if (insideEnv(x, y) && (Env.bricks[x][y] & Material.FOOD) > 0) {
-            Env.food_ated++;
-            clearMaterial(x, y, Material.FOOD);// 清空任意食物
-            return true;
-        }
-        return false;
     }
 
     public static boolean foundFrogOrOutEdge(int x, int y) {// 如果指定点看到青蛙或超出边界，返回true

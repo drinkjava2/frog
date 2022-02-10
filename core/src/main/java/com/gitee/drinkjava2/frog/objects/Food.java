@@ -19,29 +19,57 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Food randomly scatter on Env
- * 生成食物（静态食物或苍蝇，苍蝇如果Env中FOOD_CAN_MOVE=true,会向四个方向移动)
+ * 食物
  * 
  * @author Yong Zhu
  * @since 1.0
  */
-public class Food implements EnvObject {
+public enum Food implements EnvObject {
+    FOOD; //FOOD是一个枚举型单例，整个环境只允许有一个FOOD实例
+
+    public static final int SMELL_RANGE = 5;
+
+    public static int[][] smell = new int[ENV_WIDTH][ENV_HEIGHT];//食物的香味, 这个香味是为了优化速度，和算法无关。有香味，说明食物在附近，程序才会启动眼睛，在视网膜产生光子,没有香味就不启动眼睛以加快速度
 
     @Override
     public void build() {
-        for (int i = 0; i < FOOD_QTY; i++) // 生成食物
-            Env.setMaterial(RandomUtils.nextInt(ENV_WIDTH), RandomUtils.nextInt(ENV_HEIGHT), Material.FOOD);
-    }
-
-    @Override
-    public void destory() {
-        for (int i = 0; i < ENV_WIDTH; i++) {// 清除食物
-            for (int j = 0; j < ENV_HEIGHT; j++)
-                Env.clearMaterial(i, j, Material.FOOD);
+        for (int i = 0; i < FOOD_QTY; i++) { // 随机位置生成食物
+            int x = RandomUtils.nextInt(ENV_WIDTH);
+            int y = RandomUtils.nextInt(ENV_HEIGHT);
+            Env.setMaterial(x, y, Material.FOOD); //在环境里标记上FOOD
+            changeSmell(x, y, 1); //产生此食物的香气
         }
     }
 
     @Override
+    public void destory() {
+        for (int x = 0; x < ENV_WIDTH; x++) // 清除食物
+            for (int y = 0; y < ENV_HEIGHT; y++) {
+                Env.clearMaterial(x, y, Material.FOOD);
+                smell[x][y] = 0;
+            }
+    }
+
+    @Override
     public void active() {
+        //食物除了被吃，它自己没有什么活动
+    }
+
+    private static void changeSmell(int x, int y, int value) { //在食物的附近增加或减少它的香味 
+        for (int xx = x - SMELL_RANGE; xx <= x + SMELL_RANGE; xx++)
+            for (int yy = y - SMELL_RANGE; yy <= y + SMELL_RANGE; yy++)
+                if (Env.insideEnv(xx, yy))
+                    smell[xx][yy] += value;
+    }
+
+    public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true
+        if (Env.insideEnv(x, y) && (Env.bricks[x][y] & Material.FOOD) > 0) {
+            Env.food_ated++;
+            Env.clearMaterial(x, y, Material.FOOD);//在环境里清除FOOD
+            changeSmell(x, y, -1); //仅清除此食物产生的香气
+            return true;
+        }
+        return false;
     }
 
 }

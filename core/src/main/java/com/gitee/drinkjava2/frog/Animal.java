@@ -21,8 +21,10 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.judge.RainBowFishJudge;
+import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -99,7 +101,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
             energy -= gene.size();
         createCellsFromGene(); //根据基因分裂生成脑细胞
-        RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
+        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -214,7 +216,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        //TODO：1.视觉光子产生，如果位于眼睛处有细胞，产生光子
+        //TODO：1.视觉光子产生，如果位于眼睛处有细胞，产生光子 
+        if (Food.smell[x][y] > 0) { //如果闻到香味，说明食物在附近，才允许开启眼睛，以免没食物时也要启动空循环
+            for (int xx = x - Food.SMELL_RANGE; xx <= x + Food.SMELL_RANGE; xx++)
+                for (int yy = y - Food.SMELL_RANGE; yy <= y + Food.SMELL_RANGE; yy++)  
+                    if (Env.insideEnv(xx, yy)) {
+
+                    } 
+        }
 
         //TODO:2.光子循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动
 
