@@ -27,7 +27,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public enum Food implements EnvObject {
     FOOD; //FOOD是一个枚举型单例，整个环境只允许有一个FOOD实例
 
-    public static final int SMELL_RANGE = 5;
+    public static final int SMELL_RANGE = 3;
 
     public static int[][] smell = new int[ENV_WIDTH][ENV_HEIGHT];//食物的香味, 这个香味是为了优化速度，和算法无关。有香味，说明食物在附近，程序才会启动眼睛，在视网膜产生光子,没有香味就不启动眼睛以加快速度
 

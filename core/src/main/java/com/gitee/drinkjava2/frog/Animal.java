@@ -57,9 +57,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
     public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
 
-    public List<byte[]> photons = new ArrayList<>(); //每个光子是由一个byte数组表示，依次是x,y,z坐标、dx,dy,dz坐标余数(即小数后256分之几）,mz,my,mz运动方向矢量，能量值，速度
+    public List<float[]> photons = new ArrayList<>(); //每个光子是由一个float数组表示，依次是x,y,z坐标, mz,my,mz运动方向矢量，能量值，速度
 
-    public List<byte[]> photons2 = new ArrayList<>();// photons2是个临时空间，用来中转存放一下每遍光子运算后的结果，用双鬼拍门来替代单个链表的增删，每个list只增不减以优化速度
+    public List<float[]> photons2 = new ArrayList<>();// photons2是个临时空间，用来中转存放一下每遍光子运算后的结果，用双鬼拍门来替代单个链表的增删，每个list只增不减以优化速度
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -117,13 +117,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
    
     //如果改奖罚值，就可能出现缺色，这个要在基因变异算法（从上到下，从下到上）和环境本身奖罚合理性上下功夫
-    public void awardAAAA()      { changeEnergy(20);}
-    public void awardAAA()   { changeEnergy(10);}
+    public void awardAAAA()      { changeEnergy(40);}
+    public void awardAAA()   { changeEnergy(20);}
     public void awardAA()     { changeEnergy(5);}      
     public void awardA()   { changeEnergy(2);}
     
-    public void penaltyAAAA()    { changeEnergy(-20);}
-    public void penaltyAAA() { changeEnergy(-10);}
+    public void penaltyAAAA()    { changeEnergy(-40);}
+    public void penaltyAAA() { changeEnergy(-20);}
     public void penaltyAA()   { changeEnergy(-5);}
     public void penaltyA()   { changeEnergy(-2);}
     public void kill() { this.alive = false; changeEnergy(-500000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
@@ -187,10 +187,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    private void createPhoton(byte x, byte y, byte z, byte dx, byte dy, byte dz, byte mx, byte my, byte mz, byte energy, byte speed) {
-        photons.add(new byte[]{x, y, z, dx, dy, dz, mx, my, mz, energy, speed});
-    }
-
     private void createCellsFromGene() {//根据基因生成细胞参数  
         long geneMask = 1;
         for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，最多有64维，也就是最多有64条基因
@@ -220,16 +216,28 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        //TODO：1.视觉光子产生 
+        //1.将外界食物信号投放到视网膜上产生光子 
         if (Food.smell[x][y] > 0) { //这是程序优化，如果闻到香味，说明食物在附近，才允许开启眼睛，以免没食物时也要启动循环
             for (int xx = -Food.SMELL_RANGE; xx <= Food.SMELL_RANGE; xx++)
-                for (int yy = -Food.SMELL_RANGE; yy <= Food.SMELL_RANGE; yy++)
-                    if (Env.foundAnyThingOrOutEdge(xx, yy)) {
-
-                    }
+                for (int yy = -Food.SMELL_RANGE; yy <= Food.SMELL_RANGE; yy++) {
+                    int x_ = xx + BRAIN_CENTER;
+                    int y_ = yy + BRAIN_CENTER;
+                    if (Env.insideBrain(x_, y_))
+                        if (Env.foundAnyThingOrOutEdge(x + xx, y + yy)) { //如看到食物或看到出界
+                            eyeSendPhoton(x_, y_);//视网膜上发送出光子  
+                        }
+                }
         }
 
-        //TODO:2.光子循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动
+        //2.光子主循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动。这里有个编程技巧是用另一个list来累加新的光子，不对原list作删增，以加快速度
+        photons2.clear();
+        for (float[] p : photons) {
+            float[] p2 = movePhoton(p);
+            if (p2 != null)
+                photons2.add(p2);
+        }
+        photons.clear();
+        photons.addAll(photons2);
 
         //TODO:3.根据青蛙移动的矢量汇总出移动方向和步数，实际移动青蛙
 
@@ -237,65 +245,40 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
         //TODO：5.如果青蛙与有毒食物位置重合，在所有痛觉细胞处产生光子,即惩罚信号的发生，痛觉细胞的位置和数量不是指定的，而是进化出来的
 
-        //===============================================================================================
-        //现在的分水岭是以光子为循环主体，还是以细胞作为循环主体??? 前者的话，细胞是光子的中转站，后者的话，细胞之间互相用光子挖洞，可以不把光子模拟出来
-        //===============================================================================================
-
-        //依次激活每个细胞，模拟并行激活，这个是依次x,y,z方向激活，可能会产会顺序驱逐信号的bug，以后要考虑改成随机或跳行次序激活
-        //        for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++)
-        //            for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++)
-        //                for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
-        //                    long c = cells[x][y][z];
-        //                    float energy = energys[x][y][z];
-        //                    float wasteEnergy = 0; //细胞会增加或消耗的总量
-        //                    long pos = 1;
-        //
-        //                    if (energy < 0) //如细胞能量小于0，表示过分消耗了，需时间来慢慢回填
-        //                        energy += 0.1;
-        //
-        //                    if (z == Z_TOP && (c & pos) > 0) {//感光细胞，将光信号能量存贮到细胞里, 感光细胞只能出现在最上层
-        //                        if (Env.foundAnyThingOrOutEdge(this.x + x - XY_CENTER, this.y + y - XY_CENTER)) {
-        //                            energys[x][y][z] = 100;
-        //                        } else {
-        //                            energys[x][y][z] = 0;
-        //                        }
-        //                    }
-        //
-        //                    pos <<= 1;
-        //                    if (z == 0 && (c & pos) > 0) {//向上运动细胞，只能出现在底层，任意位置都可
-        //                        wasteEnergy++;
-        //                        this.y++;
-        //                    }
-        //
-        //                    pos <<= 1;
-        //                    if (z == 0 && (c & pos) > 0) {//向下运动细胞，只能出现在底层，任意位置都可
-        //                        wasteEnergy++;
-        //                        this.y--;
-        //                    }
-        //
-        //                    pos <<= 1;
-        //                    if (z == 0 && (c & pos) > 0) {//向左运动细胞，只能出现在底层，任意位置都可
-        //                        wasteEnergy++;
-        //                        this.x--;
-        //                    }
-        //
-        //                    pos <<= 1;
-        //                    if (z == 0 && (c & pos) > 0) {//向右运动细胞，只能出现在底层，任意位置都可
-        //                        wasteEnergy++;
-        //                        this.x++;
-        //                    }
-        //
-        //                    for (int i = 0; i < 3; i++)
-        //                        for (int j = 0; j < 3; j++) {
-        //                            pos <<= 1;
-        //                            if (energy > 0 && (c & pos) > 0) {//一类固定角度的传输型参数，即能量以指定角度传送到它的相邻细胞
-        //                                //TODO
-        //                            }
-        //                        }
-        //
-        //                    energys[x][y][z] -= wasteEnergy;
-        //                }
         return alive;
+    }
+
+    public static final int X = 0;
+    public static final int Y = 1;
+    public static final int Z = 2;
+    public static final int MX = 3;
+    public static final int MY = 4;
+    public static final int MZ = 5;
+    public static final int ENERGY = 6;
+    public static final int SPEED = 7;
+
+    private void createPhoton(float x, float y, float z, float mx, float my, float mz, float energy, float speed) {//在脑空间产生光子
+        photons.add(new float[]{x, y, z, mx, my, mz, energy, speed});
+    }
+
+    private float[] movePhoton(float[] p) {//光子沿移动方向走一格,能量减少为95%
+        p[ENERGY] *= .99f;
+        if (p[ENERGY] < 0.01)
+            return null;
+        if (p[SPEED]<0.01)
+            return p;
+        p[X] += p[MX];
+        p[Y] += p[MY];
+        p[Z] += p[MZ];
+        if (Env.insideBrain(p[X], p[Y], p[Z]))
+            return p;
+        return null;
+    }
+
+    public void eyeSendPhoton(int x, int y) {
+        for (float xx = -0.5f; xx <= 0.5f; xx += 0.4)
+            for (float yy = -0.5f; yy <= 0.5f; yy += 0.4) // 形成一个扇面向下发送光子 
+                createPhoton(x, y, BRAIN_TOP, xx, yy, -1f, 1f, 1f);
     }
 
 }

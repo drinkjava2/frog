@@ -46,12 +46,10 @@ public class Env extends JPanel {
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用三维数组来表示
     public static final int BRAIN_CUBE_SIZE = 8; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
-    
+
     public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度
     public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度
     public static final int BRAIN_ZSIZE = BRAIN_CUBE_SIZE; // 脑在Z方向长度
-
-    public static final int CELLS_MAX_QTY = 4000; //脑细胞总数不能超过这个值
 
     /** SHOW first animal's brain structure */
     public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -69,13 +67,13 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 20;// 每轮测试步数,可调
+    public static final int STEPS_PER_ROUND = 200;// 每轮测试步数,可调
 
-    public static final int FOOD_QTY = 1500; // 食物数量, 可调
+    public static final int FOOD_QTY = 3500; // 食物数量, 可调
 
     // 以下是程序内部变量，不要手工修改它们
     public static int step; // 当前测试步数
-    
+
     public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 蛇的总数
 
     public static final int FROG_PER_SCREEN = TOTAL_FROG_QTY / SCREEN; // 每屏显示几个青蛙，这个数值由其它常量计算得来
@@ -94,25 +92,37 @@ public class Env extends JPanel {
 
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{Food.FOOD };// 所有外界物体，如食物、字母测试工具都放在这个things里面
-    
-    public static boolean show_split_detail=false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
-    
-    public static boolean[] display_gene=new boolean[Cells.GENE_NUMBERS]; //脑最多有64个基因，这里用来控制哪些基因需要显示在脑图上
-    
+    public static EnvObject[] things = new EnvObject[]{Food.FOOD};// 所有外界物体，如食物、字母测试工具都放在这个things里面
+
+    public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
+
+    public static boolean[] display_gene = new boolean[Cells.GENE_NUMBERS]; //脑最多有64个基因，这里用来控制哪些基因需要显示在脑图上
+
     static {
         Logger.info("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
         Logger.info("脑图快捷键： T:顶视  F：前视  L:左视  R:右视  X:斜视  方向键：剖视  空格:暂停  鼠标：缩放旋转平移");
         if (DELETE_FROG_EGGS)
             FrogEggTool.deleteEggs();
-        for (int i = 0; i < display_gene.length; i++) 
-            display_gene[i]=true;
+        for (int i = 0; i < display_gene.length; i++)
+            display_gene[i] = true;
     }
 
     public Env() {
         super();
         this.setLayout(null);// 空布局
         this.setBounds(1, 1, ENV_WIDTH, ENV_HEIGHT);
+    }
+
+    public static boolean insideBrain(int x, int y) {// 如果指定点在边界内
+        return !(x < 0 || y < 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE);
+    }
+
+    public static boolean insideBrain(int x, int y, int z) {// 如果指定点在边界内
+        return !(x < 0 || y < 0 || z <= 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE || z >= BRAIN_ZSIZE);
+    }
+    
+    public static boolean insideBrain(float x, float y, float z) {// 如果指定点在边界内
+        return !(x < 0 || y < 0 || z <= 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE || z >= BRAIN_ZSIZE);
     }
 
     public static boolean insideEnv(int x, int y) {// 如果指定点在边界内

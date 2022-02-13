@@ -297,17 +297,15 @@ public class BrainPicture extends JPanel {
 
     private static Cuboid brain = new Cuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);
 
-    
-    
     public void drawBrainPicture() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
         if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
             return;
-        if(Env.show_split_detail)
+        if (Env.show_split_detail)
             drawSplitDetail();
-        else 
+        else
             drawBrainStructure();
     }
-    
+
     public void drawSplitDetail() {// 在这个方法里绘制脑细胞分裂的显示步聚，即从一个细胞开始分裂成最终脑结构的每一步
         Animal a = Env.getShowAnimal(); // 第一个青蛙或蛇
 
@@ -321,7 +319,7 @@ public class BrainPicture extends JPanel {
                 ArrayList<Integer> gene = a.genes.get(geneIndex);
                 Tree8Util.knockNodesByGene(gene);
                 for (int j = 0; j < Tree8Util.NODE_QTY; j++) {
-                    if (Tree8Util.keep[j]>=0) {
+                    if (Tree8Util.keep[j] >= 0) {
                         int[] node = Tree8Util.TREE8[j];
                         int size = node[0];
                         if (size == i && Env.display_gene[geneIndex]) {//如果允许显示的话, 显示当前层级的节点
@@ -342,7 +340,7 @@ public class BrainPicture extends JPanel {
             }
         }
     }
-    
+
     public void drawBrainStructure() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
         Animal a = Env.getShowAnimal(); // 显示第一个青蛙或蛇
         if (a == null || !a.alive)
@@ -366,6 +364,10 @@ public class BrainPicture extends JPanel {
             }
         }
 
+        setPicColor(Color.RED); //开始画出光子
+        for (float[] p : a.photons) 
+            drawPoint(p[0], p[1], p[2], 0.2f);
+        
         setPicColor(Color.BLACK);
         //BrainShapeJudge.show(this);//这行显示目标形状这个模子
 
@@ -384,6 +386,10 @@ public class BrainPicture extends JPanel {
         if (note != null) // 全局注释
             g.drawString(note, 30, 55);
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) { 
+        }
     }
 
     public static void setNote(String note) {

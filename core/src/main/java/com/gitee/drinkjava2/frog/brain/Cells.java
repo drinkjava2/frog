@@ -23,10 +23,10 @@ public class Cells {
     public static int GENE_NUMBERS = 0; //目前有多少条基因，每个脑细胞用是一个long来存储，所以最多允许64条基因，每个基因控制一个细胞的参数
     private static long gene = 1L;
 
-    public static final long EYE = nextMask(); //光线感觉细胞，即视网膜
+    //public static final long EYE = nextMask(); //光线感觉细胞，即视网膜
     public static final long FELL_HAPPY = nextMask(); //快乐感觉细胞，通常吃食后激活
-    public static final long FELL_PAIN = nextMask(); //痛苦感觉细胞，受伤害后激活
-
+//    public static final long FELL_PAIN = nextMask(); //痛苦感觉细胞，受伤害后激活
+//
 //    public static final long MOVE_UP = nextMask(); //细胞如激活，青蛙向上运动
 //    public static final long MOVE_DOWN = nextMask();//细胞如激活，青蛙向下运动
 //    public static final long MOVE_LEFT = nextMask(); //细胞如激活，青蛙向左运动
