@@ -230,14 +230,26 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
 
         //2.光子主循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动。这里有个编程技巧是用另一个list来累加新的光子，不对原list作删增，以加快速度
+
         photons2.clear();
         for (float[] p : photons) {
             float[] p2 = movePhoton(p);
-            if (p2 != null)
-                photons2.add(p2);
+            if (p2 != null) {
+                int xx = Math.round(p2[X]);
+                int yy = Math.round(p2[Y]);
+                int zz = Math.round(p2[Z]); 
+                if ((cells[xx][yy][zz] & Cells.MOVE_UP) > 0) {
+                    y++;
+                } else if ((cells[xx][yy][zz] & Cells.MOVE_DOWN) > 0) {
+                    y--;
+                } else if ((cells[xx][yy][zz] & Cells.MOVE_LEFT) > 0) {
+                    x--;
+                } else if ((cells[xx][yy][zz] & Cells.MOVE_RIGHT) > 0) {
+                    x++;
+                } else
+                    photons2.add(p2);
+            }
         }
-        photons.clear();
-        photons.addAll(photons2);
 
         //TODO:3.根据青蛙移动的矢量汇总出移动方向和步数，实际移动青蛙
 
@@ -245,6 +257,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
         //TODO：5.如果青蛙与有毒食物位置重合，在所有痛觉细胞处产生光子,即惩罚信号的发生，痛觉细胞的位置和数量不是指定的，而是进化出来的
 
+        List<float[]> temp = photons;
+        photons = photons2; //互换，让photons指向新的结果
+        photons2 = temp; //让photons2指向原来的photons，以免创建新对象
         return alive;
     }
 
@@ -265,7 +280,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         p[ENERGY] *= .99f;
         if (p[ENERGY] < 0.01)
             return null;
-        if (p[SPEED]<0.01)
+        if (p[SPEED] < 0.01)
             return p;
         p[X] += p[MX];
         p[Y] += p[MY];
