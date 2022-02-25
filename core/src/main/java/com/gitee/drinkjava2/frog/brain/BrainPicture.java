@@ -366,7 +366,7 @@ public class BrainPicture extends JPanel {
 
         setPicColor(Color.RED); //开始画出光子
         for (float[] p : a.photons) 
-            drawPoint(p[0], p[1], p[2], 0.2f);
+            drawPoint(p[0]+0.5f, (int)p[1]+0.5f, (int)p[2]+0.5f, 0.2f);
         
         setPicColor(Color.BLACK);
         //BrainShapeJudge.show(this);//这行显示目标形状这个模子

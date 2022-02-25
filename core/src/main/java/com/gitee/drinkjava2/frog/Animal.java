@@ -10,7 +10,7 @@
  */
 package com.gitee.drinkjava2.frog;
 
-import static com.gitee.drinkjava2.frog.brain.Cells.*;
+import static com.gitee.drinkjava2.frog.brain.Cells.GENE_NUMBERS;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -23,7 +23,7 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.RainBowFishJudge;
+import com.gitee.drinkjava2.frog.judge.MoveCellLocationJudge;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -102,6 +102,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             energy -= gene.size();
         createCellsFromGene(); //根据基因分裂生成脑细胞
         //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
+        MoveCellLocationJudge.judge(this);
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -117,12 +118,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
    
     //如果改奖罚值，就可能出现缺色，这个要在基因变异算法（从上到下，从下到上）和环境本身奖罚合理性上下功夫
-    public void awardAAAA()      { changeEnergy(40);}
+    public void awardAAAA()      { changeEnergy(2000);}
     public void awardAAA()   { changeEnergy(20);}
     public void awardAA()     { changeEnergy(5);}      
     public void awardA()   { changeEnergy(2);}
     
-    public void penaltyAAAA()    { changeEnergy(-40);}
+    public void penaltyAAAA()    { changeEnergy(-2000);}
     public void penaltyAAA() { changeEnergy(-20);}
     public void penaltyAA()   { changeEnergy(-5);}
     public void penaltyA()   { changeEnergy(-2);}
@@ -132,7 +133,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
-        //g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+        g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
 
     /** Check if x,y,z out of animal's brain range */
@@ -217,40 +218,37 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
 
         //1.将外界食物信号投放到视网膜上产生光子 
-        if (Food.smell[x][y] > 0) { //这是程序优化，如果闻到香味，说明食物在附近，才允许开启眼睛，以免没食物时也要启动循环
-            for (int xx = -Food.SMELL_RANGE; xx <= Food.SMELL_RANGE; xx++)
-                for (int yy = -Food.SMELL_RANGE; yy <= Food.SMELL_RANGE; yy++) {
-                    int x_ = xx + BRAIN_CENTER;
-                    int y_ = yy + BRAIN_CENTER;
-                    if (Env.insideBrain(x_, y_))
-                        if (Env.foundAnyThingOrOutEdge(x + xx, y + yy)) { //如看到食物或看到出界
-                            eyeSendPhoton(x_, y_);//视网膜上发送出光子  
-                        }
-                }
-        }
+        seeFood();
 
         //2.光子主循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动。这里有个编程技巧是用另一个list来累加新的光子，不对原list作删增，以加快速度
-
         photons2.clear();
         for (float[] p : photons) {
             float[] p2 = movePhoton(p);
             if (p2 != null) {
-                int xx = Math.round(p2[X]);
-                int yy = Math.round(p2[Y]);
-                int zz = Math.round(p2[Z]); 
-                if ((cells[xx][yy][zz] & Cells.MOVE_UP) > 0) {
-                    y++;
-                } else if ((cells[xx][yy][zz] & Cells.MOVE_DOWN) > 0) {
-                    y--;
-                } else if ((cells[xx][yy][zz] & Cells.MOVE_LEFT) > 0) {
-                    x--;
-                } else if ((cells[xx][yy][zz] & Cells.MOVE_RIGHT) > 0) {
-                    x++;
+                int xx = (int) p2[X];
+                int yy = (int) p2[Y];
+                int zz = (int) p2[Z];
+                if (zz < 3) {
+                    if ((cells[xx][yy][zz] & Cells.MOVE_UP) > 0) {
+                        y++;
+                        break; //todo
+                    } else if ((cells[xx][yy][zz] & Cells.MOVE_DOWN) > 0) {
+                        y--;
+                    } else if ((cells[xx][yy][zz] & Cells.MOVE_LEFT) > 0) {
+                        x--;
+                    } else if ((cells[xx][yy][zz] & Cells.MOVE_RIGHT) > 0) {
+                        x++;
+                    } else
+                        photons2.add(p2);
                 } else
                     photons2.add(p2);
             }
         }
 
+//        if (Food.foundAndAteFood(x, y)) {
+//            this.ateFood++;
+//            this.awardAAA();
+//        }
         //TODO:3.根据青蛙移动的矢量汇总出移动方向和步数，实际移动青蛙
 
         //TODO：4.如果青蛙与食物位置重合，在所有奖励细胞处产生光子,即奖励信号的发生，奖励细胞的位置和数量不是指定的，而是进化出来的
@@ -277,7 +275,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     private float[] movePhoton(float[] p) {//光子沿移动方向走一格,能量减少为95%
-        p[ENERGY] *= .99f;
+        //p[ENERGY] *= .99f;
         if (p[ENERGY] < 0.01)
             return null;
         if (p[SPEED] < 0.01)
@@ -290,10 +288,17 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return null;
     }
 
-    public void eyeSendPhoton(int x, int y) {
-        for (float xx = -0.5f; xx <= 0.5f; xx += 0.4)
-            for (float yy = -0.5f; yy <= 0.5f; yy += 0.4) // 形成一个扇面向下发送光子 
-                createPhoton(x, y, BRAIN_TOP, xx, yy, -1f, 1f, 1f);
+    private void seeFood() {
+        if (Food.smell[x][y] > 0) { //这是程序优化，如果闻到香味，说明食物在附近，才允许开启眼睛在香味范围内看图像
+            for (int xx = -Food.SMELL_RANGE; xx <= Food.SMELL_RANGE; xx++)
+                for (int yy = -Food.SMELL_RANGE; yy <= Food.SMELL_RANGE; yy++) {
+                    if (Env.insideBrain(xx + BRAIN_CENTER, yy + BRAIN_CENTER) && Env.foundAnyThingOrOutEdge(x + xx, y + yy)) { //如看到任何东西或看到出界
+                        for (float xxx = -0.1f; xxx <= 0.1f; xxx += 0.05)
+                            for (float yyy = -0.1f; yyy <= 0.1f; yyy += 0.05) // 形成一个扇面向下发送光子 
+                                createPhoton(xx + BRAIN_CENTER, yy + BRAIN_CENTER, BRAIN_TOP, xxx, yyy, -1f, 1f, 1f);
+                    }
+                }
+        }
     }
 
 }

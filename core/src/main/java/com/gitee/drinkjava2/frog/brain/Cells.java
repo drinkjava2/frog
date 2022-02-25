@@ -24,7 +24,7 @@ public class Cells {
     private static long gene = 1L;
 
     //public static final long EYE = nextMask(); //光线感觉细胞，即视网膜
-    public static final long FELL_HAPPY = nextMask(); //快乐感觉细胞，通常吃食后激活
+//    public static final long FELL_HAPPY = nextMask(); //快乐感觉细胞，通常吃食后激活
 //    public static final long FELL_PAIN = nextMask(); //痛苦感觉细胞，受伤害后激活
 //
     public static final long MOVE_UP = nextMask(); //细胞如激活，青蛙向上运动
