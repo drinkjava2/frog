@@ -15,22 +15,29 @@ public class MoveCellLocationJudge {//NOSONAR
         for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++)
             for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++)
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
-                    if (z > 0) {
-                        if (
-
-                        ((animal.cells[x][y][z] & Cells.MOVE_UP) != 0)
-
-                                || ((animal.cells[x][y][z] & Cells.MOVE_DOWN) != 0)
-
-                                || ((animal.cells[x][y][z] & Cells.MOVE_LEFT) != 0)
-
-                        ) {
+                    long cell = animal.cells[x][y][z];
+                    if (z >= 1) {
+                        if ((cell & Cells.MOVE_UP) > 0) //注意四个条件要分别判断和扣分，不能合并放在同一个if条件里，否则互相干扰，进化不出结果
                             animal.penaltyAAAA();
-                        } else {
+                        if ((cell & Cells.MOVE_DOWN) > 0)
+                            animal.penaltyAAAA();
+                        if ((cell & Cells.MOVE_LEFT) > 0)
+                            animal.penaltyAAAA();
+                        if ((cell & Cells.MOVE_RIGHT) > 0)
+                            animal.penaltyAAAA();
+                    }
+                    if (z == 0) {
+                        if ((cell & Cells.MOVE_UP) > 0) //注意四个条件要分别判断和扣分，不能合并放在同一个if条件里，否则互相干扰，进化不出结果
                             animal.awardAAAA();
-                        }
+                        if ((cell & Cells.MOVE_DOWN) > 0)
+                            animal.awardAAAA();
+                        if ((cell & Cells.MOVE_LEFT) > 0)
+                            animal.awardAAAA();
+                        if ((cell & Cells.MOVE_RIGHT) > 0)
+                            animal.awardAAAA();
                     }
                 }
+
     }
 
 }

@@ -228,27 +228,23 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 int xx = (int) p2[X];
                 int yy = (int) p2[Y];
                 int zz = (int) p2[Z];
-                if (zz < 3) {
-                    if ((cells[xx][yy][zz] & Cells.MOVE_UP) > 0) {
-                        y++;
-                        break; //todo
-                    } else if ((cells[xx][yy][zz] & Cells.MOVE_DOWN) > 0) {
-                        y--;
-                    } else if ((cells[xx][yy][zz] & Cells.MOVE_LEFT) > 0) {
-                        x--;
-                    } else if ((cells[xx][yy][zz] & Cells.MOVE_RIGHT) > 0) {
-                        x++;
-                    } else
-                        photons2.add(p2);
-                } else
-                    photons2.add(p2);
+                if ((cells[xx][yy][zz] & Cells.MOVE_UP) > 0)
+                    y++;
+                if ((cells[xx][yy][zz] & Cells.MOVE_DOWN) > 0)
+                    y--;
+                if ((cells[xx][yy][zz] & Cells.MOVE_LEFT) > 0)
+                    x--;
+                if ((cells[xx][yy][zz] & Cells.MOVE_RIGHT) > 0)
+                    x++;
+                photons2.add(p2);
             }
         }
 
 //        if (Food.foundAndAteFood(x, y)) {
 //            this.ateFood++;
-//            this.awardAAA();
+//            this.awardAA();
 //        }
+
         //TODO:3.根据青蛙移动的矢量汇总出移动方向和步数，实际移动青蛙
 
         //TODO：4.如果青蛙与食物位置重合，在所有奖励细胞处产生光子,即奖励信号的发生，奖励细胞的位置和数量不是指定的，而是进化出来的
@@ -275,7 +271,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     private float[] movePhoton(float[] p) {//光子沿移动方向走一格,能量减少为95%
-        //p[ENERGY] *= .99f;
+        p[ENERGY] *= .99f;
         if (p[ENERGY] < 0.01)
             return null;
         if (p[SPEED] < 0.01)

@@ -364,7 +364,7 @@ public class BrainPicture extends JPanel {
             }
         }
 
-        setPicColor(Color.RED); //开始画出光子
+        setPicColor(Color.ORANGE); //开始画出光子
         for (float[] p : a.photons) 
             drawPoint(p[0]+0.5f, (int)p[1]+0.5f, (int)p[2]+0.5f, 0.2f);
         

@@ -31,6 +31,8 @@ public class Cells {
     public static final long MOVE_DOWN = nextMask();//细胞如激活，青蛙向下运动
     public static final long MOVE_LEFT = nextMask(); //细胞如激活，青蛙向左运动
     public static final long MOVE_RIGHT = nextMask(); //细胞如激活，青蛙向右运动
+    public static final long MOVE_ANY = MOVE_UP | MOVE_DOWN | MOVE_LEFT | MOVE_RIGHT; //任意移动，是上面四个bit位的合并
+   
 //
 //    public static final long PHOTON_DELETE = nextMask(); // 删除光子
 //    public static final long PHOTON_ABSORB = nextMask(); // 删除并吸收光子能量
@@ -55,5 +57,5 @@ public class Cells {
         gene = gene << 1; //这个gene占用long的一位，将来判断一个细胞是否包含此基因只要与它做“与”运算
         return result;
     }
-    
+     
 }
