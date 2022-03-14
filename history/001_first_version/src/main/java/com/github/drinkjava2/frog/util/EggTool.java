@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.github.drinkjava2.frog.Frog;
 import com.github.drinkjava2.frog.egg.Egg;
 import com.github.drinkjava2.frog.env.Application;
@@ -52,8 +50,8 @@ public class EggTool {
 				newEggs.add(env.frogs.get(i).layEgg());
 
 			if (JSON_FILE_FORMAT) {
-				String newEggsString = JSON.toJSONString(newEggs);
-				FrogFileUtils.writeFile(Application.CLASSPATH + "eggs.json", newEggsString, "utf-8");
+//				String newEggsString = JSON.toJSONString(newEggs);
+//				FrogFileUtils.writeFile(Application.CLASSPATH + "eggs.json", newEggsString, "utf-8");
 			} else {
 				FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "eggs.ser");
 				ObjectOutputStream so = new ObjectOutputStream(fo);
@@ -88,18 +86,18 @@ public class EggTool {
 	public static void loadEggs(Env env) {
 		boolean errorfound = false;
 		if (JSON_FILE_FORMAT) {
-			String eggsString = FrogFileUtils.readFile(Application.CLASSPATH + "eggs.json", "utf-8");
-			if (eggsString != null) {
-				List<JSONObject> jsonEggs = (List<JSONObject>) JSON.parse(eggsString);
-				env.eggs = new ArrayList<Egg>();
-				for (JSONObject json : jsonEggs) {
-					Egg egg = json.toJavaObject(Egg.class);
-					env.eggs.add(egg);
-				}
-				System.out.println(
-						"Loaded " + env.eggs.size() + " eggs from file '" + Application.CLASSPATH + "eggs.json" + "'.");
-			} else
-				errorfound = true;
+//			String eggsString = FrogFileUtils.readFile(Application.CLASSPATH + "eggs.json", "utf-8");
+//			if (eggsString != null) {
+//				List<JSONObject> jsonEggs = (List<JSONObject>) JSON.parse(eggsString);
+//				env.eggs = new ArrayList<Egg>();
+//				for (JSONObject json : jsonEggs) {
+//					Egg egg = json.toJavaObject(Egg.class);
+//					env.eggs.add(egg);
+//				}
+//				System.out.println(
+//						"Loaded " + env.eggs.size() + " eggs from file '" + Application.CLASSPATH + "eggs.json" + "'.");
+//			} else
+//				errorfound = true;
 		} else {
 			try {
 				FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "eggs.ser");
