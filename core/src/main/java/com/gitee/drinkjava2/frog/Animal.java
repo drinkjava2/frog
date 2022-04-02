@@ -23,7 +23,7 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.MoveCellLocationJudge;
+import com.gitee.drinkjava2.frog.judge.TreeShapeJudge;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -102,7 +102,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             energy -= gene.size();
         createCellsFromGene(); //根据基因分裂生成脑细胞
         //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
-        MoveCellLocationJudge.judge(this);
+        //MoveCellLocationJudge.judge(this);
+        TreeShapeJudge.judge(this);
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -119,12 +120,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
    
     //如果改奖罚值，就可能出现缺色，这个要在基因变异算法（从上到下，从下到上）和环境本身奖罚合理性上下功夫
     public void awardAAAA()      { changeEnergy(2000);}
-    public void awardAAA()   { changeEnergy(20);}
+    public void awardAAA()   { changeEnergy(200);}
     public void awardAA()     { changeEnergy(5);}      
     public void awardA()   { changeEnergy(2);}
     
     public void penaltyAAAA()    { changeEnergy(-2000);}
-    public void penaltyAAA() { changeEnergy(-20);}
+    public void penaltyAAA() { changeEnergy(-200);}
     public void penaltyAA()   { changeEnergy(-5);}
     public void penaltyA()   { changeEnergy(-2);}
     public void kill() { this.alive = false; changeEnergy(-500000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
