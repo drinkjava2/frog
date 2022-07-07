@@ -2,7 +2,6 @@ package com.gitee.drinkjava2.frog.judge;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.brain.Cells;
 
 /**
  * MoveCellLocationJudge determine move cells can only be on bottom layer of brain 
@@ -17,23 +16,23 @@ public class MoveCellLocationJudge {//NOSONAR
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
                     long cell = animal.cells[x][y][z];
                     if (z >= 1) {
-                        if ((cell & Cells.MOVE_UP) > 0) //注意四个条件要分别判断和扣分，不能合并放在同一个if条件里，否则互相干扰，进化不出结果
+                        if ((cell & 1) > 0) //注意四个条件要分别判断和扣分，不能合并放在同一个if条件里，否则互相干扰，进化不出结果
                             animal.penaltyAAAA();
-                        if ((cell & Cells.MOVE_DOWN) > 0)
+                        if ((cell & 2) > 0)
                             animal.penaltyAAAA();
-                        if ((cell & Cells.MOVE_LEFT) > 0)
+                        if ((cell & 4) > 0)
                             animal.penaltyAAAA();
-                        if ((cell & Cells.MOVE_RIGHT) > 0)
+                        if ((cell & 8) > 0)
                             animal.penaltyAAAA();
                     }
                     if (z == 0) {
-                        if ((cell & Cells.MOVE_UP) > 0) //注意四个条件要分别判断和扣分，不能合并放在同一个if条件里，否则互相干扰，进化不出结果
+                        if ((cell & 1) > 0) //注意四个条件要分别判断和扣分，不能合并放在同一个if条件里，否则互相干扰，进化不出结果
                             animal.awardAAAA();
-                        if ((cell & Cells.MOVE_DOWN) > 0)
+                        if ((cell & 2) > 0)
                             animal.awardAAAA();
-                        if ((cell & Cells.MOVE_LEFT) > 0)
+                        if ((cell & 4) > 0)
                             animal.awardAAAA();
-                        if ((cell & Cells.MOVE_RIGHT) > 0)
+                        if ((cell & 8) > 0)
                             animal.awardAAAA();
                     }
                 }

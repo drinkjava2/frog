@@ -16,7 +16,7 @@ public class TreeShapeJudge {//NOSONAR
                 int xxx = x + xx;
                 int yyy = y + yy;
                 if (!Animal.outBrainRange(xxx, yyy, z)) {
-                    if ((animal.cells[xxx][yyy][z] & Cells.MOVE_UP) > 0) {
+                    if ((animal.cells[xxx][yyy][z] & 1) > 0) {
                         count++;
                     }
                 }
@@ -30,14 +30,17 @@ public class TreeShapeJudge {//NOSONAR
 
         for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++)
             for (int y = 0; y < Env.BRAIN_CUBE_SIZE; y++)
-                for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+                for (int z = 0; z <= Env.BRAIN_CUBE_SIZE-2; z++) {
                     long cell = animal.cells[x][y][z];
-                    if (z < (Env.BRAIN_CUBE_SIZE - 1) && (cell & Cells.MOVE_UP) > 0) {
+                    if ( (cell & Cells.MOVE_UP) > 0) {
                         int countThis = countQty(animal, x, y, z);
                         int countAbove = countQty(animal, x, y, z + 1);
+                        if (countAbove>0 && z==(Env.BRAIN_CUBE_SIZE-1))
+                            animal.awardAAA();
+                        
                         if (countAbove>0 && (countAbove * 2 <= countThis))
                             animal.awardAAA();
-                        else
+                        if (countAbove>0 && (countAbove * 2 > countThis))
                             animal.penaltyAAA();
                     }
 

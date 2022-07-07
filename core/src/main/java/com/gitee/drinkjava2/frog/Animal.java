@@ -222,24 +222,24 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         seeFood();
 
         //2.光子主循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动。这里有个编程技巧是用另一个list来累加新的光子，不对原list作删增，以加快速度
-        photons2.clear();
-        for (float[] p : photons) {
-            float[] p2 = movePhoton(p);
-            if (p2 != null) {
-                int xx = (int) p2[X];
-                int yy = (int) p2[Y];
-                int zz = (int) p2[Z];
-                if ((cells[xx][yy][zz] & Cells.MOVE_UP) > 0)
-                    y++;
-                if ((cells[xx][yy][zz] & Cells.MOVE_DOWN) > 0)
-                    y--;
-                if ((cells[xx][yy][zz] & Cells.MOVE_LEFT) > 0)
-                    x--;
-                if ((cells[xx][yy][zz] & Cells.MOVE_RIGHT) > 0)
-                    x++;
-                photons2.add(p2);
-            }
-        }
+//        photons2.clear();
+//        for (float[] p : photons) {
+//            float[] p2 = movePhoton(p);
+//            if (p2 != null) {
+//                int xx = (int) p2[X];
+//                int yy = (int) p2[Y];
+//                int zz = (int) p2[Z];
+//                if ((cells[xx][yy][zz] & 1) > 0)
+//                    y++;
+//                if ((cells[xx][yy][zz] & 2) > 0)
+//                    y--;
+//                if ((cells[xx][yy][zz] & 4) > 0)
+//                    x--;
+//                if ((cells[xx][yy][zz] & 8) > 0)
+//                    x++;
+//                photons2.add(p2);
+//            }
+//        }
 
 //        if (Food.foundAndAteFood(x, y)) {
 //            this.ateFood++;

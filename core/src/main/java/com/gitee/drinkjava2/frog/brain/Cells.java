@@ -28,10 +28,10 @@ public class Cells {
 //    public static final long FELL_PAIN = nextMask(); //痛苦感觉细胞，受伤害后激活
 //
     public static final long MOVE_UP = nextMask(); //细胞如激活，青蛙向上运动
-    public static final long MOVE_DOWN = nextMask();//细胞如激活，青蛙向下运动
-    public static final long MOVE_LEFT = nextMask(); //细胞如激活，青蛙向左运动
-    public static final long MOVE_RIGHT = nextMask(); //细胞如激活，青蛙向右运动
-    public static final long MOVE_ANY = MOVE_UP | MOVE_DOWN | MOVE_LEFT | MOVE_RIGHT; //任意移动，是上面四个bit位的合并
+//    public static final long MOVE_DOWN = nextMask();//细胞如激活，青蛙向下运动
+//    public static final long MOVE_LEFT = nextMask(); //细胞如激活，青蛙向左运动
+//    public static final long MOVE_RIGHT = nextMask(); //细胞如激活，青蛙向右运动
+//    public static final long MOVE_ANY = MOVE_UP | MOVE_DOWN | MOVE_LEFT | MOVE_RIGHT; //任意移动，是上面四个bit位的合并
    
 //
 //    public static final long PHOTON_DELETE = nextMask(); // 删除光子
