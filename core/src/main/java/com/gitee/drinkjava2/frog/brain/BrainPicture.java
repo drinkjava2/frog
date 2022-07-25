@@ -364,10 +364,6 @@ public class BrainPicture extends JPanel {
             }
         }
 
-        setPicColor(Color.ORANGE); //开始画出光子
-        for (float[] p : a.photons) 
-            drawPoint(p[0]+0.5f, (int)p[1]+0.5f, (int)p[2]+0.5f, 0.2f);
-        
         setPicColor(Color.BLACK);
         //BrainShapeJudge.show(this);//这行显示目标形状这个模子
 
@@ -386,10 +382,6 @@ public class BrainPicture extends JPanel {
         if (note != null) // 全局注释
             g.drawString(note, 30, 55);
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) { 
-        }
     }
 
     public static void setNote(String note) {

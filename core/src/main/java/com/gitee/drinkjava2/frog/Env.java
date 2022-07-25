@@ -31,7 +31,7 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 25; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
@@ -68,12 +68,11 @@ public class Env extends JPanel {
 
     /** Steps of one test round */
     public static final int STEPS_PER_ROUND = 20;// 每轮测试步数,可调
+    public static int step;// 当前测试步数
 
-    public static final int FOOD_QTY = 3500; // 食物数量, 可调
+    public static final int FOOD_QTY = 1500; // 食物数量, 可调
 
     // 以下是程序内部变量，不要手工修改它们
-    public static int step; // 当前测试步数
-
     public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 蛇的总数
 
     public static final int FROG_PER_SCREEN = TOTAL_FROG_QTY / SCREEN; // 每屏显示几个青蛙，这个数值由其它常量计算得来
@@ -88,7 +87,7 @@ public class Env extends JPanel {
 
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{ };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{};// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -116,7 +115,7 @@ public class Env extends JPanel {
     public static boolean insideBrain(int x, int y, int z) {// 如果指定点在边界内
         return !(x < 0 || y < 0 || z <= 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE || z >= BRAIN_ZSIZE);
     }
-    
+
     public static boolean insideBrain(float x, float y, float z) {// 如果指定点在边界内
         return !(x < 0 || y < 0 || z <= 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE || z >= BRAIN_ZSIZE);
     }
@@ -264,7 +263,8 @@ public class Env extends JPanel {
                     if (SHOW_SPEED > 0 && step % SHOW_SPEED != 0) // 用是否跳帧画图的方式来控制速度
                         continue;
 
-                     sleep(100);
+                    if (SHOW_SPEED < 0) // 如果speed小于0，人为加入延迟
+                        sleep(-SHOW_SPEED);
 
                     // 开始画虚拟环境和青蛙和蛇
                     g.setColor(Color.white);
@@ -301,8 +301,8 @@ public class Env extends JPanel {
                 sb.append(foodAtedCount());
 
                 Application.mainFrame.setTitle(sb.toString());
-                 for (EnvObject thing : things)// 去除食物、陷阱等物体
-                 thing.destory();
+                for (EnvObject thing : things)// 去除食物、陷阱等物体
+                    thing.destory();
             }
             round++;
             FrogEggTool.layEggs(); //能量高的青蛙才有权下蛋

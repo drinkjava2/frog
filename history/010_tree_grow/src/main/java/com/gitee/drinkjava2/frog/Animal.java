@@ -17,13 +17,11 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.judge.TreeShapeJudge;
-import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -55,10 +53,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells */
     public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
     public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
-
-    public List<float[]> photons = new ArrayList<>(); //每个光子是由一个float数组表示，依次是x,y,z坐标, mz,my,mz运动方向矢量，能量值，速度
-
-    public List<float[]> photons2 = new ArrayList<>();// photons2是个临时空间，用来中转存放一下每遍光子运算后的结果，用双鬼拍门来替代单个链表的增删，每个list只增不减以优化速度
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
@@ -99,9 +93,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         geneMutation(); //有小概率基因突变
         for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
             energy -= gene.size();
-        createCellsFromGene(); //根据基因分裂生成脑细胞
-        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分
-        //MoveCellLocationJudge.judge(this);
+        createCellsFromGene(); //根据基因，分裂生成脑细胞
+        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分 
         TreeShapeJudge.judge(this);
     }
 
@@ -118,22 +111,39 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
    
     //如果改奖罚值，就可能出现缺色，这个要在基因变异算法（从上到下，从下到上）和环境本身奖罚合理性上下功夫
-    public void awardAAAA()      { changeEnergy(2000);}
-    public void awardAAA()   { changeEnergy(200);}
+    public void awardAAAA()      { changeEnergy(20);}
+    public void awardAAA()   { changeEnergy(10);}
     public void awardAA()     { changeEnergy(5);}      
     public void awardA()   { changeEnergy(2);}
     
-    public void penaltyAAAA()    { changeEnergy(-2000);}
-    public void penaltyAAA() { changeEnergy(-200);}
+    public void penaltyAAAA()    { changeEnergy(-20);}
+    public void penaltyAAA() { changeEnergy(-10);}
     public void penaltyAA()   { changeEnergy(-5);}
     public void penaltyA()   { changeEnergy(-2);}
-    public void kill() { this.alive = false; changeEnergy(-500000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
+    public void kill() {  this.alive = false; changeEnergy(-500000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
+
+    public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
+        // 如果能量小于0、出界、与非食物的点重合则判死
+        if (!alive) {
+            energy = MIN_ENERGY_LIMIT; // 死掉的青蛙确保淘汰出局
+            return false;
+        }
+        if (energy <= 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
+            kill();
+            return false;
+        }
+        //energy -= 20;
+        // 依次调用每个cell的active方法
+        //for (Cell cell : cells)
+        //    cell.organ.active(this, cell);
+        return alive;
+    }
 
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
-        g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+        //g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
 
     /** Check if x,y,z out of animal's brain range */
@@ -179,6 +189,27 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             }
         }
 
+//        for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异将阳节点向上提升一级，相当于单个细胞的自底向上扩散式生长
+//            if (RandomUtils.percent(3)) {
+//                ArrayList<Integer> gene = genes.get(g);
+//                int randomIndex = RandomUtils.nextInt(gene.size());
+//                if (randomIndex > 0 && gene.get(randomIndex) > 0) {//如基因是阳基因，且节点不是顶节点
+//                    int size = Tree8Util.TREE8[randomIndex][0];
+//                    gene.remove(randomIndex); //先删除底层这个阳基因                    
+//                    for (int i = randomIndex - 1; i > 0; i--) {
+//                        if (Tree8Util.TREE8[i][0] > size) { //深度树只要大于size就是它的父节点
+//                            if (!gene.contains(i))
+//                                gene.add(i);
+//                            int x = gene.indexOf(-i);//如果有阴节点也删除
+//                            if (x > 0)
+//                                gene.remove(x);
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
         for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因，这样可以去除无用的拉圾基因，防止基因无限增大
             if (RandomUtils.percent(10)) {
                 ArrayList<Integer> gene = genes.get(g);
@@ -202,98 +233,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 }
             }
             geneMask <<= 1;
-        }
-    }
-
-    private static final int BRAIN_CENTER = Env.BRAIN_CUBE_SIZE / 2;
-    private static final int BRAIN_TOP = Env.BRAIN_CUBE_SIZE - 1;
-
-    public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，最复杂的这个方法写在最下面
-        // 如果能量小于0、出界、与非食物的点重合则判死
-        if (!alive)
-            return false;
-        if (energy <= 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
-            kill();
-            return false;
-        }
-
-        //1.将外界食物信号投放到视网膜上产生光子 
-        seeFood();
-
-        //2.光子主循环，每个光子行走一步, 直到光子消失，如果光子落在移动细胞上将消失，并会移动。这里有个编程技巧是用另一个list来累加新的光子，不对原list作删增，以加快速度
-//        photons2.clear();
-//        for (float[] p : photons) {
-//            float[] p2 = movePhoton(p);
-//            if (p2 != null) {
-//                int xx = (int) p2[X];
-//                int yy = (int) p2[Y];
-//                int zz = (int) p2[Z];
-//                if ((cells[xx][yy][zz] & 1) > 0)
-//                    y++;
-//                if ((cells[xx][yy][zz] & 2) > 0)
-//                    y--;
-//                if ((cells[xx][yy][zz] & 4) > 0)
-//                    x--;
-//                if ((cells[xx][yy][zz] & 8) > 0)
-//                    x++;
-//                photons2.add(p2);
-//            }
-//        }
-
-//        if (Food.foundAndAteFood(x, y)) {
-//            this.ateFood++;
-//            this.awardAA();
-//        }
-
-        //TODO:3.根据青蛙移动的矢量汇总出移动方向和步数，实际移动青蛙
-
-        //TODO：4.如果青蛙与食物位置重合，在所有奖励细胞处产生光子,即奖励信号的发生，奖励细胞的位置和数量不是指定的，而是进化出来的
-
-        //TODO：5.如果青蛙与有毒食物位置重合，在所有痛觉细胞处产生光子,即惩罚信号的发生，痛觉细胞的位置和数量不是指定的，而是进化出来的
-
-        List<float[]> temp = photons;
-        photons = photons2; //互换，让photons指向新的结果
-        photons2 = temp; //让photons2指向原来的photons，以免创建新对象
-        return alive;
-    }
-
-    public static final int X = 0;
-    public static final int Y = 1;
-    public static final int Z = 2;
-    public static final int MX = 3;
-    public static final int MY = 4;
-    public static final int MZ = 5;
-    public static final int ENERGY = 6;
-    public static final int SPEED = 7;
-
-    private void createPhoton(float x, float y, float z, float mx, float my, float mz, float energy, float speed) {//在脑空间产生光子
-        photons.add(new float[]{x, y, z, mx, my, mz, energy, speed});
-    }
-
-    private float[] movePhoton(float[] p) {//光子沿移动方向走一格,能量减少为95%
-        p[ENERGY] *= .99f;
-        if (p[ENERGY] < 0.01)
-            return null;
-        if (p[SPEED] < 0.01)
-            return p;
-        p[X] += p[MX];
-        p[Y] += p[MY];
-        p[Z] += p[MZ];
-        if (Env.insideBrain(p[X], p[Y], p[Z]))
-            return p;
-        return null;
-    }
-
-    private void seeFood() {
-        if (Food.smell[x][y] > 0) { //这是程序优化，如果闻到香味，说明食物在附近，才允许开启眼睛在香味范围内看图像
-            for (int xx = -Food.SMELL_RANGE; xx <= Food.SMELL_RANGE; xx++)
-                for (int yy = -Food.SMELL_RANGE; yy <= Food.SMELL_RANGE; yy++) {
-                    if (Env.insideBrain(xx + BRAIN_CENTER, yy + BRAIN_CENTER) && Env.foundAnyThingOrOutEdge(x + xx, y + yy)) { //如看到任何东西或看到出界
-                        for (float xxx = -0.1f; xxx <= 0.1f; xxx += 0.05)
-                            for (float yyy = -0.1f; yyy <= 0.1f; yyy += 0.05) // 形成一个扇面向下发送光子 
-                                createPhoton(xx + BRAIN_CENTER, yy + BRAIN_CENTER, BRAIN_TOP, xxx, yyy, -1f, 1f, 1f);
-                    }
-                }
         }
     }
 
