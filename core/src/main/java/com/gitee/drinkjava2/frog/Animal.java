@@ -159,7 +159,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 int randomIndex = RandomUtils.nextInt(Tree8Util.keepNodeQTY);
                 int count = -1;
                 for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
-                    if (Tree8Util.keep[i] >= 0) {
+                    if (Tree8Util.keep[i] > 0) {
                         count++;
                         if (count >= randomIndex && !gene.contains(-i)) {
                             gene.add(-i);
@@ -171,14 +171,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
 
         for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阳节点基因
-            if (RandomUtils.percent(5)) {
+            if (RandomUtils.percent(10)) {
                 ArrayList<Integer> gene = genes.get(g);
                 Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阳节点基因只添加在阴节点上 
                 int yinNodeQTY = Tree8Util.NODE_QTY - Tree8Util.keepNodeQTY; //阴节点总数
                 int randomIndex = RandomUtils.nextInt(yinNodeQTY);
                 int count = -1;
                 for (int i = 0; i < yinNodeQTY; i++) {
-                    if (Tree8Util.keep[i] < 0) {
+                    if (Tree8Util.keep[i] <= 0) {
                         count++;
                         if (count >= randomIndex && !gene.contains(i)) {
                             gene.add(i);
@@ -188,27 +188,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 }
             }
         }
-
-//        for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异将阳节点向上提升一级，相当于单个细胞的自底向上扩散式生长
-//            if (RandomUtils.percent(3)) {
-//                ArrayList<Integer> gene = genes.get(g);
-//                int randomIndex = RandomUtils.nextInt(gene.size());
-//                if (randomIndex > 0 && gene.get(randomIndex) > 0) {//如基因是阳基因，且节点不是顶节点
-//                    int size = Tree8Util.TREE8[randomIndex][0];
-//                    gene.remove(randomIndex); //先删除底层这个阳基因                    
-//                    for (int i = randomIndex - 1; i > 0; i--) {
-//                        if (Tree8Util.TREE8[i][0] > size) { //深度树只要大于size就是它的父节点
-//                            if (!gene.contains(i))
-//                                gene.add(i);
-//                            int x = gene.indexOf(-i);//如果有阴节点也删除
-//                            if (x > 0)
-//                                gene.remove(x);
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }
 
         for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因，这样可以去除无用的拉圾基因，防止基因无限增大
             if (RandomUtils.percent(10)) {
@@ -225,7 +204,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             ArrayList<Integer> gene = genes.get(g);
             Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
             for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树keep标记生成细胞参数
-                if (Tree8Util.keep[i] >= 0) {
+                if (Tree8Util.keep[i] > 0) {
                     int[] node = Tree8Util.TREE8[i];
                     if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在三维空间对间数组的位置把当前基因geneMask置1
                         cells[node[1]][node[2]][node[3]] = cells[node[1]][node[2]][node[3]] | geneMask; //在相应的细胞处把细胞参数位置1

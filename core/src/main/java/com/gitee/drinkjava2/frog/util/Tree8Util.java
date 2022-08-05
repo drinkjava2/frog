@@ -29,7 +29,7 @@ public class Tree8Util {
 
     public static int[][] TREE8 = new int[NODE_QTY][4]; //八叉数用数组表示，第一维是深度树的行号，第二维是一个整数数组,内容是深度树表示的八叉树细胞的size, x, y, z值
 
-    public static byte[] keep = new byte[NODE_QTY]; //这里临时记录树的敲除记录，大于等于0的值表示要keep, 负数节点表示要敲除
+    public static byte[] keep = new byte[NODE_QTY]; //这里临时记录树的敲除记录，大于0的值表示要keep, 小于等于0表示要敲除
 
     private static byte[] KEEP = new byte[NODE_QTY]; //这里保存初值为0的数组常量，可以用System.arraycopy(KEEP, 0, keep, 0, NODE_QTY)快速清空enable数组
 
@@ -64,8 +64,8 @@ public class Tree8Util {
 
     public static void knockNodesByGene(List<Integer> gene) {//根据基因，把要敲除的8叉树节点作敲除或保留标记 
         System.arraycopy(KEEP, 0, keep, 0, NODE_QTY);//清空keep数组
-        keepNodeQTY = NODE_QTY;
-        for (int g : gene) {//g基因，用带符号的8叉数的行号表示，负数表示阴节点要敲除，0或正数表示是阳节点要保留
+        keepNodeQTY = 0;
+        for (int g : gene) {//g基因，用带符号的8叉数的行号表示，负数表示阴节点要敲除，正数表示是阳节点要保留
             int gLine = Math.abs(g); //基因对应节点的行号
             int size = Tree8Util.TREE8[gLine][0]; //size是基因对应节点的细胞立方体边长
             for (int line = gLine; line < Tree8Util.NODE_QTY; line++) {//从这个g节点开始，往下找节点
@@ -73,13 +73,13 @@ public class Tree8Util {
                     break;
                 else {//否则就是g的子节点
                     if (g < 0) { //g是阴节点 
-                        Tree8Util.keep[line]--;
-                        if (Tree8Util.keep[line] == -1) //如果正好是-1，表示这个节点从保留状态转为删除状态
+                        if (Tree8Util.keep[line] == 1) //如果是1，表示这个节点将从保留状态转为删除状态
                             keepNodeQTY--;
+                        Tree8Util.keep[line]=0;                        
                     } else if (g > 0) { //g是阳节点
-                        Tree8Util.keep[line]++;
-                        if (Tree8Util.keep[line] == 0) //如果正好是0，表示这个节点从删除状态又转回了保留状态
+                        if (Tree8Util.keep[line] == 0) //如果是0，表示这个节点将从删除状态转为保留状态
                             keepNodeQTY++;
+                        Tree8Util.keep[line]=1;
                     }
                 }
             }
