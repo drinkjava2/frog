@@ -50,7 +50,7 @@ public class FrogEggTool {
             Env.frog_eggs.clear();
             for (int i = 0; i < Env.FROG_EGG_QTY; i++)
                 Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
-			Logger.info("Fist frog energy={}, Last frog energy={}", first.energy, last.energy);
+			Logger.info("Fist frog energy={}, gene size={}, Last frog energy={}", first.energy, getGeneSize(first), last.energy);
             if (Env.SAVE_EGGS_FILE) {
                 FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");
                 ObjectOutputStream so = new ObjectOutputStream(fo);
@@ -63,6 +63,16 @@ public class FrogEggTool {
 		}
 	}
 
+	private static String getGeneSize(Frog f) {//按genes类型汇总每种基因的个数
+	    StringBuilder sb=new StringBuilder("[");
+	    for (int i = 0; i < f.genes.size(); i++) 
+	        sb.append(f.genes.get(i).size()).append(",");
+	    if(sb.length()>1)
+	        sb.setLength(sb.length()-1);
+	    sb.append("]");
+	    return sb.toString();
+	}
+	
 	private static void sortFrogsOrderByEnergyDesc() {// 按能量多少给青蛙排序
 		Collections.sort(Env.frogs, new Comparator<Animal>() {
 			public int compare(Animal a, Animal b) {

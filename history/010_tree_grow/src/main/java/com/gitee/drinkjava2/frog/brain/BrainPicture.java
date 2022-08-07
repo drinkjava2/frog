@@ -319,7 +319,7 @@ public class BrainPicture extends JPanel {
                 ArrayList<Integer> gene = a.genes.get(geneIndex);
                 Tree8Util.knockNodesByGene(gene);
                 for (int j = 0; j < Tree8Util.NODE_QTY; j++) {
-                    if (Tree8Util.keep[j] >= 0) {
+                    if (Tree8Util.keep[j] > 0) {
                         int[] node = Tree8Util.TREE8[j];
                         int size = node[0];
                         if (size == i && Env.display_gene[geneIndex]) {//如果允许显示的话, 显示当前层级的节点
