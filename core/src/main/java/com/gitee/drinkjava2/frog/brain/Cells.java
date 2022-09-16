@@ -11,22 +11,22 @@
 package com.gitee.drinkjava2.frog.brain;
 
 /**
- * Cells代表不同的脑细胞参数，对应每个参数，细胞有不同的处理光子的行为
+ * Cells代表不同的脑细胞参数，对应每个参数，用8叉树算法生成不同的细胞。
+ * 每个脑细胞用一个long来存储，所以最多允许64个基因位, 有时一个参数由多个基因位决定。
+ * 基因+分裂算法=结构。这个类里定义每个基因位的掩码和含义
  * 
  * @author Yong Zhu
  * @since 10.0
  */
 @SuppressWarnings("all")
 public class Cells {
-    public static int GENE_NUMBERS = 4; //目前有多少条基因，每个脑细胞用是一个long来存储，所以最多允许64条基因，每个基因控制一个细胞的参数
-   
-    //1 to 8: 轴突方向在x方向的角度，1表示0度, 2表示45度, 3为90 度, ......, 7为270度，以下类似
-    //9 to 16: 轴突方向在y方向的角度
-    //17 to 24:轴突在z方向的角度
-    
-    //25~28: 轴突长度为1,2,4,8，可以重复，即同时存在多个长度
-    //29~32: 树突范围为1,2,4,可以重复
-    //33: 1为正信号 1为抵制信号
-    
-    
+    public static long EXIST = /*                     */0b1L; //细胞存在否,1为存在,0为不存在
+    public static long POSITIVE = /*                */ 0b10L; //细胞信号,1为正信号,0为负信号
+    public static long ZTX = /*                   */0b11100L; //轴突x方向 (2个0)
+    public static long ZTY = /*                */0b11100000L; //轴突y方向 (5个0)
+    public static long ZTZ = /*             */0b11100000000L; //轴突z方向 (8个0)
+    public static long ZT_LONG = /*      */0b11100000000000L; //轴突长度 (11个0)
+    public static long ST_LONG = /*    */0b1100000000000000L; //树突长度 (14个0)
+
+    public static int GENE_NUMBERS = 16; //目前有多少条基因    
 }
