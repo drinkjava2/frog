@@ -23,26 +23,22 @@ public class Move {
 
     /** First eye can only see if food nearby at 4 directions */
     public static void active(Animal a) {// Move器官，如发现最下面一层细胞有能量，就移动青蛙 
-        if (a.energys[Env.BRAIN_XSIZE / 2][Env.BRAIN_YSIZE - 1][0] > 0) {
-            a.energys[Env.BRAIN_XSIZE / 2][Env.BRAIN_YSIZE - 1][0] = 0;
-            System.out.println(".");
+        if (a.energys[Env.BRAIN_XSIZE / 2][Env.BRAIN_YSIZE - 1][1] > 0) {
+            a.energys[Env.BRAIN_XSIZE / 2][Env.BRAIN_YSIZE - 1][1]--;
             a.y++;
         }
-        if (a.energys[Env.BRAIN_XSIZE / 2][0][0] > 0) {
-            a.energys[Env.BRAIN_XSIZE / 2][0][0] = 0;
-            System.out.println(".");
+        if (a.energys[Env.BRAIN_XSIZE / 2][0][1] > 0) {
+            a.energys[Env.BRAIN_XSIZE / 2][0][1]--;
             a.y--;
         }
 
-        if (a.energys[0][Env.BRAIN_YSIZE / 2][0] > 0) {
-            a.energys[0][Env.BRAIN_YSIZE / 2][0] = 0;
-            System.out.println(".");
+        if (a.energys[0][Env.BRAIN_YSIZE / 2][1] > 0) {
+            a.energys[0][Env.BRAIN_YSIZE / 2][1]--;
             a.x++;
         }
 
-        if (a.energys[Env.BRAIN_XSIZE - 1][Env.BRAIN_YSIZE / 2][0] > 0) {
-            a.energys[Env.BRAIN_XSIZE - 1][Env.BRAIN_YSIZE / 2][0] = 0;
-            System.out.println(".");
+        if (a.energys[Env.BRAIN_XSIZE - 1][Env.BRAIN_YSIZE / 2][1] > 0) {
+            a.energys[Env.BRAIN_XSIZE - 1][Env.BRAIN_YSIZE / 2][1]--;
             a.x--;
         }
 

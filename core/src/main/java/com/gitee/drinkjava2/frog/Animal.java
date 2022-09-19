@@ -94,8 +94,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         geneMutation(); //有小概率基因突变
-//        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
-//            energy -= gene.size();
+        int geneQTY=0;
+        for (ArrayList<Integer> gene : genes)  
+            geneQTY+=gene.size();
+        if(geneQTY>500) {//基因大于500后，要适当小扣点分，防止基因无限增长
+            if(RandomUtils.percent(50))
+                energy-=(geneQTY-500);
+        }
         createCellsFromGene(); //根据基因，分裂生成脑细胞
         //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分 
         //TreeShapeJudge.judge(this);
@@ -114,12 +119,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
    
     //如果改奖罚值，就可能出现缺色，这个要在基因变异算法（从上到下，从下到上）和环境本身奖罚合理性上下功夫
-    public void awardAAAA()      { changeEnergy(20);}
+    public void awardAAAA()      { changeEnergy(2000);}
     public void awardAAA()   { changeEnergy(10);}
     public void awardAA()     { changeEnergy(5);}      
     public void awardA()   { changeEnergy(2);}
     
-    public void penaltyAAAA()    { changeEnergy(-20);}
+    public void penaltyAAAA()    { changeEnergy(-2000);}
     public void penaltyAAA() { changeEnergy(-10);}
     public void penaltyAA()   { changeEnergy(-5);}
     public void penaltyA()   { changeEnergy(-2);}
@@ -142,8 +147,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         Move.active(this); //如发现底层细胞出现能量，则青蛙移动
 
         if (Food.foundAndAteFood(this.x, this.y)) //如当前位置有食物就吃掉，并获得奖励
-            this.awardAAA();
-
+            this.awardAAAA();
         return alive;
     }
 

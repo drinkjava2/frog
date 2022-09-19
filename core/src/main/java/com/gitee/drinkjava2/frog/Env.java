@@ -33,7 +33,7 @@ public class Env extends JPanel {
 
     public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
-    public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
+    public static final int FROG_PER_EGG = 10; // 每个青蛙蛋可以孵出几个青蛙
 
     public static final int SCREEN = 1; // 分几屏测完
 
@@ -45,7 +45,7 @@ public class Env extends JPanel {
     public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出青蛙落在地图上随机位置，而不是在蛋所在地
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用三维数组来表示
-    public static final int BRAIN_CUBE_SIZE = 8; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
+    public static final int BRAIN_CUBE_SIZE = 4; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
 
     public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度
     public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度
@@ -67,10 +67,10 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 1000;// 每轮测试步数,可调
+    public static final int STEPS_PER_ROUND = 200;// 每轮测试步数,可调
     public static int step;// 当前测试步数
 
-    public static final int FOOD_QTY = 1500; // 食物数量, 可调
+    public static final int FOOD_QTY = 2000; // 食物数量, 可调
 
     // 以下是程序内部变量，不要手工修改它们
     public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 蛇的总数
@@ -263,8 +263,8 @@ public class Env extends JPanel {
                     if (SHOW_SPEED > 0 && step % SHOW_SPEED != 0) // 用是否跳帧画图的方式来控制速度
                         continue;
 
-                    if (SHOW_SPEED < 0) // 如果speed小于0，人为加入延迟
-                        sleep(-SHOW_SPEED);
+                    if (SHOW_SPEED==1) // 如果speed为1，人为加入延迟
+                        sleep(SHOW_SPEED*20);
 
                     // 开始画虚拟环境和青蛙和蛇
                     g.setColor(Color.white);

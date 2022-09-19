@@ -33,8 +33,9 @@ public class Cells {
     public static long ZTZ = /*               */0b11000000L; //轴突z方向 (6个0)
     public static long ZT_LONG = /*        */0b11100000000L; //轴突长度 (8个0)
     public static long ST_LONG = /*      */0b1100000000000L; //dendrite length, 树突长度 (11个0)
+    public static long ACTIVED = /*      */0b10000000000000L; //如此点为1，则此细胞位置处赋能量
 
-    public static int GENE_NUMBERS = 16; //目前共有多少基因位    
+    public static int GENE_NUMBERS = 14; //目前共有多少基因位    
 
     public static void active(Animal a) {//这个方法的功能是根据细胞的参数，在细胞间传输能量（即信息的载体)
         for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
@@ -43,8 +44,10 @@ public class Cells {
                     long cell = a.cells[x][y][z];
                     if ((cell & EXIST) == 0) //如细胞不存在，
                         continue;
+                    if((cell & ACTIVED)>0)
+                        a.energys[x][y][z]=10;
                     float e = a.energys[x][y][z];
-                    if (e > 9) { //如细胞能量大于某阀值，则输出能量到位于轴突顶尖位置处，然后它们的树突如果在这个位置就会收到一份能量(即信息)
+                    if (e > 0) { //如细胞能量大于某阀值，则输出能量到位于轴突顶尖位置处，然后它们的树突如果在这个位置就会收到一份能量(即信息)
                         int x_ = (int) ((cell & ZTX) >> 2) - 2;//让x_位于-2,-1,1,2这个个数值中，表示x方向的坐标方向偏移，下同
                         if (x_ >= 0)
                             x_++;
@@ -59,8 +62,10 @@ public class Cells {
                         int yy = y + y_ * zt_long;
                         int zz = z + z_ * zt_long;
                         if (Env.insideBrain(xx, yy, zz)) {
-                            a.energys[xx][yy][zz] += 10;
-                            a.energys[x][y][z] = 0;
+                            if (a.energys[xx][yy][zz] < 5)
+                                a.energys[xx][yy][zz]++;
+                            if (a.energys[x][y][z] > 1)
+                                a.energys[x][y][z]--;
                         }
                     }
                 }
