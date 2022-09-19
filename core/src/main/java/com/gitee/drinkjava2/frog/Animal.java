@@ -22,7 +22,6 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.brain.Eye;
-import com.gitee.drinkjava2.frog.brain.Move;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
@@ -144,7 +143,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
         Eye.active(this); //如看到食物，给顶层细胞赋能量
         Cells.active(this); //细胞之间互相传递能量
-        Move.active(this); //如发现底层细胞出现能量，则青蛙移动
+       // Move.active(this); //如发现底层细胞出现能量，则青蛙移动
 
         if (Food.foundAndAteFood(this.x, this.y)) //如当前位置有食物就吃掉，并获得奖励
             this.awardAAAA();
