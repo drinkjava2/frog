@@ -353,7 +353,11 @@ public class BrainPicture extends JPanel {
         for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
             for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--) {
                 for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
-                    if (x >= xMask && y >= yMask && a.cells[x][y][z] != 0)
+                    if(a.energys[x][y][z]>1) { //用大红色圆形画出能量大于1的细胞格
+                        setPicColor(Color.RED); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
+                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 1.2f);
+                    }
+                    if (x >= xMask && y >= yMask && a.cells[x][y][z] != 0)//画出细胞存在的格子
                         for (int geneIndex = 0; geneIndex < Cells.GENE_NUMBERS; geneIndex++) {
                             if ((a.cells[x][y][z] & (1 << geneIndex)) != 0 && Env.display_gene[geneIndex]) {
                                 setPicColor(ColorUtils.colorByCode(geneIndex)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示

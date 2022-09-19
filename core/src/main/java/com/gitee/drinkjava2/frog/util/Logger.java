@@ -33,6 +33,7 @@ import java.util.concurrent.BlockingQueue;
  */
 @SuppressWarnings("all")
 public class Logger {
+    private static final int LOGGER_STYLE = 0; //风格设定， 0:不输出前缀, 1:输出时间、类、行号等前缀
     private static final String LEV_EL = "debug";
     private static final int LEVEL_INT;
     private static final BlockingQueue<String> LOG_LIST = new ArrayBlockingQueue<>(256);
@@ -123,6 +124,8 @@ public class Logger {
     }
 
     private static String generateMsg(String levelStr, String msg, Object... params) {
+        if(LOGGER_STYLE==0) 
+            return formatMsg(msg+ LINE_SEPARATOR, null, params);
         StackTraceElement stack = Thread.currentThread().getStackTrace()[4];
         String s = "{} [{}][{}#{} {}] - " + msg + LINE_SEPARATOR;
         Object[] args = new Object[5 + params.length];

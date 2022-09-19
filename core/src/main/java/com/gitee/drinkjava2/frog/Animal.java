@@ -20,8 +20,11 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import com.gitee.drinkjava2.frog.brain.Cells;
+import com.gitee.drinkjava2.frog.brain.Eye;
+import com.gitee.drinkjava2.frog.brain.Move;
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.RainBowFishJudge;
+import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
@@ -91,10 +94,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         geneMutation(); //有小概率基因突变
-        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
-            energy -= gene.size();
+//        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
+//            energy -= gene.size();
         createCellsFromGene(); //根据基因，分裂生成脑细胞
-        // RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分 
+        //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分 
         //TreeShapeJudge.judge(this);
     }
 
@@ -133,17 +136,21 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             kill();
             return false;
         }
-        //energy -= 20;
-        // 依次调用每个cell的active方法
-        //for (Cell cell : cells)
-        //    cell.organ.active(this, cell);
+
+        Eye.active(this); //如看到食物，给顶层细胞赋能量
+        Cells.active(this); //细胞之间互相传递能量
+        Move.active(this); //如发现底层细胞出现能量，则青蛙移动
+
+        if (Food.foundAndAteFood(this.x, this.y)) //如当前位置有食物就吃掉，并获得奖励
+            this.awardAAA();
+
         return alive;
     }
 
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
-        //g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+        g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
 
     /** Check if x,y,z out of animal's brain range */
