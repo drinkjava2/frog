@@ -26,16 +26,37 @@ import com.gitee.drinkjava2.frog.util.Logger;
  */
 @SuppressWarnings("all")
 public class Cells {
-    public static long EXIST = /*                    */0b1L; //细胞存在否,1为存在,0为不存在
-    public static long POSITIVE = /*               */ 0b10L; //细胞信号,1为正信号,0为负(抑制)信号
-    public static long ZTX = /*                  */ 0b1100L; //axon x offset, 轴突x方向 (2个0), 轴突方向由x,y,z三个方向的参数组合决定
-    public static long ZTY = /*                 */0b110000L; //轴突y方向 (4个0)
-    public static long ZTZ = /*               */0b11000000L; //轴突z方向 (6个0)
-    public static long ZT_LONG = /*        */0b11100000000L; //轴突长度 (8个0)
-    public static long ST_LONG = /*      */0b1100000000000L; //dendrite length, 树突长度 (11个0)
-    public static long ACTIVED = /*      */0b10000000000000L; //如此点为1，则此细胞位置处赋能量
+    public static int GENE_NUMBERS = 0;
+    private static int zeros = 0;
 
-    public static int GENE_NUMBERS = 14; //目前共有多少基因位    
+    public static long EXIST = mask(1); // 细胞存在否,1为存在,0为不存在
+    public static long EXIST0 = zeros;
+    public static long POSITIVE =mask(1);//细胞信号,1为正信号,0为负(抑制)信号
+    public static long POSITIVE0= zeros;
+    public static long ZTX = mask(2);//axon x offset, 轴突x方向 (2个0), 轴突方向由x,y,z三个方向的参数组合决定
+    public static long ZTX0= zeros;
+    public static long ZTY = mask(2); //轴突y方向 (4个0)
+    public static long ZTY0= zeros;
+    public static long ZTZ =mask(2); //轴突z方向 (6个0)
+    public static long ZTZ0= zeros;
+    public static long ZT_LONG = mask(3); //轴突长度 (8个0)
+    public static long ZT_LONG0= zeros;
+    public static long ST_LONG = mask(2); //dendrite length, 树突长度 (11个0)
+    public static long ST_LONG0= zeros;
+    public static long ACTIVED =mask(1); //如此点为1，则此细胞位置处赋能量
+    public static long ACTIVED0= zeros; 
+
+    public static long mask(int n) { //返回基因掩码，高位由n个1组成，低位是GENE_NUMBERS个0
+        String one = "";
+        String zero = "";
+        for (int i = 1; i <= n; i++)
+            one += "1";
+        for (int i = 1; i <= GENE_NUMBERS; i++)
+            zero += "0";
+        zeros = GENE_NUMBERS; 
+        GENE_NUMBERS += n;
+        return Long.parseLong(one + zero, 2); //将"111000"这种字符串转换为长整
+    }
 
     public static void active(Animal a) {//这个方法的功能是根据细胞的参数，在细胞间传输能量（即信息的载体)
         for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
@@ -44,20 +65,20 @@ public class Cells {
                     long cell = a.cells[x][y][z];
                     if ((cell & EXIST) == 0) //如细胞不存在，
                         continue;
-                    if((cell & ACTIVED)>0)
-                        a.energys[x][y][z]=10;
+                    if ((cell & ACTIVED) > 0)
+                        a.energys[x][y][z] = 10;
                     float e = a.energys[x][y][z];
                     if (e > 0) { //如细胞能量大于某阀值，则输出能量到位于轴突顶尖位置处，然后它们的树突如果在这个位置就会收到一份能量(即信息)
-                        int x_ = (int) ((cell & ZTX) >> 2) - 2;//让x_位于-2,-1,1,2这个个数值中，表示x方向的坐标方向偏移，下同
+                        int x_ = (int) ((cell & ZTX) >> ZTX0) - 2;//让x_位于-2,-1,1,2这个个数值中，表示x方向的坐标方向偏移，下同
                         if (x_ >= 0)
                             x_++;
-                        int y_ = (int) ((cell & ZTY) >> 4) - 2;
+                        int y_ = (int) ((cell & ZTY) >> ZTY0) - 2;
                         if (y_ >= 0)
                             y_++;
-                        int z_ = (int) ((cell & ZTZ) >> 6) - 2;
+                        int z_ = (int) ((cell & ZTZ) >> ZTZ0) - 2;
                         if (y_ >= 0)
                             y_++;
-                        int zt_long = (int) ((cell & ZT_LONG) >> 8) + 1; //轴突长度, 大小为1~8
+                        int zt_long = (int) ((cell & ZT_LONG) >> ZT_LONG0) + 1; //轴突长度, 大小为1~8
                         int xx = x + x_ * zt_long;
                         int yy = y + y_ * zt_long;
                         int zz = z + z_ * zt_long;

@@ -97,9 +97,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         int geneQTY=0;
         for (ArrayList<Integer> gene : genes)  
             geneQTY+=gene.size();
-        if(geneQTY>500) {//基因大于500后，要适当小扣点分，防止基因无限增长
-            if(RandomUtils.percent(50))
-                energy-=(geneQTY-500);
+        if(geneQTY>100) {//基因大于100后，要适当小扣点分，防止基因无限增长
+            if(RandomUtils.percent(20))
+                energy-=(geneQTY-100);
         }
         createCellsFromGene(); //根据基因，分裂生成脑细胞
         //RainBowFishJudge.judge(this); //外界对是否长得象彩虹鱼打分 
