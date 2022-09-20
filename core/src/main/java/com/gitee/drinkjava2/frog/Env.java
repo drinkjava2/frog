@@ -31,9 +31,9 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 200; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
-    public static final int FROG_PER_EGG = 5; // 每个青蛙蛋可以孵出几个青蛙
+    public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
     public static final int SCREEN = 1; // 分几屏测完
 
@@ -99,7 +99,7 @@ public class Env extends JPanel {
         if (DELETE_FROG_EGGS)
             FrogEggTool.deleteEggs();
         for (int i = 0; i < display_gene.length; i++)
-            display_gene[i] = true;
+            display_gene[i] = false;
     }
 
     public Env() {

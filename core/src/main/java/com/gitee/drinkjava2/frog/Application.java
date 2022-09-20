@@ -132,7 +132,7 @@ public class Application {
         for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
             JRadioButton geneRadio=new JRadioButton();
             geneRadio.setBounds(buttonXpos+300+i*16, Env.ENV_HEIGHT + 8, 20, 22);
-            geneRadio.setSelected(true);
+            geneRadio.setSelected(Env.display_gene[i]);
             geneRadio.setName(""+i);
             ActionListener geneRadioAction = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {

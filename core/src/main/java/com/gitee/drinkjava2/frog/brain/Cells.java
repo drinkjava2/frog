@@ -32,6 +32,16 @@ public class Cells {
 
     public static long EXIST = mask(1); // 细胞存在否,1为存在,0为不存在
     public static long EXIST0 = zeros; //0后缀的同名变量，表示当前掩码低位有多少个0，下同
+    public static long ACTIVED = mask(1); //如此点为1，则此细胞位置处会始终产生能量
+    public static long ACTIVED0 = zeros;
+    public static long MOVE_UP = mask(2); //如此点为1，则此细胞如有能量，青蛙向上移动
+    public static long MOVE_UP0 = zeros;
+    public static long MOVE_DOWN = mask(2); //如此点为1，则此细胞如有能量，青蛙向下移动
+    public static long MOVE_DOWN0 = zeros;
+    public static long MOVE_LEFT = mask(2); //如此点为1，则此细胞如有能量，青蛙向左移动
+    public static long MOVE_LEFT0 = zeros;
+    public static long MOVE_RIGHT = mask(2); //如此点为1，则此细胞如有能量，青蛙向右移动
+    public static long MOVE_RIGTH0 = zeros;
     public static long POSITIVE = mask(1);//细胞信号,1为正信号,0为负(抑制)信号
     public static long POSITIVE0 = zeros;
     public static long ZTX = mask(2);//axon x offset, 轴突x方向 (2个0), 轴突方向由x,y,z三个方向的参数组合决定
@@ -44,16 +54,7 @@ public class Cells {
     public static long ZT_LONG0 = zeros;
     public static long ST_LONG = mask(2); //dendrite length, 树突长度 (11个0)
     public static long ST_LONG0 = zeros;
-    public static long ACTIVED = mask(1); //如此点为1，则此细胞位置处会始终产生能量
-    public static long ACTIVED0 = zeros;
-    public static long MOVE_UP = mask(2); //如此点为1，则此细胞如有能量，青蛙向上移动
-    public static long MOVE_UP0 = zeros;
-    public static long MOVE_DOWN = mask(2); //如此点为1，则此细胞如有能量，青蛙向下移动
-    public static long MOVE_DOWN0 = zeros;
-    public static long MOVE_LEFT = mask(2); //如此点为1，则此细胞如有能量，青蛙向左移动
-    public static long MOVE_LEFT0 = zeros;
-    public static long MOVE_RIGHT = mask(2); //如此点为1，则此细胞如有能量，青蛙向右移动
-    public static long MOVE_RIGTH0 = zeros;
+
 
     public static long mask(int n) { //返回基因掩码，高位由n个1组成，低位是当前GENE_NUMBERS个0，这个方法执行后GENE_NUMBERS会加n
         String one = "";
@@ -86,45 +87,44 @@ public class Cells {
                     float e = a.energys[x][y][z];
 
                     if (e > 0) { //如有轴突基因，则当前细胞如存在能量，会输送到轴突端点处
-                        int x_ = (int) ((cell & ZTX) >> ZTX0) - 2;//让x_位于-2,-1,1,2这个个数值中，表示x方向的坐标方向偏移，下同
-                        if (x_ >= 0)
-                            x_++;
-                        int y_ = (int) ((cell & ZTY) >> ZTY0) - 2;
-                        if (y_ >= 0)
-                            y_++;
-                        int z_ = (int) ((cell & ZTZ) >> ZTZ0) - 2;
-                        if (y_ >= 0)
-                            y_++;
-                        int zt_long = (int) ((cell & ZT_LONG) >> ZT_LONG0) + 1; //轴突长度, 大小为1~8
-                        int xx = x + x_ * zt_long;
-                        int yy = y + y_ * zt_long;
-                        int zz = z + z_ * zt_long;
-                        if (Env.insideBrain(xx, yy, zz)) {
-                            if (a.energys[xx][yy][zz] < 5)
-                                a.energys[xx][yy][zz]++;
-                            if (a.energys[x][y][z] > 1)
-                                a.energys[x][y][z]--;
-                        }
+//                        int x_ = (int) ((cell & ZTX) >> ZTX0) - 2;//让x_位于-2,-1,1,2这个个数值中，表示x方向的坐标方向偏移，下同
+//                        if (x_ >= 0)
+//                            x_++;
+//                        int y_ = (int) ((cell & ZTY) >> ZTY0) - 2;
+//                        if (y_ >= 0)
+//                            y_++;
+//                        int z_ = (int) ((cell & ZTZ) >> ZTZ0) - 2;
+//                        if (y_ >= 0)
+//                            y_++;
+//                        int zt_long = (int) ((cell & ZT_LONG) >> ZT_LONG0) + 1; //轴突长度, 大小为1~8
+//                        int xx = x + x_ * zt_long;
+//                        int yy = y + y_ * zt_long;
+//                        int zz = z + z_ * zt_long;
+//                        if (Env.insideBrain(xx, yy, zz)) {
+//                            if (a.energys[xx][yy][zz] < 5)
+//                                a.energys[xx][yy][zz]++;
+//                            if (a.energys[x][y][z] > 1)
+//                                a.energys[x][y][z]--;
+//                        }
+                    }
 
-                        if (e > 0) { //如当前细胞有移动基因，且有能量，则青蛙移动
-                            if ((cell & MOVE_UP) > 0) {
-                                a.y++;
-                                a.energys[x][y][z] = 0;
-                            }
-                            if ((cell & MOVE_DOWN) > 0) {
-                                a.y--;
-                                a.energys[x][y][z] = 0;
-                            }
-                            if ((cell & MOVE_LEFT) > 0) {
-                                a.x--;
-                                a.energys[x][y][z] = 0;
-                            }
-                            if ((cell & MOVE_RIGHT) > 0) {
-                                a.x++;
-                                a.energys[x][y][z] = 0;
-                            }
+                    if (e > 1 && z==0) { //如当前细胞有移动基因，且有能量，则青蛙移动
+                        if ((cell & MOVE_UP) > 0) {
+                            a.y++;
+                            a.energys[x][y][z] = 0;
                         }
-
+                        if ((cell & MOVE_DOWN) > 0) {
+                            a.y--;
+                            a.energys[x][y][z] = 0;
+                        }
+                        if ((cell & MOVE_LEFT) > 0) {
+                            a.x--;
+                            a.energys[x][y][z] = 0;
+                        }
+                        if ((cell & MOVE_RIGHT) > 0) {
+                            a.x++;
+                            a.energys[x][y][z] = 0;
+                        }
                     }
                 }
     }
