@@ -38,14 +38,14 @@ public class Env extends JPanel {
     public static final int SCREEN = 1; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
-    public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
+    public static final boolean DELETE_FROG_EGGS = false;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
 
     public static boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
 
     public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出青蛙落在地图上随机位置，而不是在蛋所在地
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用三维数组来表示
-    public static final int BRAIN_CUBE_SIZE = 8; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
+    public static final int BRAIN_CUBE_SIZE = 4; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
 
     public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度
     public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度
@@ -91,15 +91,11 @@ public class Env extends JPanel {
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
-    public static boolean[] display_gene = new boolean[Cells.GENE_NUMBERS]; //脑最多有64个基因，这里用来控制哪些基因需要显示在脑图上
-
     static {
         Logger.info("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，见码云issue#IW4H8
         Logger.info("脑图快捷键： T:顶视  F：前视  L:左视  R:右视  X:斜视  方向键：剖视  空格:暂停  鼠标：缩放旋转平移");
         if (DELETE_FROG_EGGS)
             FrogEggTool.deleteEggs();
-        for (int i = 0; i < display_gene.length; i++)
-            display_gene[i] = false;
     }
 
     public Env() {
@@ -263,8 +259,8 @@ public class Env extends JPanel {
                     if (SHOW_SPEED > 0 && step % SHOW_SPEED != 0) // 用是否跳帧画图的方式来控制速度
                         continue;
 
-                    if (SHOW_SPEED==1) // 如果speed为1，人为加入延迟
-                        sleep(SHOW_SPEED*20);
+                    if (SHOW_SPEED<30) // 如果speed为1，人为加入延迟
+                        sleep((30-SHOW_SPEED));
 
                     // 开始画虚拟环境和青蛙和蛇
                     g.setColor(Color.white);

@@ -59,7 +59,17 @@ public class Egg implements Serializable {
     public Egg(Egg a, Egg b) {//两个蛋的基因混合, 生成一个新蛋
         x = a.x;
         y = a.y;
-        genes.addAll(a.genes); //TODO: 两个蛋的基因混合
+        genes.addAll(a.genes);
+        if (RandomUtils.percent(30)) {//插入蛋B的基因到A蛋中
+            for (int i = 0; i < b.genes.size(); i++) {
+                ArrayList<Integer> aGene = a.genes.get(i);
+                ArrayList<Integer> bGene = b.genes.get(i);
+                if (bGene.size()>1 && aGene.size()>1) {
+                    aGene.remove(RandomUtils.nextInt(aGene.size())); //随机删一个A的基因
+                    aGene.add(bGene.get(RandomUtils.nextInt(bGene.size()))); //随机插入一个B的基国
+                }
+            }
+        }
     }
 
 }

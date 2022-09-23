@@ -132,15 +132,15 @@ public class Application {
         for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
             JRadioButton geneRadio=new JRadioButton();
             geneRadio.setBounds(buttonXpos+300+i*16, Env.ENV_HEIGHT + 8, 20, 22);
-            geneRadio.setSelected(Env.display_gene[i]);
+            geneRadio.setSelected(Cells.display_gene[i]);
             geneRadio.setName(""+i);
             ActionListener geneRadioAction = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     int i= Integer.parseInt(geneRadio.getName());
                     if (geneRadio.isSelected())
-                        Env.display_gene[i]=true;
+                        Cells.display_gene[i]=true;
                     else
-                        Env.display_gene[i]=false;
+                        Cells.display_gene[i]=false;
                 }
             };
             geneRadio.addActionListener(geneRadioAction);
