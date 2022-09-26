@@ -11,6 +11,7 @@
 package com.gitee.drinkjava2.frog;
 
 import static com.gitee.drinkjava2.frog.brain.Cells.GENE_NUMBERS;
+import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -134,14 +135,16 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
         this.energys[0][0][Env.BRAIN_ZSIZE - 1] = 10;
 
-        //        if(Env.closeToEdge(this))
-        //            energys[0][0][0]=10;
+        //                if(Env.closeToEdge(this))
+        //                    energys[0][0][0]=10;
 
         Eye.active(this); //如看到食物，给顶层细胞赋能量
         Cells.active(this); //细胞之间互相传递能量
 
-        if (Food.foundAndAteFood(this.x, this.y)) //如当前位置有食物就吃掉，并获得奖励
+        if (Food.foundAndAteFood(this.x, this.y)) { //如当前位置有食物就吃掉，并获得奖励
             this.awardAAAA();
+            this.ateFood++;
+        }
         return alive;
     }
 
@@ -157,8 +160,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void geneMutation() { //基因变异,注意这一个算法同时变异所有条基因，目前最多允许64条基因
+        if(percent(50))
         for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阴节点基因
-            if (RandomUtils.percent(8)) {
+            if (percent(20)) {
                 ArrayList<Integer> gene = genes.get(g);
                 Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阴节点基因只添加阳节点上
                 int randomIndex = RandomUtils.nextInt(Tree8Util.keepNodeQTY);
@@ -174,9 +178,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 }
             }
         }
-
+        
+        if(percent(50))
         for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阳节点基因
-            if (RandomUtils.percent(8)) {
+            if (RandomUtils.percent(20)) {
                 ArrayList<Integer> gene = genes.get(g);
                 Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阳节点基因只添加在阴节点上 
                 int yinNodeQTY = Tree8Util.NODE_QTY - Tree8Util.keepNodeQTY; //阴节点总数
@@ -194,8 +199,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             }
         }
 
+        if(percent(50))
         for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因，这样可以去除无用的拉圾基因，防止基因无限增大
-            if (RandomUtils.percent(17)) {
+            if (RandomUtils.percent(40)) {
                 ArrayList<Integer> gene = genes.get(g);
                 if (!gene.isEmpty())
                     gene.remove(RandomUtils.nextInt(gene.size()));

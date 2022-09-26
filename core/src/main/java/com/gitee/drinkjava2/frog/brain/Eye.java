@@ -23,29 +23,33 @@ import com.gitee.drinkjava2.frog.objects.Material;
 public class Eye {
 
     /** First eye can only see if food nearby at 4 directions */
-    public static void active(Animal a) {// 眼睛只能观察上、下、左、右四个方向有没有食物，如发现食物，就将最上层的四个细胞激活成10能量
-        int seeDist = 10; //眼睛能看多远
+    public static void active(Animal a) {// 眼睛只能观察上、下、左、右四个方向有没有食物，如发现食物，就将最上层的四个边的细胞激活成1能量
+        int seeDist = 15; //眼睛能看多远
         for (int i = 1; i < seeDist; i++)
             if (Env.hasMaterial(a.x, a.y + i, Material.FOOD)) {//up 
-                a.energys[Env.BRAIN_XSIZE / 2][Env.BRAIN_YSIZE - 1][Env.BRAIN_ZSIZE - 1] = 10;
+                for (int x = 0; x < Env.BRAIN_XSIZE-1; x++)
+                    a.energys[x][Env.BRAIN_YSIZE - 1][Env.BRAIN_ZSIZE - 1] = 1;
                 break;
             }
 
         for (int i = 1; i < seeDist; i++)
             if (Env.hasMaterial(a.x, a.y - i, Material.FOOD)) { //down 
-                a.energys[Env.BRAIN_XSIZE / 2][0][Env.BRAIN_ZSIZE - 1] = 10;
+                for (int x = 0; x < Env.BRAIN_XSIZE-1; x++)
+                    a.energys[x][0][Env.BRAIN_ZSIZE - 1] = 1;
                 break;
             }
 
         for (int i = 1; i < seeDist; i++)
             if (Env.hasMaterial(a.x - i, a.y, Material.FOOD)) { //left
-                a.energys[0][Env.BRAIN_YSIZE / 2][Env.BRAIN_ZSIZE - 1] = 10;
+                for (int y = 0; y < Env.BRAIN_YSIZE-1; y++)
+                    a.energys[0][y][Env.BRAIN_ZSIZE - 1] = 1;
                 break;
             }
 
         for (int i = 1; i < seeDist; i++)
             if (Env.hasMaterial(a.x + i, a.y, Material.FOOD)) {//right
-                a.energys[Env.BRAIN_XSIZE - 1][Env.BRAIN_YSIZE / 2][Env.BRAIN_ZSIZE - 1] = 10;
+                for (int y = 0; y < Env.BRAIN_YSIZE-1; y++)
+                    a.energys[Env.BRAIN_XSIZE - 1][y][Env.BRAIN_ZSIZE - 1] = 1;
                 break;
             }
 

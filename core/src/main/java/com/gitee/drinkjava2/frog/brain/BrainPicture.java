@@ -1,6 +1,7 @@
 package com.gitee.drinkjava2.frog.brain;
 
 import static java.awt.Color.BLACK;
+import static com.gitee.drinkjava2.frog.brain.Cells.*;
 import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
 import static java.lang.Math.cos;
@@ -353,19 +354,39 @@ public class BrainPicture extends JPanel {
         for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
             for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--) {
                 for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
-                    if((a.cells[x][y][z] & Cells.EXIST)==0) //只显示有效的细胞点
-                         continue;
-                    if(a.energys[x][y][z]>1) { //用大红色圆形画出能量大于1的细胞格
+                    long cell = a.cells[x][y][z];
+                    if ((cell & Cells.EXIST) == 0) //只显示有效的细胞点
+                        continue;
+                    if (a.energys[x][y][z] > 1) { //用大红色圆形画出能量大于1的细胞格
                         setPicColor(Color.MAGENTA); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, 1.2f);
                     }
-                    if (x >= xMask && y >= yMask && a.cells[x][y][z] != 0)//画出细胞存在的格子
+                    if (x >= xMask && y >= yMask && cell != 0)//画出细胞每个基因存在的细胞格子
                         for (int geneIndex = 0; geneIndex < Cells.GENE_NUMBERS; geneIndex++) {
-                            if ((a.cells[x][y][z] & (1 << geneIndex)) != 0 && Cells.display_gene[geneIndex]) {
+                            if ((cell & (1 << geneIndex)) != 0 && Cells.display_gene[geneIndex]) {
                                 setPicColor(ColorUtils.colorByCode(geneIndex)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
                                 drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, geneIndex == 0 ? 0.8f : 0.5f - geneIndex * 0.05f);
                             }
                         }
+                    if (((cell & ZT) > 0)) { //如有轴突基因，则从当前细胞到轴突端点画一条红线
+                        int x_ = (int) ((cell & ZTX) >> ZTX0);
+                        if (x_ == 0)
+                            x_ = -1;
+                        int y_ = (int) ((cell & ZTY) >> ZTY0);
+                        if (y_ == 0)
+                            y_ = -1;
+                        int z_ = (int) ((cell & ZTZ) >> ZTZ0);
+                        if (z_ == 0)
+                            z_ = -1;
+                        int zt_long = (int) ((cell & ZT_LONG) >> ZT_LONG0) + 1; //轴突长度, 大小为1~8
+                        int xx = x + x_ * zt_long;
+                        int yy = y + y_ * zt_long;
+                        int zz = z + z_ * zt_long;
+                        if (Env.insideBrain(xx, yy, zz)) {
+                            setPicColor(Color.RED);
+                            drawLine(x+.5f, y+.5f, z+.5f, xx+.5f, yy+.5f, zz+.5f);
+                        }
+                    }
                 }
             }
         }

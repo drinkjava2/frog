@@ -60,16 +60,16 @@ public class Egg implements Serializable {
         x = a.x;
         y = a.y;
         genes.addAll(a.genes);
-        if (RandomUtils.percent(30)) {//插入蛋B的基因到A蛋中
+        if (RandomUtils.percent(20)) //插入蛋B的基因到A蛋中
             for (int i = 0; i < b.genes.size(); i++) {
-                ArrayList<Integer> aGene = a.genes.get(i);
-                ArrayList<Integer> bGene = b.genes.get(i);
-                if (bGene.size()>1 && aGene.size()>1) {
-                    aGene.remove(RandomUtils.nextInt(aGene.size())); //随机删一个A的基因
-                    aGene.add(bGene.get(RandomUtils.nextInt(bGene.size()))); //随机插入一个B的基国
+                if (RandomUtils.percent(2)) {
+                    ArrayList<Integer> aGene = a.genes.get(i);
+                    ArrayList<Integer> bGene = b.genes.get(i);
+                    if (bGene.size() > 1) {//随机插入一个B的基因，不用担心基因越来越多，因为随机删除的速度大于增长的
+                        aGene.add(bGene.get(RandomUtils.nextInt(bGene.size())));
+                    }
                 }
             }
-        }
     }
 
 }

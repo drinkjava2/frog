@@ -33,12 +33,12 @@ public class Env extends JPanel {
 
     public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
-    public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
+    public static final int FROG_PER_EGG = 6; // 每个青蛙蛋可以孵出几个青蛙
 
     public static final int SCREEN = 1; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
-    public static final boolean DELETE_FROG_EGGS = false;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
+    public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
 
     public static boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
 
@@ -70,7 +70,7 @@ public class Env extends JPanel {
     public static final int STEPS_PER_ROUND = 200;// 每轮测试步数,可调
     public static int step;// 当前测试步数
 
-    public static final int FOOD_QTY = 2000; // 食物数量, 可调
+    public static final int FOOD_QTY = 3000; // 食物数量, 可调
 
     // 以下是程序内部变量，不要手工修改它们
     public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 蛇的总数
