@@ -2,12 +2,12 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>com.gitee.drinkjava2</groupId>
- <artifactId>frog011</artifactId>
+ <artifactId>frog012</artifactId>
  <packaging>jar</packaging>
- <version>11.0</version>
+ <version>12.0</version>
  
  <name>frog</name>
- <description>当前目标是由分裂算法来自动排列脑细胞和触突参数，以实现模式识别功能</description>
+ <description>当前目标是用分裂算法来实现第一个具备模式识别功能的神经网络</description>
  <url>https://gitee.com/drinkjava2/jsqlbox/frog</url>
   
  <issueManagement>

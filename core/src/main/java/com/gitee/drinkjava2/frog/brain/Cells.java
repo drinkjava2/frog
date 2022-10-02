@@ -84,7 +84,7 @@ public class Cells {
                         continue;
 
 //                    if ((cell & RANDOM_ACTIVE) > 0) //随机产生细胞能量，会让青蛙颤抖
-//                        if (RandomUtils.percent(5))
+//                        if (RandomUtils.percent(2))
 //                            a.energys[x][y][z] = 1;
 
                     float e = a.energys[x][y][z];

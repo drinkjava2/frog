@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.brain.Eye;
+import com.gitee.drinkjava2.frog.brain.Eye2;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
@@ -139,6 +140,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         //                    energys[0][0][0]=10;
 
         Eye.active(this); //如看到食物，给顶层细胞赋能量
+        Eye2.active(this); //Eye2是看到每个像素点，用来以后作模式识别信号输入
         Cells.active(this); //细胞之间互相传递能量
 
         if (Food.foundAndAteFood(this.x, this.y)) { //如当前位置有食物就吃掉，并获得奖励

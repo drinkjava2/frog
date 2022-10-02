@@ -397,9 +397,9 @@ public class BrainPicture extends JPanel {
         drawCuboid(brain);// 把脑的框架画出来
 
         setPicColor(BLACK); //把x,y,z坐标画出来
-        drawText(Env.BRAIN_CUBE_SIZE, 0, 0, "x", 2);
-        drawText(0, Env.BRAIN_CUBE_SIZE, 0, "y", 2);
-        drawText(0, 0, Env.BRAIN_CUBE_SIZE, "z", 2);
+        drawText(Env.BRAIN_CUBE_SIZE, 0, 0, "x", 0.2f*Env.BRAIN_CUBE_SIZE);
+        drawText(0, Env.BRAIN_CUBE_SIZE, 0, "y", 0.2f*Env.BRAIN_CUBE_SIZE);
+        drawText(0, 0, Env.BRAIN_CUBE_SIZE, "z", 0.2f*Env.BRAIN_CUBE_SIZE);
         setPicColor(RED);
         drawLine(0, 0, 0, Env.BRAIN_CUBE_SIZE, 0, 0);
         drawLine(0, 0, 0, 0, Env.BRAIN_CUBE_SIZE, 0);
