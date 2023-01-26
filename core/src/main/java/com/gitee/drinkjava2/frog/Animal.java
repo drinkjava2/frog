@@ -40,11 +40,8 @@ import com.gitee.drinkjava2.frog.util.Tree8Util;
  * @since 1.0
  */
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
-    public static BufferedImage FROG_IMAGE;
-    public static BufferedImage snakeImage;
-
-    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体
-
+    public static BufferedImage FROG_IMAGE; 
+    
     static {
         try {
             FROG_IMAGE = ImageIO.read(new FileInputStream(Application.CLASSPATH + "frog.png"));
@@ -53,8 +50,17 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
+    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体
+    
     /** brain cells，暂定一个空间只有一个细胞，以后可以考虑扩展为一个空间充许多个细胞，用多个三维数组表示，分别由各自的基因控制分裂 */
     public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
+    
+    
+    public ArrayList<ArrayList<Integer>> layergenes = new ArrayList<>(); // layergenes 控制每个层的基因
+    
+    /** brain layers，layers是独立的层结构，每个层是个平面分布的正方形，每层可以有多个参数，每个参数由一个阴阳4叉树来控制 */
+    public long[][][] layers = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
+    
     public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
 
     public int x; // animal在Env中的x坐标
@@ -93,7 +99,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
-        geneMutation(); //有小概率基因突变
+        Tree8Util.geneMutation(this.genes); //有小概率基因突变
         createCellsFromGene(); //根据基因，分裂生成脑细胞
 
     }
@@ -159,55 +165,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
 
-    public void geneMutation() { //基因变异,注意这一个算法同时变异所有条基因，目前最多允许64条基因
-        if(percent(50))
-        for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阴节点基因
-            if (percent(20)) {
-                ArrayList<Integer> gene = genes.get(g);
-                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阴节点基因只添加阳节点上
-                int randomIndex = RandomUtils.nextInt(Tree8Util.keepNodeQTY);
-                int count = -1;
-                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
-                    if (Tree8Util.keep[i] > 0) {
-                        count++;
-                        if (count >= randomIndex && !gene.contains(-i)) {
-                            gene.add(-i);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        
-        if(percent(50))
-        for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阳节点基因
-            if (RandomUtils.percent(20)) {
-                ArrayList<Integer> gene = genes.get(g);
-                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阳节点基因只添加在阴节点上 
-                int yinNodeQTY = Tree8Util.NODE_QTY - Tree8Util.keepNodeQTY; //阴节点总数
-                int randomIndex = RandomUtils.nextInt(yinNodeQTY);
-                int count = -1;
-                for (int i = 0; i < yinNodeQTY; i++) {
-                    if (Tree8Util.keep[i] <= 0) {
-                        count++;
-                        if (count >= randomIndex && !gene.contains(i)) {
-                            gene.add(i);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        if(percent(50))
-        for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因，这样可以去除无用的拉圾基因，防止基因无限增大
-            if (RandomUtils.percent(40)) {
-                ArrayList<Integer> gene = genes.get(g);
-                if (!gene.isEmpty())
-                    gene.remove(RandomUtils.nextInt(gene.size()));
-            }
-        }
-    }
 
     private void createCellsFromGene() {//根据基因生成细胞参数  
         long geneMask = 1;

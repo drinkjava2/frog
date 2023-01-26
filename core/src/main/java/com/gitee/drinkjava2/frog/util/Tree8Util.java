@@ -10,6 +10,10 @@
  */
 package com.gitee.drinkjava2.frog.util;
 
+import static com.gitee.drinkjava2.frog.brain.Cells.GENE_NUMBERS;
+import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.gitee.drinkjava2.frog.Env;
@@ -85,5 +89,56 @@ public class Tree8Util {
             }
         }
     }
+    
+    public static void geneMutation(ArrayList<ArrayList<Integer>> genes) { //基因变异,注意这一个算法同时变异所有条基因，目前最多允许64条基因
+        if(percent(50))
+        for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阴节点基因
+            if (percent(20)) {
+                ArrayList<Integer> gene = genes.get(g);
+                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阴节点基因只添加阳节点上
+                int randomIndex = RandomUtils.nextInt(Tree8Util.keepNodeQTY);
+                int count = -1;
+                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {
+                    if (Tree8Util.keep[i] > 0) {
+                        count++;
+                        if (count >= randomIndex && !gene.contains(-i)) {
+                            gene.add(-i);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(percent(50))
+        for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阳节点基因
+            if (RandomUtils.percent(20)) {
+                ArrayList<Integer> gene = genes.get(g);
+                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记，下面的算法保证阳节点基因只添加在阴节点上 
+                int yinNodeQTY = Tree8Util.NODE_QTY - Tree8Util.keepNodeQTY; //阴节点总数
+                int randomIndex = RandomUtils.nextInt(yinNodeQTY);
+                int count = -1;
+                for (int i = 0; i < yinNodeQTY; i++) {
+                    if (Tree8Util.keep[i] <= 0) {
+                        count++;
+                        if (count >= randomIndex && !gene.contains(i)) {
+                            gene.add(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(percent(50))
+        for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因，这样可以去除无用的拉圾基因，防止基因无限增大
+            if (RandomUtils.percent(40)) {
+                ArrayList<Integer> gene = genes.get(g);
+                if (!gene.isEmpty())
+                    gene.remove(RandomUtils.nextInt(gene.size()));
+            }
+        }
+    }
+
 
 }
