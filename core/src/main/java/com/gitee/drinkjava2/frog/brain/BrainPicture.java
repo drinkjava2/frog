@@ -127,11 +127,7 @@ public class BrainPicture extends JPanel {
         addKeyListener(keyAdapter);
         this.setFocusable(true);
     }
-
-    public void drawCuboid(Cuboid c) {// 在脑图上画一个长立方体框架，视角是TopView
-        drawCuboid(c.x, c.y, c.z, c.xe, c.ye, c.ze);
-    }
-
+    
     public void drawCuboid(float x, float y, float z, float xe, float ye, float ze) {// 在脑图上画一个长立方体框架，视角是TopView
         drawLine(x, y, z, x + xe, y, z);// 画立方体的下面边
         drawLine(x + xe, y, z, x + xe, y + ye, z);
@@ -294,9 +290,7 @@ public class BrainPicture extends JPanel {
         g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale)));
         g.drawString(text, (int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset, (int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 
-    }
-
-    private static Cuboid brain = new Cuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);
+    } 
 
     public void drawBrainPicture() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
         if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
@@ -331,7 +325,7 @@ public class BrainPicture extends JPanel {
                 }
             }
             g.setColor(BLACK);
-            drawCuboid(brain);// 把脑的框架画出来
+            drawCuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);// 把脑的框架画出来
             this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片 
             if (!Env.show_split_detail)
                 return;
@@ -394,7 +388,7 @@ public class BrainPicture extends JPanel {
         Eye.drawEye(this);//画眼睛
         
         setPicColor(Color.BLACK);
-        drawCuboid(brain);// 把脑的框架画出来
+        drawCuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);// 把脑的框架画出来
 
         setPicColor(BLACK); //把x,y,z坐标画出来
         drawText(Env.BRAIN_CUBE_SIZE, 0, 0, "x", 2);
