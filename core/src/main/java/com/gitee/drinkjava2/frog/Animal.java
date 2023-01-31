@@ -11,7 +11,6 @@
 package com.gitee.drinkjava2.frog;
 
 import static com.gitee.drinkjava2.frog.brain.Cells.GENE_NUMBERS;
-import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -24,6 +23,7 @@ import javax.imageio.ImageIO;
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.brain.Eye;
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.judge.RainBowFish2DJudge;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -100,8 +100,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         Tree8Util.geneMutation(this.genes); //有小概率基因突变
+//        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
+//            energy -= gene.size();
         createCellsFromGene(); //根据基因，分裂生成脑细胞
-
+        //RainBowFish2DJudge.judge(this); //外界对是否长得象彩虹鱼打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -139,7 +141,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        this.energys[0][0][Env.BRAIN_ZSIZE - 1] = 10;
+        this.energys[1][1][1] = 10;
 
         //                if(Env.closeToEdge(this))
         //                    energys[0][0][0]=10;
