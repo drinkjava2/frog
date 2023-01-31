@@ -31,7 +31,13 @@ public class Cells {
     public static int GENE_NUMBERS = 0;
     private static int zeros = 0;
     public static boolean[] display_gene = new boolean[64]; //脑最多有64个基因，这里用来控制哪些基因需要显示在脑图上
-
+    public static int[] layer = new int[64]; //当大于0时表示基因只生成在指定的脑核单层上，此时采用4叉树平面分裂算法以提高效率
+                                             //比如层为cells[0]表示x为0的yz平面对应的二维数组
+    static {
+        for (int i = 0; i < layer.length; i++)  
+            layer[i]=-1; 
+    }
+//TODO: 改为三参数，最后一个参数用来指定层
     public static long EXIST = mask(1, true); // 细胞存在否,1为存在,0为不存在, true表示显示在脑图上
     public static long MOVE_UP = mask(1, true); //如此点为1，则此细胞如有能量，青蛙向上移动
     public static long MOVE_DOWN = mask(1, true); //如此点为1，则此细胞如有能量，青蛙向下移动
