@@ -30,49 +30,60 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public class Cells {
     public static int GENE_NUMBERS = 0;
     private static int zeros = 0;
-    public static boolean[] display_gene = new boolean[64]; //脑最多有64个基因，这里用来控制哪些基因需要显示在脑图上
-    public static int[] layer = new int[64]; //当大于0时表示基因只生成在指定的脑核单层上，此时采用4叉树平面分裂算法以提高效率
-                                             //比如层为cells[0]表示x为0的yz平面对应的二维数组
+    public static boolean[] display_gene = new boolean[64]; //用来控制哪些基因需要显示在脑图上
+
+    public static int[] layer = new int[64]; //当内容大于-1时,表示基因只生成在脑核cell[x]单层2维数组上，此基因将采用4叉树平面分裂算法以提高效率
+                                             //目前层只能位于yz平面上，因为Java的三维数组只写一个下标时正好返回一个二维数组    
+
     static {
-        for (int i = 0; i < layer.length; i++)  
-            layer[i]=-1; 
+        for (int i = 0; i < layer.length; i++)
+            layer[i] = -1; 
     }
-//TODO: 改为三参数，最后一个参数用来指定层
-    public static long EXIST = mask(1, true); // 细胞存在否,1为存在,0为不存在, true表示显示在脑图上
-    public static long MOVE_UP = mask(1, true); //如此点为1，则此细胞如有能量，青蛙向上移动
-    public static long MOVE_DOWN = mask(1, true); //如此点为1，则此细胞如有能量，青蛙向下移动
-    public static long MOVE_LEFT = mask(1, true); //如此点为1，则此细胞如有能量，青蛙向左移动
-    public static long MOVE_RIGHT = mask(1, true); //如此点为1，则此细胞如有能量，青蛙向右移动
-    public static long ZT_LONG = mask(3, false); //轴突长度
+
+    public static long EXIST = register(1, true, -1); // 细胞存在否,1为存在,0为不存在。 register方法有三个参数，详见方法注释
+    public static long MOVE_UP = register(1, true, -1); //如此点为1，则此细胞如有能量，青蛙向上移动
+    public static long MOVE_DOWN = register(1, true, -1); //如此点为1，则此细胞如有能量，青蛙向下移动
+    public static long MOVE_LEFT = register(1, true, -1); //如此点为1，则此细胞如有能量，青蛙向左移动
+    public static long MOVE_RIGHT = register(1, true, -1); //如此点为1，则此细胞如有能量，青蛙向右移动
+    public static long ZT_LONG = register(3, false, -1); //轴突长度
     public static long ZT_LONG0 = zeros; //如果参数由多位组成，用同名+0变量表示有几个0，移位运算时用来去除0。下同
-    public static long ZT = mask(1, true);//axon exist 轴突是否存在
-    public static long ZTX = mask(1, false);//axon x offset, 轴突x方向, 轴突方向由x,y,z三个方向的参数组合决定
+    public static long ZT = register(1, true, -1);//axon exist 轴突是否存在
+    public static long ZTX = register(1, false, -1);//axon x offset, 轴突x方向, 轴突方向由x,y,z三个方向的参数组合决定
     public static long ZTX0 = zeros; //x方向暂定1位，如果2位也可以，角度更细，但出结果的时间会比较长
-    public static long ZTY = mask(1, false); //轴突y方向
+    public static long ZTY = register(1, false, -1); //轴突y方向
     public static long ZTY0 = zeros;
-    public static long ZTZ = mask(1, false); //轴突z方向
+    public static long ZTZ = register(1, false, -1); //轴突z方向
     public static long ZTZ0 = zeros;
-    public static long ZT_MINUS = mask(1, false);//细胞信号,1为正信号,0为负(抑制)信号
+    public static long ZT_MINUS = register(1, false, -1);//细胞信号,1为正信号,0为负(抑制)信号
 
-//    public static long RANDOM_ACTIVE = mask(1, true);//这个基因控制细胞随机产生能量，对结果影响不大，会让静止的青蛙颤抖
+    //    public static long RANDOM_ACTIVE = mask(1, true);//这个基因控制细胞随机产生能量，对结果影响不大，会让静止的青蛙颤抖
 
-//    public static long ST_LONG = mask(2, false); //dendrite radius, 树突长度半径，待后继版本用到
-//    public static long ST_LONG0 = zeros;
-//    public static long HAPPY = mask(1, false); //吃食奖励信号，待后继版本用到
+    //    public static long ST_LONG = mask(2, false); //dendrite radius, 树突长度半径，待后继版本用到
+    //    public static long ST_LONG0 = zeros;
+    //    public static long HAPPY = mask(1, false); //吃食后产生奖励信号，待后继版本用到
 
-    public static long mask(int n, boolean display) { //返回基因掩码，高位由n个1组成，低位是当前GENE_NUMBERS个0，这个方法执行后GENE_NUMBERS会加n
-        for (int i = GENE_NUMBERS; i < GENE_NUMBERS + n; i++) {
+    /**
+     * Register a gene
+     * 
+     * @param maskBits how many mask bits 掩码位数
+     * @param display whether to display the gene on the BrainPicture 是否显示在脑图
+     * @param x gene only allow on specified layer 是否只生成在指定的x层对应的yz平面上
+     * @return a long wtih mask bits 返回基因掩码，高位由n个1组成，低位是若干个0                                                                    *  
+     */
+    public static long register(int maskBits, boolean display, int x) {
+        for (int i = GENE_NUMBERS; i < GENE_NUMBERS + maskBits; i++) {
             display_gene[i] = display;
+            layer[i]=x;
         }
 
         String one = "";
         String zero = "";
-        for (int i = 1; i <= n; i++)
+        for (int i = 1; i <= maskBits; i++)
             one += "1";
         for (int i = 1; i <= GENE_NUMBERS; i++)
             zero += "0";
         zeros = GENE_NUMBERS;
-        GENE_NUMBERS += n;
+        GENE_NUMBERS += maskBits;
         if (GENE_NUMBERS >= 64) {//
             System.out.println("目前基因位数不能超过64");
             System.exit(-1);
@@ -89,9 +100,9 @@ public class Cells {
                     if ((cell & EXIST) == 0) //如细胞不存在，
                         continue;
 
-//                    if ((cell & RANDOM_ACTIVE) > 0) //随机产生细胞能量，会让青蛙颤抖
-//                        if (RandomUtils.percent(5))
-//                            a.energys[x][y][z] = 1;
+                    //                    if ((cell & RANDOM_ACTIVE) > 0) //随机产生细胞能量，会让青蛙颤抖
+                    //                        if (RandomUtils.percent(5))
+                    //                            a.energys[x][y][z] = 1;
 
                     float e = a.energys[x][y][z];
                     if (e > 0 && ((cell & ZT) > 0)) { //如有轴突基因，则当前细胞如存在能量，会输送到轴突端点处
@@ -122,7 +133,7 @@ public class Cells {
 
                     e = a.energys[x][y][z];
                     if ((e > 0) && (z < Env.BRAIN_ZSIZE - 1)) { //如当前细胞有能量，且不和眼睛在同一层，且有移动细胞，则青蛙移动
-                        if ((cell & MOVE_UP) > 0) {//向上y是减，屏幕y的0点在上方
+                        if ((cell & MOVE_UP) > 0) {
                             a.energys[x][y][z] = 0;
                             a.y++;
                         }

@@ -23,7 +23,6 @@ import javax.imageio.ImageIO;
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.brain.Eye;
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.RainBowFish2DJudge;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -52,15 +51,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体
     
-    /** brain cells，暂定一个空间只有一个细胞，以后可以考虑扩展为一个空间充许多个细胞，用多个三维数组表示，分别由各自的基因控制分裂 */
+    /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因。
+     *  如果要扩充到更多的基因也很简单，就是再多定义几个三维数组即可，同一个细胞由多个三维数组相同坐标位置的基因共同表达
+     */
     public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
-    
-    
-    public ArrayList<ArrayList<Integer>> layergenes = new ArrayList<>(); // layergenes 控制每个层的基因
-    
-    /** brain layers，layers是独立的层结构，每个层是个平面分布的正方形，每层可以有多个参数，每个参数由一个阴阳4叉树来控制 */
-    public long[][][] layers = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
-    
+
     public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
 
     public int x; // animal在Env中的x坐标
