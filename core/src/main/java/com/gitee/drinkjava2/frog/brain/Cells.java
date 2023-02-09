@@ -29,7 +29,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 @SuppressWarnings("all")
 public class Cells {
     public static int GENE_NUMBERS = 0;
-    private static int zeros = 0;
+    private static int zeros = 0; //当前基因位掩码0个数
     public static boolean[] display_gene = new boolean[64]; //用来控制哪些基因需要显示在脑图上
 
     public static int[] layer = new int[64]; //当内容大于-1时,表示基因只生成在脑核cell[x]单层2维数组上，此基因将采用4叉树平面分裂算法以提高效率
@@ -63,7 +63,7 @@ public class Cells {
     //    public static long HAPPY = mask(1, false); //吃食后产生奖励信号，待后继版本用到
 
     /**
-     * Register a gene
+     * Register a gene 依次从底位到高位登记所有的基因掩码及对应的相关参数如是否显示在脑图上或是否只生成在某个yz平面上
      * 
      * @param maskBits how many mask bits 掩码位数
      * @param display whether to display the gene on the BrainPicture 是否显示在脑图

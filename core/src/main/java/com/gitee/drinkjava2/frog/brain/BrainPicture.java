@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.judge.Flower2DJudge;
+import com.gitee.drinkjava2.frog.judge.RainBowFish2DJudge;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
 
@@ -385,8 +387,6 @@ public class BrainPicture extends JPanel {
             }
         }
 
-        Eye.drawEye(this);//画眼睛
-        
         setPicColor(Color.BLACK);
         drawCuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);// 把脑的框架画出来
 
@@ -402,6 +402,11 @@ public class BrainPicture extends JPanel {
         g.setColor(Color.black);
         if (note != null) // 全局注释
             g.drawString(note, 30, 55);
+        
+        //Eye.drawEye(this);//画眼睛
+        RainBowFish2DJudge.instance.show(this); //显示fish2d模板
+        Flower2DJudge.instance.show(this);////显示flower2d模板
+        
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
     }
 

@@ -35,7 +35,7 @@ public class Tree8Util {
 
     public static byte[] keep = new byte[NODE_QTY]; //这里临时记录树的敲除记录，大于0的值表示要keep, 小于等于0表示要敲除
 
-    private static byte[] KEEP = new byte[NODE_QTY]; //这里保存初值为0的数组常量，可以用System.arraycopy(KEEP, 0, keep, 0, NODE_QTY)快速清空enable数组
+    private static byte[] KEEP0 = new byte[NODE_QTY]; //这里保存初值为0的数组常量，可以用System.arraycopy(KEEP, 0, keep, 0, NODE_QTY)快速清空enable数组
 
     public static int keepNodeQTY = NODE_QTY; //这里临时记录需keep的节点总数，好用来继续敲除，初始值是全部节点
 
@@ -67,7 +67,7 @@ public class Tree8Util {
     }
 
     public static void knockNodesByGene(List<Integer> gene) {//根据基因，把要敲除的8叉树节点作敲除或保留标记 
-        System.arraycopy(KEEP, 0, keep, 0, NODE_QTY);//清空keep数组
+        System.arraycopy(KEEP0, 0, keep, 0, NODE_QTY);//清空keep数组
         keepNodeQTY = 0;
         for (int g : gene) {//g基因，用带符号的8叉数的行号表示，负数表示阴节点要敲除，正数表示是阳节点要保留
             int gLine = Math.abs(g); //基因对应节点的行号

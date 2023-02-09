@@ -23,6 +23,8 @@ import javax.imageio.ImageIO;
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.brain.Eye;
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.judge.Flower2DJudge;
+import com.gitee.drinkjava2.frog.judge.RainBowFish2DJudge;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -39,8 +41,8 @@ import com.gitee.drinkjava2.frog.util.Tree8Util;
  * @since 1.0
  */
 public abstract class Animal {// 这个程序大量用到public变量而不是getter/setter，主要是为了编程方便和简洁，但缺点是编程者需要小心维护各个变量
-    public static BufferedImage FROG_IMAGE; 
-    
+    public static BufferedImage FROG_IMAGE;
+
     static {
         try {
             FROG_IMAGE = ImageIO.read(new FileInputStream(Application.CLASSPATH + "frog.png"));
@@ -49,10 +51,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体
-    
-    /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因。
-     *  如果要扩充到更多的基因也很简单，就是再多定义几个三维数组即可，同一个细胞由多个三维数组相同坐标位置的基因共同表达
+    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉或4叉)。
+
+    /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
+     *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
     public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
 
@@ -94,11 +96,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
+        //TODO: for 2D genes need use 4-tree instead of 8-tree 平面的要改成4叉树以加快速度
         Tree8Util.geneMutation(this.genes); //有小概率基因突变
-//        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
-//            energy -= gene.size();
-        createCellsFromGene(); //根据基因，分裂生成脑细胞
-        //RainBowFish2DJudge.judge(this); //外界对是否长得象彩虹鱼打分
+        //        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
+        //            energy -= gene.size();
+        //  createCellsFromGene(); //根据基因，分裂生成脑细胞
+        //RainBowFish2DJudge.instance.judge(this); //对是否长得象2维彩虹鱼打分
+        Flower2DJudge.instance.judge(this); //对是否长得象2维花打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -136,7 +140,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        this.energys[1][1][1] = 10;
+        this.energys[1][1][1] = 10; //设某个细胞固定激活
 
         //                if(Env.closeToEdge(this))
         //                    energys[0][0][0]=10;
@@ -161,7 +165,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
-
 
     private void createCellsFromGene() {//根据基因生成细胞参数  
         long geneMask = 1;
