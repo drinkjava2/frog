@@ -23,8 +23,7 @@ import javax.imageio.ImageIO;
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.brain.Eye;
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.Flower2DJudge;
-import com.gitee.drinkjava2.frog.judge.RainBowFish2DJudge;
+import com.gitee.drinkjava2.frog.judge.D2Judge;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -97,12 +96,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         //TODO: for 2D genes need use 4-tree instead of 8-tree 平面的要改成4叉树以加快速度
-        Tree8Util.geneMutation(this.genes); //有小概率基因突变
+
+        //Tree8Util.geneMutation(this.genes); //有小概率基因突变
         //        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
         //            energy -= gene.size();
-        //  createCellsFromGene(); //根据基因，分裂生成脑细胞
-        //RainBowFish2DJudge.instance.judge(this); //对是否长得象2维彩虹鱼打分
-        Flower2DJudge.instance.judge(this); //对是否长得象2维花打分
+        //createCellsFromGene(); //根据基因，分裂生成脑细胞
+        //D2Judge.pic1.judge(this); //对是否长得象2维鱼打分
+        //D2Judge.pic2.judge(this);//对是否长得象2维花打分
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -141,9 +141,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
 
         this.energys[1][1][1] = 10; //设某个细胞固定激活
-
-        //                if(Env.closeToEdge(this))
-        //                    energys[0][0][0]=10;
 
         Eye.active(this); //如看到食物，给顶层细胞赋能量
         Cells.active(this); //细胞之间互相传递能量
