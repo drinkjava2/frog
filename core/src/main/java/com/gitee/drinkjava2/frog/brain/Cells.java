@@ -92,6 +92,7 @@ public class Cells {
     }
 
     public static void active(Animal a) {//这个方法的功能是根据细胞的参数，在细胞间传输能量（即信息的载体)
+        //if(true)return; //speeding
         for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
             for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--)
                 for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
