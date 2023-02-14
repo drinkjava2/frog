@@ -32,12 +32,12 @@ public class Cells {
     private static int zeros = 0; //当前基因位掩码0个数
     public static boolean[] display_gene = new boolean[64]; //用来控制哪些基因需要显示在脑图上
 
-    public static int[] layer = new int[64]; //当内容大于-1时,表示基因只生成在脑核cell[x]单层2维数组上，此基因将采用4叉树平面分裂算法以提高效率
+    public static int[] xLayer = new int[64]; //当内容大于-1时,表示基因只生成在脑核cell[x]单层2维数组上，此基因将采用4叉树平面分裂算法以提高效率
                                              //目前层只能位于yz平面上，因为Java的三维数组只写一个下标时正好返回一个二维数组    
 
     static {
-        for (int i = 0; i < layer.length; i++)
-            layer[i] = -1; 
+        for (int i = 0; i < xLayer.length; i++)
+            xLayer[i] = -1; 
     }
 
     public static long EXIST = register(1, true, -1); // 细胞存在否,1为存在,0为不存在。 register方法有三个参数，详见方法注释
@@ -73,7 +73,7 @@ public class Cells {
     public static long register(int maskBits, boolean display, int x) {
         for (int i = GENE_NUMBERS; i < GENE_NUMBERS + maskBits; i++) {
             display_gene[i] = display;
-            layer[i]=x;
+            xLayer[i]=x;
         }
 
         String one = "";

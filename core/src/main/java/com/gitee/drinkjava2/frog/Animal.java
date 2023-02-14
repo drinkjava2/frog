@@ -11,6 +11,7 @@
 package com.gitee.drinkjava2.frog;
 
 import static com.gitee.drinkjava2.frog.brain.Cells.GENE_NUMBERS;
+import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -27,6 +28,7 @@ import com.gitee.drinkjava2.frog.judge.D2Judge;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
+import com.gitee.drinkjava2.frog.util.Tree4Util;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
 
 /**
@@ -97,12 +99,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         //TODO: for 2D genes need use 4-tree instead of 8-tree 平面的要改成4叉树以加快速度
 
-        //Tree8Util.geneMutation(this.genes); //有小概率基因突变
-        //        for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
-        //            energy -= gene.size();
-        //createCellsFromGene(); //根据基因，分裂生成脑细胞
-        //D2Judge.pic1.judge(this); //对是否长得象2维鱼打分
-        //D2Judge.pic2.judge(this);//对是否长得象2维花打分
+        geneMutation(); //有小概率基因突变
+        if (RandomUtils.percent(10))
+            for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
+                energy -= gene.size();
+        createCellsFromGene(); //根据基因，分裂生成脑细胞
+        D2Judge.pic1.judge(this); //对平面上分布的参数打分
+        D2Judge.pic2.judge(this);
+        D2Judge.pic3.judge(this);
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -140,10 +144,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        this.energys[1][1][1] = 10; //设某个细胞固定激活
+        //this.energys[1][1][1] = 10; //设某个细胞固定激活
 
-        Eye.active(this); //如看到食物，给顶层细胞赋能量
-        Cells.active(this); //细胞之间互相传递能量
+        //Eye.active(this); //如看到食物，给顶层细胞赋能量
+        //Cells.active(this); //细胞之间互相传递能量
 
         if (Food.foundAndAteFood(this.x, this.y)) { //如当前位置有食物就吃掉，并获得奖励
             this.awardAAAA();
@@ -167,17 +171,58 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         long geneMask = 1;
         for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，最多有64维，也就是最多有64条基因
             ArrayList<Integer> gene = genes.get(g);
-            Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
-            for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树keep标记生成细胞参数
-                if (Tree8Util.keep[i] > 0) {
-                    int[] node = Tree8Util.TREE8[i];
-                    if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在三维空间对间数组的位置把当前基因geneMask置1
-                        cells[node[1]][node[2]][node[3]] = cells[node[1]][node[2]][node[3]] | geneMask; //在相应的细胞处把细胞参数位置1
+            int xLayer=Cells.xLayer[g];
+            if (xLayer> -1) { //如果xLayer不为-1，表示此基因分布在平面上，此时使用4叉树分裂算法以提高速度
+                Tree4Util.knockNodesByGene(gene);//根据基因，把要敲除的4叉树节点作个标记
+                for (int i = 0; i < Tree4Util.NODE_QTY; i++) {//再根据敲剩下的4叉树keep标记生成细胞参数
+                    if (Tree4Util.keep[i] > 0) {
+                        int[] node = Tree4Util.TREE4[i];
+                        if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在2维空间对间数组的位置把当前基因geneMask置1
+                            cells[xLayer][node[1]][node[2]] = cells[xLayer][node[1]][node[2]] | geneMask; //在相应的细胞处把细胞参数位置1
+                        }
                     }
                 }
+                geneMask <<= 1;
+            } else {
+                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
+                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树keep标记生成细胞参数
+                    if (Tree8Util.keep[i] > 0) {
+                        int[] node = Tree8Util.TREE8[i];
+                        if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在三维空间对间数组的位置把当前基因geneMask置1
+                            cells[node[1]][node[2]][node[3]] = cells[node[1]][node[2]][node[3]] | geneMask; //在相应的细胞处把细胞参数位置1
+                        }
+                    }
+                }
+                geneMask <<= 1;
             }
-            geneMask <<= 1;
+
         }
     }
 
+    private void geneMutation() { //基因变异,注意这一个算法同时变异所有条基因
+        if (percent(50))
+            for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阴节点基因，注意只是简单地随机新增，所以可能有重复基因
+                if (percent(20)) {
+                    ArrayList<Integer> gene = genes.get(g);
+                    gene.add(-RandomUtils.nextInt(Tree8Util.NODE_QTY));
+                }
+            }
+
+        if (percent(50))
+            for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阳节点基因，注意只是简单地随机新增，所以可能有重复基因
+                if (RandomUtils.percent(20)) {
+                    ArrayList<Integer> gene = genes.get(g);
+                    gene.add(RandomUtils.nextInt(Tree8Util.NODE_QTY));
+                }
+            }
+
+        if (percent(50))
+            for (int g = 0; g < GENE_NUMBERS; g++) {//随机变异删除一个基因，这样可以去除无用的拉圾基因，防止基因无限增大
+                if (RandomUtils.percent(40)) {
+                    ArrayList<Integer> gene = genes.get(g);
+                    if (!gene.isEmpty())
+                        gene.remove(RandomUtils.nextInt(gene.size()));
+                }
+            }
+    }
 }

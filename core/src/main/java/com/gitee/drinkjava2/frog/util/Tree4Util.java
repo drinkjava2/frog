@@ -28,7 +28,7 @@ public class Tree4Util {
     //EIGHT_TREE store a pre-order Traversal tree array  
     public static final int NODE_QTY = calculateNodeSize(Env.BRAIN_CUBE_SIZE);
 
-    public static int[][] TREE4 = new int[NODE_QTY][4]; //4叉数用数组表示，第一维是深度树的行号，第二维是一个整数数组,内容是深度树表示的4叉树细胞的size, x, y值
+    public static int[][] TREE4 = new int[NODE_QTY][3]; //4叉数用数组表示，第一维是深度树的行号，第二维是一个整数数组,内容是深度树表示的4叉树细胞的size, x, y值
 
     public static byte[] keep = new byte[NODE_QTY]; //这里临时记录树的敲除记录，大于0的值表示要keep, 小于等于0表示要敲除
 
