@@ -21,6 +21,7 @@ import com.gitee.drinkjava2.frog.util.StringPixelUtils;
 public class D2Judge {
     public static D2Judge pic1=new D2Judge(0, "1"); //new D2Judge(0, "🌷");
     public static D2Judge pic2=new D2Judge(3, "2"); //new D2Judge(3, "🐟");
+    public static D2Judge pic3=new D2Judge(7, "3"); //new D2Judge(3, "🐟");
 
     
     private int xLayer = 0;

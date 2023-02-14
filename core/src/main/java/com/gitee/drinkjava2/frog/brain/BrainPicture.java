@@ -397,6 +397,7 @@ public class BrainPicture extends JPanel {
         Eye.drawEye(this);//画眼睛
         D2Judge.pic1.show(this); //画pic1模板
         D2Judge.pic2.show(this);////画pic2模板
+        D2Judge.pic3.show(this);////画pic3模板
 
         setPicColor(Color.BLACK);
         drawCuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);// 把脑的框架画出来
