@@ -11,7 +11,6 @@
 package com.gitee.drinkjava2.frog.brain;
 
 import com.gitee.drinkjava2.frog.Animal;
-import com.gitee.drinkjava2.frog.judge.D2Judge;
 
 /**
  * Cells代表不同的脑细胞参数，对应每个参数，用8叉树算法生成不同的细胞。
@@ -38,20 +37,14 @@ public class Cells {
     }
 
     // 登记三个基因， register方法有三个参数，详见方法注释
-    public static long genePic0 = register(1, true, D2Judge.pic1.xLayer);
-    public static long genePic1 = register(1, true, D2Judge.pic2.xLayer);
-    public static long genePic2 = register(1, true, D2Judge.pic3.xLayer);
-
-    //    public static long genePic0 = register(1, true, -1); //如果改成-1，即采用8叉树算法在三维空间上分裂，速度会至少慢10倍
-    //    public static long genePic1 = register(1, true, -1);
-    //    public static long genePic2 = register(1, true, -1);
+ 
 
     /**
      * Register a gene 依次从底位到高位登记所有的基因掩码及对应的相关参数如是否显示在脑图上或是否只生成在某个yz平面上
      * 
      * @param maskBits how many mask bits 掩码位数，即有几个1
      * @param display whether to display the gene on the BrainPicture 是否显示在脑图
-     * @param x_layer gene only allow on specified layer 是否只生成在指定的x层对应的yz平面上
+     * @param x_layer gene only allow on specified layer 如大于-1，表示只生成在指定的x层对应的yz平面上
      * @return a long wtih mask bits 返回基因掩码，高位由n个1组成，低位是若干个0                                                                    *  
      */
     public static long register(int maskBits, boolean display, int x_layer) {
@@ -75,7 +68,7 @@ public class Cells {
         return Long.parseLong(one + zero, 2); //将类似"111000"这种字符串转换为长整
     }
 
-    public static void active(Animal a) {//active方法在每个主循环都会调用，通常用来存放细胞的行为，这是个重要方法，只是这个版本因为测试二维分裂算法所以没用到
+    public static void active(Animal a) {//active方法在每个主循环都会调用，通常用来存放细胞的行为，这是个重要方法
 
     }
 

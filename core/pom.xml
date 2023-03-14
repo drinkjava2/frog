@@ -2,17 +2,17 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>com.gitee.drinkjava2</groupId>
- <artifactId>frog012</artifactId>
+ <artifactId>frog013</artifactId>
  <packaging>jar</packaging>
- <version>12.0</version>
+ <version>13.0</version>
  
  <name>frog</name>
  <description>当前目标是用分裂算法来实现第一个具备模式识别功能的神经网络</description>
- <url>https://gitee.com/drinkjava2/jsqlbox/frog</url>
+ <url>https://gitee.com/drinkjava2/frog</url>
   
  <issueManagement>
     <system>gitee Issue</system>
-    <url>https://gitee.com/drinkjava2/jsqlbox/frog/issues</url>
+    <url>https://gitee.com/drinkjava2/frog/issues</url>
  </issueManagement>
 
  <licenses>

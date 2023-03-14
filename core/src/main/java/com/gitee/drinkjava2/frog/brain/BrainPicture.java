@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.judge.D2Judge;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
 
@@ -366,10 +365,6 @@ public class BrainPicture extends JPanel {
                 }
             }
         }
-
-        D2Judge.pic1.show(this); //画pic1模板
-        D2Judge.pic2.show(this);////画pic2模板
-        D2Judge.pic3.show(this);////画pic3模板
 
         setPicColor(Color.BLACK);
         drawCuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);// 把脑的框架画出来

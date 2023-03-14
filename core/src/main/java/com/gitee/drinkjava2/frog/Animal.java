@@ -23,7 +23,6 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.egg.Egg;
-import com.gitee.drinkjava2.frog.judge.D2Judge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 import com.gitee.drinkjava2.frog.util.Tree4Util;
@@ -102,9 +101,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 energy -= gene.size();
         createCellsFromGene(); //根据基因，分裂生成脑细胞
-        D2Judge.pic1.judge(this); //对平面上分布的参数打分
-        D2Judge.pic2.judge(this);
-        D2Judge.pic3.judge(this);
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
