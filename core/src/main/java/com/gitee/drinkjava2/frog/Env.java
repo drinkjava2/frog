@@ -87,7 +87,7 @@ public class Env extends JPanel {
 
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{Food.FOOD};// 所有外界物体，如食物、字母测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{};// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -246,7 +246,7 @@ public class Env extends JPanel {
                 }
                 for (step = 0; step < STEPS_PER_ROUND; step++) {
                     for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
-                        thing.active();
+                        thing.active(current_screen);
                     if (allDead)
                         break; // 青蛙全死光了就直接跳到下一轮,以节省时间
                     allDead = true;

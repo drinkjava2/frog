@@ -51,7 +51,7 @@ public enum Food implements EnvObject {
     }
 
     @Override
-    public void active() {
+    public void active(int screen) {
         //食物除了被吃，它自己没有什么活动
     }
 

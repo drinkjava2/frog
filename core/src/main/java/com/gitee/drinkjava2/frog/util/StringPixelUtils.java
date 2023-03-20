@@ -71,7 +71,8 @@ public class StringPixelUtils {
                 if (bi.getRGB(x, yend) == -1)
                     break loop2;
             }
-
+        if(yend<ystart)
+            yend=ystart;
         byte[][] b = new byte[strWidth][yend-ystart+1];
         for (int y = ystart; y <= yend; y++)
             for (int x = 0; x < strWidth; x++)
@@ -82,23 +83,27 @@ public class StringPixelUtils {
         lettersMap.put(key, b);
         return b;
     }
+    
+    public static void printPixelArray(byte[][] c) {
+        int w = c.length;
+        int h = c[0].length;
+    
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                if (c[x][h - y - 1] > 0)
+                    System.out.print("*");
+                else
+                    System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
 
 	/*- 这个是测试输出，平时不需要用 
 	public static void main(String[] args) {
 	    System.out.println("===============");
 		byte[][] c = getStringPixels(Font.SANS_SERIF, Font.PLAIN, 12, "FROG");
-		int w = c.length;
-		int h = c[0].length;
-	
-		for (int y = 0; y < h; y++) {
-			for (int x = 0; x < w; x++) {
-				if (c[x][h - y - 1] > 0)
-					System.out.print("*");
-				else
-					System.out.print(" ");
-			}
-			System.out.println();
-		}
+		printPixelArray(c);
 		System.out.println("===============");
 	}
 	*/
