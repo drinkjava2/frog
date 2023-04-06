@@ -56,7 +56,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
      */
     public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
 
-    public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
+    public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; //每个细胞的能量值，这些不参与打分。打分是由Animan的energy字段承担
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标

@@ -18,9 +18,9 @@ package com.gitee.drinkjava2.frog.objects;
  */
 public interface EnvObject {
 
-	public void build(); // 在Env中创建本身物体，指改变Env.bricks数组元素为本身物体的组成材料。只在每屏测试前调用一次
+	public void build(); // 在Env中创建本身物体，只在每屏测试前调用一次
 
 	public void destory();// 从Env中清除本身物体，只在每屏测试完成后调用一次
 
-	public void active(int screen); // 每个步长都会调用一次这个方法
+	public void active(int screen, int step); // 每个步长（即时间最小单位)都会调用一次这个方法, 两个参数分别是当前屏数和当前步长数
 }

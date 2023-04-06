@@ -349,10 +349,10 @@ public class BrainPicture extends JPanel {
             for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--) {
                 for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
                     long cell = a.cells[x][y][z];
-                    if (cell == 0) //只显示有效的细胞点
-                        continue;
+                   // if (cell == 0) //只显示有效的细胞点
+                    //    continue;
                     if (a.energys[x][y][z] > 1) { //用大红色圆形画出能量大于1的细胞格
-                        setPicColor(Color.MAGENTA); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
+                        setPicColor(ColorUtils.colorByCode(x)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, 1.2f);
                     }
                     if (x >= xMask && y >= yMask && cell != 0)//画出细胞每个基因存在的细胞格子
@@ -379,8 +379,10 @@ public class BrainPicture extends JPanel {
         drawLine(0, 0, 0, 0, 0, Env.BRAIN_CUBE_SIZE);
 
         g.setColor(Color.black);
-        if (note != null) // 全局注释
-            g.drawString(note, 30, 55);
+        if (note != null) {// 全局注释
+            g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN,16));
+            g.drawString(note, 10, 20);
+        }
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
     }
 
