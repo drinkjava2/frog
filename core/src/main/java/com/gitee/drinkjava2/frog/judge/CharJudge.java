@@ -7,7 +7,6 @@ import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.brain.BrainPicture;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
-import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.StringPixelUtils;
 
 /**
@@ -27,7 +26,11 @@ public class CharJudge implements EnvObject {
     private static float[][][] charPictures = new float[STR_LENGTH][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; //STR所有字母的像素点阵对应的视网膜图像暂存在这个三维数组里，第一维是字母在STR中的序号
     private static int HALF_STEPS = Env.STEPS_PER_ROUND / 2;
     private static int HALF_CUBE = Env.BRAIN_CUBE_SIZE / 2;
-    private static int QUARTER_CUBE = Env.BRAIN_CUBE_SIZE / 4;
+    private static int SPACE = HALF_STEPS / STR_LENGTH; //每个字母训练或识别点用的时间步长
+    private static int EYE = 0; //视网膜层
+    private static int SOUND = 1; //声音输入输出层
+    private static int CONTROL = 2; //训练或提问信号放这层
+    private static int FEEL = 3; //痛苦或快乐感觉层
 
     static {
         for (int i = 0; i < STR.length(); i++) { //生成STR每个字符的二维图片并缓存到charPictures
@@ -59,60 +62,47 @@ public class CharJudge implements EnvObject {
 
     @Override
     public void active(int screen, int step) {
-        //前半段是训练，在前半段时间里，每隔一段时间生成一个随机文本图像, 然后把每个青蛙视网膜上画上这个图像,同时激活对应图像的声音细胞
-        int space = HALF_STEPS / STR_LENGTH;
-        if (step < HALF_STEPS && step % space == 0) {
-            int index = step / space;
-            //Logger.info("训练 step=" + step);
-            //Logger.info("训练 index=" + index);
+        int char_index;
+        //前半段是训练，在前半段时间里，每隔一段时间生成一个随机文本图像, 然后把每个青蛙视网膜上画上这个图像,同时激活对应图像的声音细胞 
+        if (step < HALF_STEPS && step % SPACE == 0) {
+            char_index = step / SPACE;
+            BrainPicture.setNote("第" + (char_index + 1) + "个字训练:" + STR.charAt(char_index));
+            for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
+                Frog frog = Env.frogs.get(i);
+                copyArray(charPictures[char_index], frog.energys[EYE]); //先把每个青蛙视网膜上画上这个图像, energys[0]作为视网膜
 
-            if (index < STR_LENGTH) {
-                BrainPicture.setNote("第" + (index + 1) + "个字训练:" + STR.charAt(index));
-                Application.brainPic.drawBrainPicture();
-                for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
-                    Frog frog = Env.frogs.get(i);
-                    frog.energys[2][0][0] = 99999f; // 训练信号打开
-                    frog.energys[2][0][HALF_CUBE] = 0f; // 识别信号关掉
-                    copyArray(charPictures[index], frog.energys[0]); //先把每个青蛙视网膜上画上这个图像, energys[0]作为视网膜
-
-                    for (int j = 0; j < Env.BRAIN_CUBE_SIZE; j++) {
-                        if (j == index)
-                            Env.frogs.get(i).energys[1][HALF_CUBE][j] = 99999f; // energys[1]作为脑内声音区
-                        else
-                            Env.frogs.get(i).energys[1][HALF_CUBE][j] = 0f;
-                    }
-                }
-
+                frog.energys[CONTROL][HALF_CUBE][0] = 99999f; // 训练信号打开,随便设定energys[CONTROL][HALF_CUBE][0]这个位置为训练信号打开标记
+                frog.energys[CONTROL][HALF_CUBE][HALF_CUBE] = 0f; // 提问信号关掉,随便设定energys[CONTROL][HALF_CUBE][HALF_CUBE]这个位置为提问信号打开标记
+                frog.energys[SOUND][HALF_CUBE][char_index] = 99999f; //输入声音信号
+                if (char_index > 0)
+                    frog.energys[SOUND][HALF_CUBE][char_index - 1] = 0f;
             }
+            Application.brainPic.drawBrainPicture();
             return;
         }
 
         if (step == HALF_STEPS) { //中点把声音区清空
+            char_index = (step - 1) / SPACE;
             for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
-                for (int j = 0; j < Env.BRAIN_CUBE_SIZE; j++) {
-                    Frog frog = Env.frogs.get(i);
-                    frog.energys[2][0][0] = 0f; // 训练信号关掉
-                    frog.energys[1][HALF_CUBE][j] = 0f;
-                }
+                Frog frog = Env.frogs.get(i);
+                frog.energys[CONTROL][HALF_CUBE][0] = 0f; // 训练信号关掉
+                frog.energys[SOUND][HALF_CUBE][char_index] = 0f; //上一次的声音信号输入关掉
             }
+            Application.brainPic.drawBrainPicture();
         }
 
         //后半段是识别，每隔一段时间把每个青蛙视网膜重置为以前出现的某个图像
-        if (step >= HALF_STEPS && (step - HALF_STEPS) % space == 0) {
-            int index = (step - HALF_STEPS) / space;
-
-            //Logger.info("识别 step=" + step);
-            //Logger.info("识别 index=" + index);
-
-            if (index < STR_LENGTH) {
-                BrainPicture.setNote("第" + (index + 1) + "个字识别:" + STR.charAt(index));
+        if (step >= HALF_STEPS && (step - HALF_STEPS) % SPACE == 0) {
+            char_index = (step - HALF_STEPS) / SPACE;
+            if (char_index < STR_LENGTH) {
+                BrainPicture.setNote("第" + (char_index + 1) + "个字识别:" + STR.charAt(char_index));
                 for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
                     Frog frog = Env.frogs.get(i);
-                    frog.energys[2][0][0] = 0f; // 训练信号关掉
-                    frog.energys[2][0][HALF_CUBE] = 99999f; // 识别信号打开
-                    copyArray(charPictures[index], frog.energys[0]);
-                    frog.energys[2][HALF_CUBE][0] = 0; //随便设定energys[2][HALF_CUBE][0]这个位置为快乐感受区，识别之前先清0
-                    frog.energys[2][HALF_CUBE][1] = 0; //随便设定energys[2][HALF_CUBE][1]这个位置为痛苦感受区，识别之前先清0
+                    frog.energys[CONTROL][HALF_CUBE][0] = 0f; // 训练信号关掉
+                    frog.energys[CONTROL][HALF_CUBE][HALF_CUBE] = 99999f; // 提问信号打开
+                    copyArray(charPictures[char_index], frog.energys[0]);
+                    frog.energys[FEEL][HALF_CUBE][0] = 0; //随便设定energys[2][HALF_CUBE][0]这个位置为快乐感受区，识别之前先清0
+                    frog.energys[FEEL][HALF_CUBE][1] = 0; //随便设定energys[2][HALF_CUBE][1]这个位置为痛苦感受区，识别之前先清0
                 }
                 Application.brainPic.drawBrainPicture();
             }
@@ -121,30 +111,32 @@ public class CharJudge implements EnvObject {
 
         //然后再检查与对应图像关联的声音细胞是否激活, 如正确激活则奖励细胞激活并加分,（奖励细胞用于构成条件反射链的一环，加分是用于优胜劣汰）
         //如错误激活则痛苦细胞激活，并扣分。错误激活分为两类，一是没有反应，二是声音区有激活，但最强激活区没有位于正确区
-        if (step >= HALF_STEPS && ((step - HALF_STEPS) % 10 == 5)) {//把打分判断仅放在第5帧和第10帧，而不是每个帧都对比，以提高速度!
-            //Logger.info("判断 step=" + step);
-            int index = (step - HALF_STEPS) / space;
-            if (index < STR_LENGTH) {
+        if (step >= HALF_STEPS && ((step - HALF_STEPS) % 10 == 5)) {//把打分判断仅放在个别帧，而不是每个帧都对比，以提高速度 
+            char_index = (step - HALF_STEPS) / SPACE;
+            if (char_index < STR_LENGTH) {
                 for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
                     for (int j = 0; j < Env.BRAIN_CUBE_SIZE; j++) {
                         Frog frog = Env.frogs.get(i);
                         float e = frog.energys[1][HALF_CUBE][j];
-                        if (j == index) {//某图片激活时
+                        if (j == char_index) {//某图片激活时
                             if (e > 0) {
                                 // Logger.debug("正确");
-                                frog.energys[2][HALF_CUBE][0] = 99999f; //识别正确，快乐区信号打开
-                                frog.energys[2][HALF_CUBE][HALF_CUBE] = 0f; //识别正确, 痛苦信号关掉
+                                frog.energys[FEEL][HALF_CUBE][0] = 99999f; //识别正确，快乐区信号打开
+                                frog.energys[FEEL][HALF_CUBE][HALF_CUBE] = 0f; //识别正确, 痛苦信号关掉
                                 frog.awardAAA(); //并且加分
                             } else {
-                                frog.energys[2][HALF_CUBE][0] = 0f; //识别错误，快乐区信号关掉
-                                frog.energys[2][HALF_CUBE][HALF_CUBE] = 99999f; //识别错误, 痛苦信号打开
+                                frog.energys[FEEL][HALF_CUBE][0] = 0f; //识别错误，快乐区信号关掉
+                                frog.energys[FEEL][HALF_CUBE][HALF_CUBE] = 99999f; //识别错误, 痛苦信号打开
                                 frog.penaltyAAA(); //并且扣分
                             }
-                        } else if (e > 0) { //某图片不激活时
+                        } else if (e > 0) { //声音区误激活，扣分
+                            frog.energys[FEEL][HALF_CUBE][0] = 0f; //识别错误，快乐区信号关掉
+                            frog.energys[FEEL][HALF_CUBE][HALF_CUBE] = 99999f; //识别错误, 痛苦信号打开
                             frog.penaltyAAA(); //对应声应区激活则扣分
                         }
                     }
                 }
+                Application.brainPic.drawBrainPicture();
             }
             return;
         }
