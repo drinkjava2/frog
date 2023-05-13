@@ -138,10 +138,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        //this.energys[1][1][1] = 10; //设某个细胞固定激活
-
+        this.energys[1][1][1] = 10; //设某个细胞固定激活
         //Eye.active(this); //如看到食物，给顶层细胞赋能量
-        //Cells.active(this); //细胞之间互相传递能量
+        Cells.active(this); //细胞之间互相传递能量
         //
         //        if (Food.foundAndAteFood(this.x, this.y)) { //如当前位置有食物就吃掉，并获得奖励
         //            this.awardAAAA();
@@ -209,5 +208,25 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                         gene.remove(RandomUtils.nextInt(gene.size()));
 
             }
+    }
+
+    public void open(int x, int y, int z) { //打开指定的xyz坐标对应的cell能量值为极大
+        energys[x][y][z] = 99999f;
+    }
+
+    public void open(int[] a) { //打开指定的a坐标对应的cell能量值为极大
+        energys[a[0]][a[1]][a[2]] = 99999f;
+    }
+
+    public void close(int x, int y, int z) { //关闭指定的xyz坐标对应的cell能量值为0
+        energys[x][y][z] = 0;
+    }
+
+    public void close(int[] a) {//关闭指定的a坐标对应的cell能量值为0
+        energys[a[0]][a[1]][a[2]] = 0;
+    }
+
+    public float get(int[] a) {//返回指定的a坐标对应的cell能量值
+        return energys[a[0]][a[1]][a[2]];
     }
 }
