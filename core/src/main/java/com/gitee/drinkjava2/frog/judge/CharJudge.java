@@ -35,13 +35,16 @@ public class CharJudge implements EnvObject {
     private static int SPACE = HALF_STEPS / STR_LENGTH; //每个字母训练或识别点用的时间步长
 
     private static int EYE = 0; //视网膜 是一个位于EYE层的平面
-    private static int SOUND = 1; //声音输入层 位于SOUND层中部的一条直线
-    private static int SPEAK = 2; //说话输出层位于SPEAK层中部的一条直线, SPEAK激活会导致声音区也激活（即自己能听到自己的讲话），反之，声音区激活SPEAK区不一定激活
 
-    private static int TRAIN[] = {3, 0, 0}; //训练信号是位于3层的一个单点
-    private static int ASK[] = {3, 0, HALF_CUBE}; //提问信号是位于3层的一个单点
-    private static int HAPPY[] = {3, HALF_CUBE, 0}; //快乐感觉信号是位于3层的一个单点
-    private static int PAIN[] = {3, HALF_CUBE, HALF_CUBE}; //痛苦感觉信号是位于3层的一个单点
+    private static int SOUND = 1; //声音输入层 位于[SOUND, 0, 0~Env.BRAIN_CUBE_SIZE-1]的一条直线
+    private static int TALK = 1; //说话输出层位于[TALK, 1, 0~Env.BRAIN_CUBE_SIZE-1]的一条直线, TALK激活会导致声音区也激活（即自己能听到自己的讲话），反之，声音区激活TALK区不一定激活
+
+    private static int TRAIN[] = {1, 2, 0}; //训练信号是位于1层的一个单点
+    private static int ASK[] = {1, 2, 1}; //提问信号是位于1层的一个单点
+    private static int HAPPY[] = {1, 2, 2}; //快乐感觉信号是位于1层的一个单点
+    private static int PAIN[] = {1, 2, 3}; //痛苦感觉信号是位于1层的一个单点
+
+    private static int MEMORY = 2; //记忆细胞放在2层整个平面
 
     static {
         for (int i = 0; i < STR.length(); i++) { //生成STR每个字符的二维图片并缓存到charPictures
@@ -85,9 +88,9 @@ public class CharJudge implements EnvObject {
 
                 f.open(TRAIN);// 训练信号打开
                 f.close(ASK);// 提问信号关掉 
-                f.open(SOUND, HALF_CUBE, char_index);//输入声音信号 
+                f.open(SOUND, 0, char_index);//输入声音信号 
                 if (char_index > 0)
-                    f.energys[SOUND][HALF_CUBE][char_index - 1] = 0f;
+                    f.energys[SOUND][0][char_index - 1] = 0f;
             }
             Application.brainPic.drawBrainPicture();
             return;
@@ -98,7 +101,7 @@ public class CharJudge implements EnvObject {
             for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
                 f = Env.frogs.get(i);
                 f.close(TRAIN);// 训练信号打开  
-                f.close(SOUND, HALF_CUBE, char_index); //上一次的声音信号输入关掉
+                f.close(SOUND, 0, char_index); //上一次的声音信号输入关掉
             }
             Application.brainPic.drawBrainPicture();
         }
@@ -129,7 +132,7 @@ public class CharJudge implements EnvObject {
                 for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
                     for (int j = 0; j < Env.BRAIN_CUBE_SIZE; j++) {
                         f = Env.frogs.get(i);
-                        float e = f.energys[SPEAK][HALF_CUBE][j];
+                        float e = f.energys[TALK][HALF_CUBE][j];
                         if (j == char_index) {//某图片激活时
                             if (e > 0) {
                                 // Logger.debug("识别正确");

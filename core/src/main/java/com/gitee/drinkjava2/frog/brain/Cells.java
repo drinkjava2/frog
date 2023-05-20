@@ -20,11 +20,16 @@ import com.gitee.drinkjava2.frog.Env;
  * 基因+分裂算法+遗传算法=结构的进化
  * 这个类里定义每个基因位的掩码, 脑结构的所有参数，都要用基因来控制。开始时可以有常量、魔数，但以后都放到基因里去自动进化。
  * 
+ * 注：记忆细胞因为与所有脑核细胞有全连接，没必要安排记忆细胞的结构进化，所以这个类里省略所有记忆细胞的参数基因
+ * 
  * @author Yong Zhu
  * @since 10.0
  */
 @SuppressWarnings("all")
 public class Cells {
+    public static boolean SHOW = true;
+    public static int TREE8 = -1;
+
     public static int GENE_NUMBERS = 0;
     private static int zeros = 0; //当前基因位掩码0个数
     public static boolean[] display_gene = new boolean[64]; //用来控制哪些基因需要显示在脑图上
@@ -35,22 +40,17 @@ public class Cells {
     static {
         for (int i = 0; i < xLayer.length; i++)
             xLayer[i] = -1;
+
+        for (int x = 0; x < Env.BRAIN_XSIZE; x++)
+            for (int y = 0; y < Env.BRAIN_YSIZE; y++)
+                for (int z = 0; z < Env.BRAIN_ZSIZE; z++) {
+
+                }
+
     }
 
-    // 登记三个基因， register方法有三个参数，详见方法注释。每个基因登记完后，还要在active方法里写它的细胞行为。
-    public static long eye = register(1, true, -1); //eye基因向存贮细胞发送能量
-
-    public static long EXIST = register(1, true, -1); // 细胞存在否,1为存在,0为不存在, true表示显示在脑图上 
-    public static long ZT_LONG = register(3, false); //轴突长度
-    public static long ZT_LONG0 = zeros; //如果参数由多位组成，用同名+0变量表示有几个0，移位运算时用来去除0。下同
-    public static long ZT = register(1, true);//axon exist 轴突是否存在
-    public static long ZTX = register(1, false);//axon x offset, 轴突x方向, 轴突方向由x,y,z三个方向的参数组合决定
-    public static long ZTX0 = zeros; //x方向暂定1位，如果2位也可以，角度更细，但出结果的时间会比较长
-    public static long ZTY = register(1, false); //轴突y方向
-    public static long ZTY0 = zeros;
-    public static long ZTZ = register(1, false); //轴突z方向
-    public static long ZTZ0 = zeros;
-    public static long ZT_MINUS = register(1, false);//细胞信号,1为正信号,0为负(抑制)信号
+    // 登记基因， register方法有三个参数，详见方法注释。每个基因登记完后，还要在active方法里写它的细胞行为。
+    public static long ANTI_SIDE = register(1, SHOW, 0); // 侧抑制基因，只分布在0层上，模仿眼睛的侧抑制
 
     public static long register(int maskBits, boolean display) {
         return register(maskBits, display, -1);
@@ -61,7 +61,7 @@ public class Cells {
      * 
      * @param maskBits how many mask bits 掩码位数，即有几个1
      * @param display whether to display the gene on the BrainPicture 是否显示在脑图
-     * @param x_layer gene only allow on specified layer 如大于-1，表示只生成在指定的x层对应的yz平面上
+     * @param x_layer gene only allow on specified layer 如大于-1，表示只生成在指定的x层对应的yz平面上，这时采用4叉树而不是8叉树以提高进化速度
      * @return a long wtih mask bits 返回基因掩码，高位由n个1组成，低位是若干个0                                                                    *  
      */
     public static long register(int maskBits, boolean display, int x_layer) {
@@ -91,41 +91,8 @@ public class Cells {
             for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--)
                 for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
                     long cell = a.cells[x][y][z];
-
-                    if ((cell & EXIST) == 0) //如细胞不存在，
-                        continue;
-
-                    //                    if ((cell & RANDOM_ACTIVE) > 0) //随机产生细胞能量，会让青蛙颤抖
-                    //                        if (RandomUtils.percent(5))
-                    //                            a.energys[x][y][z] = 1;
-
                     float e = a.energys[x][y][z];
-                    if (e > 0 && ((cell & ZT) > 0)) { //如有轴突基因，则当前细胞如存在能量，会输送到轴突端点处
-                        int x_ = (int) ((cell & ZTX) >> ZTX0); //把掩码转为坐标偏移量，因为暂定只有1位，所以只有1,-1
-                        if (x_ == 0)
-                            x_ = -1;
-                        int y_ = (int) ((cell & ZTY) >> ZTY0);
-                        if (y_ == 0)
-                            y_ = -1;
-                        int z_ = (int) ((cell & ZTZ) >> ZTZ0);
-                        if (z_ == 0)
-                            z_ = -1;
-                        int zt_long = (int) ((cell & ZT_LONG) >> ZT_LONG0) + 1; //轴突长度, 大小为1~8
-                        int xx = x + x_ * zt_long;
-                        int yy = y + y_ * zt_long;
-                        int zz = z + z_ * zt_long;
-                        if (Env.insideBrain(xx, yy, zz)) {
-                            if (a.energys[xx][yy][zz] < 10) {
-                                if ((cell & ZT_MINUS) > 0) //如果轴空是负信号
-                                    a.energys[xx][yy][zz]--;
-                                else
-                                    a.energys[xx][yy][zz]++;
-                                if (a.energys[x][y][z] > 0)
-                                    a.energys[x][y][z]--;
-                            }
-                        }
-                    }
-
+                    //TODO work on here
                 }
     }
 }
