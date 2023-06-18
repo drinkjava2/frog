@@ -10,6 +10,12 @@ import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.util.StringPixelUtils;
 
 /**
+ * Paused
+ * =======================================
+ * 暂停!!! 用CharJudge来做模式识别的起点，还是太复杂了，不符合循序渐进原则，改用BiteJudge，它的信号更精简，详见之。
+ * =======================================
+ * 
+ * 
  * CharJudge，image recognition
  * 
  * CharJudge用来进行模式识别训练并检查结果是否正确，这是个临时类，但如果做成功，将会是一个基础的脑模型了。
@@ -25,7 +31,7 @@ import com.gitee.drinkjava2.frog.util.StringPixelUtils;
  * 这个类不涉及信号的传输，只涉及信号的产生、输入和输出。信号的传输是由脑结构来负责的。
  * 
  */
-public class CharJudge implements EnvObject {
+public class CharJudge extends EnvObject {
 
     private static String STR = "1234"; //字符串长度不要超过Env.BRAIN_CUBE_SIZE边长，否则数组越界
     private static int STR_LENGTH = STR.length();
@@ -44,7 +50,7 @@ public class CharJudge implements EnvObject {
     private static int HAPPY[] = {1, 2, 2}; //快乐感觉信号是位于1层的一个单点
     private static int PAIN[] = {1, 2, 3}; //痛苦感觉信号是位于1层的一个单点
 
-    private static int MEMORY = 2; //记忆细胞放在2层整个平面
+    //private static int MEMORY = 2; //记忆细胞放在2层整个平面
 
     static {
         for (int i = 0; i < STR.length(); i++) { //生成STR每个字符的二维图片并缓存到charPictures
@@ -57,15 +63,7 @@ public class CharJudge implements EnvObject {
             }
         }
     }
-
-    @Override
-    public void build() {// do nothing
-    }
-
-    @Override
-    public void destory() {// do nothing
-    }
-
+ 
     static void copyArray(float[][] src, float[][] target) { //拷贝两个同样大小的二维数组
         for (int i = 0; i < src.length; i++) {
             for (int j = 0; j < src[0].length; j++) {

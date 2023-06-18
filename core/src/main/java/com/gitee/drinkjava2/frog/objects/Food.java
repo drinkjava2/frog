@@ -24,8 +24,8 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public enum Food implements EnvObject {
-    FOOD; //FOOD是一个枚举型单例，整个环境只允许有一个FOOD实例
+public class Food extends EnvObject {
+    static Food FOOD = new Food(); //FOOD是一个单例，整个环境只允许有一个FOOD实例
 
     public static int food_ated = 0;
 
@@ -43,16 +43,11 @@ public enum Food implements EnvObject {
 
     @Override
     public void destory() {
-        food_ated=0;
+        food_ated = 0;
         for (int x = 0; x < ENV_WIDTH; x++) // 清除食物
             for (int y = 0; y < ENV_HEIGHT; y++) {
                 Env.clearMaterial(x, y, Material.FOOD);
             }
-    }
-
-    @Override
-    public void active(int screen, int step) {
-        //食物除了被吃，它自己没有什么活动
     }
 
     public static boolean foundAndAteFood(int x, int y) {// 如果x,y有食物，将其清0，返回true

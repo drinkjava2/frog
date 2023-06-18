@@ -40,13 +40,6 @@ public class Cells {
     static {
         for (int i = 0; i < xLayer.length; i++)
             xLayer[i] = -1;
-
-        for (int x = 0; x < Env.BRAIN_XSIZE; x++)
-            for (int y = 0; y < Env.BRAIN_YSIZE; y++)
-                for (int z = 0; z < Env.BRAIN_ZSIZE; z++) {
-
-                }
-
     }
 
     // 登记基因， register方法有三个参数，详见方法注释。每个基因登记完后，还要在active方法里写它的细胞行为。
