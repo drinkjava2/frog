@@ -24,7 +24,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Food extends EnvObject {
+public class Food extends EnvObject {//食物除了被吃，它自己没有什么活动,所以没有重写active方法
     static Food FOOD = new Food(); //FOOD是一个单例，整个环境只允许有一个FOOD实例
 
     public static int food_ated = 0;
