@@ -352,14 +352,16 @@ public class BrainPicture extends JPanel {
                    // if (cell == 0) //只显示有效的细胞点
                     //    continue;
                     if (a.energys[x][y][z] > 1) { //用大红色圆形画出能量大于1的细胞格
-                        setPicColor(ColorUtils.colorByCode(x)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
+                        setPicColor(Color.RED); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, 1.2f);
                     }
                     if (x >= xMask && y >= yMask && cell != 0)//画出细胞每个基因存在的细胞格子
                         for (int geneIndex = 0; geneIndex < Cells.GENE_NUMBERS; geneIndex++) {
                             if ((cell & (1 << geneIndex)) != 0 && Cells.display_gene[geneIndex]) {
-                                setPicColor(ColorUtils.colorByCode(geneIndex)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
-                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, geneIndex == 0 ? 0.8f : 0.5f - geneIndex * 0.05f);
+                                //setPicColor(ColorUtils.colorByCode(geneIndex)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
+                                setPicColor(Color.RED);
+                                //drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, geneIndex == 0 ? 0.8f : 0.5f - geneIndex * 0.05f);
+                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.6f);
                             }
                         } 
                 }

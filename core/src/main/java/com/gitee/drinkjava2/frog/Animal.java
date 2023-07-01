@@ -23,8 +23,10 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Cells;
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.judge.D2Judge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
+import com.gitee.drinkjava2.frog.util.Tree2Util;
 import com.gitee.drinkjava2.frog.util.Tree4Util;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
 
@@ -101,6 +103,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 energy -= gene.size();
         createCellsFromGene(); //根据基因，分裂生成脑细胞
+
+        D2Judge.pic1.judge(this); //对平面上分布的参数打分
+        D2Judge.pic2.judge(this);
+        D2Judge.pic3.judge(this);
+
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -138,7 +145,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        this.energys[1][1][1] = 10; //设某个细胞固定激活
+        this.energys[0][0][0] = 10; //设某个细胞固定激活
         //Eye.active(this); //如看到食物，给顶层细胞赋能量
         Cells.active(this); //细胞之间互相传递能量
         //
@@ -161,22 +168,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     private void createCellsFromGene() {//根据基因生成细胞参数  
-        long geneMask = 1;
-        for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，最多有64维，也就是最多有64条基因
+        for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，目前最多有64维，也就是最多有64条基因
+            long geneMask = 1l << g;
             ArrayList<Integer> gene = genes.get(g);
             int xLayer = Cells.xLayer[g];
-            if (xLayer > -1) { //如果xLayer不为-1，表示此基因分布在平面上，此时使用4叉树在平面上分裂加速!!!!
-                Tree4Util.knockNodesByGene(gene);//根据基因，把要敲除的4叉树节点作个标记
-                for (int i = 0; i < Tree4Util.NODE_QTY; i++) {//再根据敲剩下的4叉树keep标记生成细胞参数
-                    if (Tree4Util.keep[i] > 0) {
-                        int[] node = Tree4Util.TREE4[i];
-                        if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在2维空间对间数组的位置把当前基因geneMask置1
-                            cells[xLayer][node[1]][node[2]] = cells[xLayer][node[1]][node[2]] | geneMask; //在相应的细胞处把细胞参数位置1
-                        }
-                    }
-                }
-                geneMask <<= 1;
-            } else {//否则使用8叉树在三维空间分裂!!!!
+            int yLayer = Cells.yLayer[g];
+            if (xLayer < 0) { //如xLayer没定义,使用阴阳8叉树分裂算法在三维空间分裂,这个最慢但分布范围大  
                 Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
                 for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树keep标记生成细胞参数
                     if (Tree8Util.keep[i] > 0) {
@@ -186,24 +183,53 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                         }
                     }
                 }
-                geneMask <<= 1;
+            } else if (yLayer < 0) { // 如果xLayer>=0, yLalyer没定义, 表示此基因分布在坐标x的yz平面上，此时使用阴阳4叉树分裂算法在此平面上分裂加速!!!!
+                Tree4Util.knockNodesByGene(gene);//根据基因，把要敲除的4叉树节点作个标记
+                for (int i = 0; i < Tree4Util.NODE_QTY; i++) {//再根据敲剩下的4叉树keep标记生成细胞参数
+                    if (Tree4Util.keep[i] > 0) {
+                        int[] node = Tree4Util.TREE4[i];
+                        if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在2维空间对间数组的位置把当前基因geneMask置1
+                            cells[xLayer][node[1]][node[2]] = cells[xLayer][node[1]][node[2]] | geneMask; //在相应的细胞处把细胞参数位置1
+                        }
+                    }
+                }
+            } else { // 如果xLayer>=0, yLalyer>=0，这时基因只能分布在x,y指定的z轴上，此时使用阴阳2叉树分裂算法
+                Tree2Util.knockNodesByGene(gene);//根据基因，把要敲除的4叉树节点作个标记
+                for (int i = 0; i < Tree2Util.NODE_QTY; i++) {//再根据敲剩下的4叉树keep标记生成细胞参数
+                    if (Tree2Util.keep[i] > 0) {
+                        int[] node = Tree2Util.TREE2[i];
+                        if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在2维空间对间数组的位置把当前基因geneMask置1
+                            cells[xLayer][yLayer][node[1]] = cells[xLayer][yLayer][node[1]] | geneMask; //在相应的细胞处把细胞参数位置1
+                        }
+                    }
+                }
             }
-
         }
     }
 
-    private void geneMutation() { //基因变异,注意这一个算法同时变异所有条基因
+    private void geneMutation() { //基因变异,注意这一个方法同时变异青蛙的所有条基因
         if (percent(90))
             for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阴节点基因，注意只是简单地随机新增，所以可能有重复基因
                 ArrayList<Integer> gene = genes.get(g);
-                int geneMaxLength = Cells.xLayer[g] == -1 ? Tree8Util.NODE_QTY : Tree4Util.NODE_QTY; //8叉和4叉树的基因最大长度不同
-                if (percent(20))
+                
+                int geneMaxLength; //8叉、4叉树、2叉树的节点最大序号不同，基因随机生成时要限制它不能大于最大序号
+                if (Cells.xLayer[g] < 0) { //如xLayer没定义,使用阴阳8叉树分裂算法
+                    geneMaxLength= Tree8Util.NODE_QTY;
+                } else if (Cells.yLayer[g] < 0) { // 如果xLayer>=0, yLalyer没定义, 表示此基因分布在坐标x的yz平面上，此时使用阴阳4叉树分裂算法
+                    geneMaxLength= Tree4Util.NODE_QTY;
+                } else { // 如果xLayer>=0, yLalyer>=0，这时基因只能分布在x,y指定的z轴上，此时使用阴阳2叉树分裂算法
+                    geneMaxLength= Tree2Util.NODE_QTY;
+                }
+                
+                
+                int n=3; //这是个魔数，今后可以考虑放在基因里去变异，8\4\2叉树的变异率可以不一样
+                if (percent(n)) //生成随机负节点号，对应阴节点, 
                     gene.add(-RandomUtils.nextInt(geneMaxLength));
 
-                if (percent(20))
+                if (percent(n)) //生成随机负正节点号，对应阳节点
                     gene.add(RandomUtils.nextInt(geneMaxLength));
 
-                if (percent(40))
+                if (percent(n+n)) //随机删除一个节点，用这种方式来清除节点，防止节点无限增长，如果删对了，就不会再回来，如果删错了，系统就会把这个青蛙整个淘汰，这就是遗传算法的好处
                     if (!gene.isEmpty())
                         gene.remove(RandomUtils.nextInt(gene.size()));
 

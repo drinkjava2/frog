@@ -11,7 +11,7 @@
 package com.gitee.drinkjava2.frog.brain;
 
 import com.gitee.drinkjava2.frog.Animal;
-import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.judge.D2Judge;
 
 /**
  * Cells代表不同的脑细胞参数，对应每个参数，用8叉树或4叉树算法生成不同的细胞。
@@ -26,16 +26,22 @@ import com.gitee.drinkjava2.frog.Env;
  * @since 10.0
  */
 @SuppressWarnings("all")
-public class Cells {
+public class Cells { //Cells登记所有的基因(目前最多64个)， 指定每个基因允许分布的空间范围。并针对每个基因写出它所在的细胞对应的特性或行为。Cells这个名称改为Genes应该更合适，以后再说。
     public static boolean SHOW = true;
     public static int TREE8 = -1;
 
     public static int GENE_NUMBERS = 0;
     private static int zeros = 0; //当前基因位掩码0个数
+
     public static boolean[] display_gene = new boolean[64]; //用来控制哪些基因需要显示在脑图上
 
-    public static int[] xLayer = new int[64]; //当内容大于-1时,表示基因只生成在脑核cell[x]单层2维数组上，此基因将采用4叉树平面分裂算法以提高效率
-                                              //目前层只能位于yz平面上，因为Java的三维数组只写一个下标时正好返回一个二维数组    
+    /**
+    如xLayer[g]=-1, 表示g这个基因允行分布在Cells的三维数组空间上，将采用阴阳8叉树3维细胞分裂算法
+    如xLayer[g]=0~n-1, yLayer[g]=-1, 表示g这个基因允行分布在Cells[xLayer[g]]所在的yz二维数组平面上， 将采用阴阳4叉树平面分裂算法以提高效率。目前只能位于yz平面上，因为Java三维数组写一个下标返回一个二维数组。
+    如xLayer[g]=0~n-1, yLayer[g]=0~n-1, 表示g这个基因允行分布在Cells[xLayer[g]][yLayer[g]]所在的z单维数组轴线上，将采用阴阳2叉树单轴分裂算法以提高效率。目前只能位于z轴上，因为Java三维数组写2个下标返回一个单维数组。
+    */
+    public static int[] xLayer = new int[64];
+    public static int[] yLayer = new int[64];
 
     static {
         for (int i = 0; i < xLayer.length; i++)
@@ -43,10 +49,15 @@ public class Cells {
     }
 
     // 登记基因， register方法有三个参数，详见方法注释。每个基因登记完后，还要在active方法里写它的细胞行为。
-    public static long ANTI_SIDE = register(1, SHOW, 0); // 侧抑制基因，只分布在0层上，模仿眼睛的侧抑制
+    //public static long ANTI_SIDE = register(1, SHOW, 0); // 侧抑制基因，只分布在0层上，模仿眼睛的侧抑制
 
-    public static long register(int maskBits, boolean display) {
-        return register(maskBits, display, -1);
+    static {
+        register(1, true, D2Judge.pic1.xLayer, -1);
+        for (int i = 0; i < 16; i++) {
+            register(1, true, D2Judge.pic2.xLayer, i );
+            register(1, true, D2Judge.pic3.xLayer, i);
+        }
+
     }
 
     /**
@@ -57,10 +68,11 @@ public class Cells {
      * @param x_layer gene only allow on specified layer 如大于-1，表示只生成在指定的x层对应的yz平面上，这时采用4叉树而不是8叉树以提高进化速度
      * @return a long wtih mask bits 返回基因掩码，高位由n个1组成，低位是若干个0                                                                    *  
      */
-    public static long register(int maskBits, boolean display, int x_layer) {
+    public static long register(int maskBits, boolean display, int x_layer, int y_layer) {
         for (int i = GENE_NUMBERS; i < GENE_NUMBERS + maskBits; i++) {
             display_gene[i] = display;
             xLayer[i] = x_layer;
+            yLayer[i] = y_layer;
         }
 
         String one = "";
@@ -80,12 +92,12 @@ public class Cells {
 
     public static void active(Animal a) {//active方法在每个主循环都会调用，通常用来存放细胞的行为，这是个重要方法
         //if(true)return; //speeding
-        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
-            for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--)
-                for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
-                    long cell = a.cells[x][y][z];
-                    float e = a.energys[x][y][z];
-                    //TODO work on here
-                }
+        //        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
+        //            for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--)
+        //                for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
+        //                    long cell = a.cells[x][y][z];
+        //                    float e = a.energys[x][y][z];
+        //                    //TODO work on here
+        //                }
     }
 }
