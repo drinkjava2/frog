@@ -11,9 +11,7 @@ import javax.swing.JPanel;
 
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
-import com.gitee.drinkjava2.frog.judge.D2Judge;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
-import com.gitee.drinkjava2.frog.objects.Eye;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.Logger;

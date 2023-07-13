@@ -11,7 +11,6 @@
 package com.gitee.drinkjava2.frog.brain;
 
 import com.gitee.drinkjava2.frog.Animal;
-import com.gitee.drinkjava2.frog.judge.D2Judge;
 
 /**
  * Cells代表不同的脑细胞参数，对应每个参数，用8叉树或4叉树算法生成不同的细胞。
@@ -52,11 +51,8 @@ public class Cells { //Cells登记所有的基因(目前最多64个)， 指定�
     //public static long ANTI_SIDE = register(1, SHOW, 0); // 侧抑制基因，只分布在0层上，模仿眼睛的侧抑制
 
     static {
-        register(1, true, D2Judge.pic1.xLayer, -1);
-        for (int i = 0; i < 16; i++) {
-            register(1, true, D2Judge.pic2.xLayer, i );
-            register(1, true, D2Judge.pic3.xLayer, i);
-        }
+       // register(1, true, D2Judge.pic1.xLayer, -1);
+        
 
     }
 
@@ -67,7 +63,7 @@ public class Cells { //Cells登记所有的基因(目前最多64个)， 指定�
      * @param display whether to display the gene on the BrainPicture 是否显示在脑图
      * @param x_layer gene only allow on specified x layer 如x_layer大于-1，且y_layer=-1, 表示只生成在指定的x层对应的yz平面上，这时采用4叉树而不是8叉树以提高进化速度
      * @param y_layer gene only allow on specified x, y axis 如大于-1，表示只生成在指定的x,y坐标对应的z轴上，这时采用2叉阴阳树算法
-     * @return a long wtih mask bits 返回基因掩码，高位由n个1组成，低位是若干个0                                                                    *  
+     * @return a long wtih mask bits 返回基因掩码，高位由maskBits个1组成，低位是若干个0，以后判断一个cell上是否含有这个基因，只需要用cell对应的long和这个 掩码做与运算即可
      */
     public static long register(int maskBits, boolean display, int x_layer, int y_layer) {
         for (int i = GENE_NUMBERS; i < GENE_NUMBERS + maskBits; i++) {

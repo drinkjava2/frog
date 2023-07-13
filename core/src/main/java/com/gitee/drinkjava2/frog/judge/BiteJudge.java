@@ -1,7 +1,5 @@
 package com.gitee.drinkjava2.frog.judge;
 
-import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 
 /**
@@ -9,12 +7,13 @@ import com.gitee.drinkjava2.frog.objects.EnvObject;
  * 
  * ======================================
  * 暂停!!! BiteJudge还是太复杂了，打算删除它，改成一个Eye类仅用来在视网膜上投影随机序号的条形码，然后咬、、苦、甜感觉、加减分都在Cell细胞的Active里来做,也就是说逻辑不集中在一起，而是分散到各个细胞里
+ * 然后视觉信号也简化为单维的线条性号，从而可以用阴阳2叉分裂算法快速验证思路
  * =======================================
  * 
  * 以下作废：
  * 
  * BiteJudge用来进行模式识别训练并检查结果是否正确，这是个临时类。它主要有 随机、饿、视、咬、苦、甜、忆类细胞，可以实现最简单的模式识别，即根据图像来决定咬还是不咬。
- * 最初打算用CharJudge来做模式识别，但发现复杂了一点。这个BiteJudge是精简过后的，能够实现模式识别的最简脑模型，它去除了CharJudge的声音输入细胞和SPEAK说话细胞，用苦、甜、咬三种细胞代替。
+ * 最初打算用CharJudge即字符的图像来做模式识别，但发现复杂了一点。这个BiteJudge是精简过后的，能够实现模式识别的最简脑模型，它去除了CharJudge的声音输入细胞和SPEAK说话细胞，用苦、甜、咬三种细胞代替。
  * 
  * 基本思路是
  * 1.随机在视网膜EYE上生成一个食物图像(就用食物序号的ASCII二进制码图)，如果这时碰巧咬细胞激活，就会根据食物本身是否有毒，激活frog的苦或者甜感觉细胞, 并同时增减frog的能量
@@ -26,19 +25,5 @@ import com.gitee.drinkjava2.frog.objects.EnvObject;
  * 
  */
 public class BiteJudge extends EnvObject {
-
-    private static int EYE = 0; //视网膜 是一个位于0层的平面
-    private static int BITE[] = {1, 0, 0}; //咬细胞位于[1, 0, 0]的一个点
-    private static int HAPPY[] = {1, 2, 2}; //快乐感觉信号是位于1层的一个单点
-    private static int PAIN[] = {1, 2, 3}; //痛苦感觉信号是位于1层的一个单点
-    //private static int MEMORY = 2; //记忆细胞放在2层整个平面
-
-    @Override
-    public void active(int screen, int step) {
-        Frog f;
-        for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
-            f = Env.frogs.get(i);
-        }
-    }
 
 }
