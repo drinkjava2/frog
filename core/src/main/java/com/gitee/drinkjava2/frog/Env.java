@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
+import com.gitee.drinkjava2.frog.objects.Eye;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.Logger;
@@ -44,7 +45,7 @@ public class Env extends JPanel {
     public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出青蛙落在地图上随机位置，而不是在蛋所在地
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用三维数组来表示
-    public static final int BRAIN_CUBE_SIZE = 16; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
+    public static final int BRAIN_CUBE_SIZE = 4; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
 
     public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度
     public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度
@@ -66,7 +67,7 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 200;// 每轮测试步数,可调
+    public static final int STEPS_PER_ROUND = 400;// 每轮测试步数,可调
     public static int step;// 当前测试步数
 
     public static final int FOOD_QTY = 3000; // 食物数量, 可调
@@ -86,7 +87,7 @@ public class Env extends JPanel {
 
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{ };// 所有外界物体，如食物、字母测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{new Eye() };// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -260,7 +261,7 @@ public class Env extends JPanel {
                         continue;
 
                     if (SHOW_SPEED<5) // 如果speed为1，人为加入延迟
-                        sleep((5-SHOW_SPEED));
+                        sleep((50-SHOW_SPEED));
 
                     // 开始画虚拟环境和青蛙
                     g.setColor(Color.white);
@@ -280,12 +281,14 @@ public class Env extends JPanel {
                             g.setColor(Color.BLACK);
                         }
                     }
-                    if (DRAW_BRAIN_AFTER_STEPS > 0 && step % DRAW_BRAIN_AFTER_STEPS == 0)
+                    if (DRAW_BRAIN_AFTER_STEPS > 0 && step % DRAW_BRAIN_AFTER_STEPS == 0) //显示脑图是耗时操作，这个开关可以跳过一些脑图显示
+                        Application.brainPic.drawBrainPicture();
+                    if(SHOW_SPEED==1 && SHOW_FIRST_ANIMAL_BRAIN) //如果速度为1，强制每步都显示脑图
                         Application.brainPic.drawBrainPicture();
                     Graphics g2 = this.getGraphics();
                     g2.drawImage(buffImg, 0, 0, this);
                 }
-                if (SHOW_FIRST_ANIMAL_BRAIN)
+                if (SHOW_FIRST_ANIMAL_BRAIN) //一轮结束后再强制再显示脑图一次
                     Application.brainPic.drawBrainPicture();
                 checkIfPause();
                 for (int j = 0; j < FROG_PER_SCREEN; j++) {
