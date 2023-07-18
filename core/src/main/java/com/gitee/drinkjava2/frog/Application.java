@@ -14,7 +14,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.gitee.drinkjava2.frog.brain.BrainPicture;
-import com.gitee.drinkjava2.frog.brain.Cells;
+import com.gitee.drinkjava2.frog.brain.Genes;
 
 /**
  * Application's main method start the program
@@ -129,18 +129,18 @@ public class Application {
         mainFrame.add(saveFileCheckBox); 
         
         //基因维数显示控制
-        for (int i = 0; i < Cells.GENE_NUMBERS; i++) {
+        for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
             JRadioButton geneRadio=new JRadioButton();
             geneRadio.setBounds(buttonXpos+300+i*16, Env.ENV_HEIGHT + 8, 20, 22);
-            geneRadio.setSelected(Cells.display_gene[i]);
+            geneRadio.setSelected(Genes.display_gene[i]);
             geneRadio.setName(""+i);
             ActionListener geneRadioAction = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     int i= Integer.parseInt(geneRadio.getName());
                     if (geneRadio.isSelected())
-                        Cells.display_gene[i]=true;
+                        Genes.display_gene[i]=true;
                     else
-                        Cells.display_gene[i]=false;
+                        Genes.display_gene[i]=false;
                 }
             };
             geneRadio.addActionListener(geneRadioAction);

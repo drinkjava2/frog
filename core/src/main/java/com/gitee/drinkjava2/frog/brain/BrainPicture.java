@@ -310,14 +310,14 @@ public class BrainPicture extends JPanel {
             g.setColor(BLACK); // 画边框
             g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-            for (int geneIndex = 0; geneIndex < Cells.GENE_NUMBERS; geneIndex++) {
+            for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
                 ArrayList<Integer> gene = a.genes.get(geneIndex);
                 Tree8Util.knockNodesByGene(gene);
                 for (int j = 0; j < Tree8Util.NODE_QTY; j++) {
                     if (Tree8Util.keep[j] > 0) {
                         int[] node = Tree8Util.TREE8[j];
                         int size = node[0];
-                        if (size == i && Cells.display_gene[geneIndex]) {//如果允许显示的话, 显示当前层级的节点
+                        if (size == i && Genes.display_gene[geneIndex]) {//如果允许显示的话, 显示当前层级的节点
                             setPicColor(ColorUtils.colorByCode(geneIndex));
                             drawPoint(node[1] + size / 2, node[2] + size / 2, node[3] + size / 2, size * (0.5f - geneIndex * 0.05f));
                         }
@@ -356,8 +356,8 @@ public class BrainPicture extends JPanel {
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, 1.2f);
                     }
                     if (x >= xMask && y >= yMask && cell != 0)//画出细胞每个基因存在的细胞格子
-                        for (int geneIndex = 0; geneIndex < Cells.GENE_NUMBERS; geneIndex++) {
-                            if ((cell & (1 << geneIndex)) != 0 && Cells.display_gene[geneIndex]) {
+                        for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
+                            if ((cell & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
                                 //setPicColor(ColorUtils.colorByCode(geneIndex)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
                                 setPicColor(Color.RED);
                                 //drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, geneIndex == 0 ? 0.8f : 0.5f - geneIndex * 0.05f);

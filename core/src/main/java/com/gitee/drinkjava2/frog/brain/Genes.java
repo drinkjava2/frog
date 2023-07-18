@@ -13,7 +13,7 @@ package com.gitee.drinkjava2.frog.brain;
 import com.gitee.drinkjava2.frog.Animal;
 
 /**
- * Cells代表不同的脑细胞参数，对应每个参数，用8叉树或4叉树算法生成不同的细胞。
+ * Genes代表不同的脑细胞参数，对应每个参数，用8叉树或4叉树算法生成不同的细胞。
  * 每个脑细胞用一个long来存储，所以目前最多允许64个基因位, 多字节参数可以由多个基因位决定。每个基因位都由一个单独的阴阳8/4叉树控制，多个基因就组成了一个8/4叉树阵列
  * 基因+分裂算法=结构
  * 基因+分裂算法+遗传算法=结构的进化
@@ -25,39 +25,39 @@ import com.gitee.drinkjava2.frog.Animal;
  * @since 10.0
  */
 @SuppressWarnings("all")
-public class Cells { //Cells登记所有的基因(目前最多64个)， 指定每个基因允许分布的空间范围。并针对每个基因写出它所在的细胞对应的特性或行为。Cells这个名称改为Genes应该更合适，以后再说。
+public class Genes { //Genes登记所有的基因(目前最多64个)， 指定每个基因允许分布的空间范围。并针对每个基因写出它所在的细胞对应的特性或行为。Cells这个名称改为Genes应该更合适，以后再说。
+    public static int GENE_MAX = 64;
     public static boolean SHOW = true;
     public static int TREE8 = -1;
 
     public static int GENE_NUMBERS = 0;
     private static int zeros = 0; //当前基因位掩码0个数
 
-    public static boolean[] display_gene = new boolean[64]; //用来控制哪些基因需要显示在脑图上
+    public static boolean[] display_gene = new boolean[GENE_MAX]; //用来控制哪些基因需要显示在脑图上
 
     /**
-    如xLayer[g]=-1, 表示g这个基因允行分布在Cells的三维数组空间上，将采用阴阳8叉树3维细胞分裂算法
-    如xLayer[g]=0~n-1, yLayer[g]=-1, 表示g这个基因允行分布在Cells[xLayer[g]]所在的yz二维数组平面上， 将采用阴阳4叉树平面分裂算法以提高效率。目前只能位于yz平面上，因为Java三维数组写一个下标返回一个二维数组。
-    如xLayer[g]=0~n-1, yLayer[g]=0~n-1, 表示g这个基因允行分布在Cells[xLayer[g]][yLayer[g]]所在的z单维数组轴线上，将采用阴阳2叉树单轴分裂算法以提高效率。目前只能位于z轴上，因为Java三维数组写2个下标返回一个单维数组。
+    如xLayer[g]=-1, 表示g这个基因允行分布在cells的三维数组空间上，将采用阴阳8叉树3维细胞分裂算法
+    如xLayer[g]=0~n-1, yLayer[g]=-1, 表示g这个基因允行分布在cells[xLayer[g]]所在的yz二维数组平面上， 将采用阴阳4叉树平面分裂算法以提高效率。目前只能位于yz平面上，因为Java三维数组写一个下标返回一个二维数组。
+    如xLayer[g]=0~n-1, yLayer[g]=0~n-1, 表示g这个基因允行分布在cells[xLayer[g]][yLayer[g]]所在的z单维数组轴线上，将采用阴阳2叉树单轴分裂算法以提高效率。目前只能位于z轴上，因为Java三维数组写2个下标返回一个单维数组。
     */
-    public static int[] xLayer = new int[64];
-    public static int[] yLayer = new int[64];
+    public static int[] xLayer = new int[GENE_MAX];
+    public static int[] yLayer = new int[GENE_MAX];
 
     static {
-        for (int i = 0; i < xLayer.length; i++)
+        for (int i = 0; i < xLayer.length; i++) {
             xLayer[i] = -1;
+            yLayer[i] = -1;
+        }
     }
 
-    // 登记基因， register方法有四个参数，详见方法注释。每个基因登记完后，还要在active方法里写它的细胞行为。
-    //public static long ANTI_SIDE = register(1, SHOW, 0); // 侧抑制基因，只分布在0层上，模仿眼睛的侧抑制
-
-    static {
-       // register(1, true, D2Judge.pic1.xLayer, -1);
-        
+    static { // 登记基因， register方法有四个参数，详见方法注释。每个基因登记完后，还要在active方法里写它的细胞行为 
+        // register(1, true, D2Judge.pic1.xLayer, -1);
+        //public long ANTI_SIDE = register(1, SHOW, 0); // 侧抑制基因，只分布在0层上，模仿眼睛的侧抑制
 
     }
 
     /**
-     * Register a gene 依次从底位到高位登记所有的基因掩码及对应的相关参数如是否显示在脑图上或是否只生成在某个x坐标对应的yz平面上，或xy坐标对应的z轴上
+     * Register a gene 依次从底位到高位登记所有的基因掩码及对应的相关参数
      * 
      * @param maskBits how many mask bits 掩码位数，即有几个1
      * @param display whether to display the gene on the BrainPicture 是否显示在脑图
@@ -80,8 +80,8 @@ public class Cells { //Cells登记所有的基因(目前最多64个)， 指定�
             zero += "0";
         zeros = GENE_NUMBERS;
         GENE_NUMBERS += maskBits;
-        if (GENE_NUMBERS >= 64) {//
-            System.out.println("目前基因位数不能超过64");
+        if (GENE_NUMBERS >= GENE_MAX) {//
+            System.out.println("目前基因位数不能超过" + GENE_MAX);
             System.exit(-1);
         }
         return Long.parseLong(one + zero, 2); //将类似"111000"这种字符串转换为长整

@@ -10,12 +10,12 @@
  */
 package com.gitee.drinkjava2.frog.util;
 
-import static com.gitee.drinkjava2.frog.brain.Cells.GENE_NUMBERS;
+import static com.gitee.drinkjava2.frog.brain.Genes.GENE_NUMBERS;
 
 import java.util.ArrayList;
 
 import com.gitee.drinkjava2.frog.Animal;
-import com.gitee.drinkjava2.frog.brain.Cells;
+import com.gitee.drinkjava2.frog.brain.Genes;
 
 /**
  * TreeUtil  
@@ -29,7 +29,7 @@ public class CellUtil {
         long geneMask = 1;
         for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，最多有64维，也就是最多有64条基因
             ArrayList<Integer> gene = a.genes.get(g);
-            int xLayer = Cells.xLayer[g];
+            int xLayer = Genes.xLayer[g];
             if (xLayer > -1) { //如果xLayer不为-1，表示此基因分布在平面上，此时使用4叉树在平面上分裂加速!!!!
                 Tree4Util.knockNodesByGene(gene);//根据基因，把要敲除的4叉树节点作个标记
                 for (int i = 0; i < Tree4Util.NODE_QTY; i++) {//再根据敲剩下的4叉树keep标记生成细胞参数

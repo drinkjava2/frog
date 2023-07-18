@@ -10,7 +10,7 @@
  */
 package com.gitee.drinkjava2.frog;
 
-import static com.gitee.drinkjava2.frog.brain.Cells.GENE_NUMBERS;
+import static com.gitee.drinkjava2.frog.brain.Genes.GENE_NUMBERS;
 import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
 
 import java.awt.Graphics;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import com.gitee.drinkjava2.frog.brain.Cells;
+import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -50,7 +50,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉或4叉)。
+    public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
@@ -141,7 +141,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
         this.energys[0][0][0] = 10; //设某个细胞固定激活
         //Eye.active(this); //如看到食物，给顶层细胞赋能量
-        Cells.active(this); //细胞之间互相传递能量
+        Genes.active(this); //细胞之间互相传递能量
         //
         //        if (Food.foundAndAteFood(this.x, this.y)) { //如当前位置有食物就吃掉，并获得奖励
         //            this.awardAAAA();
@@ -165,8 +165,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，目前最多有64维，也就是最多有64条基因
             long geneMask = 1l << g;
             ArrayList<Integer> gene = genes.get(g);
-            int xLayer = Cells.xLayer[g];
-            int yLayer = Cells.yLayer[g];
+            int xLayer = Genes.xLayer[g];
+            int yLayer = Genes.yLayer[g];
             if (xLayer < 0) { //如xLayer没定义,使用阴阳8叉树分裂算法在三维空间分裂,这个最慢但分布范围大  
                 Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
                 for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树keep标记生成细胞参数
@@ -207,9 +207,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 ArrayList<Integer> gene = genes.get(g);
                 
                 int geneMaxLength; //8叉、4叉树、2叉树的节点最大序号不同，基因随机生成时要限制它不能大于最大序号
-                if (Cells.xLayer[g] < 0) { //如xLayer没定义,使用阴阳8叉树分裂算法
+                if (Genes.xLayer[g] < 0) { //如xLayer没定义,使用阴阳8叉树分裂算法
                     geneMaxLength= Tree8Util.NODE_QTY;
-                } else if (Cells.yLayer[g] < 0) { // 如果xLayer>=0, yLalyer没定义, 表示此基因分布在坐标x的yz平面上，此时使用阴阳4叉树分裂算法
+                } else if (Genes.yLayer[g] < 0) { // 如果xLayer>=0, yLalyer没定义, 表示此基因分布在坐标x的yz平面上，此时使用阴阳4叉树分裂算法
                     geneMaxLength= Tree4Util.NODE_QTY;
                 } else { // 如果xLayer>=0, yLalyer>=0，这时基因只能分布在x,y指定的z轴上，此时使用阴阳2叉树分裂算法
                     geneMaxLength= Tree2Util.NODE_QTY;
