@@ -11,6 +11,8 @@
 package com.gitee.drinkjava2.frog.brain;
 
 import com.gitee.drinkjava2.frog.Animal;
+import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.objects.Eye;
 
 /**
  * Genes代表不同的脑细胞参数，对应每个参数，用8叉/4叉/2叉树算法给每个细胞添加细胞参数和行为。
@@ -35,34 +37,6 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     public static int[] xLimit = new int[GENE_MAX]; //用来手工限定基因分布范围，详见register方法
     public static int[] yLimit = new int[GENE_MAX];
     public static int[] zLimit = new int[GENE_MAX];
-
-    private static final boolean SHOW = true;
-    private static final int NA = -1;
-
-    //开始登记有名字的基因
-    public static long EYE = register(1, SHOW, 0, 0, NA); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
-    public static long MEM = register(1, SHOW, 1, 0, NA); //记忆细胞，暂时只允许它分布在x=1,y=0的z轴上
-    public static long BITE = register(1, SHOW, 2, 0, 0); //咬动作细胞, 这个细胞如激活，就咬食物, 定义在(2,0,0)坐标处
-    public static long NOT_BITE = register(1, SHOW, 2, 0, 1); //不咬动作细胞, 这个细胞如激活，就不咬食物
-    public static long SWEET = register(1, SHOW, 2, 0, 2); //甜味感觉细胞, 这个细胞接收甜味感觉
-    public static long BITTER = register(1, SHOW, 2, 0, 3); //苦味感觉细胞, 这个细胞接收苦味感觉
-
-    //public static long FULL = register(1, SHOW, 0, 0); // 
-    //public static long ANTI_SIDE = register(1, SHOW, 0, 0); // 侧抑制基因，模仿眼睛的侧抑制
-
-    static { //开始登记无名字的基因 
-    }
-
-    public static void active(Animal a) {//active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法，没有之一
-        //if(true)return; //speeding
-        //        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
-        //            for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--)
-        //                for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
-        //                    long cell = a.cells[x][y][z];
-        //                    float e = a.energys[x][y][z];
-        //                    //TODO work on here
-        //                }
-    }
 
     /**
      * Register a gene 依次从底位到高位登记所有的基因掩码及对应的相关参数
@@ -96,4 +70,78 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
         }
         return Long.parseLong(one + zero, 2); //将类似"111000"这种字符串转换为长整
     }
+
+    public static long register(int[] pos) {
+        return register(1, true, pos[0], pos[1], pos[2]);
+    }
+
+    private static boolean hasGene(long cell, long geneMask) { //判断cell是否含某个基因 
+        return (cell & geneMask) > 0;
+    }
+
+    private static final boolean SHOW = true;
+    private static final int NA = -1;
+    private static final int CS4 = Env.BRAIN_CUBE_SIZE / 4;
+
+    //============开始登记有名字的基因==========
+    public static long EYE = register(1, SHOW, 0, 0, NA); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
+    public static long MEM = register(1, SHOW, 1, 0, NA); //记忆细胞，暂时只允许它分布在x=1,y=0的z轴上
+
+    public static int[] bite = new int[]{2, 0, 0};
+    public static long BITE = register(bite); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
+
+    public static int[] not_bite = new int[]{2, 0, CS4};
+    public static long NOT_BITE = register(not_bite); //不咬动作细胞定义在一个点上, 这个细胞如激活，就不咬食物
+
+    public static int[] sweet = new int[]{2, 0, CS4 * 2};
+    public static long SWEET = register(sweet); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
+
+    public static int[] bitter = new int[]{2, 0, CS4 * 3};
+    public static long BITTER = register(bitter); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
+
+    //public static long FULL = register(1, SHOW, 0, 0); // 饱感觉细胞
+    //public static long HUNGRY = register(1, SHOW, 0, 0); // 饿感觉细胞
+    //public static long ANTI_SIDE = register(1, SHOW, 0, 0); // 侧抑制基因，模仿眼睛的侧抑制
+
+    //========开始登记无名字的基因 =========
+    static {
+    }
+
+    //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
+    public static void active(Animal a) {
+        //        if (true)
+        //            return; //speeding
+        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
+            for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--)
+                for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
+                    long cell = a.cells[x][y][z];
+                    float energy = a.energys[x][y][z];
+
+                    if (energy > 0) { //如果细胞激活了  
+                        if (hasGene(cell, BITE)) { //如果是咬细胞
+                            if ((Eye.code % 3) == 1) { //咬错了，苦+罚
+                                a.add(bitter, 5f);
+                                a.penaltyAAA();
+                            }
+                            if ((Eye.code % 3) == 2) { //咬中了，甜+奖 
+                                a.add(sweet, 5f);
+                                a.awardAAA();
+                            }
+                        }
+
+                        if (hasGene(cell, NOT_BITE)) { //如果是不咬细胞 ，松口！
+                            a.add(bite, -5);
+                        }
+
+                        if (hasGene(cell, EYE)) {//如果是视网膜细胞，在记忆细胞上挖洞
+                            //TODO
+                        }
+
+                        if (hasGene(cell, MEM)) {//如果是记忆细胞，在所有洞上反向发光子
+                            //TODO
+                        }
+                    }
+                }
+    }
+
 }

@@ -33,11 +33,11 @@ public class Eye extends EnvObject {
         if (step % 10 != 0) //每隔10步在所有青蛙的视网膜上画一个图案
             return;
         code = RandomUtils.nextInt(codeMax);
-        System.out.println("code= "+code+", "+Integer.toBinaryString(code));
+        //System.out.println("code= "+code+", "+Integer.toBinaryString(code));
         Frog f;
         for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(i);
-            drawImageOnEye(f, code); 
+            drawImageOnEye(f, code);
         }
     }
 
@@ -46,8 +46,8 @@ public class Eye extends EnvObject {
      */
     private static void drawImageOnEye(Frog f, int code) {
         long i = 1;
-        for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) { 
-            float engery=((code & i) > 0) ? 9999f : 0;
+        for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+            float engery = ((code & i) > 0) ? 9999f : 0;
             f.energys[0][0][z] = engery;
             i = i << 1;
         }

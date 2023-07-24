@@ -11,7 +11,6 @@
 package com.gitee.drinkjava2.frog;
 
 import static com.gitee.drinkjava2.frog.brain.Genes.GENE_NUMBERS;
-import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -24,10 +23,8 @@ import javax.imageio.ImageIO;
 import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Material;
+import com.gitee.drinkjava2.frog.util.GeneUtils;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
-import com.gitee.drinkjava2.frog.util.Tree2Util;
-import com.gitee.drinkjava2.frog.util.Tree4Util;
-import com.gitee.drinkjava2.frog.util.Tree8Util;
 
 /**
  * Animal is all artificial lives' father class
@@ -95,13 +92,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
-        //TODO: for 2D genes need use 4-tree instead of 8-tree 平面的要改成4叉树以加快速度
-
-        geneMutation(); //有小概率基因突变
-        if (RandomUtils.percent(50))
+        GeneUtils.geneMutation(this); //有小概率基因突变
+        if (RandomUtils.percent(40))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 energy -= gene.size();
-        createCellsFromGene(); //根据基因，分裂生成脑细胞
+        GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
 
     private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
@@ -129,7 +124,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void kill() {  this.alive = false; changeEnergy(-5000000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
-    public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧
+    public boolean active(int step) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数
         // 如果能量小于0、出界、与非食物的点重合则判死
         if (!alive) {
             return false;
@@ -161,84 +156,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
     }
 
-    private void createCellsFromGene() {//根据基因生成细胞参数  
-        for (int g = 0; g < GENE_NUMBERS; g++) {//动物有多条基因，一条基因控制一维细胞参数，目前最多有64维，也就是最多有64条基因
-            long geneMask = 1l << g;
-            ArrayList<Integer> gene = genes.get(g);
-            int xLimit = Genes.xLimit[g];
-            int yLimit = Genes.yLimit[g];
-            int zLimit = Genes.zLimit[g];
-
-            if (zLimit >= 0) { //如果x,y,z都指定了，表示这个基因被手工强制指定到一个固定点上了
-                cells[xLimit][yLimit][zLimit] = cells[xLimit][yLimit][zLimit] | geneMask;
-                continue;
-            }
-
-            if (xLimit < 0) { //如坐标一个也没有定义,使用阴阳8叉树分裂算法在三维脑细胞空间分裂,这个最慢但分布范围大  
-                Tree8Util.knockNodesByGene(gene);//根据基因，把要敲除的8叉树节点作个标记
-                for (int i = 0; i < Tree8Util.NODE_QTY; i++) {//再根据敲剩下的8叉树keep标记生成细胞参数
-                    if (Tree8Util.keep[i] > 0) {
-                        int[] node = Tree8Util.TREE8[i];
-                        if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在三维空间对间数组的位置把当前基因geneMask置1
-                            cells[node[1]][node[2]][node[3]] = cells[node[1]][node[2]][node[3]] | geneMask; //在相应的细胞处把细胞参数位置1
-                        }
-                    }
-                }
-            } else if (yLimit < 0) { // 如果只定义了x坐标, 表示此基因分布在脑坐标x的yz平面上，此时使用阴阳4叉树分裂算法在此平面上分裂以加快速度
-                Tree4Util.knockNodesByGene(gene);//根据基因，把要敲除的4叉树节点作个标记
-                for (int i = 0; i < Tree4Util.NODE_QTY; i++) {//再根据敲剩下的4叉树keep标记生成细胞参数
-                    if (Tree4Util.keep[i] > 0) {
-                        int[] node = Tree4Util.TREE4[i];
-                        if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在2维空间对间数组的位置把当前基因geneMask置1
-                            cells[xLimit][node[1]][node[2]] = cells[xLimit][node[1]][node[2]] | geneMask; //在相应的细胞处把细胞参数位置1
-                        }
-                    }
-                }
-            } else if (zLimit < 0) { // 如果只定义了x,y坐标，这时基因只能分布在x,y指定的z轴上，此时使用阴阳2叉树分裂算法
-                Tree2Util.knockNodesByGene(gene);//根据基因，把要敲除的4叉树节点作个标记
-                for (int i = 0; i < Tree2Util.NODE_QTY; i++) {//再根据敲剩下的4叉树keep标记生成细胞参数
-                    if (Tree2Util.keep[i] > 0) {
-                        int[] node = Tree2Util.TREE2[i];
-                        if (node[0] == 1) {//如果node边长为1，即不可以再分裂了，就在2维空间对间数组的位置把当前基因geneMask置1
-                            cells[xLimit][yLimit][node[1]] = cells[xLimit][yLimit][node[1]] | geneMask; //在相应的细胞处把细胞参数位置1
-                        }
-                    }
-                }
-            } else { //如果x,y,z都指定了，表示这个基因被手工强制指定到一个固定点上了
-                cells[xLimit][yLimit][zLimit] = cells[xLimit][yLimit][zLimit] | geneMask;
-                continue;
-            }
-        }
-    }
-
-    private void geneMutation() { //基因变异,注意这一个方法同时变异青蛙的所有条基因
-        if (percent(90))
-            for (int g = 0; g < GENE_NUMBERS; g++) {//随机新增阴节点基因，注意只是简单地随机新增，所以可能有重复基因
-                ArrayList<Integer> gene = genes.get(g);
-
-                int geneMaxLength; //8叉、4叉树、2叉树的节点最大序号不同，基因随机生成时要限制它不能大于最大序号
-                if (Genes.xLimit[g] < 0) { //如xLayer没定义,使用阴阳8叉树分裂算法
-                    geneMaxLength = Tree8Util.NODE_QTY;
-                } else if (Genes.yLimit[g] < 0) { // 如果xLayer>=0, yLalyer没定义, 表示此基因分布在坐标x的yz平面上，此时使用阴阳4叉树分裂算法
-                    geneMaxLength = Tree4Util.NODE_QTY;
-                } else { // 如果xLayer>=0, yLalyer>=0，这时基因只能分布在x,y指定的z轴上，此时使用阴阳2叉树分裂算法
-                    geneMaxLength = Tree2Util.NODE_QTY;
-                }
-
-                int n = 3; //这是个魔数，今后可以考虑放在基因里去变异，8\4\2叉树的变异率可以不一样
-                if (percent(n)) //生成随机负节点号，对应阴节点, 
-                    gene.add(-RandomUtils.nextInt(geneMaxLength));
-
-                if (percent(n)) //生成随机负正节点号，对应阳节点
-                    gene.add(RandomUtils.nextInt(geneMaxLength));
-
-                if (percent(n + n)) //随机删除一个节点，用这种方式来清除节点，防止节点无限增长，如果删对了，就不会再回来，如果删错了，系统就会把这个青蛙整个淘汰，这就是遗传算法的好处
-                    if (!gene.isEmpty())
-                        gene.remove(RandomUtils.nextInt(gene.size()));
-
-            }
-    }
-
     public void open(int x, int y, int z) { //打开指定的xyz坐标对应的cell能量值为极大
         energys[x][y][z] = 99999f;
     }
@@ -253,6 +170,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void close(int[] a) {//关闭指定的a坐标对应的cell能量值为0
         energys[a[0]][a[1]][a[2]] = 0;
+    }
+
+    public void add(int[] a, float e) {//指定的a坐标对应的cell能量值加e
+        energys[a[0]][a[1]][a[2]] += e;
+        if (energys[a[0]][a[1]][a[2]] < 0)
+            energys[a[0]][a[1]][a[2]] = 0f;
     }
 
     public float get(int[] a) {//返回指定的a坐标对应的cell能量值

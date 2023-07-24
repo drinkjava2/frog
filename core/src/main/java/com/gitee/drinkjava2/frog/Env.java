@@ -253,7 +253,7 @@ public class Env extends JPanel {
                     allDead = true;
                     for (int j = 0; j < FROG_PER_SCREEN; j++) {
                         Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
-                        if (f.active())// 调用青蛙的Active方法，并返回是否还活着
+                        if (f.active(step))// 调用青蛙的Active方法，并返回是否还活着
                             allDead = false;
                     }
 
