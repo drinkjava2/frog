@@ -16,14 +16,23 @@ package com.gitee.drinkjava2.frog.objects;
  * @author Yong Zhu
  * @since 1.0
  */
-public class EnvObject {
+public interface EnvObject {//EnvObject接口代表虚拟环境中的一种物体，每定义一个物体，要在Env的things变量中添加它
 
-    public void build() {
-    } // 在Env中创建本身物体，只在每屏测试前调用一次
+    public void build();// 在Env中创建本身物体，只在每屏测试前调用一次
 
-    public void destory() {
-    }// 从Env中清除本身物体，只在每屏测试完成后调用一次
+    public void destory();// 从Env中清除本身物体，只在每屏测试完成后调用一次
 
-    public void active(int screen, int step) {
-    } // 每个步长（即时间最小单位)都会调用一次这个方法, 两个参数分别是当前屏数和当前步长数
+    public void active(int screen, int step);// 每个步长（即时间最小单位)都会调用一次这个方法, 两个参数分别是当前屏数和当前步长数
+
+    public static class DefaultEnvObject implements EnvObject {//EnvObject接口的缺省实现
+
+        public void build() {
+        }
+
+        public void destory() {
+        }
+
+        public void active(int screen, int step) {
+        }
+    }
 }

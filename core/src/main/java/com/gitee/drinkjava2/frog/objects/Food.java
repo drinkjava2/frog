@@ -15,6 +15,7 @@ import static com.gitee.drinkjava2.frog.Env.ENV_WIDTH;
 import static com.gitee.drinkjava2.frog.Env.FOOD_QTY;
 
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.objects.EnvObject.DefaultEnvObject;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -24,7 +25,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  * @author Yong Zhu
  * @since 1.0
  */
-public class Food extends EnvObject {//食物除了被吃，它自己没有什么活动,所以没有重写active方法
+public class Food extends DefaultEnvObject {//食物除了被吃，它自己没有什么活动,所以没有重写active方法
     static Food FOOD = new Food(); //FOOD是一个单例，整个环境只允许有一个FOOD实例
 
     public static int food_ated = 0;
