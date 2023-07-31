@@ -56,6 +56,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; //每个细胞的能量值，这些不参与打分。打分是由Animan的energy字段承担
 
+    public int[][][][] holes = new int[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][]; //每个细胞的洞（相当于触突）
+
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
     public long energy = 1000000000; // 青蛙的能量为0则死掉
@@ -178,7 +180,54 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             energys[a[0]][a[1]][a[2]] = 0f;
     }
 
+    public void add(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
+        energys[x][y][z] += e;
+        if (energys[x][y][z] < 0)
+            energys[x][y][z] = 0f;
+    }
+
     public float get(int[] a) {//返回指定的a坐标对应的cell能量值
         return energys[a[0]][a[1]][a[2]];
     }
+
+    public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
+        if (this.energys[sX][sY][sZ] >= 1)
+            this.energys[sX][sY][sZ] -= 1;
+        if (this.energys[tX][tY][tZ] < 100)
+            this.energys[tX][tY][tZ] += 1;
+
+        int[] cellHoles = holes[tX][tY][tZ];
+        if (cellHoles == null) { //洞不存在，新建一个
+            holes[tX][tY][tZ] = new int[]{sX, sY, sZ, 1};
+            return;
+        } else {
+            for (int i = 0; i < cellHoles.length / 4; i++) {
+                int n = i * 4;
+                if (n == sX && n + 1 == sY && n + 2 == sZ) {//找到已有的洞了
+                    if (cellHoles[n + 3] < 1000)
+                        cellHoles[n + 3]++;
+                    return;
+                }
+            }
+            int length = cellHoles.length; //没找到已有的洞，新建一个并追加到原洞数组未尾
+            int[] newHoles = new int[length + 4];
+            System.arraycopy(cellHoles, 0, newHoles, 0, length);
+            newHoles[length] = sX;
+            newHoles[length + 1] = sY;
+            newHoles[length + 2] = sZ;
+            newHoles[length + 3] = 1;
+            return;
+        }
+    }
+
+    public void sendEng(int x, int y, int z) {//在当前细胞所有洞上反向发送能量（光子)，能量值大小与洞的大小相关
+        int[] cellHoles = holes[x][y][z];
+        if (cellHoles == null) //如洞不存在，不发送能量 
+            return;
+        for (int i = 0; i < cellHoles.length / 4; i++) {
+            int n = i * 4;
+            add(n, n + 1, n + 2, (n + 4) / 2);
+        }
+    }
+
 }

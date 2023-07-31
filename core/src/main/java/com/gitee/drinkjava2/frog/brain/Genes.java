@@ -13,6 +13,7 @@ package com.gitee.drinkjava2.frog.brain;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.objects.Eye;
+import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Genes代表不同的脑细胞参数，对应每个参数，用8叉/4叉/2叉树算法给每个细胞添加细胞参数和行为。
@@ -90,14 +91,14 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     public static int[] BITE_POS = new int[]{2, 0, 0};
     public static long BITE = register(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
 
-    public static int[] NOT_BITE_POS = new int[]{2, 0, CS4};
-    public static long NOT_BITE = register(NOT_BITE_POS); //不咬动作细胞定义在一个点上, 这个细胞如激活，就不咬食物
+ //   public static int[] NOT_BITE_POS = new int[]{2, 0, CS4};
+ //   public static long NOT_BITE = register(NOT_BITE_POS); //不咬动作细胞定义在一个点上, 这个细胞如激活，就不咬食物
 
     public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
     public static long SWEET = register(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
 
-    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 3};
-    public static long BITTER = register(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
+//    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 3};
+ //   public static long BITTER = register(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
 
     //public static long FULL = register(1, SHOW, 0, 0); // 饱感觉细胞
     //public static long HUNGRY = register(1, SHOW, 0, 0); // 饿感觉细胞
@@ -117,29 +118,39 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     long cell = a.cells[x][y][z];
                     float energy = a.energys[x][y][z];
 
+                    if (hasGene(cell, BITE)) {//如果没有输入，咬细胞也是有可能随机激活的，所有感觉细胞都有可能随机激活
+                        if (RandomUtils.percent(10))
+                            a.add(BITE_POS, 1);
+                    }
+
                     if (energy > 0) { //如果细胞激活了  
                         if (hasGene(cell, BITE)) { //如果是咬细胞
-                            if ((Eye.code % 3) == 1) { //咬错了，苦+罚
-                                a.add(BITTER_POS, 5f);
-                                a.penaltyAAA();
-                            }
+//                            if ((Eye.code % 3) == 1) { //咬错了，苦+罚
+//                                a.add(BITTER_POS, 1);
+//                                a.penaltyAAA();
+//                            }
                             if ((Eye.code % 3) == 2) { //咬中了，甜+奖 
-                                a.add(SWEET_POS, 5f);
+                                a.add(SWEET_POS, 10);
                                 a.awardAAA();
                             }
+                            for (int i = 0; i < Env.BRAIN_CUBE_SIZE; i++) {
+                                a.digHole(x, y, z, x - 1, y, i);
+                            }
                         }
 
-                        if (hasGene(cell, NOT_BITE)) { //如果是不咬细胞 ，松口！
-                            a.add(BITE_POS, -5);
+//                        if (hasGene(cell, NOT_BITE)) { //如果是不咬细胞 ，松口！
+//                            a.add(BITE_POS, -1);
+//                        }
+
+                        if (hasGene(cell, EYE)) {//如果是视网膜细胞，在记忆细胞上挖洞                            
+                            a.digHole(x, y, z, x + 1, y, z);
                         }
 
-                        if (hasGene(cell, EYE)) {//如果是视网膜细胞，在记忆细胞上挖洞
-                            //TODO
+                        if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
+                            a.sendEng(x, y, z);
                         }
 
-                        if (hasGene(cell, MEM)) {//如果是记忆细胞，在所有洞上反向发光子
-                            //TODO
-                        }
+                        a.energys[x][y][z] = (float)(a.energys[x][y][z] / 1.2f);//能量随时间衰减
                     }
                 }
     }
