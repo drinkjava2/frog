@@ -52,15 +52,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
-    public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE];
+    public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; //所有脑细胞
 
-    public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; //每个细胞的能量值，这些不参与打分。打分是由Animan的energy字段承担
+    public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
 
     public int[][][][] holes = new int[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][]; //每个细胞的洞（相当于触突）
 
     public int x; // animal在Env中的x坐标
     public int y; // animal在Env中的y坐标
-    public long energy = 1000000000; // 青蛙的能量为0则死掉
+    public long fat = 1000000000; // 青蛙的肥胖度, 只有胖的青蛙才允许下蛋, 以前版本这个变量名为energy，为了不和脑细胞的能量重名，从这个版本起改名为fat
     public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
     public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
@@ -97,41 +97,41 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         GeneUtils.geneMutation(this); //有小概率基因突变
         if (RandomUtils.percent(40))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
-                energy -= gene.size();
+                fat -= gene.size();
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
 
-    private static final int MIN_ENERGY_LIMIT = Integer.MIN_VALUE + 5000;
-    private static final int MAX_ENERGY_LIMIT = Integer.MAX_VALUE - 5000;
+    private static final int MIN_FAT_LIMIT = Integer.MIN_VALUE + 5000;
+    private static final int MAX_FAT_LIMIT = Integer.MAX_VALUE - 5000;
 
     //@formatter:off 下面几行是重要的奖罚方法，会经常调整或注释掉，集中放在一起，不要格式化为多行   
-    public void changeEnergy(int energy_) {//正数为奖励，负数为惩罚， energy大小是环境对animal唯一的奖罚，也是animal唯一的下蛋竞争标准
-        energy += energy_;
-        if (energy > MAX_ENERGY_LIMIT)
-            energy = MAX_ENERGY_LIMIT;
-        if (energy < MIN_ENERGY_LIMIT)
-            energy = MIN_ENERGY_LIMIT;
+    public void changeFat(int fat_) {//正数为奖励，负数为惩罚， fat值是环境对animal唯一的奖罚，也是animal唯一的下蛋竞争标准
+        fat += fat_;
+        if (fat > MAX_FAT_LIMIT)
+            fat = MAX_FAT_LIMIT;
+        if (fat < MIN_FAT_LIMIT)
+            fat = MIN_FAT_LIMIT;
     }
    
-    //如果改奖罚值，就可能出现缺色，这个要在基因变异算法（从上到下，从下到上）和环境本身奖罚合理性上下功夫
-    public void awardAAAA()      { changeEnergy(2000);}
-    public void awardAAA()   { changeEnergy(10);}
-    public void awardAA()     { changeEnergy(5);}      
-    public void awardA()   { changeEnergy(2);}
+    //没定各个等级的奖罚值，目前是手工设定的常数
+    public void awardAAAA()      { changeFat(2000);}
+    public void awardAAA()   { changeFat(10);}
+    public void awardAA()     { changeFat(5);}      
+    public void awardA()   { changeFat(1);}
     
-    public void penaltyAAAA()    { changeEnergy(-2000);}
-    public void penaltyAAA() { changeEnergy(-10);}
-    public void penaltyAA()   { changeEnergy(-5);}
-    public void penaltyA()   { changeEnergy(-2);}
-    public void kill() {  this.alive = false; changeEnergy(-5000000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
+    public void penaltyAAAA()    { changeFat(-2000);}
+    public void penaltyAAA() { changeFat(-10);}
+    public void penaltyAA()   { changeFat(-5);}
+    public void penaltyA()   { changeFat(-1);}
+    public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
     public boolean active(int step) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数
-        // 如果能量小于0、出界、与非食物的点重合则判死
+        // 如果fat小于0、出界、与非食物的点重合则判死
         if (!alive) {
             return false;
         }
-        if (energy <= 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
+        if (fat <= 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
             kill();
             return false;
         }
@@ -221,12 +221,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void sendEng(int x, int y, int z) {//在当前细胞所有洞上反向发送能量（光子)，能量值大小与洞的大小相关
-        int[] cellHoles = holes[x][y][z];
+        int[] cellHoles = holes[x][y][z]; //cellHoles是单个细胞的所有洞(触突)
         if (cellHoles == null) //如洞不存在，不发送能量 
             return;
         for (int i = 0; i < cellHoles.length / 4; i++) {
             int n = i * 4;
-            add(n, n + 1, n + 2, (n + 4) / 2);
+            float e = cellHoles[n + 3];
+            if (e > 0.99)
+                add(n, n + 1, n + 2, e); //要调整
         }
     }
 

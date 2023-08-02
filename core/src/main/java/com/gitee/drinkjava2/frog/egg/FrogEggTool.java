@@ -37,20 +37,20 @@ import com.gitee.drinkjava2.frog.util.Logger;
 public class FrogEggTool {
 
     /**
-     * Frogs which have higher energy lay eggs
+     * Frogs which have higher fat value lay eggs
      * 
-     * 利用Java串行机制存盘。 能量多(也就是吃的更多)的Frog下蛋并存盘, 以进行下一轮测试，能量少的Frog被淘汰，没有下蛋的资格。
-     * 用能量的多少来简化生存竟争模拟，每次下蛋数量固定为EGG_QTY个
+     * 利用Java串行机制存盘。 更肥的(也就是吃的更多)的Frog下蛋并存盘, 以进行下一轮测试，瘦的Frog被淘汰，没有下蛋的资格。
+     * 用fat值来作为唯一的生存竟争标准
      */
     public static void layEggs() {
-        sortFrogsOrderByEnergyDesc();
+        sortFrogsOrderByFat();
         Frog first = Env.frogs.get(0);
         Frog last = Env.frogs.get(Env.frogs.size() - 1);
         try {
             Env.frog_eggs.clear();
-            for (int i = 0; i < Env.FROG_EGG_QTY; i++)
+            for (int i = 0; i < Env.FROG_EGG_QTY; i++) //每次下蛋数量固定为EGG_QTY个
                 Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
-            Logger.info("Fist frog energy={}, gene size={}, Last frog energy={}", first.energy, getGeneSize(first), last.energy);
+            Logger.info("Fist frog fat={}, gene size={}, Last frog fat={}", first.fat, getGeneSize(first), last.fat);
             for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
                     int[] holes = first.holes[x][0][z];
@@ -83,12 +83,12 @@ public class FrogEggTool {
         return sb.toString();
     }
 
-    private static void sortFrogsOrderByEnergyDesc() {// 按能量多少给青蛙排序
+    private static void sortFrogsOrderByFat() {// 给青蛙从肥到瘦排个序
         Collections.sort(Env.frogs, new Comparator<Animal>() {
             public int compare(Animal a, Animal b) {
-                if (a.energy > b.energy)
+                if (a.fat > b.fat)
                     return -1;
-                else if (a.energy == b.energy)
+                else if (a.fat == b.fat)
                     return 0;
                 else
                     return 1;

@@ -91,18 +91,8 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     public static int[] BITE_POS = new int[]{2, 0, 0};
     public static long BITE = register(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
 
- //   public static int[] NOT_BITE_POS = new int[]{2, 0, CS4};
- //   public static long NOT_BITE = register(NOT_BITE_POS); //不咬动作细胞定义在一个点上, 这个细胞如激活，就不咬食物
-
     public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
     public static long SWEET = register(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
-
-//    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 3};
- //   public static long BITTER = register(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
-
-    //public static long FULL = register(1, SHOW, 0, 0); // 饱感觉细胞
-    //public static long HUNGRY = register(1, SHOW, 0, 0); // 饿感觉细胞
-    //public static long ANTI_SIDE = register(1, SHOW, 0, 0); // 侧抑制基因，模仿眼睛的侧抑制
 
     //========开始登记无名字的基因 =========
     static {
@@ -112,35 +102,36 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     public static void active(Animal a) {
         //        if (true)
         //            return; //speeding
-        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
-            for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--)
+        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--) 
                 for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
+                    int y=0;
                     long cell = a.cells[x][y][z];
                     float energy = a.energys[x][y][z];
 
+                    
+//                    if (hasGene(cell, MEM | EYE)) {//DEBUG
+//                            a.awardAAAA();
+//                    }
+ 
+                    
                     if (hasGene(cell, BITE)) {//如果没有输入，咬细胞也是有可能随机激活的，所有感觉细胞都有可能随机激活
                         if (RandomUtils.percent(10))
                             a.add(BITE_POS, 1);
                     }
 
-                    if (energy > 0) { //如果细胞激活了  
+                    if (energy >= 0.99) { //如果细胞激活了  
+                        a.energys[x][y][z]--;//所有细胞能量都会自发衰减
+
                         if (hasGene(cell, BITE)) { //如果是咬细胞
-//                            if ((Eye.code % 3) == 1) { //咬错了，苦+罚
-//                                a.add(BITTER_POS, 1);
-//                                a.penaltyAAA();
-//                            }
-                            if ((Eye.code % 3) == 2) { //咬中了，甜+奖 
-                                a.add(SWEET_POS, 10);
-                                a.awardAAA();
+                            a.penaltyA(); //咬会消耗肌肉能量（不是脑细胞能量)，不管咬没咬中，都要给青蛙减点肥
+                            if ((Eye.code % 3) == 2) { //咬中了，产生甜的感觉信号，并对青蛙嘉奖 
+                                a.add(SWEET_POS, 3);
+                                a.awardAA();
                             }
                             for (int i = 0; i < Env.BRAIN_CUBE_SIZE; i++) {
                                 a.digHole(x, y, z, x - 1, y, i);
                             }
                         }
-
-//                        if (hasGene(cell, NOT_BITE)) { //如果是不咬细胞 ，松口！
-//                            a.add(BITE_POS, -1);
-//                        }
 
                         if (hasGene(cell, EYE)) {//如果是视网膜细胞，在记忆细胞上挖洞                            
                             a.digHole(x, y, z, x + 1, y, z);
@@ -150,7 +141,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                             a.sendEng(x, y, z);
                         }
 
-                        a.energys[x][y][z] = (float)(a.energys[x][y][z] / 1.2f);//能量随时间衰减
+                        a.energys[x][y][z] = (float) (a.energys[x][y][z] / 1.2f);//能量随时间衰减
                     }
                 }
     }
