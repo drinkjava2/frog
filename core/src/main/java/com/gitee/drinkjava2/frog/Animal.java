@@ -191,6 +191,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
+        if (!Env.insideBrain(sX, sY, sZ))
+            return;
+        if (!Env.insideBrain(tX, tY, tZ))
+            return;
         if (this.energys[sX][sY][sZ] >= 1)
             this.energys[sX][sY][sZ] -= 1;
         if (this.energys[tX][tY][tZ] < 100)

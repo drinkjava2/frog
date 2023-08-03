@@ -19,6 +19,8 @@ import com.gitee.drinkjava2.frog.Env;
  * 
  * 这里缓存着一个前序排列的八叉树用来在细胞生成时加快速度和简化运算，关于树结构可用深度树数组来表达的知识可以参见这里：https://my.oschina.net/drinkjava2/blog/1818631
  * 
+ * 另一种思路是先把基因按绝对值排序，然后顺着多叉树先序排列的次序依次设每个细胞的黑白，可能速度更快且可以很快发现无效和重复基因，但我没时间按这个思路来优化了，以后有时间做。
+ * 
  * @author Yong Zhu
  * @since 1.0
  */
@@ -75,18 +77,15 @@ public class Tree8Util {
                     if (g < 0) { //g是阴节点 
                         if (Tree8Util.keep[line] == 1) //如果是1，表示这个节点将从保留状态转为删除状态
                             keepNodeQTY--;
-                        Tree8Util.keep[line]=0;                        
+                        Tree8Util.keep[line] = 0;
                     } else if (g > 0) { //g是阳节点
                         if (Tree8Util.keep[line] == 0) //如果是0，表示这个节点将从删除状态转为保留状态
                             keepNodeQTY++;
-                        Tree8Util.keep[line]=1;
+                        Tree8Util.keep[line] = 1;
                     }
                 }
             }
         }
     }
-    
-    
-
 
 }

@@ -20,6 +20,8 @@ import com.gitee.drinkjava2.frog.Env;
  * 这里缓存着一个前序排列的4叉树用来加快速度
  * 这里的4叉树和4叉树的原理类似，只不过4叉树生成3维形状，4叉树用来生成2维平面形状，对于平面形状生成速度更快
  * 
+ * 另一种思路是先把基因按绝对值排序，然后顺着多叉树先序排列的次序依次设每个细胞的黑白，可能速度更快且可以很快发现无效和重复基因，但我没时间按这个思路来优化了，以后有时间做。
+ *  
  * @author Yong Zhu
  * @since 1.0
  */
@@ -53,10 +55,10 @@ public class Tree4Util {
         if (size == 1)
             return;
         int half = size / 2;//每个细胞可以分裂成4个size为原来1/2的小细胞
-        tree4Split(x, y,  half);
+        tree4Split(x, y, half);
         tree4Split(x + half, y, half);
-        tree4Split(x, y + half,  half);
-        tree4Split(x + half, y + half,  half);
+        tree4Split(x, y + half, half);
+        tree4Split(x + half, y + half, half);
     }
 
     public static void knockNodesByGene(List<Integer> gene) {//根据基因，把要敲除的4叉树节点作敲除或保留标记 

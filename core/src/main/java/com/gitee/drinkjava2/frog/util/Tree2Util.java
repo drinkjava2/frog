@@ -20,6 +20,8 @@ import com.gitee.drinkjava2.frog.Env;
  * 这里缓存着一个前序排列的2叉树用来加快速度
  * 这里的2叉树和4叉树的原理类似，只不过4叉树生成2维平面形状， 2叉树用来生成一维线状，对于线状生成速度更快
  * 
+ * 另一种思路是先把基因按绝对值排序，然后顺着多叉树先序排列的次序依次设每个细胞的黑白，可能速度更快且可以很快发现无效和重复基因，但我没时间按这个思路来优化了，以后有时间做。
+ * 
  * @author Yong Zhu
  * @since 1.0
  */
@@ -44,7 +46,7 @@ public class Tree2Util {
     static int calculateNodeSize(int n) {//计算2叉树全展开的总节点数
         if (n == 1)
             return 1;
-        return n  + calculateNodeSize(n / 2);
+        return n + calculateNodeSize(n / 2);
     }
 
     //if cube can split, then split it to 8 small cubes
@@ -54,7 +56,7 @@ public class Tree2Util {
             return;
         int half = size / 2;//每个细胞可以分裂成2个size为原来1/2的小细胞
         tree2Split(x, half);
-        tree2Split(x+half, half);
+        tree2Split(x + half, half);
     }
 
     public static void knockNodesByGene(List<Integer> gene) {//根据基因，把要敲除的2叉树节点作敲除或保留标记 

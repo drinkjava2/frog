@@ -33,7 +33,8 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     public static int GENE_NUMBERS = 0; //这里统计定义了多少个基因
     private static int zeros = 0; //当前基因位掩码0个数
 
-    public static boolean[] display_gene = new boolean[GENE_MAX]; //用来控制哪些基因需要显示在脑图上
+    public static boolean[] display_gene = new boolean[GENE_MAX]; //如果这个参数为真，此基因显示在脑图上
+    public static boolean[] fill_gene = new boolean[GENE_MAX]; //如果这个参数为真，此基因填充指定的区域，而不是由分裂算法随机生成
 
     public static int[] xLimit = new int[GENE_MAX]; //用来手工限定基因分布范围，详见register方法
     public static int[] yLimit = new int[GENE_MAX];
@@ -44,14 +45,16 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
      * 
      * @param maskBits how many mask bits 掩码位数，即有几个1
      * @param display whether to display the gene on the BrainPicture 是否显示在脑图
+     * @param fill whether to fill to specified 3D/2D/1D/1Point area 是否直接用此基因填充指定的区域，区域可以是三维、二维、线状及一个点
      * @param x_limit gene only allow on specified x layer 如x_layer大于-1，且y_layer=-1, 表示只生成在指定的x层对应的yz平面上，这时采用4叉树而不是8叉树以提高进化速度
      * @param y_limit gene only allow on specified x, y axis 如大于-1，表示只生成在指定的x,y坐标对应的z轴上，这时采用2叉阴阳树算法
      * @param z_limit gene only allow on specified x, y, z 点上, 表示手工指定基因位于x,y,z坐标点上
      * @return a long wtih mask bits 返回基因掩码，高位由maskBits个1组成，低位是若干个0，以后判断一个cell上是否含有这个基因，只需要用cell对应的long和这个 掩码做与运算即可
      */
-    public static long register(int maskBits, boolean display, int x_limit, int y_limit, int z_limit) {
+    public static long register(int maskBits, boolean display, boolean fill, int x_limit, int y_limit, int z_limit) {
         for (int i = GENE_NUMBERS; i < GENE_NUMBERS + maskBits; i++) {
             display_gene[i] = display;
+            fill_gene[i] = fill;
             xLimit[i] = x_limit;
             yLimit[i] = y_limit;
             zLimit[i] = z_limit;
@@ -72,21 +75,24 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
         return Long.parseLong(one + zero, 2); //将类似"111000"这种字符串转换为长整
     }
 
-    public static long register(int[] pos) {
-        return register(1, true, pos[0], pos[1], pos[2]);
+    public static long register(int... pos) {
+        return register(1, true, false, pos[0], pos[1], pos[2]);
+    }
+
+    public static long registerFill(int... pos) {
+        return register(1, true, true, pos[0], pos[1], pos[2]);
     }
 
     private static boolean hasGene(long cell, long geneMask) { //判断cell是否含某个基因 
         return (cell & geneMask) > 0;
     }
 
-    private static final boolean SHOW = true;
     private static final int NA = -1;
     private static final int CS4 = Env.BRAIN_CUBE_SIZE / 4;
 
     //============开始登记有名字的基因==========
-    public static long EYE = register(1, SHOW, 0, 0, NA); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
-    public static long MEM = register(1, SHOW, 1, 0, NA); //记忆细胞，暂时只允许它分布在x=1,y=0的z轴上
+    public static long EYE = registerFill(0, 0, NA); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
+    public static long MEM = registerFill(1, 0, NA); //记忆细胞，暂时只允许它分布在x=1,y=0的z轴上
 
     public static int[] BITE_POS = new int[]{2, 0, 0};
     public static long BITE = register(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
@@ -100,50 +106,44 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
     public static void active(Animal a) {
-        //        if (true)
-        //            return; //speeding
-        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--) 
-                for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
-                    int y=0;
-                    long cell = a.cells[x][y][z];
-                    float energy = a.energys[x][y][z];
+        //                if (true)
+        //                    return; //speeding
+        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
+            for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
+                int y = 0;
+                long cell = a.cells[x][y][z];
+                float energy = a.energys[x][y][z];
 
-                    
-//                    if (hasGene(cell, MEM | EYE)) {//DEBUG
-//                            a.awardAAAA();
-//                    }
- 
-                    
-                    if (hasGene(cell, BITE)) {//如果没有输入，咬细胞也是有可能随机激活的，所有感觉细胞都有可能随机激活
-                        if (RandomUtils.percent(10))
-                            a.add(BITE_POS, 1);
-                    }
-
-                    if (energy >= 0.99) { //如果细胞激活了  
-                        a.energys[x][y][z]--;//所有细胞能量都会自发衰减
-
-                        if (hasGene(cell, BITE)) { //如果是咬细胞
-                            a.penaltyA(); //咬会消耗肌肉能量（不是脑细胞能量)，不管咬没咬中，都要给青蛙减点肥
-                            if ((Eye.code % 3) == 2) { //咬中了，产生甜的感觉信号，并对青蛙嘉奖 
-                                a.add(SWEET_POS, 3);
-                                a.awardAA();
-                            }
-                            for (int i = 0; i < Env.BRAIN_CUBE_SIZE; i++) {
-                                a.digHole(x, y, z, x - 1, y, i);
-                            }
-                        }
-
-                        if (hasGene(cell, EYE)) {//如果是视网膜细胞，在记忆细胞上挖洞                            
-                            a.digHole(x, y, z, x + 1, y, z);
-                        }
-
-                        if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
-                            a.sendEng(x, y, z);
-                        }
-
-                        a.energys[x][y][z] = (float) (a.energys[x][y][z] / 1.2f);//能量随时间衰减
+                if (hasGene(cell, BITE)) {//如果没有输入，咬细胞也是有可能随机激活的，所有运动细胞都有可能随机激活，模拟婴儿期随机运动
+                    if (RandomUtils.percent(10)) {
+                        a.add(BITE_POS, 1);
                     }
                 }
+
+                if (energy >= 0.99) { //如果细胞激活了  
+                    a.energys[x][y][z]--;//所有细胞能量都会自发衰减
+
+                    if (hasGene(cell, BITE)) { //如果是咬细胞
+                        a.penaltyA(); //咬会消耗肌肉能量（不是脑细胞能量)，不管咬没咬中，都要给青蛙减点肥
+                        if ((Eye.code % 3) == 2) { //Debug 咬中了，产生甜的感觉信号，并对青蛙嘉奖 
+                            a.add(SWEET_POS, 3);
+                            a.awardAAA();
+                        }
+                        for (int i = 0; i < Env.BRAIN_CUBE_SIZE; i++) {
+                            a.digHole(x, y, z, x - 1, y, i);
+                        }
+                    }
+
+                    if (hasGene(cell, EYE)) {//如果是视网膜细胞，在记忆细胞上挖洞                            
+                        a.digHole(x, y, z, x + 1, y, z);
+                    }
+
+                    if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
+                        //a.sendEng(x, y, z);
+                    }
+
+                }
+            }
     }
 
 }
