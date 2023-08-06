@@ -115,12 +115,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
    
     //没定各个等级的奖罚值，目前是手工设定的常数
     public void awardAAAA()      { changeFat(2000);}
-    public void awardAAA()   { changeFat(10);}
+    public void awardAAA()   { changeFat(100);}
     public void awardAA()     { changeFat(5);}      
     public void awardA()   { changeFat(1);}
     
     public void penaltyAAAA()    { changeFat(-2000);}
-    public void penaltyAAA() { changeFat(-10);}
+    public void penaltyAAA() { changeFat(-100);}
     public void penaltyAA()   { changeFat(-5);}
     public void penaltyA()   { changeFat(-1);}
     public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
@@ -136,14 +136,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        this.energys[0][0][0] = 10; //设某个细胞固定激活
-        //Eye.active(this); //如看到食物，给顶层细胞赋能量
-        Genes.active(this); //细胞之间互相传递能量
-        //
-        //        if (Food.foundAndAteFood(this.x, this.y)) { //如当前位置有食物就吃掉，并获得奖励
-        //            this.awardAAAA();
-        //            this.ateFood++;
-        //        }
+        Genes.active(this, step); //细胞之间互相传递能量 
         return alive;
     }
 
@@ -225,14 +218,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void sendEng(int x, int y, int z) {//在当前细胞所有洞上反向发送能量（光子)，能量值大小与洞的大小相关
-        int[] cellHoles = holes[x][y][z]; //cellHoles是单个细胞的所有洞(触突)
+        int[] cellHoles = holes[x][y][z]; //cellHoles是单个细胞的所有洞(触突)，4个一组，前三个是洞的坐标，后一个是洞的大小
         if (cellHoles == null) //如洞不存在，不发送能量 
             return;
         for (int i = 0; i < cellHoles.length / 4; i++) {
             int n = i * 4;
             float e = cellHoles[n + 3];
-            if (e > 0.99)
-                add(n, n + 1, n + 2, e); //要调整
+            if (e > 0.01)
+                add(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], e / 2); //要调整
         }
     }
 

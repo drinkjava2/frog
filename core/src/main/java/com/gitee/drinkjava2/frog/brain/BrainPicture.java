@@ -292,13 +292,13 @@ public class BrainPicture extends JPanel {
 
     } 
 
-    public void drawBrainPicture() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
+    public void drawBrainPicture(int step) {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
         if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
             return;
         if (Env.show_split_detail)
             drawSplitDetail();
         else
-            drawBrainStructure();
+            drawBrainStructure(step);
     }
 
     public void drawSplitDetail() {// 在这个方法里绘制脑细胞分裂的显示步聚，即从一个细胞开始分裂成最终脑结构的每一步
@@ -336,7 +336,7 @@ public class BrainPicture extends JPanel {
         }
     }
 
-    public void drawBrainStructure() {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
+    public void drawBrainStructure(int step) {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
         Animal a = Env.getShowAnimal(); // 显示第一个青蛙或蛇
         if (a == null || !a.alive)
             return;
@@ -351,7 +351,7 @@ public class BrainPicture extends JPanel {
                     long cell = a.cells[x][y][z];
                    // if (cell == 0) //只显示有效的细胞点
                     //    continue;
-                    if (a.energys[x][y][z] > 1) { //用大红色圆形画出能量大于1的细胞格
+                    if (a.energys[x][y][z] > 0.3) { //用大红色圆形画出能量大于1的细胞格
                         setPicColor(Color.MAGENTA); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, 1.2f);
                     }
@@ -385,6 +385,10 @@ public class BrainPicture extends JPanel {
             g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN,16));
             g.drawString(note, 10, 20);
         }
+        
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN,16));
+        g.drawString("step:"+step, 10, 10);
+        
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
     }
 

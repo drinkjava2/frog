@@ -31,7 +31,7 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 200; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 4; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
@@ -207,10 +207,10 @@ public class Env extends JPanel {
                 .toString();
     }
 
-    public static void checkIfPause() {
+    public static void checkIfPause(int step) {
         if (pause)
             do {
-                Application.brainPic.drawBrainPicture();
+                Application.brainPic.drawBrainPicture(step);
                 Application.brainPic.requestFocus();
                 sleep(100);
             } while (pause);
@@ -257,11 +257,10 @@ public class Env extends JPanel {
                             allDead = false;
                     }
 
-                    if (SHOW_SPEED > 0 && step % SHOW_SPEED != 0) // 用是否跳帧画图的方式来控制速度
+                    if (SHOW_SPEED == 1) // 如果speed为1，人为加入延迟
+                        sleep((20));
+                    else if (step % SHOW_SPEED != 0)// 用是否跳帧画图的方式来控制速度
                         continue;
-
-                    if (SHOW_SPEED < 5) // 如果speed为1，人为加入延迟
-                        sleep((50 - SHOW_SPEED));
 
                     // 开始画虚拟环境和青蛙
                     g.setColor(Color.white);
@@ -282,15 +281,15 @@ public class Env extends JPanel {
                         }
                     }
                     if (DRAW_BRAIN_AFTER_STEPS > 0 && step % DRAW_BRAIN_AFTER_STEPS == 0) //显示脑图是耗时操作，这个开关可以跳过一些脑图显示
-                        Application.brainPic.drawBrainPicture();
+                        Application.brainPic.drawBrainPicture(step);
                     if (SHOW_SPEED == 1 && SHOW_FIRST_ANIMAL_BRAIN) //如果速度为1，强制每步都显示脑图
-                        Application.brainPic.drawBrainPicture();
+                        Application.brainPic.drawBrainPicture(step);
                     Graphics g2 = this.getGraphics();
                     g2.drawImage(buffImg, 0, 0, this);
                 }
                 if (SHOW_FIRST_ANIMAL_BRAIN) //一轮结束后再强制再显示脑图一次
-                    Application.brainPic.drawBrainPicture();
-                checkIfPause();
+                    Application.brainPic.drawBrainPicture(step);
+                checkIfPause(step);
                 for (int j = 0; j < FROG_PER_SCREEN; j++) {
                     Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
                 }

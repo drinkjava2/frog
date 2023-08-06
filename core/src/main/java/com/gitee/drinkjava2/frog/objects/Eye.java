@@ -2,6 +2,7 @@ package com.gitee.drinkjava2.frog.objects;
 
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
+import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.objects.EnvObject.DefaultEnvObject;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -46,10 +47,14 @@ public class Eye extends DefaultEnvObject {
      * 根据code数字在视网膜上画图，即给某些神经细胞赋能量值，实验阶段先用单维的二进制条形码代替二维图像  
      */
     private static void drawImageOnEye(Frog f, int code) {
+        f.energys[0][0][0] = 5;//
+        if (1 == 1)
+            return;//debug
         long i = 1;
         for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
-            float engery = ((code & i) > 0) ? 9999f : 0;
-            f.energys[0][0][z] = engery;
+            float engery = ((code & i) > 0) ? 5f : 0;
+            if (Genes.hasGene(f.cells[0][0][z], Genes.EYE))
+                f.energys[0][0][z] = engery;
             i = i << 1;
         }
     }

@@ -33,8 +33,9 @@ import java.util.concurrent.BlockingQueue;
  */
 @SuppressWarnings("all")
 public class Logger {
+    private static final int SYSTEM_OUT_PRINT = 0; //如设为1，不使用log，直接System.out.print输出
     private static final int LOGGER_STYLE = 0; //风格设定， 0:不输出前缀, 1:输出时间、类、行号等前缀
-    private static final String LEV_EL = "debug";
+    private static final String LEV_EL = "DEBUG";
     private static final int LEVEL_INT;
     private static final BlockingQueue<String> LOG_LIST = new ArrayBlockingQueue<>(256);
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
@@ -47,8 +48,8 @@ public class Logger {
     static {
         LEVEL_MAP.put("DEBUG", 1);
         LEVEL_MAP.put("INFO", 2);
-        LEVEL_MAP.put("WARN", 2);
-        LEVEL_MAP.put("ERROR", 2);
+        LEVEL_MAP.put("WARN", 3);
+        LEVEL_MAP.put("ERROR", 4);
         LEVEL_INT = LEVEL_MAP.get(LEV_EL.toUpperCase());
         new Thread(() -> {
             while (true) {
@@ -114,18 +115,21 @@ public class Logger {
     }
 
     private static void printLog(int levelInt, String msg, Object... params) {
-        try {
-            if (levelInt >= LEVEL_INT) {
+        if (levelInt < LEVEL_INT)
+            return;
+        if (SYSTEM_OUT_PRINT == 1)
+            System.out.print(generateMsg(getLevelStr(levelInt), msg, params));
+        else
+            try {
                 LOG_LIST.put(generateMsg(getLevelStr(levelInt), msg, params));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private static String generateMsg(String levelStr, String msg, Object... params) {
-        if(LOGGER_STYLE==0) 
-            return formatMsg(msg+ LINE_SEPARATOR, null, params);
+        if (LOGGER_STYLE == 0)
+            return formatMsg(msg + LINE_SEPARATOR, null, params);
         StackTraceElement stack = Thread.currentThread().getStackTrace()[4];
         String s = "{} [{}][{}#{} {}] - " + msg + LINE_SEPARATOR;
         Object[] args = new Object[5 + params.length];
@@ -180,17 +184,17 @@ public class Logger {
     }
 
     private static String getLevelStr(int levelInt) {
-        switch (levelInt) {
-            case 1:
-                return "DEBUG";
-            case 2:
-                return "INFO";
-            case 3:
-                return "WARN";
-            case 4:
-                return "ERROR";
-            default:
-                throw new IllegalStateException("Level " + levelInt + " is unknown.");
+        switch (levelInt){
+        case 1:
+            return "DEBUG";
+        case 2:
+            return "INFO";
+        case 3:
+            return "WARN";
+        case 4:
+            return "ERROR";
+        default:
+            throw new IllegalStateException("Level " + levelInt + " is unknown.");
         }
     }
 }

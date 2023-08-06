@@ -75,15 +75,15 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
         return Long.parseLong(one + zero, 2); //将类似"111000"这种字符串转换为长整
     }
 
-    public static long register(int... pos) {
+    public static long register(int... pos) {//登记并指定基因允许分布的位置
         return register(1, true, false, pos[0], pos[1], pos[2]);
     }
 
-    public static long registerFill(int... pos) {
+    public static long registerFill(int... pos) {//登记并手工指定基因分布的位置
         return register(1, true, true, pos[0], pos[1], pos[2]);
     }
 
-    private static boolean hasGene(long cell, long geneMask) { //判断cell是否含某个基因 
+    public static boolean hasGene(long cell, long geneMask) { //判断cell是否含某个基因 
         return (cell & geneMask) > 0;
     }
 
@@ -91,33 +91,31 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     private static final int CS4 = Env.BRAIN_CUBE_SIZE / 4;
 
     //============开始登记有名字的基因==========
-    public static long EYE = registerFill(0, 0, NA); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
-    public static long MEM = registerFill(1, 0, NA); //记忆细胞，暂时只允许它分布在x=1,y=0的z轴上
+    public static long EYE = registerFill(0, 0, 0); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
+    public static long MEM = registerFill(1, 0, 0); //记忆细胞，暂时只允许它分布在x=1,y=0的z轴上
 
     public static int[] BITE_POS = new int[]{2, 0, 0};
-    public static long BITE = register(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
+    public static long BITE = registerFill(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
 
     public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
-    public static long SWEET = register(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
+    public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
 
     //========开始登记无名字的基因 =========
     static {
     }
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
-    public static void active(Animal a) {
-        //                if (true)
-        //                    return; //speeding
+    public static void active(Animal a, int step) {
+        //                        if (true)
+        //                            return; //speeding
         for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
             for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
                 int y = 0;
                 long cell = a.cells[x][y][z];
                 float energy = a.energys[x][y][z];
 
-                if (hasGene(cell, BITE)) {//如果没有输入，咬细胞也是有可能随机激活的，所有运动细胞都有可能随机激活，模拟婴儿期随机运动
-                    if (RandomUtils.percent(10)) {
-                        a.add(BITE_POS, 1);
-                    }
+                if ((step % 20 == 0) && hasGene(cell, BITE)) {//如果没有输入，咬细胞也是有可能定时或随机激活的，模拟婴儿期随机运动
+                    a.add(x, y, z, 5);
                 }
 
                 if (energy >= 0.99) { //如果细胞激活了  
@@ -139,7 +137,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     }
 
                     if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
-                        //a.sendEng(x, y, z);
+                        a.sendEng(x, y, z);
                     }
 
                 }

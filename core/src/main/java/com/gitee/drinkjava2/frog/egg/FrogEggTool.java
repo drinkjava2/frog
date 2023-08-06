@@ -15,7 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -51,16 +50,20 @@ public class FrogEggTool {
             for (int i = 0; i < Env.FROG_EGG_QTY; i++) //每次下蛋数量固定为EGG_QTY个
                 Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
             Logger.info("Fist frog fat={}, gene size={}, Last frog fat={}", first.fat, getGeneSize(first), last.fat);
+
+            //debug
             for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {
+                String s = "";
                 for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
                     int[] holes = first.holes[x][0][z];
                     if (holes == null)
-                        System.out.print(0 + ",");
+                        s += 0 + ",";
                     else
-                        System.out.print(first.holes[x][0][z].length + ",");
+                        s += first.holes[x][0][z].length + ",";
                 }
-                System.out.println();
+                Logger.debug(s);
             }
+
             if (Env.SAVE_EGGS_FILE) {
                 FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");
                 ObjectOutputStream so = new ObjectOutputStream(fo);
