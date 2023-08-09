@@ -94,7 +94,13 @@ public class GeneUtils {
         }
     }
 
-    public static void geneMutation(Animal a) { //基因变异,注意这一个方法同时变异青蛙的所有条基因
+    public static void globalParamsMutation(Animal a) { //全局参数变异, 这一个方法变异动物的所有常量
+        for (int i = 0; i < a.constGenes.length; i++) {
+            a.constGenes[i] = RandomUtils.vary(a.constGenes[i]);
+        }
+    }
+
+    public static void geneMutation(Animal a) { //基因变异,注意这一个方法同时变异所有条基因
         for (int g = 0; g < GENE_NUMBERS; g++)
             if (percent(50)) {
                 if (Genes.fill_gene[g]) //如果这个基因是fill型的，永远会存在指定区域的所有细胞中，所以不需要参与变异

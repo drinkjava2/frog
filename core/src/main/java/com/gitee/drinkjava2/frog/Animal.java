@@ -48,6 +48,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
+    public int[] constGenes = new int[10];
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
@@ -69,6 +70,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public Image animalImage;
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
+        System.arraycopy(egg.constGenes, 0, this.constGenes, 0, constGenes.length);//从蛋中拷一份全局参数
         for (int i = 0; i < GENE_NUMBERS; i++) {
             genes.add(new ArrayList<>());
         }
@@ -136,6 +138,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
+        holesReduce(); //洞随时间消失
         Genes.active(this, step); //细胞之间互相传递能量 
         return alive;
     }
@@ -196,15 +199,27 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             holes[tX][tY][tZ] = new int[]{sX, sY, sZ, 500};
             return;
         } else {
+            int emptyPos = -1; //找指定源坐标已存在的洞，如果不存在，如发现空洞也可以占用
             for (int i = 0; i < cellHoles.length / 4; i++) {
                 int n = i * 4;
                 if (cellHoles[n] == sX && cellHoles[n + 1] == sY && cellHoles[n + 2] == sZ) {//找到已有的洞了
-                    if (cellHoles[n + 3] < 500) //要改成由基因调整
-                        cellHoles[n + 3]++;
+                    if (cellHoles[n + 3] < 1000) //要改成由基因调整
+                        cellHoles[n + 3] += 100;
                     return;
                 }
+                if (emptyPos == -1 && cellHoles[n + 3] <= 1)//如发现空洞也可以，先记下它的位置
+                    emptyPos = n;
             }
-            int length = cellHoles.length; //没找到已有的洞，新建一个并追加到原洞数组未尾
+
+            if (emptyPos > -1) { //找到一个空洞
+                cellHoles[emptyPos] = sX;
+                cellHoles[emptyPos + 1] = sX;
+                cellHoles[emptyPos + 2] = sX;
+                cellHoles[emptyPos + 3] = 100; //要改成由基因调整
+                return;
+            }
+
+            int length = cellHoles.length; //没找到已有的洞，也没找到空洞，新建一个并追加到原洞数组未尾
             int[] newHoles = new int[length + 4];
             System.arraycopy(cellHoles, 0, newHoles, 0, length);
             newHoles[length] = sX;
@@ -224,7 +239,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             int n = i * 4;
             float size = cellHoles[n + 3];
             if (size > 1)
-                add(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], size * .5f); //要改成由基因调整
+                add(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], constGenes[0]); //由常量基因调整每次发送能量大小
         }
     }
 
@@ -233,12 +248,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             for (int y = 0; y < Env.BRAIN_SIZE - 1; y++)
                 for (int z = 0; z < Env.BRAIN_SIZE - 1; z++) {
                     int[] cellHoles = holes[x][y][z];
-                    for (int i = 0; i < cellHoles.length / 4; i++) {
-                        int n = i * 4;
-                        int size = cellHoles[n + 3];
-                        if (size > 0)
-                            cellHoles[n + 3] = (int) (size * 0.9);//要改成由基因调整
-                    }
+                    if (cellHoles != null)
+                        for (int i = 0; i < cellHoles.length / 4; i++) {
+                            int n = i * 4;
+                            int size = cellHoles[n + 3];
+                            if (size > 0)
+                                cellHoles[n + 3] = (int) (size * 0.9);//要改成由基因调整
+                        }
                 }
     }
 
