@@ -52,9 +52,9 @@ public class FrogEggTool {
             Logger.info("Fist frog fat={}, gene size={}, Last frog fat={}", first.fat, getGeneSize(first), last.fat);
 
             //debug
-            for (int x = 0; x < Env.BRAIN_CUBE_SIZE; x++) {
+            for (int x = 0; x < Env.BRAIN_SIZE; x++) {
                 String s = "";
-                for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+                for (int z = 0; z < Env.BRAIN_SIZE; z++) {
                     int[] holes = first.holes[x][0][z];
                     if (holes == null)
                         s += 0 + ",";

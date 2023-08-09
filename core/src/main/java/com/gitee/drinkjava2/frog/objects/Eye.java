@@ -51,7 +51,7 @@ public class Eye extends DefaultEnvObject {
         if (1 == 1)
             return;//debug
         long i = 1;
-        for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {
             float engery = ((code & i) > 0) ? 5f : 0;
             if (Genes.hasGene(f.cells[0][0][z], Genes.EYE))
                 f.energys[0][0][z] = engery;

@@ -39,16 +39,16 @@ public class GeneUtils {
 
             if (fill) { //如果这个基因是fill型的，会填充在指定区域的所有细胞中，不需要使用分裂算法来生成细胞
                 if (xLimit < 0) { //如坐标一个也没有给出, 填充整个三维脑细胞空间  
-                    for (int x = 0; x < Env.BRAIN_XSIZE; x++)
-                        for (int y = 0; y < Env.BRAIN_YSIZE; y++)
-                            for (int z = 0; z < Env.BRAIN_ZSIZE; z++)
+                    for (int x = 0; x < Env.BRAIN_SIZE; x++)
+                        for (int y = 0; y < Env.BRAIN_SIZE; y++)
+                            for (int z = 0; z < Env.BRAIN_SIZE; z++)
                                 a.cells[x][y][z] = a.cells[x][y][z] | geneMask;
                 } else if (yLimit < 0) { // 如果只给出了x坐标, 填充此基因在脑坐标为x的yz平面上
-                    for (int y = 0; y < Env.BRAIN_YSIZE; y++)
-                        for (int z = 0; z < Env.BRAIN_ZSIZE; z++)
+                    for (int y = 0; y < Env.BRAIN_SIZE; y++)
+                        for (int z = 0; z < Env.BRAIN_SIZE; z++)
                             a.cells[xLimit][y][z] = a.cells[xLimit][y][z] | geneMask;
                 } else if (zLimit < 0) { // 如果只给出了x,y坐标，填充此基因在x,y指定的z轴上 
-                    for (int z = 0; z < Env.BRAIN_ZSIZE; z++)
+                    for (int z = 0; z < Env.BRAIN_SIZE; z++)
                         a.cells[xLimit][yLimit][z] = a.cells[xLimit][yLimit][z] | geneMask;
                 } else { //如果x,y,z都给出了，填充此基因在x,y,z指定的点上
                     a.cells[xLimit][yLimit][zLimit] = a.cells[xLimit][yLimit][zLimit] | geneMask;

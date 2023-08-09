@@ -38,14 +38,14 @@ public class Application {
 
     public static JFrame mainFrame = new JFrame();
     public static Env env = new Env();
-    public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.BRAIN_XSIZE, Env.FROG_BRAIN_DISP_WIDTH);
+    public static BrainPicture brainPic = new BrainPicture(Env.ENV_WIDTH + 5, 0, Env.BRAIN_SIZE, Env.FROG_BRAIN_DISP_WIDTH);
     public static ActionListener pauseAction;
     public static boolean selectFrog = true;
 
     private static void checkIfShowBrainPicture(JButton button) {
         int y = Env.ENV_HEIGHT + 150;
         if (Env.SHOW_FIRST_ANIMAL_BRAIN) {
-            button.setText("Hide brain"); 
+            button.setText("Hide brain");
             if (Env.FROG_BRAIN_DISP_WIDTH + 41 > y)
                 y = Env.FROG_BRAIN_DISP_WIDTH + 41;
             mainFrame.setSize(Env.ENV_WIDTH + Env.FROG_BRAIN_DISP_WIDTH + 25, y);
@@ -66,12 +66,12 @@ public class Application {
         JButton button = new JButton("Show brain");// 按钮，显示或隐藏脑图
         int buttonWidth = 100;
         int buttonHeight = 22;
-        int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2; 
+        int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
         button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
         ActionListener al = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {//显示或隐藏脑图
-                Env.SHOW_FIRST_ANIMAL_BRAIN = !Env.SHOW_FIRST_ANIMAL_BRAIN; 
+                Env.SHOW_FIRST_ANIMAL_BRAIN = !Env.SHOW_FIRST_ANIMAL_BRAIN;
                 checkIfShowBrainPicture(button);
             }
         };
@@ -95,9 +95,9 @@ public class Application {
         };
         stopButton.addActionListener(pauseAction);
         mainFrame.add(stopButton);
-  
+
         // 速度条
-        final JSlider speedSlider = new JSlider(1, 10, (int) Math.round(Math.pow(Env.SHOW_SPEED, 1.0/3)));
+        final JSlider speedSlider = new JSlider(1, 10, (int) Math.round(Math.pow(Env.SHOW_SPEED, 1.0 / 3)));
         speedSlider.setBounds(buttonXpos - 50, stopButton.getY() + 25, buttonWidth + 100, buttonHeight);
         ChangeListener slideAction = new ChangeListener() {
             @Override
@@ -112,8 +112,6 @@ public class Application {
         label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
         mainFrame.add(label);
 
- 
-        
         //是否把egg文件存盘
         JCheckBox saveFileCheckBox = new JCheckBox("Save egg file");
         saveFileCheckBox.setBounds(buttonXpos, Env.ENV_HEIGHT + 80, 120, 22);
@@ -126,30 +124,30 @@ public class Application {
             }
         };
         saveFileCheckBox.addActionListener(saveAction);
-        mainFrame.add(saveFileCheckBox); 
-        
+        mainFrame.add(saveFileCheckBox);
+
         //基因维数显示控制
         for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
-            JRadioButton geneRadio=new JRadioButton();
-            geneRadio.setBounds(buttonXpos+300+i*16, Env.ENV_HEIGHT + 8, 20, 22);
+            JRadioButton geneRadio = new JRadioButton();
+            geneRadio.setBounds(buttonXpos + 300 + i * 16, Env.ENV_HEIGHT + 8, 20, 22);
             geneRadio.setSelected(Genes.display_gene[i]);
-            geneRadio.setName(""+i);
+            geneRadio.setName("" + i);
             ActionListener geneRadioAction = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    int i= Integer.parseInt(geneRadio.getName());
+                    int i = Integer.parseInt(geneRadio.getName());
                     if (geneRadio.isSelected())
-                        Genes.display_gene[i]=true;
+                        Genes.display_gene[i] = true;
                     else
-                        Genes.display_gene[i]=false;
+                        Genes.display_gene[i] = false;
                 }
             };
             geneRadio.addActionListener(geneRadioAction);
             mainFrame.add(geneRadio);
         }
-        
+
         //是否显示分裂过程
         JCheckBox showSplitDetailCheckBox = new JCheckBox("Show split detail");
-        showSplitDetailCheckBox.setBounds(buttonXpos+300, Env.ENV_HEIGHT + 40, 120, 22);
+        showSplitDetailCheckBox.setBounds(buttonXpos + 300, Env.ENV_HEIGHT + 40, 120, 22);
         ActionListener detailAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (showSplitDetailCheckBox.isSelected())
@@ -159,7 +157,7 @@ public class Application {
             }
         };
         showSplitDetailCheckBox.addActionListener(detailAction);
-        mainFrame.add(showSplitDetailCheckBox); 
+        mainFrame.add(showSplitDetailCheckBox);
         mainFrame.setBounds(0, 400, 5, 5);
         mainFrame.setVisible(true);
         env.run();

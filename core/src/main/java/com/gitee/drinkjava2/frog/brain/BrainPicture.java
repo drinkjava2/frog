@@ -1,6 +1,5 @@
 package com.gitee.drinkjava2.frog.brain;
 
- 
 import static java.awt.Color.BLACK;
 import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
@@ -74,8 +73,8 @@ public class BrainPicture extends JPanel {
                 switch (e.getKeyCode()){
                 case KeyEvent.VK_UP:// Y切面向上
                     yMask++;
-                    if (yMask > Env.BRAIN_YSIZE)
-                        yMask = Env.BRAIN_YSIZE;
+                    if (yMask > Env.BRAIN_SIZE)
+                        yMask = Env.BRAIN_SIZE;
                     break;
                 case KeyEvent.VK_DOWN:// Y切面向下
                     yMask--;
@@ -89,8 +88,8 @@ public class BrainPicture extends JPanel {
                     break;
                 case KeyEvent.VK_RIGHT:// x切面向右
                     xMask++;
-                    if (xMask > Env.BRAIN_XSIZE)
-                        xMask = Env.BRAIN_XSIZE;
+                    if (xMask > Env.BRAIN_SIZE)
+                        xMask = Env.BRAIN_SIZE;
                     break;
                 case ' ':// 暂停及继续
                     Application.pauseAction.actionPerformed(null);
@@ -127,7 +126,7 @@ public class BrainPicture extends JPanel {
         addKeyListener(keyAdapter);
         this.setFocusable(true);
     }
-    
+
     public void drawCuboid(float x, float y, float z, float xe, float ye, float ze) {// 在脑图上画一个长立方体框架，视角是TopView
         drawLine(x, y, z, x + xe, y, z);// 画立方体的下面边
         drawLine(x + xe, y, z, x + xe, y + ye, z);
@@ -157,12 +156,12 @@ public class BrainPicture extends JPanel {
     	x.cosθ-y.sinθ, x.sinθ+y.consθ, z
      -*/
     public void drawLine(float px1, float py1, float pz1, float px2, float py2, float pz2) {
-        double x1 = px1 - Env.BRAIN_XSIZE / 2;
-        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
-        double x2 = px2 - Env.BRAIN_XSIZE / 2;
-        double y2 = -py2 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-        double z2 = pz2 - Env.BRAIN_ZSIZE / 2;
+        double x1 = px1 - Env.BRAIN_SIZE / 2;
+        double y1 = -py1 + Env.BRAIN_SIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_SIZE / 2;
+        double x2 = px2 - Env.BRAIN_SIZE / 2;
+        double y2 = -py2 + Env.BRAIN_SIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z2 = pz2 - Env.BRAIN_SIZE / 2;
         x1 = x1 * scale;
         y1 = y1 * scale;
         z1 = z1 * scale;
@@ -207,9 +206,9 @@ public class BrainPicture extends JPanel {
 
     /** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
     public void drawPoint(float px1, float py1, float pz1, float r) {
-        double x1 = px1 - Env.BRAIN_XSIZE / 2;
-        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+        double x1 = px1 - Env.BRAIN_SIZE / 2;
+        double y1 = -py1 + Env.BRAIN_SIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_SIZE / 2;
         x1 = x1 * scale;
         y1 = y1 * scale;
         z1 = z1 * scale;
@@ -236,9 +235,9 @@ public class BrainPicture extends JPanel {
 
     /** 画一个圆 */
     public void drawCircle(float px1, float py1, float pz1, float r) {//这个方法实际和上面的一样的，只是改成了drawOval
-        double x1 = px1 - Env.BRAIN_XSIZE / 2;
-        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+        double x1 = px1 - Env.BRAIN_SIZE / 2;
+        double y1 = -py1 + Env.BRAIN_SIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_SIZE / 2;
         x1 = x1 * scale;
         y1 = y1 * scale;
         z1 = z1 * scale;
@@ -264,9 +263,9 @@ public class BrainPicture extends JPanel {
     }
 
     public void drawText(float px1, float py1, float pz1, String text, float textSize) {
-        double x1 = px1 - Env.BRAIN_XSIZE / 2;
-        double y1 = -py1 + Env.BRAIN_YSIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
-        double z1 = pz1 - Env.BRAIN_ZSIZE / 2;
+        double x1 = px1 - Env.BRAIN_SIZE / 2;
+        double y1 = -py1 + Env.BRAIN_SIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_SIZE / 2;
         x1 = x1 * scale;
         y1 = y1 * scale;
         z1 = z1 * scale;
@@ -290,7 +289,7 @@ public class BrainPicture extends JPanel {
         g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(textSize * scale)));
         g.drawString(text, (int) round(x1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset, (int) round(y1) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 
-    } 
+    }
 
     public void drawBrainPicture(int step) {// 在这个方法里进行动物的三维脑结构的绘制,蛇是青蛙的子类，所以也可以当参数传进来
         if (!Env.SHOW_FIRST_ANIMAL_BRAIN)
@@ -304,7 +303,7 @@ public class BrainPicture extends JPanel {
     public void drawSplitDetail() {// 在这个方法里绘制脑细胞分裂的显示步聚，即从一个细胞开始分裂成最终脑结构的每一步
         Animal a = Env.getShowAnimal(); // 第一个青蛙或蛇
 
-        for (int i = Env.BRAIN_CUBE_SIZE; i >= 1; i /= 2) {
+        for (int i = Env.BRAIN_SIZE; i >= 1; i /= 2) {
             g.setColor(WHITE);// 先清空旧图, g是buffImg，绘在内存中
             g.fillRect(0, 0, brainDispWidth, brainDispWidth);
             g.setColor(BLACK); // 画边框
@@ -325,7 +324,7 @@ public class BrainPicture extends JPanel {
                 }
             }
             g.setColor(BLACK);
-            drawCuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);// 把脑的框架画出来
+            drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来
             this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片 
             if (!Env.show_split_detail)
                 return;
@@ -345,11 +344,11 @@ public class BrainPicture extends JPanel {
         g.setColor(BLACK); // 画边框
         g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-        for (int z = 0; z < Env.BRAIN_CUBE_SIZE; z++) {
-            for (int y = Env.BRAIN_CUBE_SIZE - 1; y >= 0; y--) {
-                for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {
+            for (int y = Env.BRAIN_SIZE - 1; y >= 0; y--) {
+                for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
                     long cell = a.cells[x][y][z];
-                   // if (cell == 0) //只显示有效的细胞点
+                    // if (cell == 0) //只显示有效的细胞点
                     //    continue;
                     if (a.energys[x][y][z] > 0.3) { //用大红色圆形画出能量大于1的细胞格
                         setPicColor(Color.MAGENTA); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
@@ -363,32 +362,32 @@ public class BrainPicture extends JPanel {
                                 //drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, geneIndex == 0 ? 0.8f : 0.5f - geneIndex * 0.05f);
                                 drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.6f);
                             }
-                        } 
+                        }
                 }
             }
         }
 
         setPicColor(Color.BLACK);
-        drawCuboid(0, 0, 0, Env.BRAIN_XSIZE, Env.BRAIN_YSIZE, Env.BRAIN_ZSIZE);// 把脑的框架画出来
+        drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来
 
         setPicColor(BLACK); //把x,y,z坐标画出来
-        drawText(Env.BRAIN_CUBE_SIZE, 0, 0, "x", 2);
-        drawText(0, Env.BRAIN_CUBE_SIZE, 0, "y", 2);
-        drawText(0, 0, Env.BRAIN_CUBE_SIZE, "z", 2);
+        drawText(Env.BRAIN_SIZE, 0, 0, "x", 2);
+        drawText(0, Env.BRAIN_SIZE, 0, "y", 2);
+        drawText(0, 0, Env.BRAIN_SIZE, "z", 2);
         setPicColor(RED);
-        drawLine(0, 0, 0, Env.BRAIN_CUBE_SIZE, 0, 0);
-        drawLine(0, 0, 0, 0, Env.BRAIN_CUBE_SIZE, 0);
-        drawLine(0, 0, 0, 0, 0, Env.BRAIN_CUBE_SIZE);
+        drawLine(0, 0, 0, Env.BRAIN_SIZE, 0, 0);
+        drawLine(0, 0, 0, 0, Env.BRAIN_SIZE, 0);
+        drawLine(0, 0, 0, 0, 0, Env.BRAIN_SIZE);
 
         g.setColor(Color.black);
         if (note != null) {// 全局注释
-            g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN,16));
+            g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
             g.drawString(note, 10, 20);
         }
-        
-        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN,16));
-        g.drawString("step:"+step, 10, 10);
-        
+
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        g.drawString("step:" + step, 10, 10);
+
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
     }
 

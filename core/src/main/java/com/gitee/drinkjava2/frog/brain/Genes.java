@@ -88,7 +88,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     }
 
     private static final int NA = -1;
-    private static final int CS4 = Env.BRAIN_CUBE_SIZE / 4;
+    private static final int CS4 = Env.BRAIN_SIZE / 4;
 
     //============开始登记有名字的基因==========
     public static long EYE = registerFill(0, 0, 0); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
@@ -108,8 +108,8 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     public static void active(Animal a, int step) {
         //                        if (true)
         //                            return; //speeding
-        for (int z = Env.BRAIN_CUBE_SIZE - 1; z >= 0; z--)
-            for (int x = Env.BRAIN_CUBE_SIZE - 1; x >= 0; x--) {
+        for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--)
+            for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
                 int y = 0;
                 long cell = a.cells[x][y][z];
                 float energy = a.energys[x][y][z];
@@ -127,7 +127,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                             a.add(SWEET_POS, 3);
                             a.awardAAA();
                         }
-                        for (int i = 0; i < Env.BRAIN_CUBE_SIZE; i++) {
+                        for (int i = 0; i < Env.BRAIN_SIZE; i++) {
                             a.digHole(x, y, z, x - 1, y, i);
                         }
                     }

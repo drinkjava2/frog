@@ -28,7 +28,7 @@ import com.gitee.drinkjava2.frog.Env;
 public class Tree2Util {
 
     //EIGHT_TREE store a pre-order Traversal tree array  
-    public static final int NODE_QTY = calculateNodeSize(Env.BRAIN_CUBE_SIZE);
+    public static final int NODE_QTY = calculateNodeSize(Env.BRAIN_SIZE);
 
     public static int[][] TREE2 = new int[NODE_QTY][2]; //2叉数用数组表示，第一维是深度树的行号，第二维是一个整数数组,内容是深度树表示的2叉树细胞的size, x值
 
@@ -40,7 +40,7 @@ public class Tree2Util {
 
     private static int index = 0;
     static {
-        tree2Split(0, Env.BRAIN_CUBE_SIZE);
+        tree2Split(0, Env.BRAIN_SIZE);
     }
 
     static int calculateNodeSize(int n) {//计算2叉树全展开的总节点数

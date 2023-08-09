@@ -52,11 +52,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
-    public long[][][] cells = new long[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; //所有脑细胞
+    public long[][][] cells = new long[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE]; //所有脑细胞
 
-    public float[][][] energys = new float[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
+    public float[][][] energys = new float[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
 
-    public int[][][][] holes = new int[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][]; //每个细胞的洞（相当于触突）
+    public int[][][][] holes = new int[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE][]; //每个细胞的洞（相当于触突）
 
     public int xPos; // animal在Env中的x坐标
     public int yPos; // animal在Env中的y坐标
@@ -148,7 +148,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     /** Check if x,y,z out of animal's brain range */
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
-        return x < 0 || x >= Env.BRAIN_XSIZE || y < 0 || y >= Env.BRAIN_YSIZE || z < 0 || z >= Env.BRAIN_ZSIZE;
+        return x < 0 || x >= Env.BRAIN_SIZE || y < 0 || y >= Env.BRAIN_SIZE || z < 0 || z >= Env.BRAIN_SIZE;
     }
 
     public void open(int x, int y, int z) { //打开指定的xyz坐标对应的cell能量值为极大
@@ -229,9 +229,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void holesReduce() {//所有hole大小都会慢慢减小，模拟触突连接随时间消失，即细胞的遗忘机制 
-        for (int x = 0; x < Env.BRAIN_CUBE_SIZE - 1; x++)
-            for (int y = 0; y < Env.BRAIN_CUBE_SIZE - 1; y++)
-                for (int z = 0; z < Env.BRAIN_CUBE_SIZE - 1; z++) {
+        for (int x = 0; x < Env.BRAIN_SIZE - 1; x++)
+            for (int y = 0; y < Env.BRAIN_SIZE - 1; y++)
+                for (int z = 0; z < Env.BRAIN_SIZE - 1; z++) {
                     int[] cellHoles = holes[x][y][z];
                     for (int i = 0; i < cellHoles.length / 4; i++) {
                         int n = i * 4;
