@@ -46,7 +46,7 @@ public class Env extends JPanel {
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用三维数组来表示
     public static final int BRAIN_CUBE_SIZE = 4; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法
-
+//
     public static final int BRAIN_XSIZE = BRAIN_CUBE_SIZE; // 脑在X方向长度
     public static final int BRAIN_YSIZE = BRAIN_CUBE_SIZE; // 脑在Y方向长度
     public static final int BRAIN_ZSIZE = BRAIN_CUBE_SIZE; // 脑在Z方向长度
@@ -110,11 +110,11 @@ public class Env extends JPanel {
     }
 
     public static boolean insideBrain(int x, int y, int z) {// 如果指定点在边界内
-        return !(x < 0 || y < 0 || z <= 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE || z >= BRAIN_ZSIZE);
+        return !(x < 0 || y < 0 || z < 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE || z >= BRAIN_ZSIZE);
     }
 
     public static boolean insideBrain(float x, float y, float z) {// 如果指定点在边界内
-        return !(x < 0 || y < 0 || z <= 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE || z >= BRAIN_ZSIZE);
+        return !(x < 0 || y < 0 || z < 0 || x >= BRAIN_XSIZE || y >= BRAIN_YSIZE || z >= BRAIN_ZSIZE);
     }
 
     public static boolean insideEnv(int x, int y) {// 如果指定点在边界内
@@ -126,7 +126,7 @@ public class Env extends JPanel {
     }
 
     public static boolean closeToEdge(Animal a) {// 靠近边界? 离死不远了
-        return a.x < 20 || a.y < 20 || a.x > (Env.ENV_WIDTH - 20) || a.y > (Env.ENV_HEIGHT - 20);
+        return a.xPos < 20 || a.yPos < 20 || a.xPos > (Env.ENV_WIDTH - 20) || a.yPos > (Env.ENV_HEIGHT - 20);
     }
 
     public static boolean foundAnyThingOrOutEdge(int x, int y) {// 如果指定点看到任意东西或超出边界，返回true
@@ -276,7 +276,7 @@ public class Env extends JPanel {
                         Animal showAnimal = getShowAnimal();
                         if (showAnimal != null) {
                             g.setColor(Color.red);
-                            g.drawArc(showAnimal.x - 15, showAnimal.y - 15, 30, 30, 0, 360);
+                            g.drawArc(showAnimal.xPos - 15, showAnimal.yPos - 15, 30, 30, 0, 360);
                             g.setColor(Color.BLACK);
                         }
                     }

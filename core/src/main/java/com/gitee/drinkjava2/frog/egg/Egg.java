@@ -44,8 +44,8 @@ public class Egg implements Serializable {
 
     /** Create egg from animal */
     public Egg(Animal a) { // 下蛋，每个器官会创建自已的副本或变异，可以是0或多个
-        x = a.x;
-        y = a.y;
+        x = a.xPos;
+        y = a.yPos;
         for (ArrayList<Integer> gene : a.genes) {//下蛋就是把动物的基因拷贝到新蛋里，并有可能变异
             ArrayList<Integer> g = new ArrayList<>();
             g.addAll(gene);

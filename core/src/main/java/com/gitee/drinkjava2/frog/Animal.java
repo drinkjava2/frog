@@ -58,11 +58,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public int[][][][] holes = new int[Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][Env.BRAIN_CUBE_SIZE][]; //每个细胞的洞（相当于触突）
 
-    public int x; // animal在Env中的x坐标
-    public int y; // animal在Env中的y坐标
+    public int xPos; // animal在Env中的x坐标
+    public int yPos; // animal在Env中的y坐标
     public long fat = 1000000000; // 青蛙的肥胖度, 只有胖的青蛙才允许下蛋, 以前版本这个变量名为energy，为了不和脑细胞的能量重名，从这个版本起改名为fat
     public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
-    public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙能量相等，可以比数量
+    public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙fat相等，可以比数量
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
 
     public int animalMaterial;
@@ -77,19 +77,19 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             genes.get(i++).addAll(gene);
         i = 0;
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
-            x = RandomUtils.nextInt(Env.ENV_WIDTH);
-            y = RandomUtils.nextInt(Env.ENV_HEIGHT);
+            xPos = RandomUtils.nextInt(Env.ENV_WIDTH);
+            yPos = RandomUtils.nextInt(Env.ENV_HEIGHT);
         } else {//否则出生成指定区域
-            this.x = egg.x + RandomUtils.nextInt(80) - 40;
-            this.y = egg.y + RandomUtils.nextInt(80) - 40;
-            if (this.x < 0)
-                this.x = 0;
-            if (this.y < 0)
-                this.y = 0;
-            if (this.x >= (Env.ENV_WIDTH - 1))
-                this.x = Env.ENV_WIDTH - 1;
-            if (this.y >= (Env.ENV_HEIGHT - 1))
-                this.y = Env.ENV_HEIGHT - 1;
+            this.xPos = egg.x + RandomUtils.nextInt(80) - 40;
+            this.yPos = egg.y + RandomUtils.nextInt(80) - 40;
+            if (this.xPos < 0)
+                this.xPos = 0;
+            if (this.yPos < 0)
+                this.yPos = 0;
+            if (this.xPos >= (Env.ENV_WIDTH - 1))
+                this.xPos = Env.ENV_WIDTH - 1;
+            if (this.yPos >= (Env.ENV_HEIGHT - 1))
+                this.yPos = Env.ENV_HEIGHT - 1;
         }
     }
 
@@ -123,7 +123,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void penaltyAAA() { changeFat(-100);}
     public void penaltyAA()   { changeFat(-5);}
     public void penaltyA()   { changeFat(-1);}
-    public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(x, y, animalMaterial);  } //kill是最大的惩罚
+    public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
     public boolean active(int step) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数
@@ -131,7 +131,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         if (!alive) {
             return false;
         }
-        if (fat <= 0 || Env.outsideEnv(x, y) || Env.bricks[x][y] >= Material.KILL_ANIMAL) {
+        if (fat <= 0 || Env.outsideEnv(xPos, yPos) || Env.bricks[xPos][yPos] >= Material.KILL_ANIMAL) {
             kill();
             return false;
         }
@@ -143,7 +143,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
-        g.drawImage(animalImage, x - 8, y - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+        g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
 
     /** Check if x,y,z out of animal's brain range */
@@ -188,20 +188,18 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return;
         if (!Env.insideBrain(tX, tY, tZ))
             return;
-        if (this.energys[sX][sY][sZ] >= 1)
-            this.energys[sX][sY][sZ] -= 1;
-        if (this.energys[tX][tY][tZ] < 100)
+        if (this.energys[tX][tY][tZ] < 100) //要调整
             this.energys[tX][tY][tZ] += 1;
 
         int[] cellHoles = holes[tX][tY][tZ];
         if (cellHoles == null) { //洞不存在，新建一个
-            holes[tX][tY][tZ] = new int[]{sX, sY, sZ, 1};
+            holes[tX][tY][tZ] = new int[]{sX, sY, sZ, 500};
             return;
         } else {
             for (int i = 0; i < cellHoles.length / 4; i++) {
                 int n = i * 4;
-                if (n == sX && n + 1 == sY && n + 2 == sZ) {//找到已有的洞了
-                    if (cellHoles[n + 3] < 1000)
+                if (cellHoles[n] == sX && cellHoles[n + 1] == sY && cellHoles[n + 2] == sZ) {//找到已有的洞了
+                    if (cellHoles[n + 3] < 500) //要改成由基因调整
                         cellHoles[n + 3]++;
                     return;
                 }
@@ -212,21 +210,36 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             newHoles[length] = sX;
             newHoles[length + 1] = sY;
             newHoles[length + 2] = sZ;
-            newHoles[length + 3] = 1;
+            newHoles[length + 3] = 100; //要改成由基因调整
+            holes[tX][tY][tZ] = newHoles;
             return;
         }
     }
 
-    public void sendEng(int x, int y, int z) {//在当前细胞所有洞上反向发送能量（光子)，能量值大小与洞的大小相关
+    public void holeSendEngery(int x, int y, int z) {//在当前细胞所有洞上反向发送能量（光子)，能量值大小与洞的大小相关
         int[] cellHoles = holes[x][y][z]; //cellHoles是单个细胞的所有洞(触突)，4个一组，前三个是洞的坐标，后一个是洞的大小
         if (cellHoles == null) //如洞不存在，不发送能量 
             return;
         for (int i = 0; i < cellHoles.length / 4; i++) {
             int n = i * 4;
-            float e = cellHoles[n + 3];
-            if (e > 0.01)
-                add(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], e / 2); //要调整
+            float size = cellHoles[n + 3];
+            if (size > 1)
+                add(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], size * .5f); //要改成由基因调整
         }
+    }
+
+    public void holesReduce() {//所有hole大小都会慢慢减小，模拟触突连接随时间消失，即细胞的遗忘机制 
+        for (int x = 0; x < Env.BRAIN_CUBE_SIZE - 1; x++)
+            for (int y = 0; y < Env.BRAIN_CUBE_SIZE - 1; y++)
+                for (int z = 0; z < Env.BRAIN_CUBE_SIZE - 1; z++) {
+                    int[] cellHoles = holes[x][y][z];
+                    for (int i = 0; i < cellHoles.length / 4; i++) {
+                        int n = i * 4;
+                        int size = cellHoles[n + 3];
+                        if (size > 0)
+                            cellHoles[n + 3] = (int) (size * 0.9);//要改成由基因调整
+                    }
+                }
     }
 
 }

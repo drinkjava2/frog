@@ -137,7 +137,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     }
 
                     if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
-                        a.sendEng(x, y, z);
+                        a.holeSendEngery(x, y, z);
                     }
 
                 }
