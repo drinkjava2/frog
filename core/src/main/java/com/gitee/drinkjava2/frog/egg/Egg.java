@@ -52,6 +52,7 @@ public class Egg implements Serializable {
             g.addAll(gene);
             genes.add(g);
         }
+        System.arraycopy(a.constGenes, 0, this.constGenes, 0, constGenes.length);
     }
 
     /**

@@ -54,15 +54,15 @@ public class RandomUtils {
 
     public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
         if (percent(40))
-            v += v * .04 * (nextFloat() - 0.5); // v=v+-.04
-        if (percent(10))
-            v += v * .103 * (nextFloat() - 0.5); // v=v+-0.1
+            v +=  (nextInt(2) - 0.5);  
+        else if (percent(10))
+            v +=  10 * (nextInt(2) - 0.5);  
         else if (percent(5))
-            v += v * 1 * (nextFloat() - 0.5); // v=v+-0.4
+            v +=  30 * (nextInt(2) - 0.5); 
         else if (percent(2))
-            v += v * 4 * (nextFloat() - 0.5); // v=v+-2
+            v +=  100 * (nextInt(2) - 0.5);  
         else if (percent(1f))
-            v += v * 8 * (nextFloat() - 0.5); // v=v+-6
+            v +=  200 * (nextInt(2) - 0.5);  
         return v;
     }
 

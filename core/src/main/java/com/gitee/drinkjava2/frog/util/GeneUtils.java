@@ -14,6 +14,7 @@ import static com.gitee.drinkjava2.frog.brain.Genes.GENE_NUMBERS;
 import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
@@ -94,9 +95,13 @@ public class GeneUtils {
         }
     }
 
-    public static void globalParamsMutation(Animal a) { //全局参数变异, 这一个方法变异动物的所有常量
-        for (int i = 0; i < a.constGenes.length; i++) {
-            a.constGenes[i] = RandomUtils.vary(a.constGenes[i]);
+    public static void constGenesMutation(Animal a) { //全局参数变异, 这一个方法变异动物的所有常量
+        if (percent(50)) {
+            Logger.debug("Before: " + Arrays.toString(a.constGenes));
+            for (int i = 0; i < a.constGenes.length; i++) {
+                a.constGenes[i] = RandomUtils.vary(a.constGenes[i]);
+            }
+            Logger.debug("After: " + Arrays.toString(a.constGenes));
         }
     }
 
