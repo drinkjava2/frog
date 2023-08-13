@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -31,7 +32,7 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 4; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 50; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
@@ -241,6 +242,7 @@ public class Env extends JPanel {
                     Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
                     f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
                 }
+                Logger.debug(Arrays.toString(frogs.get(current_screen).constGenes)); //debug;
                 for (step = 0; step < STEPS_PER_ROUND; step++) {
                     for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
                         thing.active(current_screen, step);

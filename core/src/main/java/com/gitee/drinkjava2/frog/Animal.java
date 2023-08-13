@@ -17,7 +17,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -25,7 +24,6 @@ import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.GeneUtils;
-import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -72,7 +70,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public Image animalImage;
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
-        Logger.debug("====="+egg.constGenes[1]);
         System.arraycopy(egg.constGenes, 0, this.constGenes, 0, constGenes.length);//从蛋中拷一份全局参数
         for (int i = 0; i < GENE_NUMBERS; i++) {
             genes.add(new ArrayList<>());
@@ -99,10 +96,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
-        Logger.debug(Arrays.toString(this.constGenes));
         GeneUtils.geneMutation(this); //有小概率基因突变
-        GeneUtils.constGenesMutation(this); //常量基因突变
-        this.constGenes[1]=88;
+        GeneUtils.constGenesMutation(this); //常量基因突变 
         if (RandomUtils.percent(40))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat -= gene.size();
@@ -160,6 +155,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return x < 0 || x >= Env.BRAIN_SIZE || y < 0 || y >= Env.BRAIN_SIZE || z < 0 || z >= Env.BRAIN_SIZE;
     }
 
+    public boolean hasGene(int x, int y, int z, long geneMask) { //判断cell是否含某个基因 
+        return (cells[x][y][z] & geneMask) > 0;
+    }
+
+    public boolean hasGene(int x, int y, int z) { //判断cell是否含任一基因 
+        return cells[x][y][z] > 0;
+    }
+
     public void open(int x, int y, int z) { //打开指定的xyz坐标对应的cell能量值为极大
         energys[x][y][z] = 99999f;
     }
@@ -177,28 +180,34 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void add(int[] a, float e) {//指定的a坐标对应的cell能量值加e
+        if (cells[a[0]][a[1]][a[2]] == 0)
+            return;
         energys[a[0]][a[1]][a[2]] += e;
         if (energys[a[0]][a[1]][a[2]] < 0)
             energys[a[0]][a[1]][a[2]] = 0f;
     }
 
     public void add(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
+        if (cells[x][y][z] == 0)
+            return;
         energys[x][y][z] += e;
         if (energys[x][y][z] < 0)
             energys[x][y][z] = 0f;
     }
 
-    public float get(int[] a) {//返回指定的a坐标对应的cell能量值
-        return energys[a[0]][a[1]][a[2]];
+    public float get(int x, int y, int z) {//返回指定的a坐标对应的cell能量值
+        return energys[x][y][z];
     }
 
     public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
+        if (!hasGene(tX, tY, tZ))
+            return;
         if (!Env.insideBrain(sX, sY, sZ))
             return;
         if (!Env.insideBrain(tX, tY, tZ))
             return;
-        if (this.energys[tX][tY][tZ] < 100) //要调整
-            this.energys[tX][tY][tZ] += 1;
+        if (get(tX, tY, tZ) < 100) //要调整
+            add(tX, tY, tZ, 1);
 
         int[] cellHoles = holes[tX][tY][tZ];
         if (cellHoles == null) { //洞不存在，新建一个
@@ -245,7 +254,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             int n = i * 4;
             float size = cellHoles[n + 3];
             if (size > 1)
-                add(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], 1000*constGenes[0]); //由常量基因调整每次发送能量大小
+                add(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], 5); //由常量基因调整每次发送能量大小
         }
     }
 

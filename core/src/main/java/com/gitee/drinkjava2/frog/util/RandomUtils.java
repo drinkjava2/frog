@@ -26,11 +26,11 @@ public class RandomUtils {
     private static final Random rand = new Random();
 
     public static int nextInt(int i) {//返回随机整数，最小为0，最大为n-1
-        if(i==0)
+        if (i == 0)
             return 0;
         return rand.nextInt(i);
     }
-    
+
     public static int nextNegOrPosInt(int n) {//返回随机整数，最小为-(n-1)，最大为n-1
         int x = nextInt(n);
         if (percent(50))
@@ -53,18 +53,26 @@ public class RandomUtils {
     }
 
     public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-        if (percent(40))
-            v +=  (nextInt(2) - 0.5);  
+        if (percent(70))
+            v += (nextInt(3) - 0.5);
+        else if (percent(40))
+            v += 5 * (nextInt(2) - 0.5);
+        else if (percent(20))
+            v += 10 * (nextInt(2) - 0.5);
         else if (percent(10))
-            v +=  10 * (nextInt(2) - 0.5);  
-        else if (percent(5))
-            v +=  30 * (nextInt(2) - 0.5); 
-        else if (percent(2))
-            v +=  100 * (nextInt(2) - 0.5);  
-        else if (percent(1f))
-            v +=  200 * (nextInt(2) - 0.5);  
+            v += 20 * (nextInt(2) - 0.5);
+        else if (percent(3))
+            v += 100 * (nextInt(2) - 0.5);
         return v;
     }
+
+    //    public static void main(String[] args) {
+    //        int n=0;
+    //        for (int i = 0; i < 100; i++) {
+    //            n=vary(n);
+    //            System.out.println(n);
+    //        }
+    //    }
 
     public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
         if (percent(40))

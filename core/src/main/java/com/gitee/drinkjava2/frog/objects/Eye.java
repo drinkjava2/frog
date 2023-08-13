@@ -29,17 +29,20 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public class Eye extends DefaultEnvObject {
     private static int codeMax = 8; //1 << Env.BRAIN_CUBE_SIZE - 1;
     public static int code; //这里用code的二进制单维条码代表任务图形，随便假设被3除后余1的有毒且苦，余2的可食且甜，余0的无毒无味
+    public static final int INTERVAL = 50; //每隔多久在所有青蛙的视网膜上画一个图案
 
     @Override
     public void active(int screen, int step) {
-        if (step % 10 != 0) //每隔10步在所有青蛙的视网膜上画一个图案
-            return;
-        code = RandomUtils.nextInt(codeMax);
-        //System.out.println("code= "+code+", "+Integer.toBinaryString(code));
-        Frog f;
-        for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
-            f = Env.frogs.get(i);
-            drawImageOnEye(f, code);
+        if (step % INTERVAL == 0) { //每隔INTERVAL步在所有青蛙的视网膜上画一个图案 
+            code = RandomUtils.nextInt(codeMax);
+            //System.out.println("code= "+code+", "+Integer.toBinaryString(code));
+            Frog f;
+            for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
+                f = Env.frogs.get(i);
+                drawImageOnEye(f, code);
+            }
+        } else if (step % INTERVAL == 6) { //画完图案后延迟6步再清除这个图案
+
         }
     }
 
@@ -57,6 +60,11 @@ public class Eye extends DefaultEnvObject {
                 f.energys[0][0][z] = engery;
             i = i << 1;
         }
+    }
+
+    private static void clearImageOnEye(Frog f, int code) {//清除视网膜上图案
+        for (int z = 0; z < Env.BRAIN_SIZE; z++)
+            f.energys[0][0][z] = 0;
     }
 
 }

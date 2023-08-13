@@ -125,7 +125,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                         a.penaltyA(); //咬会消耗肌肉能量（不是脑细胞能量)，不管咬没咬中，都要给青蛙减点肥
                         if ((Eye.code % 3) == 2) { //Debug 咬中了，产生甜的感觉信号，并对青蛙嘉奖 
                             a.add(SWEET_POS, 3);
-                            a.awardAAA();
+                            a.awardAAAA();
                         }
                         for (int i = 0; i < Env.BRAIN_SIZE; i++) {
                             a.digHole(x, y, z, x - 1, y, i);
@@ -139,6 +139,8 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
                         a.holeSendEngery(x, y, z);
                     }
+                    
+                    //TODO: 甜激活要护洞的大小
 
                 }
             }

@@ -158,7 +158,7 @@ public class Application {
         };
         showSplitDetailCheckBox.addActionListener(detailAction);
         mainFrame.add(showSplitDetailCheckBox);
-        mainFrame.setBounds(0, 400, 5, 5);
+        //mainFrame.setBounds(0, 400, 5, 5);
         mainFrame.setVisible(true);
         env.run();
     }

@@ -95,14 +95,11 @@ public class GeneUtils {
         }
     }
 
-    public static void constGenesMutation(Animal a) { //全局参数变异, 这一个方法变异动物的所有常量
-        if (percent(50)) {
-            Logger.debug("Before: " + Arrays.toString(a.constGenes));
+    public static void constGenesMutation(Animal a) { //全局参数变异, 这一个方法变异动物的所有常量 
             for (int i = 0; i < a.constGenes.length; i++) {
-                a.constGenes[i] = RandomUtils.vary(a.constGenes[i]);
+                if (percent(90))
+                    a.constGenes[i] = RandomUtils.vary(a.constGenes[i]);
             }
-            Logger.debug("After: " + Arrays.toString(a.constGenes));
-        }
     }
 
     public static void geneMutation(Animal a) { //基因变异,注意这一个方法同时变异所有条基因
