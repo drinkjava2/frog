@@ -27,22 +27,17 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  * 
  */
 public class Eye extends DefaultEnvObject {
-    private static int codeMax = 8; //1 << Env.BRAIN_CUBE_SIZE - 1;
-    public static int code; //这里用code的二进制单维条码代表任务图形，随便假设被3除后余1的有毒且苦，余2的可食且甜，余0的无毒无味
-    public static final int INTERVAL = 50; //每隔多久在所有青蛙的视网膜上画一个图案
+    public static int code; //这里用code的二进制单维条码代表任务图形，随便假设被3除后余1的有毒且苦，余2的可食且甜，余0的无毒无味 (debug:调试时再简化一下，只要看到就意味可食）
 
     @Override
     public void active(int screen, int step) {
-        if (step % INTERVAL == 0) { //每隔INTERVAL步在所有青蛙的视网膜上画一个图案 
-            code = RandomUtils.nextInt(codeMax);
-            //System.out.println("code= "+code+", "+Integer.toBinaryString(code));
+        if (step % 20 == 0) { //每隔20步在所有青蛙的视网膜上画code的二进制条形码 ，设code能被3除余2即为食物（在Genes里去判断） 
+            code = RandomUtils.nextInt(8);
             Frog f;
             for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
                 f = Env.frogs.get(i);
                 drawImageOnEye(f, code);
             }
-        } else if (step % INTERVAL == 6) { //画完图案后延迟6步再清除这个图案
-
         }
     }
 
@@ -50,9 +45,6 @@ public class Eye extends DefaultEnvObject {
      * 根据code数字在视网膜上画图，即给某些神经细胞赋能量值，实验阶段先用单维的二进制条形码代替二维图像  
      */
     private static void drawImageOnEye(Frog f, int code) {
-        f.energys[0][0][0] = 5;//
-        if (1 == 1)
-            return;//debug
         long i = 1;
         for (int z = 0; z < Env.BRAIN_SIZE; z++) {
             float engery = ((code & i) > 0) ? 5f : 0;
@@ -60,11 +52,6 @@ public class Eye extends DefaultEnvObject {
                 f.energys[0][0][z] = engery;
             i = i << 1;
         }
-    }
-
-    private static void clearImageOnEye(Frog f, int code) {//清除视网膜上图案
-        for (int z = 0; z < Env.BRAIN_SIZE; z++)
-            f.energys[0][0][z] = 0;
     }
 
 }

@@ -139,7 +139,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        holesReduce(); //洞随时间消失
+        holesReduce(); //所有细胞上的洞都随时间消逝，即信息的遗忘，旧的不去新的不来
         Genes.active(this, step); //细胞之间互相传递能量 
         return alive;
     }
@@ -179,7 +179,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         energys[a[0]][a[1]][a[2]] = 0;
     }
 
-    public void add(int[] a, float e) {//指定的a坐标对应的cell能量值加e
+    public void addEng(int[] a, float e) {//指定的a坐标对应的cell能量值加e
         if (cells[a[0]][a[1]][a[2]] == 0)
             return;
         energys[a[0]][a[1]][a[2]] += e;
@@ -187,7 +187,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             energys[a[0]][a[1]][a[2]] = 0f;
     }
 
-    public void add(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
+    public void addEng(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
         if (cells[x][y][z] == 0)
             return;
         energys[x][y][z] += e;
@@ -199,6 +199,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return energys[x][y][z];
     }
 
+    static final int HOLE_MAX_SIZE = 1000 * 1000;
+
     public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
         if (!hasGene(tX, tY, tZ))
             return;
@@ -206,12 +208,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return;
         if (!Env.insideBrain(tX, tY, tZ))
             return;
-        if (get(tX, tY, tZ) < 100) //要调整
-            add(tX, tY, tZ, 1);
+        if (get(tX, tY, tZ) < 1) //要调整
+            addEng(tX, tY, tZ, 1); //要调整
 
         int[] cellHoles = holes[tX][tY][tZ];
         if (cellHoles == null) { //洞不存在，新建一个
-            holes[tX][tY][tZ] = new int[]{sX, sY, sZ, 500};
+            holes[tX][tY][tZ] = new int[]{sX, sY, sZ, 1000};
             return;
         } else {
             int emptyPos = -1; //找指定源坐标已存在的洞，如果不存在，如发现空洞也可以占用
@@ -230,7 +232,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 cellHoles[emptyPos] = sX;
                 cellHoles[emptyPos + 1] = sX;
                 cellHoles[emptyPos + 2] = sX;
-                cellHoles[emptyPos + 3] = 100; //要改成由基因调整
+                cellHoles[emptyPos + 3] = 1000; //要改成由基因调整
                 return;
             }
 
@@ -240,7 +242,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             newHoles[length] = sX;
             newHoles[length + 1] = sY;
             newHoles[length + 2] = sZ;
-            newHoles[length + 3] = 100; //要改成由基因调整
+            newHoles[length + 3] = 1000; //要改成由基因调整
             holes[tX][tY][tZ] = newHoles;
             return;
         }
@@ -254,11 +256,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             int n = i * 4;
             float size = cellHoles[n + 3];
             if (size > 1)
-                add(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], 5); //由常量基因调整每次发送能量大小
+                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], cellHoles[n + 2] / 1000); //由常量基因调整每次发送能量大小
         }
     }
 
-    public void holesReduce() {//所有hole大小都会慢慢减小，模拟触突连接随时间消失，即细胞的遗忘机制 
+    public void holesReduce() {//所有hole大小都会慢慢减小，模拟触突连接随时间消失，即细胞的遗忘机制，这保证了系统不会被信息撑爆
         for (int x = 0; x < Env.BRAIN_SIZE - 1; x++)
             for (int y = 0; y < Env.BRAIN_SIZE - 1; y++)
                 for (int z = 0; z < Env.BRAIN_SIZE - 1; z++) {

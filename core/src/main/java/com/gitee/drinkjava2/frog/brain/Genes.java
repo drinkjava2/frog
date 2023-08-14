@@ -13,6 +13,7 @@ package com.gitee.drinkjava2.frog.brain;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.objects.Eye;
+import com.gitee.drinkjava2.frog.objects.OneDotEye;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -106,25 +107,25 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
     public static void active(Animal a, int step) {
-        //                        if (true)
-        //                            return; //speeding
+
+
         for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--)
             for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
                 int y = 0;
                 long cell = a.cells[x][y][z];
-                float energy = a.energys[x][y][z];
-
-                if ((step % 20 == 0) && hasGene(cell, BITE)) {//如果没有输入，咬细胞也是有可能定时或随机激活的，模拟婴儿期随机运动
-                    a.add(x, y, z, 5);
+                if (hasGene(cell, BITE) && ((OneDotEye.code % 60) == 0)) {//如果没有输入，咬细胞也是有可能定时或随机激活的，模拟婴儿期随机运动碰巧咬下了
+                    a.addEng(x, y, z, 5);
                 }
 
+                float energy = a.energys[x][y][z];
                 if (energy >= 0.99) { //如果细胞激活了  
                     a.energys[x][y][z]--;//所有细胞能量都会自发衰减
 
                     if (hasGene(cell, BITE)) { //如果是咬细胞
                         a.penaltyA(); //咬会消耗肌肉能量（不是脑细胞能量)，不管咬没咬中，都要给青蛙减点肥
-                        if ((Eye.code % 3) == 2) { //Debug 咬中了，产生甜的感觉信号，并对青蛙嘉奖 
-                            a.add(SWEET_POS, 3);
+
+                        if ((OneDotEye.code % 20) == 0) { //Debug 这里是单点信号，如果正好咬中了，产生甜的感觉信号，并对青蛙嘉奖 
+                            a.addEng(SWEET_POS, 3);
                             a.awardAAAA();
                         }
                         for (int i = 0; i < Env.BRAIN_SIZE; i++) {
@@ -137,9 +138,9 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     }
 
                     if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
-                        a.holeSendEngery(x, y, z);
+                        //a.holeSendEngery(x, y, z);
                     }
-                    
+
                     //TODO: 甜激活要护洞的大小
 
                 }

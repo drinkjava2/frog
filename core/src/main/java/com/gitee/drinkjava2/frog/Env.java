@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
-import com.gitee.drinkjava2.frog.objects.Eye;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
+import com.gitee.drinkjava2.frog.objects.OneDotEye;
 import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -32,7 +32,7 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 50; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 3; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
@@ -84,7 +84,7 @@ public class Env extends JPanel {
 
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{new Eye()};// 所有外界物体，如食物、字母测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{new OneDotEye()};// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -256,7 +256,7 @@ public class Env extends JPanel {
                     }
 
                     if (SHOW_SPEED == 1) // 如果speed为1，人为加入延迟
-                        sleep((20));
+                        sleep((100));
                     else if (step % SHOW_SPEED != 0)// 用是否跳帧画图的方式来控制速度
                         continue;
 
