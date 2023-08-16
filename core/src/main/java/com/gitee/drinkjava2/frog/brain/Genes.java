@@ -101,13 +101,15 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
     public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
 
+    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 1};
+    public static long BITTER = registerFill(BITTER_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
+
     //========开始登记无名字的基因 =========
     static {
     }
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
     public static void active(Animal a, int step) {
-
 
         for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--)
             for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
@@ -125,8 +127,11 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                         a.penaltyA(); //咬会消耗肌肉能量（不是脑细胞能量)，不管咬没咬中，都要给青蛙减点肥
 
                         if ((OneDotEye.code % 20) == 0) { //Debug 这里是单点信号，如果正好咬中了，产生甜的感觉信号，并对青蛙嘉奖 
-                            a.addEng(SWEET_POS, 3);
+                            a.addEng(SWEET_POS, 5);
                             a.awardAAAA();
+                        } else {
+                            a.addEng(BITTER_POS, 5);
+                            a.penaltyAAA();
                         }
                         for (int i = 0; i < Env.BRAIN_SIZE; i++) {
                             a.digHole(x, y, z, x - 1, y, i);
@@ -136,12 +141,16 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     if (hasGene(cell, EYE)) {//如果是视网膜细胞，在记忆细胞上挖洞                            
                         a.digHole(x, y, z, x + 1, y, z);
                     }
-
-                    if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
-                        //a.holeSendEngery(x, y, z);
+                    
+                    if (hasGene(cell, SWEET)) {//如果是视网膜细胞，在记忆细胞上挖洞                            
+                        a.digHole(x, y, z, x + 1, y, z);
                     }
 
-                    //TODO: 甜激活要护洞的大小
+                    if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
+                        a.holeSendEngery(x, y, z);
+                    }
+
+                    //TODO: 甜激活要扩洞的大小， 苦激活要缩洞的大小，最近活动的新鲜的洞最易受影响
 
                 }
             }

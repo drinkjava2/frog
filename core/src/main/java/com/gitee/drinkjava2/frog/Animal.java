@@ -212,7 +212,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             addEng(tX, tY, tZ, 1); //要调整
 
         int[] cellHoles = holes[tX][tY][tZ];
-        if (cellHoles == null) { //洞不存在，新建一个
+        if (cellHoles == null) { //洞不存在，新建一个， 洞参数是一个一维数组，分别为源坐标X,Y,Z, 洞的大小，洞的新鲜度(TODO:待加)
             holes[tX][tY][tZ] = new int[]{sX, sY, sZ, 1000};
             return;
         } else {
@@ -256,7 +256,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             int n = i * 4;
             float size = cellHoles[n + 3];
             if (size > 1)
-                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], cellHoles[n + 2] / 1000); //由常量基因调整每次发送能量大小
+                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], 1); //由常量基因调整每次发送能量大小
         }
     }
 
