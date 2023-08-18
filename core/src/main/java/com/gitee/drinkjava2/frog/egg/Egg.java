@@ -62,6 +62,7 @@ public class Egg implements Serializable {
         x = a.x;
         y = a.y;
         genes.addAll(a.genes);
+        System.arraycopy(a.constGenes, 0, this.constGenes, 0, constGenes.length);
         if (RandomUtils.percent(20)) //插入蛋B的基因到A蛋中
             for (int i = 0; i < b.genes.size(); i++) {
                 if (RandomUtils.percent(2)) {

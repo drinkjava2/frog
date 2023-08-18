@@ -61,7 +61,7 @@ public class FrogEggTool {
                     else
                         s += first.holes[x][0][z].length + ",";
                 }
-               // Logger.debug(s);//打印出每个细胞的洞数量
+               Logger.debug("x="+x+", holes:"+s);//打印出每个细胞的洞数量
             }
 
             if (Env.SAVE_EGGS_FILE) {

@@ -98,6 +98,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         GeneUtils.geneMutation(this); //有小概率基因突变
         GeneUtils.constGenesMutation(this); //常量基因突变 
+        //changeFat(constGenes[3]*999);  //debug
         if (RandomUtils.percent(40))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat -= gene.size();
@@ -139,8 +140,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        holesReduce(); //所有细胞上的洞都随时间消逝，即信息的遗忘，旧的不去新的不来
-        Genes.active(this, step); //细胞之间互相传递能量 
+        //holesReduce(); //TODO: 所有细胞上的洞都随时间消逝，即信息的遗忘，旧的不去新的不来
+        Genes.active(this, step); //调用每个细胞的活动，重要！
         return alive;
     }
 
@@ -185,14 +186,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         energys[a[0]][a[1]][a[2]] += e;
         if (energys[a[0]][a[1]][a[2]] < 0)
             energys[a[0]][a[1]][a[2]] = 0f;
+        if (energys[a[0]][a[1]][a[2]] > 10)
+            energys[a[0]][a[1]][a[2]] = 10f;
     }
 
     public void addEng(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
         if (cells[x][y][z] == 0)
             return;
         energys[x][y][z] += e;
-        if (energys[x][y][z] < 0)
-            energys[x][y][z] = 0f;
     }
 
     public float get(int x, int y, int z) {//返回指定的a坐标对应的cell能量值
@@ -256,23 +257,23 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             int n = i * 4;
             float size = cellHoles[n + 3];
             if (size > 1)
-                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], 1); //由常量基因调整每次发送能量大小
+                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], constGenes[0]); //由常量基因调整每次发送能量大小
         }
     }
 
-    public void holesReduce() {//所有hole大小都会慢慢减小，模拟触突连接随时间消失，即细胞的遗忘机制，这保证了系统不会被信息撑爆
-        for (int x = 0; x < Env.BRAIN_SIZE - 1; x++)
-            for (int y = 0; y < Env.BRAIN_SIZE - 1; y++)
-                for (int z = 0; z < Env.BRAIN_SIZE - 1; z++) {
-                    int[] cellHoles = holes[x][y][z];
-                    if (cellHoles != null)
-                        for (int i = 0; i < cellHoles.length / 4; i++) {
-                            int n = i * 4;
-                            int size = cellHoles[n + 3];
-                            if (size > 0)
-                                cellHoles[n + 3] = (int) (size * 0.9);//要改成由基因调整
-                        }
-                }
-    }
+    //    public void holesReduce() {//所有hole大小都会慢慢减小，模拟触突连接随时间消失，即细胞的遗忘机制，这保证了系统不会被信息撑爆
+    //        for (int x = 0; x < Env.BRAIN_SIZE - 1; x++)
+    //            for (int y = 0; y < Env.BRAIN_SIZE - 1; y++)
+    //                for (int z = 0; z < Env.BRAIN_SIZE - 1; z++) {
+    //                    int[] cellHoles = holes[x][y][z];
+    //                    if (cellHoles != null)
+    //                        for (int i = 0; i < cellHoles.length / 4; i++) {
+    //                            int n = i * 4;
+    //                            int size = cellHoles[n + 3];
+    //                            if (size > 0)
+    //                                cellHoles[n + 3] = (int) (size * 0.9);//要改成由基因调整
+    //                        }
+    //                }
+    //    }
 
 }
