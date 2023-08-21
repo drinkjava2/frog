@@ -20,7 +20,28 @@ import java.awt.Color;
  */
 public class ColorUtils {
 
-    private static final Color[] rainbow = new Color[]{Color.GREEN, Color.RED, Color.BLUE, Color.MAGENTA, Color.YELLOW, Color.ORANGE , Color.CYAN,Color.GRAY};
+    public static Color[] rainbow;
+
+    static {
+        rainbow = new Color[125];
+        int i = 0;
+        for (int b = 0; b < 3; b++)
+            for (int r = 0; r < 3; r++)
+                for (int g = 0; g < 3; g++) {
+                    {
+                        {
+                            if (!(r == b && r == g)) {
+                                rainbow[i] = new Color(((r + 2) % 3) * 122, g * 122, ((b + 1) % 3) * 122);
+                                i++;
+                            }
+                        }
+
+                    }
+                }
+        Color[] t = new Color[i];
+        System.arraycopy(rainbow, 0, t, 0, i);
+        rainbow = t;
+    }
 
     private static int nextColor = 0;
 
@@ -32,7 +53,7 @@ public class ColorUtils {
     }
 
     public static Color nextRainbowColor() {// 返回下一个彩虹色
-        if (nextColor == rainbow.length)
+        if (nextColor >= rainbow.length)
             nextColor = 0;
         return rainbow[nextColor++];
     }

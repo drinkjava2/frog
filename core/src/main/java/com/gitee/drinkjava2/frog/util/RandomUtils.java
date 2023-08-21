@@ -52,27 +52,34 @@ public class RandomUtils {
         return v;
     }
 
-    public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
-        if (percent(70))
+    public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异 
+        if (percent(50))
             v += (nextInt(3) - 0.5);
-        else if (percent(40))
-            v += 5 * (nextInt(2) - 0.5);
-        else if (percent(20))
-            v += 10 * (nextInt(2) - 0.5);
-        else if (percent(10))
-            v += 20 * (nextInt(2) - 0.5);
-        else if (percent(3))
+        else if (percent(50))
+            v += 2 * (nextInt(2) - 0.5);
+        else if (percent(50))
+            v += 4 * (nextInt(2) - 0.5);
+        else if (percent(50))
+            v += 8 * (nextInt(2) - 0.5);
+        else if (percent(50))
+            v += 16 * (nextInt(2) - 0.5);
+        else if (percent(50))
+            v += 32 * (nextInt(2) - 0.5);
+        else if (percent(50))
+            v += 64 * (nextInt(2) - 0.5);
+        else if (percent(50))
             v += 100 * (nextInt(2) - 0.5);
         return v;
     }
 
-    //    public static void main(String[] args) {
-    //        int n=0;
-    //        for (int i = 0; i < 100; i++) {
-    //            n=vary(n);
-    //            System.out.println(n);
-    //        }
-    //    }
+//        public static void main(String[] args) {
+//            int n=0;
+//            for (int i = 0; i < 100; i++) {
+//                n=vary(n);
+//                if(n<0)n=0-n;
+//                System.out.println(vary(0)); 
+//            }
+//        }
 
     public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
         if (percent(40))

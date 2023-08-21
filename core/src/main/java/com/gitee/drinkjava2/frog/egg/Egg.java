@@ -52,7 +52,7 @@ public class Egg implements Serializable {
             g.addAll(gene);
             genes.add(g);
         }
-        System.arraycopy(a.constGenes, 0, this.constGenes, 0, constGenes.length);
+        System.arraycopy(a.consts, 0, this.constGenes, 0, constGenes.length);
     }
 
     /**
@@ -73,6 +73,9 @@ public class Egg implements Serializable {
                     }
                 }
             }
+        if (RandomUtils.percent(20)) {//交换蛋B的常量基因到A蛋中, 不重要，先写上
+            int n = RandomUtils.nextInt(this.constGenes.length);
+            this.constGenes[n] = b.constGenes[n];
+        }
     }
-
 }

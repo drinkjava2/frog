@@ -48,7 +48,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
-    public int[] constGenes = new int[10];
+    public int[] consts = new int[10]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
@@ -70,7 +70,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public Image animalImage;
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
-        System.arraycopy(egg.constGenes, 0, this.constGenes, 0, constGenes.length);//从蛋中拷一份全局参数
+        System.arraycopy(egg.constGenes, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数
         for (int i = 0; i < GENE_NUMBERS; i++) {
             genes.add(new ArrayList<>());
         }
@@ -98,7 +98,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         GeneUtils.geneMutation(this); //有小概率基因突变
         GeneUtils.constGenesMutation(this); //常量基因突变 
-        //changeFat(constGenes[3]*999);  //debug
         if (RandomUtils.percent(40))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat -= gene.size();
@@ -148,7 +147,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
-        g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+        //g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
     }
 
     /** Check if x,y,z out of animal's brain range */
@@ -202,7 +201,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     static final int HOLE_MAX_SIZE = 1000 * 1000;
 
-    public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
+    public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ, int holeSize) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
         if (!hasGene(tX, tY, tZ))
             return;
         if (!Env.insideBrain(sX, sY, sZ))
@@ -214,7 +213,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
         int[] cellHoles = holes[tX][tY][tZ];
         if (cellHoles == null) { //洞不存在，新建一个， 洞参数是一个一维数组，分别为源坐标X,Y,Z, 洞的大小，洞的新鲜度(TODO:待加)
-            holes[tX][tY][tZ] = new int[]{sX, sY, sZ, 1000};
+            holes[tX][tY][tZ] = new int[]{sX, sY, sZ, holeSize};
             return;
         } else {
             int emptyPos = -1; //找指定源坐标已存在的洞，如果不存在，如发现空洞也可以占用
@@ -233,7 +232,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 cellHoles[emptyPos] = sX;
                 cellHoles[emptyPos + 1] = sX;
                 cellHoles[emptyPos + 2] = sX;
-                cellHoles[emptyPos + 3] = 1000; //要改成由基因调整
+                cellHoles[emptyPos + 3] = holeSize; //要改成由基因调整
                 return;
             }
 
@@ -243,13 +242,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             newHoles[length] = sX;
             newHoles[length + 1] = sY;
             newHoles[length + 2] = sZ;
-            newHoles[length + 3] = 1000; //要改成由基因调整
+            newHoles[length + 3] = holeSize; //要改成由基因调整
             holes[tX][tY][tZ] = newHoles;
             return;
         }
     }
 
-    public void holeSendEngery(int x, int y, int z) {//在当前细胞所有洞上反向发送能量（光子)，能量值大小与洞的大小相关
+    public void holeSendEngery(int x, int y, int z, float e) {//在当前细胞所有洞上反向发送能量（光子)，能量值大小与洞的大小相关
         int[] cellHoles = holes[x][y][z]; //cellHoles是单个细胞的所有洞(触突)，4个一组，前三个是洞的坐标，后一个是洞的大小
         if (cellHoles == null) //如洞不存在，不发送能量 
             return;
@@ -257,7 +256,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             int n = i * 4;
             float size = cellHoles[n + 3];
             if (size > 1)
-                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], constGenes[0]); //由常量基因调整每次发送能量大小
+                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], e); //由常量基因调整每次发送能量大小
         }
     }
 

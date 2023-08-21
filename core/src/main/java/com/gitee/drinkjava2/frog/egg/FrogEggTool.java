@@ -51,18 +51,27 @@ public class FrogEggTool {
                 Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
             Logger.info("Fist frog fat={}, gene size={}, Last frog fat={}", first.fat, getGeneSize(first), last.fat);
 
-            //debug
+            //debug  
             for (int x = 0; x < Env.BRAIN_SIZE; x++) {
-                String s = "";
+                StringBuilder s = new StringBuilder();
                 for (int z = 0; z < Env.BRAIN_SIZE; z++) {
                     int[] holes = first.holes[x][0][z];
                     if (holes == null)
-                        s += 0 + ",";
+                        s.append("0,");
                     else
-                        s += first.holes[x][0][z].length + ",";
+                        s.append(first.holes[x][0][z].length).append(",");
                 }
-               Logger.debug("x="+x+", holes:"+s);//打印出每个细胞的洞数量
+                Logger.debug("x=" + x + ", holes:" + s);//打印出每个细胞的洞数量
             }
+
+            // Logger.debug(Arrays.toString(frogs.get(current_screen).constGenes)); //debug; 
+            StringBuilder s = new StringBuilder();
+            for (int i = 0; i < first.consts.length; i++) {
+                if (i != 0)
+                    s.append(", ");
+                s.append("\t" + i).append("=").append(first.consts[i]);
+            }
+            Logger.debug("consts: " + s);
 
             if (Env.SAVE_EGGS_FILE) {
                 FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");

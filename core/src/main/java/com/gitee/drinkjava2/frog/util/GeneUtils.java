@@ -96,9 +96,9 @@ public class GeneUtils {
     }
 
     public static void constGenesMutation(Animal a) { //全局参数变异, 这一个方法变异动物的所有常量 
-            for (int i = 0; i < a.constGenes.length; i++) {
+            for (int i = 0; i < a.consts.length; i++) {
                 if (percent(20))
-                    a.constGenes[i] = RandomUtils.vary(a.constGenes[i]);
+                    a.consts[i] = RandomUtils.vary(a.consts[i]);
             }
     }
 

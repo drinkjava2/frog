@@ -144,6 +144,10 @@ public class BrainPicture extends JPanel {
         drawLine(x, y + ye, z + ze, x, y, z + ze);
     }
 
+    public void drawCentLine(float px1, float py1, float pz1, float px2, float py2, float pz2) {//从细胞中点之间画一条线
+        drawLine(px1 + 0.5f, py1 + 0.5f, pz1 + 0.5f, px2 + 0.5f, py2 + 0.5f, pz2 + 0.5f);
+    }
+
     /*-
       画线，固定以top视角的角度，所以只需要从x1,y1画一条到x2,y2的直线	
     	绕 x 轴旋转 θ
@@ -350,10 +354,16 @@ public class BrainPicture extends JPanel {
                     long cell = a.cells[x][y][z];
                     // if (cell == 0) //只显示有效的细胞点
                     //    continue;
-                    if (a.energys[x][y][z] > 0.3) { //用大红色圆形画出能量大于1的细胞格
-                        setPicColor(Color.MAGENTA); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
-                        drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, 1.2f);
+
+                    int[] holes = a.holes[x][y][z];
+                    if (holes != null) {
+                        setPicColor(Color.GRAY);
+                        for (int i = 0; i < holes.length / 4; i++) {
+                            int n = i * 4;
+                            drawCentLine(x, y, z, holes[n], holes[n + 1], holes[n + 2]);
+                        }
                     }
+
                     if (x >= xMask && y >= yMask && cell != 0)//画出细胞每个基因存在的细胞格子
                         for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
                             if ((cell & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
@@ -363,6 +373,14 @@ public class BrainPicture extends JPanel {
                                 drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.6f);
                             }
                         }
+
+                    if (a.energys[x][y][z] > 0.2) {
+                        setPicColor(Color.RED); //用红色小圆画出能量大于0.2的细胞格
+                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.2f);
+                        float size = (float) (0.5f + 0.4 * Math.log10(a.energys[x][y][z]));//再用不同大小圆形表示不同能量值  
+                        drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
+                    }
+
                 }
             }
         }
@@ -371,9 +389,9 @@ public class BrainPicture extends JPanel {
         drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来
 
         setPicColor(BLACK); //把x,y,z坐标画出来
-        drawText(Env.BRAIN_SIZE, 0, 0, "x", 2);
-        drawText(0, Env.BRAIN_SIZE, 0, "y", 2);
-        drawText(0, 0, Env.BRAIN_SIZE, "z", 2);
+        drawText(Env.BRAIN_SIZE, 0, 0, "x", Env.BRAIN_SIZE*0.2f);
+        drawText(0, Env.BRAIN_SIZE, 0, "y", Env.BRAIN_SIZE*0.2f);
+        drawText(0, 0, Env.BRAIN_SIZE, "z", Env.BRAIN_SIZE*0.2f);
         setPicColor(RED);
         drawLine(0, 0, 0, Env.BRAIN_SIZE, 0, 0);
         drawLine(0, 0, 0, 0, Env.BRAIN_SIZE, 0);
@@ -387,6 +405,12 @@ public class BrainPicture extends JPanel {
 
         g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         g.drawString("step:" + step, 10, 10);
+
+        //        for (int y = 0; y < ColorUtils.rainbow.length; y += 1) {//调试彩虹色
+        //            g.setColor(ColorUtils.rainbow[y]);
+        //            for (int i = 0; i < 9; i++)
+        //                g.drawLine(0, y * 9 + i, 50, y * 9 + i);
+        //        }
 
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
     }
