@@ -59,14 +59,14 @@ public class FrogEggTool {
                     if (holes == null)
                         s.append("0,");
                     else
-                        s.append(first.holes[x][0][z].length).append(",");
+                        s.append(first.holes[x][0][z].length/4).append(",");
                 }
                 Logger.debug("x=" + x + ", holes:" + s);//打印出每个细胞的洞数量
             }
 
             // Logger.debug(Arrays.toString(frogs.get(current_screen).constGenes)); //debug; 
             StringBuilder s = new StringBuilder();
-            for (int i = 0; i < first.consts.length; i++) {
+            for (int i = 0; i < Animal.CONSTS_LENGTH; i++) {
                 if (i != 0)
                     s.append(", ");
                 s.append("\t" + i).append("=").append(first.consts[i]);

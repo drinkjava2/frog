@@ -93,16 +93,20 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
     //============开始登记有名字的基因==========
     public static long EYE = registerFill(0, 0, 0); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
+
     public static long MEM = registerFill(1, 0, 0); //记忆细胞，暂时只允许它分布在x=1,y=0的z轴上
 
     public static int[] BITE_POS = new int[]{2, 0, 0};
     public static long BITE = registerFill(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
 
-    public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
-    public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
+    //    public static int[] NOT_BITE_POS = new int[]{2, 0, CS4};
+    //    public static long NOT_BITE = registerFill(NOT_BITE_POS); //不咬动作细胞定义在一个点上, 这个细胞如激活，就不咬食物
 
-    //    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 1};
-    //    public static long BITTER = registerFill(BITTER_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
+    //    public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
+    //    public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
+
+    //    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 3};
+    //    public static long BITTER = registerFill(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
 
     //========开始登记无名字的基因 =========
     static {
@@ -115,43 +119,30 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
             for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
                 int y = 0;
                 long cell = a.cells[x][y][z];
-                if (hasGene(cell, BITE) && ((OneDotEye.code % 60) == 0)) {//如果没有输入，咬细胞也是有可能定时或随机激活的，模拟婴儿期随机运动碰巧咬下了
+                if (hasGene(cell, BITE) && ((OneDotEye.code % 200) == 0)) {//如果没有输入，咬细胞也是有可能定时或随机激活的，模拟婴儿期随机运动碰巧咬下了
                     a.addEng(x, y, z, a.consts[1]);
                 }
 
                 float energy = a.energys[x][y][z];
-                if (energy >= a.consts[2] / 2.0f) { //如果细胞激活了  
-                    a.energys[x][y][z] -= a.consts[3] / 2.f;//所有细胞能量都会自发衰减
+                if (energy >= 0.1f) { //如果细胞激活了  
+                    a.energys[x][y][z] -= a.consts[2] / 2.f;//所有细胞能量都会自发衰减
 
                     if (hasGene(cell, BITE)) { //如果是咬细胞
-                        //a.penaltyA(); //咬会消耗肌肉能量（不是脑细胞能量)，不管咬没咬中，都要给青蛙减点肥
-
-                        if ((OneDotEye.code % 20) == 0) { //Debug 这里是单点信号，如果正好咬中了，产生甜的感觉信号，并对青蛙嘉奖 
-                            a.addEng(SWEET_POS, a.consts[4]);
-                            a.awardAAAA();
-                            // a.changeFat(a.consts[9]*1000);//debug，这里可以发现，如果使用常量参数作为奖励，常量参数会在遗传算法筛选下越变越大，当然了，这个只是调试，奖励值应该以咬中为准才对
+                        if ((OneDotEye.code % 20) == 0) { //从上帝视角知道被20整除正好是OneDotEye看到食物出现的时刻 
+                            a.awardAAAA(); //所以必然咬中，奖励脂肪
                         } else {
-                            //a.addEng(BITTER_POS, 5);
-                            a.penaltyAAA();
+                            a.penaltyAA(); //其它时间是咬错了，罚  （很有意思，如果注释掉此行，即没有惩罚时，会在记忆和咬之间形成一个保持激活的自锁）
                         }
-                        for (int zz = 0; zz < Env.BRAIN_SIZE; zz++) {
-                            a.digHole(x, y, z, x - 1, y, zz, a.consts[5]);
-                        }
+                        a.digHole(x, y, z, x - 1, y, z, a.consts[3]);//咬细胞在记忆细胞上挖洞
                     }
 
-                    if (hasGene(cell, EYE)) {//如果是视网膜细胞，在记忆细胞上挖洞                            
-                        a.digHole(x, y, z, x + 1, y, z, a.consts[6]);
+                    if (hasGene(cell, EYE)) {//视网膜细胞在记忆细胞上挖洞                            
+                        a.digHole(x, y, z, x + 1, y, z, a.consts[4]);
                     }
 
-                    //                    if (hasGene(cell, SWEET)) {//如果是视网膜细胞，在记忆细胞上挖洞                            
-                    //                        a.digHole(x, y, z, x + 1, y, z, a.consts[7]);
-                    //                    }
-
-                    if (hasGene(cell, MEM)) {//如果是记忆细胞，在当前细胞所有洞上反向发送能量
-                        a.holeSendEngery(x, y, z, a.consts[8]);
+                    if (hasGene(cell, MEM)) {//记忆细胞，在当前细胞所有洞上反向发送能量
+                        a.holeSendEngery(x, y, z, a.consts[5], a.consts[5]);
                     }
-
-                    //TODO: 甜激活要扩洞的大小， 苦激活要缩洞的大小，最近活动的新鲜的洞最易受影响
 
                 }
             }

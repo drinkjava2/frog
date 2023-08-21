@@ -48,7 +48,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
-    public int[] consts = new int[10]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
+
+    public static final int CONSTS_LENGTH = 7;
+    public int[] consts = new int[CONSTS_LENGTH]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
@@ -118,14 +120,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
    
     //没定各个等级的奖罚值，目前是手工设定的常数
     public void awardAAAA()      { changeFat(2000);}
-    public void awardAAA()   { changeFat(100);}
-    public void awardAA()     { changeFat(5);}      
-    public void awardA()   { changeFat(1);}
+    public void awardAAA()   { changeFat(1000);}
+    public void awardAA()     { changeFat(50);}      
+    public void awardA()   { changeFat(10);}
     
     public void penaltyAAAA()    { changeFat(-2000);}
-    public void penaltyAAA() { changeFat(-100);}
-    public void penaltyAA()   { changeFat(-5);}
-    public void penaltyA()   { changeFat(-1);}
+    public void penaltyAAA() { changeFat(-1000);}
+    public void penaltyAA()   { changeFat(-50);}
+    public void penaltyA()   { changeFat(-10);}
     public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
@@ -248,15 +250,20 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    public void holeSendEngery(int x, int y, int z, float e) {//在当前细胞所有洞上反向发送能量（光子)，能量值大小与洞的大小相关
+    public void holeSendEngery(int x, int y, int z, float le, float re) {//在当前细胞所有洞上反向发送能量（光子)，le是向左边的细胞发， re是向右边的细胞发
         int[] cellHoles = holes[x][y][z]; //cellHoles是单个细胞的所有洞(触突)，4个一组，前三个是洞的坐标，后一个是洞的大小
         if (cellHoles == null) //如洞不存在，不发送能量 
             return;
         for (int i = 0; i < cellHoles.length / 4; i++) {
             int n = i * 4;
             float size = cellHoles[n + 3];
-            if (size > 1)
-                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], e); //由常量基因调整每次发送能量大小
+            if (size > 1) {
+                int x2 = cellHoles[n];
+                if (x2 < x)
+                    addEng(x2, cellHoles[n + 1], cellHoles[n + 2], le); //向左边的细胞反向发送常量大小的能量
+                else
+                    addEng(x2, cellHoles[n + 1], cellHoles[n + 2], re); //向右边的细胞反向发送常量大小的能量
+            }
         }
     }
 
