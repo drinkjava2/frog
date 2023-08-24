@@ -49,7 +49,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
 
-    public static final int CONSTS_LENGTH = 7;
+    public static final int CONSTS_LENGTH = 8;
     public int[] consts = new int[CONSTS_LENGTH]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
@@ -65,7 +65,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public int yPos; // animal在Env中的y坐标
     public long fat = 1000000000; // 青蛙的肥胖度, 只有胖的青蛙才允许下蛋, 以前版本这个变量名为energy，为了不和脑细胞的能量重名，从这个版本起改名为fat
     public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
-    public int ateFood = 0; // 青蛙曾吃过的食物总数，下蛋时如果两个青蛙fat相等，可以比数量
+    public int ateFood = 0; // 青蛙曾吃过的食物总数
+    public int ateWrong = 0; // 青蛙咬了个空气的次数
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
 
     public int animalMaterial;

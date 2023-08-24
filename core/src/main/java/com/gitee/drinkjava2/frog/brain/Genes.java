@@ -14,6 +14,7 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.objects.Eye;
 import com.gitee.drinkjava2.frog.objects.OneDotEye;
+import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -119,19 +120,23 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
             for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
                 int y = 0;
                 long cell = a.cells[x][y][z];
-                if (hasGene(cell, BITE) && ((OneDotEye.code % 200) == 0)) {//如果没有输入，咬细胞也是有可能定时或随机激活的，模拟婴儿期随机运动碰巧咬下了
-                    a.addEng(x, y, z, a.consts[1]);
+                if (a.consts[7] == 0)
+                    a.consts[7] = 1;
+                if (hasGene(cell, BITE) && (step < 300) && ((OneDotEye.code % 100) == 0)) {//如果没有输入，咬细胞也是有可能定时或随机激活的，模拟婴儿期随机运动碰巧咬下了
+                    a.addEng(x, y, z, a.consts[1] / 10);
                 }
 
                 float energy = a.energys[x][y][z];
-                if (energy >= 0.1f) { //如果细胞激活了  
-                    a.energys[x][y][z] -= a.consts[2] / 2.f;//所有细胞能量都会自发衰减
+                if (energy >= 1f) { //如果细胞激活了  
+                     a.energys[x][y][z] =  a.energys[x][y][z] - Math.abs( a.consts[2]) * 0.2f ;//所有细胞能量都会自发衰减
 
                     if (hasGene(cell, BITE)) { //如果是咬细胞
                         if ((OneDotEye.code % 20) == 0) { //从上帝视角知道被20整除正好是OneDotEye看到食物出现的时刻 
-                            a.awardAAAA(); //所以必然咬中，奖励脂肪
+                            a.awardAAAA(); //所以必然咬中，奖励脂肪 
+                            a.ateFood++;
                         } else {
                             a.penaltyAA(); //其它时间是咬错了，罚  （很有意思，如果注释掉此行，即没有惩罚时，会在记忆和咬之间形成一个保持激活的自锁）
+                            a.ateWrong++;
                         }
                         a.digHole(x, y, z, x - 1, y, z, a.consts[3]);//咬细胞在记忆细胞上挖洞
                     }
@@ -141,7 +146,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     }
 
                     if (hasGene(cell, MEM)) {//记忆细胞，在当前细胞所有洞上反向发送能量
-                        a.holeSendEngery(x, y, z, a.consts[5], a.consts[5]);
+                        a.holeSendEngery(x, y, z, a.consts[5], a.consts[6]);
                     }
 
                 }

@@ -25,8 +25,8 @@ public class ColorUtils {
     static {
         rainbow = new Color[125];
         int i = 0;
-        for (int b = 0; b < 3; b++)
-            for (int r = 0; r < 3; r++)
+        for (int r = 0; r < 3; r++)
+            for (int b = 0; b < 3; b++)
                 for (int g = 0; g < 3; g++) {
                     {
                         {

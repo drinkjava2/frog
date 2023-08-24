@@ -373,11 +373,11 @@ public class BrainPicture extends JPanel {
                                 drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.6f);
                             }
                         }
-
-                    if (a.energys[x][y][z] > 0.2) {
-                        setPicColor(Color.RED); //用红色小圆画出能量大于0.2的细胞格
+                    float e = a.energys[x][y][z];
+                    if (e > 1f || e < -1f) {
+                        setPicColor(e > 0 ? Color.RED : Color.BLUE); //用红色小圆表示正能量，蓝色表示负能量
                         drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.2f);
-                        float size = (float) (0.5f + 0.4 * Math.log10(a.energys[x][y][z]));//再用不同大小圆形表示不同能量值  
+                        float size = (float) (0.5f + 0.4 * Math.log10(Math.abs(e)));//再用不同大小圆形表示不同能量值  
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
                     }
 
@@ -389,9 +389,9 @@ public class BrainPicture extends JPanel {
         drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来
 
         setPicColor(BLACK); //把x,y,z坐标画出来
-        drawText(Env.BRAIN_SIZE, 0, 0, "x", Env.BRAIN_SIZE*0.2f);
-        drawText(0, Env.BRAIN_SIZE, 0, "y", Env.BRAIN_SIZE*0.2f);
-        drawText(0, 0, Env.BRAIN_SIZE, "z", Env.BRAIN_SIZE*0.2f);
+        drawText(Env.BRAIN_SIZE, 0, 0, "x", Env.BRAIN_SIZE * 0.2f);
+        drawText(0, Env.BRAIN_SIZE, 0, "y", Env.BRAIN_SIZE * 0.2f);
+        drawText(0, 0, Env.BRAIN_SIZE, "z", Env.BRAIN_SIZE * 0.2f);
         setPicColor(RED);
         drawLine(0, 0, 0, Env.BRAIN_SIZE, 0, 0);
         drawLine(0, 0, 0, 0, Env.BRAIN_SIZE, 0);
@@ -404,7 +404,7 @@ public class BrainPicture extends JPanel {
         }
 
         g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-        g.drawString("step:" + step, 10, 10);
+        g.drawString("step:" + step + ", ate:" + a.ateFood + ", wrong:" + a.ateWrong, 10, 15);
 
         //        for (int y = 0; y < ColorUtils.rainbow.length; y += 1) {//调试彩虹色
         //            g.setColor(ColorUtils.rainbow[y]);
