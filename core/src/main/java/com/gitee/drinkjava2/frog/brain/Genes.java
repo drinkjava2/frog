@@ -103,11 +103,11 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     //    public static int[] NOT_BITE_POS = new int[]{2, 0, CS4};
     //    public static long NOT_BITE = registerFill(NOT_BITE_POS); //不咬动作细胞定义在一个点上, 这个细胞如激活，就不咬食物
 
-    //    public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
-    //    public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
+    public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
+    public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
 
-    //    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 3};
-    //    public static long BITTER = registerFill(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
+    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 3};
+    public static long BITTER = registerFill(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
 
     //========开始登记无名字的基因 =========
     static {
@@ -133,6 +133,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     if (hasGene(cell, BITE)) { //如果是咬细胞
                         if ((OneDotEye.code % 20) == 0) { //从上帝视角知道被20整除正好是OneDotEye看到食物出现的时刻 
                             a.awardAAAA(); //所以必然咬中，奖励
+                            
                             a.ateFood++;
                         } else {
                             a.penaltyAA(); //其它时间是咬错了，罚。 可以改成penaltyAAAA或去除本行试试  

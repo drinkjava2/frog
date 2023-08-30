@@ -31,7 +31,7 @@ public class ColorUtils {
                     {
                         {
                             if (!(r == b && r == g)) {
-                                rainbow[i] = new Color(((r + 2) % 3) * 122, g * 122, ((b + 1) % 3) * 122);
+                                rainbow[i] = new Color(((r + 2) % 3) * 122, g * 100, ((b + 1) % 3) * 88);
                                 i++;
                             }
                         }
