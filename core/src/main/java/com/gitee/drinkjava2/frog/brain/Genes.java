@@ -11,6 +11,18 @@
 package com.gitee.drinkjava2.frog.brain;
 
 import static com.gitee.drinkjava2.frog.brain.Consts.*;
+import static com.gitee.drinkjava2.frog.brain.Consts.ADD_BTR;
+import static com.gitee.drinkjava2.frog.brain.Consts.ADD_SWT;
+import static com.gitee.drinkjava2.frog.brain.Consts.BITE_M;
+import static com.gitee.drinkjava2.frog.brain.Consts.BTR_BITE;
+import static com.gitee.drinkjava2.frog.brain.Consts.BTR_M;
+import static com.gitee.drinkjava2.frog.brain.Consts.BTR_SWT;
+import static com.gitee.drinkjava2.frog.brain.Consts.EYE_M;
+import static com.gitee.drinkjava2.frog.brain.Consts.M_REVERSE;
+import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_BITE;
+import static com.gitee.drinkjava2.frog.brain.Consts.SWT_BITE;
+import static com.gitee.drinkjava2.frog.brain.Consts.SWT_BTR;
+import static com.gitee.drinkjava2.frog.brain.Consts.SWT_M;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
@@ -92,7 +104,8 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     private static final int CS4 = Env.BRAIN_SIZE / 4;
 
     //============开始登记有名字的基因==========
-    public static long EYE = registerFill(0, 0, 0); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
+    public static int[] EYE_POS = new int[]{0, 0, 0};
+    public static long EYE = registerFill(EYE_POS); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
 
     public static int[] MEM_POS = new int[]{1, 0, 0}; //记忆细胞，暂时只允许它分布在x=1,y=0的z轴上
     public static long MEM = registerFill(MEM_POS); //记忆细胞，暂时只允许它分布在一个点上
@@ -103,11 +116,11 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     //    public static int[] NOT_BITE_POS = new int[]{2, 0, CS4};
     //    public static long NOT_BITE = registerFill(NOT_BITE_POS); //不咬动作细胞定义在一个点上, 这个细胞如激活，就不咬食物
 
-//    public static int[] SWEET_POS = new int[]{2, 0, CS4 * 2};
-//    public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
-//
-//    public static int[] BITTER_POS = new int[]{2, 0, CS4 * 3};
-//    public static long BITTER = registerFill(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
+    public static int[] SWEET_POS = new int[]{3, 0, CS4 * 2};
+    public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
+
+    public static int[] BITTER_POS = new int[]{3, 0, CS4 * 3};
+    public static long BITTER = registerFill(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
 
     //========开始登记无名字的基因 =========
     static {
@@ -126,39 +139,46 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                 }
 
                 float energy = a.energys[x][y][z];
-                if (energy >= 1f) { //如果细胞激活了  
-                    a.energys[x][y][z] -= a.consts[SUB_ALL] * 0.2f;//所有细胞能量都会自发衰减
+                if (energy >= 1f) { //如果细胞激活了   
 
                     if (hasGene(cell, BITE)) { //如果是咬细胞
+                        a.addEng(src, -Math.abs(REDUCE_BITE));//细胞能量自发衰减 
+
                         if ((OneDotEye.code % 20) == 0) { //从上帝视角知道被20整除正好是OneDotEye看到食物出现的时刻 
                             a.awardAAAA(); //所以必然咬中，奖励 
                             a.ateFood++;
-                            //a.addEng(SWEET_POS, a.c(11] / 10); //咬中了，系统激活甜味细胞
+                            a.addEng(SWEET_POS, a.consts[ADD_SWT]); //咬中了，系统激活甜味细胞
                         } else {
                             a.penaltyAA(); //其它时间是咬错了，罚。 可以改成penaltyAAAA或去除本行试试  
                             a.ateWrong++;
-                            // a.addEng(BITTER_POS, a.c(12]); //空咬了，系统激活苦味细胞, 有点怪
+                            a.addEng(BITTER_POS, a.consts[ADD_BTR]); //空咬了，系统激活苦味细胞, 有点怪
                         }
-                        a.digHole(src, MEM_POS, a.consts[D_BITE_M]);//咬细胞在记忆细胞上挖洞
+                        a.digHole(src, MEM_POS, a.consts[BITE_M]);//咬细胞在记忆细胞上挖洞
                     }
 
-                    if (hasGene(cell, EYE)) {//视网膜细胞在记忆细胞上挖洞                            
-                        a.digHole(x, y, z, x + 1, y, z, a.consts[E_M]);
+                    if (hasGene(cell, EYE)) {//视网膜细胞在记忆细胞上挖洞          
+                        a.addEng(src, -Math.abs(REDUCE_EYE));//细胞能量自发衰减                 
+                        a.digHole(src, EYE_POS, a.consts[EYE_M]);
                     }
 
                     if (hasGene(cell, MEM)) {//记忆细胞，在当前细胞所有洞上反向发送能量
-                        a.holeSendEngery(x, y, z, a.consts[M_L], a.consts[M_R]);
+                        a.addEng(src, -Math.abs(REDUCE_MEM));//细胞能量自发衰减
+                        a.holeSendEngery(src, a.consts[M_REVERSE]);
                     }
 
-//                    if (hasGene(cell, SWEET)) {//视网膜细胞在记忆细胞上挖洞                            
-//                        a.digHole(x, y, z, MEM_POS, a.consts[SWT_M]);
-//                        a.digHole(x, y, z, BITE_POS, a.consts[SWT_B]);
-//                    }
-//
-//                    if (hasGene(cell, BITTER)) {//视网膜细胞在记忆细胞上挖洞                            
-//                        a.digHole(x, y, z, MEM_POS, a.consts[BTR_M]);
-//                        a.digHole(x, y, z, BITE_POS, a.consts[BTR_B]);
-//                    }
+                    if (hasGene(cell, SWEET)) {//视网膜细胞在记忆细胞上挖洞         
+                        a.addEng(src, -Math.abs(REDUCE_SWT));//细胞能量自发衰减
+                        a.digHole(src, MEM_POS, a.consts[SWT_M]);
+                        a.digHole(src, BITE_POS, a.consts[SWT_BITE]);
+                        a.digHole(src, BITTER_POS, a.consts[SWT_BTR]);
+                    }
+
+                    if (hasGene(cell, BITTER)) {//视网膜细胞在记忆细胞上挖洞         
+                        a.addEng(src, -Math.abs(REDUCE_BTR));//细胞能量自发衰减
+                        a.digHole(src, MEM_POS, a.consts[BTR_M]);
+                        a.digHole(src, BITE_POS, a.consts[BTR_BITE]);
+                        a.digHole(src, SWEET_POS, a.consts[BTR_SWT]);
+                    }
 
                 }
             }

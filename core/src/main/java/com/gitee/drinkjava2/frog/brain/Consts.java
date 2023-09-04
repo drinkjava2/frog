@@ -34,17 +34,35 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public class Consts {
     public static int LENGTH; //总变量数量
 
-    public static final int Eye = 0;
-    public static final int ADD_BITE = 1;
-    public static final int SUB_ALL = 2;
-    public static final int D_BITE_M = 3;
-    public static final int E_M = 4;
-    public static final int M_L = 5;
-    public static final int M_R = 6;
-//    public static final int SWT_M = 7;
-//    public static final int SWT_B = 8;
-//    public static final int BTR_M = 9;
-//    public static final int BTR_B = 10;
+    private static int index_ = 0;
+
+    private static int index() {
+        return index_++;
+    }
+
+    public static final int ADD_EYE = index();
+    public static final int ADD_BITE = index();
+    public static final int ADD_SWT = index();
+    public static final int ADD_BTR = index();
+
+    public static final int REDUCE_BITE = index();
+    public static final int REDUCE_SWT = index();
+    public static final int REDUCE_BTR = index();
+    public static final int REDUCE_EYE = index();
+    public static final int REDUCE_MEM = index();
+
+    public static final int M_REVERSE = index();
+
+    public static final int BITE_M = index();
+    public static final int EYE_M = index();
+
+    public static final int SWT_M = index();
+    public static final int SWT_BITE = index();
+    public static final int SWT_BTR = index();
+
+    public static final int BTR_M = index();
+    public static final int BTR_BITE = index();
+    public static final int BTR_SWT = index();
 
     private static Map<String, Field> fields = new HashMap<String, Field>();
     private static Map<String, Integer> values = new LinkedHashMap<String, Integer>();
@@ -54,7 +72,7 @@ public class Consts {
             Class c = Consts.class;
             Field[] fs = c.getDeclaredFields();
             for (Field f : fs) {
-                if (int.class.equals(f.getType()) && !"LENGTH".equals(f.getName())) {
+                if (int.class.equals(f.getType()) && !"LENGTH".equals(f.getName()) && !"index_".equals(f.getName())) {
                     fields.put(f.getName(), f);
                     values.put(f.getName(), f.getInt(null));
                 }

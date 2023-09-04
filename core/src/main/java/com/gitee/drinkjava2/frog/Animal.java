@@ -190,6 +190,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         if (cells[x][y][z] == 0)
             return;
         energys[x][y][z] += e;
+        if (energys[x][y][z] > 100)
+            energys[x][y][z] = 100;
+        if (energys[x][y][z] < -100)
+            energys[x][y][z] = -100;
     }
 
     public float get(int x, int y, int z) {//返回指定的a坐标对应的cell能量值
@@ -235,8 +239,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
             if (emptyPos > -1) { //找到一个空洞
                 cellHoles[emptyPos] = sX;
-                cellHoles[emptyPos + 1] = sX;
-                cellHoles[emptyPos + 2] = sX;
+                cellHoles[emptyPos + 1] = sY;
+                cellHoles[emptyPos + 2] = sZ;
                 cellHoles[emptyPos + 3] = holeSize; //要改成由基因调整
                 return;
             }
@@ -253,7 +257,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
     }
 
-    public void holeSendEngery(int x, int y, int z, float le, float re) {//在当前细胞所有洞上反向发送能量（光子)，le是向左边的细胞发， re是向右边的细胞发
+    public void holeSendEngery(int[] pos, float e) {//在当前细胞所有洞上反向发送能量（光子)，le是向左边的细胞发， re是向右边的细胞发
+        holeSendEngery(pos[0], pos[1], pos[2], e);
+    }
+
+    public void holeSendEngery(int x, int y, int z, float e) {//在当前细胞所有洞上反向发送能量（光子)，le是向左边的细胞发， re是向右边的细胞发
         int[] cellHoles = holes[x][y][z]; //cellHoles是单个细胞的所有洞(触突)，4个一组，前三个是洞的坐标，后一个是洞的大小
         if (cellHoles == null) //如洞不存在，不发送能量 
             return;
@@ -261,11 +269,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             int n = i * 4;
             float size = cellHoles[n + 3];
             if (size > 1) {
-                int x2 = cellHoles[n];
-                if (x2 < x)
-                    addEng(x2, cellHoles[n + 1], cellHoles[n + 2], le); //向左边的细胞反向发送常量大小的能量
-                else
-                    addEng(x2, cellHoles[n + 1], cellHoles[n + 2], re); //向右边的细胞反向发送常量大小的能量
+                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], e); //向源细胞反向发送常量大小的能量 
             }
         }
     }
