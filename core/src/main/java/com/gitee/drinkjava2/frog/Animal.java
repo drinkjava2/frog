@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import com.gitee.drinkjava2.frog.brain.Consts;
 import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Material;
@@ -49,8 +50,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
 
-    public static final int CONSTS_LENGTH = 8;
-    public int[] consts = new int[CONSTS_LENGTH]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
+    public int[] consts = new int[Consts.LENGTH]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
@@ -100,7 +100,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         GeneUtils.geneMutation(this); //有小概率基因突变
-        GeneUtils.constGenesMutation(this); //常量基因突变 
+        Consts.constMutation(this);//常量基因突变  
         if (RandomUtils.percent(40))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat -= gene.size();
@@ -183,13 +183,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void addEng(int[] a, float e) {//指定的a坐标对应的cell能量值加e
-        if (cells[a[0]][a[1]][a[2]] == 0)
-            return;
-        energys[a[0]][a[1]][a[2]] += e;
-        if (energys[a[0]][a[1]][a[2]] < 0)
-            energys[a[0]][a[1]][a[2]] = 0f;
-        if (energys[a[0]][a[1]][a[2]] > 10)
-            energys[a[0]][a[1]][a[2]] = 10f;
+        addEng(a[0], a[1], a[2], e);
     }
 
     public void addEng(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
@@ -203,6 +197,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     static final int HOLE_MAX_SIZE = 1000 * 1000;
+
+    public void digHole(int[] srcPos, int[] targetPos, int holeSize) {
+        digHole(srcPos[0], srcPos[1], srcPos[2], targetPos[0], targetPos[1], targetPos[2], holeSize);
+    }
+
+    public void digHole(int sX, int sY, int sZ, int[] targetPos, int holeSize) {
+        digHole(sX, sY, sZ, targetPos[0], targetPos[1], targetPos[2], holeSize);
+    }
 
     public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ, int holeSize) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
         if (!hasGene(tX, tY, tZ))

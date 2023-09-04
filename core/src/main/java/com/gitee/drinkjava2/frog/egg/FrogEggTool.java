@@ -23,6 +23,7 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
+import com.gitee.drinkjava2.frog.brain.Consts;
 import com.gitee.drinkjava2.frog.util.LocalFileUtils;
 import com.gitee.drinkjava2.frog.util.Logger;
 
@@ -59,19 +60,12 @@ public class FrogEggTool {
                     if (holes == null)
                         s.append("0,");
                     else
-                        s.append(first.holes[x][0][z].length/4).append(",");
+                        s.append(first.holes[x][0][z].length / 4).append(",");
                 }
                 Logger.debug("x=" + x + ", holes:" + s);//打印出每个细胞的洞数量
             }
 
-            // Logger.debug(Arrays.toString(frogs.get(current_screen).constGenes)); //debug; 
-            StringBuilder s = new StringBuilder();
-            for (int i = 0; i < Animal.CONSTS_LENGTH; i++) {
-                if (i != 0)
-                    s.append(", ");
-                s.append("\t" + i).append("=").append(first.consts[i]);
-            }
-            Logger.debug("consts: " + s);
+            Consts.printLog(first);//debug;  打印出每个细胞的常量
 
             if (Env.SAVE_EGGS_FILE) {
                 FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");

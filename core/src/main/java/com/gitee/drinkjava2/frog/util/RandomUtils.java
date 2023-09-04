@@ -52,34 +52,38 @@ public class RandomUtils {
         return v;
     }
 
-    public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异 
-        if (percent(50))
-            v += (nextInt(3) - 0.5);
-        else if (percent(50))
-            v += 2 * (nextInt(2) - 0.5);
-        else if (percent(50))
-            v += 4 * (nextInt(2) - 0.5);
-        else if (percent(50))
-            v += 8 * (nextInt(2) - 0.5);
-        else if (percent(50))
-            v += 16 * (nextInt(2) - 0.5);
-        else if (percent(50))
-            v += 32 * (nextInt(2) - 0.5);
-        else if (percent(50))
-            v += 64 * (nextInt(2) - 0.5);
-        else if (percent(50))
-            v += 100 * (nextInt(2) - 0.5);
-        return v;
+    //    public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异 
+    //        if (percent(50))
+    //            v += (nextInt(3) - 0.5);
+    //        else if (percent(50))
+    //            v += 2 * (nextInt(2) - 0.5);
+    //        else if (percent(50))
+    //            v += 4 * (nextInt(2) - 0.5);
+    //        else if (percent(50))
+    //            v += 8 * (nextInt(2) - 0.5);
+    //        else if (percent(50))
+    //            v += 16 * (nextInt(2) - 0.5);
+    //        else if (percent(50))
+    //            v += 32 * (nextInt(2) - 0.5);
+    //        else if (percent(50))
+    //            v += 64 * (nextInt(2) - 0.5);
+    //        else if (percent(50))
+    //            v += 100 * (nextInt(2) - 0.5);
+    //        return v;
+    //    }
+
+    public static int vary(int v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异 ，这里改进算法，用正切函数曲线来实现这个概率
+        int n = nextNegOrPosInt(900);
+        return (int) (v + Math.round(2 * Math.tan(0.1f * n * 3.14159 / 180)));
     }
 
-//        public static void main(String[] args) {
-//            int n=0;
-//            for (int i = 0; i < 100; i++) {
-//                n=vary(n);
-//                if(n<0)n=0-n;
-//                System.out.println(vary(0)); 
-//            }
-//        }
+    //    public static void main(String[] args) {
+    //        int n = 0;
+    //        for (int i = 0; i < 100; i++) {
+    //            n = vary(n); 
+    //            System.out.println(n);
+    //        }
+    //    }
 
     public static float vary(float v) {// 随机有大概率小变异，小概率大变异，极小概率极大变异
         if (percent(40))

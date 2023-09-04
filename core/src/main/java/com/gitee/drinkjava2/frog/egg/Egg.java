@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.brain.Consts;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -36,7 +37,7 @@ public class Egg implements Serializable {
     // gene record the 8-tree structure of brain cells
     // 基因是随机生成的8叉树数据结构，和实际生物每个细胞都要保存一份基因不同，程序中每个脑细胞并不需要保存基因的副本，这样可以极大地减少内存占用
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>();
-    public int[] constGenes = new int[Animal.CONSTS_LENGTH]; //animal中的全局常量基因全放在这里，用随机数来生成，用遗传算法筛选
+    public int[] constGenes = new int[Consts.LENGTH]; //animal中的全局常量基因全放在这里，用随机数来生成，用遗传算法筛选
 
     public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
         x = RandomUtils.nextInt(Env.ENV_WIDTH);

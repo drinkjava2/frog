@@ -94,14 +94,7 @@ public class GeneUtils {
             }
         }
     }
-
-    public static void constGenesMutation(Animal a) { //全局参数变异, 这一个方法变异动物的所有常量 
-            for (int i = 0; i < a.consts.length; i++) {
-                if (percent(20))
-                    a.consts[i] = RandomUtils.vary(a.consts[i]);
-            }
-    }
-
+ 
     public static void geneMutation(Animal a) { //基因变异,注意这一个方法同时变异所有条基因
         for (int g = 0; g < GENE_NUMBERS; g++)
             if (percent(50)) {
