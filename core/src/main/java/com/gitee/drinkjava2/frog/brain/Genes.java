@@ -10,7 +10,7 @@
  */
 package com.gitee.drinkjava2.frog.brain;
 
-import static com.gitee.drinkjava2.frog.brain.Consts.*;
+import static com.gitee.drinkjava2.frog.brain.Consts.ADD_BITE;
 import static com.gitee.drinkjava2.frog.brain.Consts.ADD_BTR;
 import static com.gitee.drinkjava2.frog.brain.Consts.ADD_SWT;
 import static com.gitee.drinkjava2.frog.brain.Consts.BITE_M;
@@ -20,6 +20,10 @@ import static com.gitee.drinkjava2.frog.brain.Consts.BTR_SWT;
 import static com.gitee.drinkjava2.frog.brain.Consts.EYE_M;
 import static com.gitee.drinkjava2.frog.brain.Consts.M_REVERSE;
 import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_BITE;
+import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_BTR;
+import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_EYE;
+import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_MEM;
+import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_SWT;
 import static com.gitee.drinkjava2.frog.brain.Consts.SWT_BITE;
 import static com.gitee.drinkjava2.frog.brain.Consts.SWT_BTR;
 import static com.gitee.drinkjava2.frog.brain.Consts.SWT_M;
@@ -27,6 +31,7 @@ import static com.gitee.drinkjava2.frog.brain.Consts.SWT_M;
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.objects.OneDotEye;
+import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Genes代表不同的脑细胞参数，对应每个参数，用8叉/4叉/2叉树算法给每个细胞添加细胞参数和行为。
@@ -134,7 +139,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                 int y = 0;
                 int[] src = new int[]{x, y, z};
                 long cell = a.cells[x][y][z];
-                if (hasGene(cell, BITE) && ((OneDotEye.code % 100) == 0)) {//如果没有输入，咬细胞也是有可能定时或随机激活的，模拟婴儿期随机运动碰巧咬下了
+                if (hasGene(cell, BITE) && RandomUtils.percent(2)) {// 咬细胞有可能随机激活，模拟婴儿期随机运动碰巧咬下了
                     a.addEng(src, a.consts[ADD_BITE] / 10);
                 }
 
@@ -142,9 +147,9 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                 if (energy >= 1f) { //如果细胞激活了   
 
                     if (hasGene(cell, BITE)) { //如果是咬细胞
-                        a.addEng(src, -Math.abs(REDUCE_BITE));//细胞能量自发衰减 
+                        a.addEng(src, a.consts[REDUCE_BITE]);//细胞能量自发衰减 
 
-                        if ((OneDotEye.code % 20) == 0) { //从上帝视角知道被20整除正好是OneDotEye看到食物出现的时刻 
+                        if (OneDotEye.seeFood) { //如食物出现且被看到 
                             a.awardAAAA(); //所以必然咬中，奖励 
                             a.ateFood++;
                             a.addEng(SWEET_POS, a.consts[ADD_SWT]); //咬中了，系统激活甜味细胞
@@ -157,24 +162,24 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     }
 
                     if (hasGene(cell, EYE)) {//视网膜细胞在记忆细胞上挖洞          
-                        a.addEng(src, -Math.abs(REDUCE_EYE));//细胞能量自发衰减                 
+                        a.addEng(src, a.consts[REDUCE_EYE]);//细胞能量自发衰减                 
                         a.digHole(src, EYE_POS, a.consts[EYE_M]);
                     }
 
                     if (hasGene(cell, MEM)) {//记忆细胞，在当前细胞所有洞上反向发送能量
-                        a.addEng(src, -Math.abs(REDUCE_MEM));//细胞能量自发衰减
+                        a.addEng(src, a.consts[REDUCE_MEM]);//细胞能量自发衰减
                         a.holeSendEngery(src, a.consts[M_REVERSE]);
                     }
 
                     if (hasGene(cell, SWEET)) {//视网膜细胞在记忆细胞上挖洞         
-                        a.addEng(src, -Math.abs(REDUCE_SWT));//细胞能量自发衰减
+                        a.addEng(src, a.consts[REDUCE_SWT]);//细胞能量自发衰减
                         a.digHole(src, MEM_POS, a.consts[SWT_M]);
                         a.digHole(src, BITE_POS, a.consts[SWT_BITE]);
                         a.digHole(src, BITTER_POS, a.consts[SWT_BTR]);
                     }
 
                     if (hasGene(cell, BITTER)) {//视网膜细胞在记忆细胞上挖洞         
-                        a.addEng(src, -Math.abs(REDUCE_BTR));//细胞能量自发衰减
+                        a.addEng(src, a.consts[REDUCE_BTR]);//细胞能量自发衰减
                         a.digHole(src, MEM_POS, a.consts[BTR_M]);
                         a.digHole(src, BITE_POS, a.consts[BTR_BITE]);
                         a.digHole(src, SWEET_POS, a.consts[BTR_SWT]);

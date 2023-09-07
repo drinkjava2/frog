@@ -13,7 +13,6 @@ package com.gitee.drinkjava2.frog.brain;
 import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,16 +63,14 @@ public class Consts {
     public static final int BTR_BITE = index();
     public static final int BTR_SWT = index();
 
-    private static Map<String, Field> fields = new HashMap<String, Field>();
     private static Map<String, Integer> values = new LinkedHashMap<String, Integer>();
 
     static {
         try {
             Class c = Consts.class;
             Field[] fs = c.getDeclaredFields();
-            for (Field f : fs) {
+            for (Field f : fs) { // 用反射来获取常量的名称并保存下来，将来在printLog中要按顺序打印出所有常量名
                 if (int.class.equals(f.getType()) && !"LENGTH".equals(f.getName()) && !"index_".equals(f.getName())) {
-                    fields.put(f.getName(), f);
                     values.put(f.getName(), f.getInt(null));
                 }
             }
