@@ -10,23 +10,7 @@
  */
 package com.gitee.drinkjava2.frog.brain;
 
-import static com.gitee.drinkjava2.frog.brain.Consts.ADD_BITE;
-import static com.gitee.drinkjava2.frog.brain.Consts.ADD_BTR;
-import static com.gitee.drinkjava2.frog.brain.Consts.ADD_SWT;
-import static com.gitee.drinkjava2.frog.brain.Consts.BITE_M;
-import static com.gitee.drinkjava2.frog.brain.Consts.BTR_BITE;
-import static com.gitee.drinkjava2.frog.brain.Consts.BTR_M;
-import static com.gitee.drinkjava2.frog.brain.Consts.BTR_SWT;
-import static com.gitee.drinkjava2.frog.brain.Consts.EYE_M;
-import static com.gitee.drinkjava2.frog.brain.Consts.M_REVERSE;
-import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_BITE;
-import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_BTR;
-import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_EYE;
-import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_MEM;
-import static com.gitee.drinkjava2.frog.brain.Consts.REDUCE_SWT;
-import static com.gitee.drinkjava2.frog.brain.Consts.SWT_BITE;
-import static com.gitee.drinkjava2.frog.brain.Consts.SWT_BTR;
-import static com.gitee.drinkjava2.frog.brain.Consts.SWT_M;
+import static com.gitee.drinkjava2.frog.brain.Consts.*; 
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
@@ -158,12 +142,12 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                             a.ateWrong++;
                             a.addEng(BITTER_POS, a.consts[ADD_BTR]); //空咬了，系统激活苦味细胞, 有点怪
                         }
-                        a.digHole(src, MEM_POS, a.consts[BITE_M]);//咬细胞在记忆细胞上挖洞
+                        a.digHole(src, MEM_POS, a.consts[BITE_M], a.consts[HOLE_FRESH]);//咬细胞在记忆细胞上挖洞
                     }
 
                     if (hasGene(cell, EYE)) {//视网膜细胞在记忆细胞上挖洞          
                         a.addEng(src, a.consts[REDUCE_EYE]);//细胞能量自发衰减                 
-                        a.digHole(src, EYE_POS, a.consts[EYE_M]);
+                        a.digHole(src, EYE_POS, a.consts[EYE_M], a.consts[HOLE_FRESH]);
                     }
 
                     if (hasGene(cell, MEM)) {//记忆细胞，在当前细胞所有洞上反向发送能量
@@ -173,16 +157,16 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
                     if (hasGene(cell, SWEET)) {//视网膜细胞在记忆细胞上挖洞         
                         a.addEng(src, a.consts[REDUCE_SWT]);//细胞能量自发衰减
-                        a.digHole(src, MEM_POS, a.consts[SWT_M]);
-                        a.digHole(src, BITE_POS, a.consts[SWT_BITE]);
-                        a.digHole(src, BITTER_POS, a.consts[SWT_BTR]);
+                        a.digHole(src, MEM_POS, a.consts[SWT_M], a.consts[HOLE_FRESH]);
+                        a.digHole(src, BITE_POS, a.consts[SWT_BITE], a.consts[HOLE_FRESH]);
+                        a.digHole(src, BITTER_POS, a.consts[SWT_BTR], a.consts[HOLE_FRESH]);
                     }
 
                     if (hasGene(cell, BITTER)) {//视网膜细胞在记忆细胞上挖洞         
                         a.addEng(src, a.consts[REDUCE_BTR]);//细胞能量自发衰减
-                        a.digHole(src, MEM_POS, a.consts[BTR_M]);
-                        a.digHole(src, BITE_POS, a.consts[BTR_BITE]);
-                        a.digHole(src, SWEET_POS, a.consts[BTR_SWT]);
+                        a.digHole(src, MEM_POS, a.consts[BTR_M], a.consts[HOLE_FRESH]);
+                        a.digHole(src, BITE_POS, a.consts[BTR_BITE], a.consts[HOLE_FRESH]);
+                        a.digHole(src, SWEET_POS, a.consts[BTR_SWT], a.consts[HOLE_FRESH]);
                     }
 
                 }

@@ -32,11 +32,11 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 200; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 300; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
-    public static final int SCREEN = 1; // 分几屏测完
+    public static final int SCREEN = 4; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
     public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行

@@ -358,8 +358,8 @@ public class BrainPicture extends JPanel {
                     int[] holes = a.holes[x][y][z];
                     if (holes != null) {
                         setPicColor(Color.GRAY);
-                        for (int i = 0; i < holes.length / 4; i++) {//这里画出hole连线 
-                            int n = i * 4;
+                        for (int i = 0; i < holes.length / Animal.HOLE_ARR_SIZE; i++) {//这里画出hole连线 
+                            int n = i * Animal.HOLE_ARR_SIZE;
                             drawCentLine(x, y, z, holes[n], holes[n + 1], holes[n + 2]);
                         }
                     }
