@@ -106,7 +106,22 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 fat -= gene.size();
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
+    
+    public boolean active(int step) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数
+        // 如果fat小于0、出界、与非食物的点重合则判死
+        if (!alive) {
+            return false;
+        }
+        if (fat <= 0 || Env.outsideEnv(xPos, yPos) || Env.bricks[xPos][yPos] >= Material.KILL_ANIMAL) {
+            kill();
+            return false;
+        }
 
+        holesReduce(); //所有细胞上的洞都随时间消逝，即信息的遗忘，旧的不去新的不来
+        Genes.active(this, step); //调用每个细胞的活动，重要！
+        return alive;
+    }
+    
     private static final int MIN_FAT_LIMIT = Integer.MIN_VALUE + 5000;
     private static final int MAX_FAT_LIMIT = Integer.MAX_VALUE - 5000;
 
@@ -132,20 +147,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
-    public boolean active(int step) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数
-        // 如果fat小于0、出界、与非食物的点重合则判死
-        if (!alive) {
-            return false;
-        }
-        if (fat <= 0 || Env.outsideEnv(xPos, yPos) || Env.bricks[xPos][yPos] >= Material.KILL_ANIMAL) {
-            kill();
-            return false;
-        }
 
-        //holesReduce(); //TODO: 所有细胞上的洞都随时间消逝，即信息的遗忘，旧的不去新的不来
-        Genes.active(this, step); //调用每个细胞的活动，重要！
-        return alive;
-    }
 
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
