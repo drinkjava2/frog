@@ -101,16 +101,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
     public static int[] BITE_POS = new int[]{2, 0, 0};
     public static long BITE = registerFill(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
-
-    //    public static int[] NOT_BITE_POS = new int[]{2, 0, CS4};
-    //    public static long NOT_BITE = registerFill(NOT_BITE_POS); //不咬动作细胞定义在一个点上, 这个细胞如激活，就不咬食物
-
-    public static int[] SWEET_POS = new int[]{3, 0, CS4 * 2};
-    public static long SWEET = registerFill(SWEET_POS); //甜味感觉细胞定义在一个点上, 当咬下后且食物为甜，这个细胞激活
-
-    public static int[] BITTER_POS = new int[]{3, 0, CS4 * 3};
-    public static long BITTER = registerFill(BITTER_POS); //苦味感觉细胞定义在一个点上, 当咬下后且食物为苦，这个细胞激活
-
+ 
     //========开始登记无名字的基因 =========
     static {
     }
@@ -123,7 +114,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                 int y = 0;
                 int[] src = new int[]{x, y, z};
                 long cell = a.cells[x][y][z];
-                if (hasGene(cell, BITE) && RandomUtils.percent(2)) {// 咬细胞有可能随机激活，模拟婴儿期随机运动碰巧咬下了
+                if (hasGene(cell, BITE) && RandomUtils.percent(100)) {// 咬细胞有可能随机激活，模拟婴儿期随机运动碰巧咬下了
                     a.addEng(src, a.consts[ADD_BITE] / 10);
                 }
 
@@ -132,17 +123,17 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
                     if (hasGene(cell, BITE)) { //如果是咬细胞
                         a.addEng(src, a.consts[REDUCE_BITE]);//细胞能量自发衰减 
-
+                        a.digHole(src, MEM_POS, a.consts[BITE_M], a.consts[HOLE_FRESH]);//咬细胞在记忆细胞上挖洞
+                        
                         if (OneDotEye.seeFood) { //如食物出现且被看到 
                             a.awardAAAA(); //所以必然咬中，奖励 
                             a.ateFood++;
-                            a.addEng(SWEET_POS, a.consts[ADD_SWT]); //咬中了，系统激活甜味细胞
+                            //a.addEng(SWEET_POS, a.consts[ADD_SWT]); //咬中了，系统激活甜味细胞
                         } else {
                             a.penaltyAA(); //其它时间是咬错了，罚。 可以改成penaltyAAAA或去除本行试试  
                             a.ateWrong++;
-                            a.addEng(BITTER_POS, a.consts[ADD_BTR]); //空咬了，系统激活苦味细胞, 有点怪
+                            //a.addEng(BITTER_POS, a.consts[ADD_BTR]); //空咬了，系统激活苦味细胞, 有点怪
                         }
-                        a.digHole(src, MEM_POS, a.consts[BITE_M], a.consts[HOLE_FRESH]);//咬细胞在记忆细胞上挖洞
                     }
 
                     if (hasGene(cell, EYE)) {//视网膜细胞在记忆细胞上挖洞          
@@ -154,20 +145,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                         a.addEng(src, a.consts[REDUCE_MEM]);//细胞能量自发衰减
                         a.holeSendEngery(src, a.consts[M_REVERSE]);
                     }
-
-                    if (hasGene(cell, SWEET)) {//视网膜细胞在记忆细胞上挖洞         
-                        a.addEng(src, a.consts[REDUCE_SWT]);//细胞能量自发衰减
-                        a.digHole(src, MEM_POS, a.consts[SWT_M], a.consts[HOLE_FRESH]);
-                        a.digHole(src, BITE_POS, a.consts[SWT_BITE], a.consts[HOLE_FRESH]);
-                        a.digHole(src, BITTER_POS, a.consts[SWT_BTR], a.consts[HOLE_FRESH]);
-                    }
-
-                    if (hasGene(cell, BITTER)) {//视网膜细胞在记忆细胞上挖洞         
-                        a.addEng(src, a.consts[REDUCE_BTR]);//细胞能量自发衰减
-                        a.digHole(src, MEM_POS, a.consts[BTR_M], a.consts[HOLE_FRESH]);
-                        a.digHole(src, BITE_POS, a.consts[BTR_BITE], a.consts[HOLE_FRESH]);
-                        a.digHole(src, SWEET_POS, a.consts[BTR_SWT], a.consts[HOLE_FRESH]);
-                    }
+  
 
                 }
             }

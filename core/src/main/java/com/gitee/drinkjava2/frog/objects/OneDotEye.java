@@ -31,7 +31,7 @@ public class OneDotEye extends DefaultEnvObject {
     @Override
     public void active(int screen, int step) {
         seeFood = false;
-        if (foodExist(step)) { //这里模拟食物随机出现，被青蛙看到, 不用纯随机数是因为
+        if (foodExist(step)) { //如食物存在,激活所有青蛙
             seeFood = true;
             for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
                 Frog f = Env.frogs.get(i);

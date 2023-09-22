@@ -137,12 +137,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     //没定各个等级的奖罚值，目前是手工设定的常数
     public void awardAAAA()      { changeFat(2000);}
     public void awardAAA()   { changeFat(1000);}
-    public void awardAA()     { changeFat(60);}      
+    public void awardAA()     { changeFat(100);}      
     public void awardA()   { changeFat(10);}
     
     public void penaltyAAAA()    { changeFat(-2000);}
     public void penaltyAAA() { changeFat(-1000);}
-    public void penaltyAA()   { changeFat(-60);}
+    public void penaltyAA()   { changeFat(-100);}
     public void penaltyA()   { changeFat(-10);}
     public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on

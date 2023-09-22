@@ -40,13 +40,9 @@ public class Consts {
     }
 
     public static final int ADD_EYE = index();
-    public static final int ADD_BITE = index();
-    public static final int ADD_SWT = index();
-    public static final int ADD_BTR = index();
+    public static final int ADD_BITE = index(); 
 
-    public static final int REDUCE_BITE = index();
-    public static final int REDUCE_SWT = index();
-    public static final int REDUCE_BTR = index();
+    public static final int REDUCE_BITE = index(); 
     public static final int REDUCE_EYE = index();
     public static final int REDUCE_MEM = index();
 
@@ -54,14 +50,7 @@ public class Consts {
 
     public static final int BITE_M = index();
     public static final int EYE_M = index();
-
-    public static final int SWT_M = index();
-    public static final int SWT_BITE = index();
-    public static final int SWT_BTR = index();
-
-    public static final int BTR_M = index();
-    public static final int BTR_BITE = index();
-    public static final int BTR_SWT = index();
+ 
     
     public static final int HOLE_FRESH = index();
     public static final int HOLE_REDUCE = index();
