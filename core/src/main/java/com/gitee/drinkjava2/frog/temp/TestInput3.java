@@ -28,10 +28,10 @@ package com.gitee.drinkjava2.frog.temp;
 @SuppressWarnings("all")
 public class TestInput3 {
 
-    public static void main(String[] args) {
-        testInput3();
-        //testInput4();
-    }
+//    public static void main(String[] args) {
+//        testInput3();
+//        //testInput4();
+//    }
 
     public static void testInput3() { //这里测试一个细胞有三个树突输入，每个输入有正负两种信号，且信号以1为饱和，测试结果发现有31种情况无法找到解
         long notFoundCont = 0;

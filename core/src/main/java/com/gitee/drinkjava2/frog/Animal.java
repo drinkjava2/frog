@@ -50,7 +50,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
 
-    public int[] consts = new int[Consts.LENGTH]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
+    public int[] consts = new int[Consts.CountsQTY]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
@@ -106,7 +106,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 fat -= gene.size();
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
-    
+
     public boolean active(int step) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数
         // 如果fat小于0、出界、与非食物的点重合则判死
         if (!alive) {
@@ -121,7 +121,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         Genes.active(this, step); //调用每个细胞的活动，重要！
         return alive;
     }
-    
+
     private static final int MIN_FAT_LIMIT = Integer.MIN_VALUE + 5000;
     private static final int MAX_FAT_LIMIT = Integer.MAX_VALUE - 5000;
 
@@ -147,8 +147,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
-
-
     public void show(Graphics g) {// 显示当前动物
         if (!alive)
             return;
@@ -168,37 +166,38 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return cells[x][y][z] > 0;
     }
 
-    public void open(int x, int y, int z) { //打开指定的xyz坐标对应的cell能量值为极大
-        energys[x][y][z] = 99999f;
+    public void setEng1(int x, int y, int z) { //打开指定的xyz坐标对应的cell能量值为极大
+        energys[x][y][z] = 1;
     }
 
-    public void open(int[] a) { //打开指定的a坐标对应的cell能量值为极大
-        energys[a[0]][a[1]][a[2]] = 99999f;
+    public void setEng1(int[] a) { //打开指定的a坐标对应的cell能量值为极大
+        energys[a[0]][a[1]][a[2]] =1;
     }
 
-    public void close(int x, int y, int z) { //关闭指定的xyz坐标对应的cell能量值为0
+    public void setEng0(int x, int y, int z) { //关闭指定的xyz坐标对应的cell能量值为0
         energys[x][y][z] = 0;
     }
 
-    public void close(int[] a) {//关闭指定的a坐标对应的cell能量值为0
+    public void setEng0(int[] a) {//关闭指定的a坐标对应的cell能量值为0
         energys[a[0]][a[1]][a[2]] = 0;
     }
 
     public void addEng(int[] a, float e) {//指定的a坐标对应的cell能量值加e
         addEng(a[0], a[1], a[2], e);
-    }
+    } 
 
     public void addEng(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
         if (cells[x][y][z] == 0)
             return;
-        energys[x][y][z] += e;
-        if (energys[x][y][z] > 300)
-            energys[x][y][z] = 300;
-        if (energys[x][y][z] < -300)
-            energys[x][y][z] = -300;
-    }
+        float eng = energys[x][y][z] + e;
+        if (eng > 1) //如果饱和，不再增加，通过这个方法可以实现异或逻辑或更复杂的模式识别，详见TestInput3测试
+            eng = 1;
+        if (eng < 0) //回到传统方式，细胞不允许出现负能量。（但是权值，即树突的正负两个通道中的负通道上，可以出现负信号，这个与实际细胞的抑制信号相似）
+            eng = 0;
+        energys[x][y][z] = eng;
+    } 
 
-    public float get(int x, int y, int z) {//返回指定的a坐标对应的cell能量值
+    public float getEng(int x, int y, int z) {//返回指定的a坐标对应的cell能量值
         return energys[x][y][z];
     }
 
@@ -214,6 +213,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public static final int HOLE_ARR_SIZE = 5; //洞由几个参数构成 
 
+    
+    
+    //TODO: =================以下这些方法太复杂，删除除或重新整理================= 
     public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ, int size, int fresh) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
         if (!hasGene(tX, tY, tZ))
             return;
@@ -221,7 +223,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return;
         if (!Env.insideBrain(tX, tY, tZ))
             return;
-        if (get(tX, tY, tZ) < 1) //要调整
+        if (getEng(tX, tY, tZ) < 1) //要调整
             addEng(tX, tY, tZ, 1); //要调整
 
         int[] cellHoles = holes[tX][tY][tZ];
@@ -290,15 +292,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
                 for (int z = 0; z < Env.BRAIN_SIZE - 1; z++) {
                     int[] cellHoles = holes[x][y][z];
                     if (cellHoles != null)
-                        for (int i = 0; i < cellHoles.length / HOLE_ARR_SIZE ; i++) {
+                        for (int i = 0; i < cellHoles.length / HOLE_ARR_SIZE; i++) {
                             int n = i * HOLE_ARR_SIZE;
                             int size = cellHoles[n + 3];
                             if (size > 0)
                                 cellHoles[n + 3] = (int) (size * 0.9);//要改成由基因调整
-                            int  fresh = cellHoles[n + 4];
+                            int fresh = cellHoles[n + 4];
                             if (fresh > 0)
-                                cellHoles[n + 4] -= Consts.HOLE_REDUCE  ;//要改成由基因调整
-                            
+                                cellHoles[n + 4] -= Consts.HOLE_REDUCE;//要改成由基因调整
+
                         }
                 }
     }
