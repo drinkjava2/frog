@@ -8,36 +8,32 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package com.gitee.drinkjava2.frog.brain;
-
-import static com.gitee.drinkjava2.frog.util.RandomUtils.percent;
-
-import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.gitee.drinkjava2.frog.Animal;
-import com.gitee.drinkjava2.frog.util.Logger;
-import com.gitee.drinkjava2.frog.util.RandomUtils;
+package com.gitee.drinkjava2.frog.temp;
 
 /** 
  * 
  * 临时类，待删，测试一个细胞有三个输入，并且每个输入是双通道（奖罚）情况下是否可以实现所有的模式识别
- * （三个通道有8种排列组合，如一组参数能实现任意8种组合，则有2的8次方=256种排列组合，去除全为0的输入，则有2的7次方128种组合）
- * （经实测，有31种组合条件不，不能找到符合要求的正、负权重） 
+ * 处理逻辑为  (信号x正权重)取1为饱和值 - 信号x负权重，当结果大于0.5时输出1。 这个逻辑是模拟网上找到的“大脑只需单个神经元就可进行XOR异或运算”一文
+ * 原理。只不过这里扩展到三个（或以上)输入的情况。
  * 
- * 处理逻辑为  (信号x正权重)取1为饱和值 - 信号x负权重，当结果大于0.5时输出1。 这个逻辑是模拟“大脑只需单个神经元就可进行XOR异或运算”一文原理。只不过这里扩展到三个（或以上)输入的情况。
+ *  三个输入有8种排列组合，如一组参数能实现任意8种组合，则有2的8次方=256种排列组合，去除全为0的输入必须输出0，只计算有1信号的输入，则有2的7次方=128种组合）
+ * （经实测，有31种组合条件不，不能找到符合要求的正负权重） 
+ * 
+ * （4个通道有16种排列组合，如一组参数能实现任意16种组合，则有2的16次方=65536种排列组合，去除全为0的输入，则有2的15次方32768种组合）
+ * （经实测，32768组合中有29987种不能找到符合要求的正负权重，如只测前1024个组合，则有603种情况不能找到解，如只测前128组合，则有31种情况下找不到解）
+ * 
+ * 
  * 
  */
 @SuppressWarnings("all")
-public class Temp {
+public class TestInput3 {
 
     public static void main(String[] args) {
         testInput3();
+        //testInput4();
     }
 
-    public static void testInput3() { //这里测试一个细胞有三个树突输入，每个输入有正负两种信号，且信号以1为饱和
+    public static void testInput3() { //这里测试一个细胞有三个树突输入，每个输入有正负两种信号，且信号以1为饱和，测试结果发现有31种情况无法找到解
         long notFoundCont = 0;
         boolean pass = false;
         float p = 0.1f;
@@ -111,7 +107,7 @@ public class Temp {
         System.out.println("notFoundCont=" + notFoundCont);
     }
 
-    public static void testInput4() {//这里测试一个细胞有4个树突输入，每个输入有正负两种信号，且信号以1为饱和，实测和3输入类似，也有无解
+    public static void testInput4() {//这里测试一个细胞有4个树突输入，每个输入有正负两种信号，且信号以1为饱和，测试结果发现有603种情况无法找到解
         long notFoundCont = 0;
         boolean pass = false;
         float p = 0.2f;
