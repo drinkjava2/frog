@@ -99,7 +99,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
     public static int[] BITE_POS = new int[]{2, 0, 0};
     public static long BITE = registerFill(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
- 
+
     //========开始登记无名字的基因 =========
     static {
     }
@@ -112,25 +112,20 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                 int y = 0;
                 int[] src = new int[]{x, y, z};
                 long cell = a.cells[x][y][z];
-                if (hasGene(cell, BITE) && RandomUtils.percent(3)) {// 咬细胞有可能随机激活，模拟婴儿期随机运动碰巧咬下了
-                    a.addEng(src, a.consts[ADD_BITE] / 10);
-                }
-
                 float energy = a.energys[x][y][z];
-                if (energy >= 1f) { //如果细胞激活了   
 
-                    if (hasGene(cell, BITE)) { //如果是咬细胞
-                        a.addEng(src, a.consts[REDUCE_BITE]);//细胞能量自发衰减 
-                        //a.digHole(src, MEM_POS, a.consts[BITE_M], a.consts[HOLE_FRESH]);//咬细胞在记忆细胞上挖洞
-                        
-                        if (OneDotEye.seeFood) { //如食物出现且被看到 
-                            a.awardAAAA(); //所以必然咬中，奖励 
+                if (energy >= 1f) { //如果细胞激活了   
+                    a.setEng1(x, y, z); //细胞强度不允许超过1，见TestInput3
+                    if (hasGene(cell, BITE)) { //TODO:如果是咬细胞
+                        if (OneDotEye.foodSweet(step)) { //如食物是甜的
+                            a.awardAAAA(); //奖励 
                             a.ateFood++;
                         } else {
-                            a.penaltyAA(); //其它时间是咬错了，罚。 可以改成penaltyAAAA或去除本行试试  
+                            a.penaltyAA(); //其它时间是咬错了，罚  
                             a.ateWrong++;
                         }
-                    } 
+                        a.setEng0(x, y, z); //咬完了后细胞能量归0
+                    }
 
                 }
             }
