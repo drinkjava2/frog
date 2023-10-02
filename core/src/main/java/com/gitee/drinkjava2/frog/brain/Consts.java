@@ -46,7 +46,7 @@ public class Consts {
     public static final int HOLE_FRESH = index();
     public static final int HOLE_REDUCE = index();
 
-    private static Map<String, Integer> values = new LinkedHashMap<String, Integer>();
+    private static Map<String, Integer> indexs = new LinkedHashMap<String, Integer>();
 
     static {
         try {
@@ -54,14 +54,14 @@ public class Consts {
             Field[] fs = c.getDeclaredFields();
             for (Field f : fs) { // 用反射来获取常量的名称并保存下来，将来在printLog中要按顺序打印出所有常量名
                 if (int.class.equals(f.getType()) && !"LENGTH".equals(f.getName()) && !"index_".equals(f.getName())) {
-                    values.put(f.getName(), f.getInt(null));
+                    indexs.put(f.getName(), f.getInt(null));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(-1);
         }
-        CountsQTY = values.size();
+        CountsQTY = indexs.size();
     }
 
     public static boolean[] exist = new boolean[CountsQTY]; //不是每个常量组数都用到，只有被用字母代表的才会用到并在这里标记，这种方法比MAP要快
@@ -71,7 +71,7 @@ public class Consts {
     public static void printLog(Animal a) {
         sb.setLength(0);
         int i = 0;
-        for (Entry<String, Integer> e : values.entrySet()) {
+        for (Entry<String, Integer> e : indexs.entrySet()) {
             sb.append(e.getKey()).append("=").append(a.consts[e.getValue()]).append("\t\t");
             if (i++ % 6 == 5)
                 sb.append("\n");

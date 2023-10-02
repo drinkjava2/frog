@@ -15,22 +15,26 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public class OneDotEye extends DefaultEnvObject {
     private static int[] food = new int[Env.STEPS_PER_ROUND];
     static {
-        //食物只会出现在15为周期但不固定的时间点上，以防止细胞进化出周期进入鞍点, 食物用数字表示，0为不存在，1为甜，2为苦
+        //食物只会出现在15为周期但不固定的时间点上，以防止细胞进化出周期进入鞍点, 食物用数字表示，0为不存在 
         for (int i = 15; i < Env.STEPS_PER_ROUND - 15; i += 15)
-            food[i + RandomUtils.nextNegOrPosInt(5)] = 1 + RandomUtils.nextInt(2);
+            food[i + RandomUtils.nextNegOrPosInt(5)] = 1;
     }
 
-    public static boolean foodExist(int step) {
+    public static boolean seeFood(int step) {
         return food[step] > 0;
     }
 
-    public static boolean foodSweet(int step) {
-        return food[step] == 1;
+    public static boolean foodSweet(int step) {//食物是甜还是苦？ 苦甜不给视觉信号
+        //将step分为4段，1、3段为甜，2、4段为苦，这样看到食物就咬下是行不通的，要想满分必须根据苦甜动态调整权重
+        int q = step / 4;
+        if (step < q || (step > 2 * q && step < 3 * q))
+            return true;
+        return false;
     }
 
     @Override
     public void active(int screen, int step) {
-        if (foodExist(step)) { //如食物存在, 激活所有青蛙的视网膜
+        if (seeFood(step)) { //如看到食物, 激活所有青蛙的视网膜
             for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
                 Frog f = Env.frogs.get(i);
                 f.energys[0][0][0] = f.consts[Consts.ADD_EYE];

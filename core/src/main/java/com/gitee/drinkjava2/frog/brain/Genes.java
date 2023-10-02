@@ -95,14 +95,10 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
     //============开始登记有名字的基因==========
     public static int[] EYE_POS = new int[]{0, 0, 0};
-    public static long EYE = registerFill(EYE_POS); //视网膜细胞，这个版本暂时只允许视网膜分布在x=0,y=0的z轴上，即只能看到一条线状图形
+    public static long EYE = registerFill(EYE_POS); //视网膜细胞 
 
     public static int[] BITE_POS = new int[]{2, 0, 0};
-    public static long BITE = registerFill(BITE_POS); //咬动作细胞定义在一个点上, 这个细胞如激活，就咬食物
-
-    //========开始登记无名字的基因 =========
-    static {
-    }
+    public static long BITE = registerFill(BITE_POS); //咬动作细胞 
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
     public static void active(Animal a, int step) {
@@ -110,24 +106,31 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
         for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--)
             for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
                 int y = 0;
-                int[] src = new int[]{x, y, z};
                 long cell = a.cells[x][y][z];
+                if (cell == 0)
+                    continue; //cell不存在时跳过 
                 float energy = a.energys[x][y][z];
 
-                if (energy >= 1f) { //如果细胞激活了   
-                    a.setEng1(x, y, z); //细胞强度不允许超过1，见TestInput3
-                    if (hasGene(cell, BITE)) { //TODO:如果是咬细胞
-                        if (OneDotEye.foodSweet(step)) { //如食物是甜的
-                            a.awardAAAA(); //奖励 
-                            a.ateFood++;
-                        } else {
-                            a.penaltyAA(); //其它时间是咬错了，罚  
-                            a.ateWrong++;
-                        }
-                        a.setEng0(x, y, z); //咬完了后细胞能量归0
-                    }
-
+                if (OneDotEye.seeFood(step) && hasGene(cell, BITE)) {//如果看到食物，有小机率咬下，模拟天然的随机咬下动作
+                    if (RandomUtils.percent(10))
+                        a.setEng1(x, y, z);
                 }
+
+                if (energy >= 1f & hasGene(cell, BITE)) { //如果细胞激活了且是咬细胞    
+                    if (OneDotEye.foodSweet(step)) { //如食物是甜的
+                        a.awardAAAA(); //奖励 
+                        a.ateFood++;
+                        //TODO：调整最近活跃的触突（洞）的正负权重
+                    } else {
+                        a.penaltyAA(); //其它时间是咬错了，罚  
+                        a.ateWrong++;
+                        //TODO：调整最近活跃的触突（洞）的正负权重
+                    }
+                    a.setEng0(x, y, z); //咬完了后细胞能量归0
+                }
+
+                if (energy > 1) //细胞能量超过1的要削除超过部分,详风TestInput3
+                    a.setEng1(x, y, z);
             }
     }
 
