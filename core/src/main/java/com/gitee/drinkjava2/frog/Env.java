@@ -253,6 +253,9 @@ public class Env extends JPanel {
                         if (f.active(step))// 调用青蛙的Active方法，并返回是否还活着
                             allDead = false;
                     }
+                    
+                    Frog first=frogs.get(current_screen * FROG_PER_SCREEN);
+                    Logger.info("step=" + step + ", posHoleSize=" + first.posHoleSize + ", negHoleSize=" + first.negHoleSize);
 
                     if (SHOW_SPEED == 1) // 如果speed为1，人为加入延迟
                         sleep((100));

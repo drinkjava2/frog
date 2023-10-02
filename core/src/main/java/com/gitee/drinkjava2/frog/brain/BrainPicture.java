@@ -374,10 +374,10 @@ public class BrainPicture extends JPanel {
                             }
                         }
                     float e = a.energys[x][y][z];
-                    if (e > 1f || e < -1f) {
+                    if (e > 0.1f || e < -0.1f) {
                         setPicColor(e > 0 ? Color.RED : Color.BLUE); //用红色小圆表示正能量，蓝色表示负能量
                         drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.2f);
-                        float size = (float) (0.5f + 0.4 * Math.log10(Math.abs(e)));//再用不同大小圆形表示不同能量值  
+                        float size = (float) (0.5f + 0.4 * Math.log10(Math.abs(e*100)));//再用不同大小圆形表示不同能量值  
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
                     }
 
