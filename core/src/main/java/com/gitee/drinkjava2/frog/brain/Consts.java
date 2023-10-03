@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.gitee.drinkjava2.frog.Animal;
+import com.gitee.drinkjava2.frog.Frog;
+import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -40,11 +42,11 @@ public class Consts {
         return index_++;
     }
 
-    public static final int ADD_EYE = index(); //用index()这种编程技巧而不是直接给定数值是为了增删常量定义时比较方便，不会影响其它行
-    public static final int ADD_BITE = index(); 
-    public static final int REDUCE_BITE = index();  
-    public static final int HOLE_FRESH = index();
-    public static final int HOLE_REDUCE = index();
+    //用index()这种编程技巧而不是直接给定数值是为了增删常量定义时比较方便，不会影响其它行，这里只定义常量名对应的数组序号，常量值存放在Animal和Egg的consts数组里
+    public static final int HOLE_POS_ADD = index();
+    //public static final int HOLE_NEG_ADD = index();
+    //public static final int HOLE_FRESH = index();
+    //public static final int HOLE_REDUCE = index();
 
     private static Map<String, Integer> indexs = new LinkedHashMap<String, Integer>();
 
@@ -53,7 +55,7 @@ public class Consts {
             Class c = Consts.class;
             Field[] fs = c.getDeclaredFields();
             for (Field f : fs) { // 用反射来获取常量的名称并保存下来，将来在printLog中要按顺序打印出所有常量名
-                if (int.class.equals(f.getType()) && !"LENGTH".equals(f.getName()) && !"index_".equals(f.getName())) {
+                if (int.class.equals(f.getType()) && !"CountsQTY".equals(f.getName()) && !"LENGTH".equals(f.getName()) && !"index_".equals(f.getName())) {
                     indexs.put(f.getName(), f.getInt(null));
                 }
             }
@@ -63,8 +65,6 @@ public class Consts {
         }
         CountsQTY = indexs.size();
     }
-
-    public static boolean[] exist = new boolean[CountsQTY]; //不是每个常量组数都用到，只有被用字母代表的才会用到并在这里标记，这种方法比MAP要快
 
     static StringBuilder sb = new StringBuilder();
 

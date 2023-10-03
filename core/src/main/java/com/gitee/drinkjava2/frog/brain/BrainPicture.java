@@ -21,6 +21,7 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
+import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
 
 /**
@@ -355,14 +356,14 @@ public class BrainPicture extends JPanel {
                     // if (cell == 0) //只显示有效的细胞点
                     //    continue;
 
-                    int[] holes = a.holes[x][y][z];
-                    if (holes != null) {
-                        setPicColor(Color.GRAY);
-                        for (int i = 0; i < holes.length / Animal.HOLE_ARR_SIZE; i++) {//这里画出hole连线 
-                            int n = i * Animal.HOLE_ARR_SIZE;
-                            drawCentLine(x, y, z, holes[n], holes[n + 1], holes[n + 2]);
-                        }
-                    }
+//                    int[] holes = a.holes[x][y][z];
+//                    if (holes != null) {
+//                        setPicColor(Color.GRAY);
+//                        for (int i = 0; i < holes.length / Animal.HOLE_ARR_SIZE; i++) {//这里画出hole连线 
+//                            int n = i * Animal.HOLE_ARR_SIZE;
+//                            drawCentLine(x, y, z, holes[n], holes[n + 1], holes[n + 2]);
+//                        }
+//                    }
 
                     if (x >= xMask && y >= yMask && cell != 0)//画出细胞每个基因存在的细胞格子
                         for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
@@ -377,7 +378,7 @@ public class BrainPicture extends JPanel {
                     if (e > 0.1f || e < -0.1f) {
                         setPicColor(e > 0 ? Color.RED : Color.BLUE); //用红色小圆表示正能量，蓝色表示负能量
                         drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.2f);
-                        float size = (float) (0.5f + 0.4 * Math.log10(Math.abs(e*100)));//再用不同大小圆形表示不同能量值  
+                        float size = (float) (0.5f + 0.4 *  Math.abs(e*3));//再用不同大小圆形表示不同能量值  
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
                     }
 

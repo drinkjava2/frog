@@ -65,7 +65,7 @@ public class FrogEggTool {
 //                Logger.debug("x=" + x + ", holes:" + s);//打印出每个细胞的洞数量
 //            }
 
-//           Consts.printLog(first);//debug;  打印出每个细胞的常量
+           Consts.printLog(first);//debug;  打印出每个细胞的常量
 
             if (Env.SAVE_EGGS_FILE) {
                 FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");
