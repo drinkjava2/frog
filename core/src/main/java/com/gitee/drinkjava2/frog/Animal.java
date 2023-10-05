@@ -72,9 +72,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public float happy=0; //愉快值，比如吃到甜食这个值会增加
     //public float pain=0; //痛苦值，比如吃到苦食或受伤害这个值会增加
     
-    public float posHoleSize=0.5f; //临时变量，仅适用于只有一个细胞的情况，待测完后删除，把它们移到 cell组数中的洞上去
+    public float posHoleSize=0; //临时变量，仅适用于只有一个细胞的情况，待测完后删除，把它们移到 cell组数中的洞上去
     public float posHoleFresh=0;
-    public float negHoleSize=0.5f;
+    public float negHoleSize=0;
     public float negHoleFresh=0;
     
     

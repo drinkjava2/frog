@@ -28,7 +28,7 @@ public class OneDotEye extends DefaultEnvObject {
         //将step分为4段，1、3段为甜，2、4段为苦，这样看到食物就咬下是行不通的，要想满分必须根据苦甜动态调整权重
         if (food[step] == 0)
             return false;
-        int q = Env.STEPS_PER_ROUND / 4;
+        int q = Env.STEPS_PER_ROUND / 2;
         return step<q;
 //        if (step < q || (step > 2 * q && step < 3 * q))
 //            return true;
