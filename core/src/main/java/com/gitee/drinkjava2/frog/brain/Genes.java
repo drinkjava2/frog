@@ -125,7 +125,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                 if (e > 1) //细胞能量超过1的要削除超过部分,详风TestInput3
                     a.setEng(x, y, z, 1);
                 //a.setEng(x, y, z, a.getEng(x, y, z) * .98f);
-                if (a.no == 1 && e>0.5f) {
+                if (a.no == 1) {
                     System.out.println("e=" + e+", x="+x);
                 }
 
@@ -139,6 +139,8 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                     
                     if (hasGene(cell, BITE)) {//如果是咬细胞激活
                         if (OneDotEye.foodSweet(step)) { //如食物是甜的
+                            if (a.no == 1)  
+                                System.out.println("ate right");
                             a.awardAAAA(); //奖励 
                             a.ateFood++;
                             //a.happy = 1; //happy将会用来调整最近活跃的触突（洞）的正负权重
@@ -146,6 +148,8 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                             a.posHoleSize = 1f;
                             a.negHoleSize = 0f;
                         } else {
+                            if (a.no == 1)  
+                                System.out.println("ate wrong");
                             a.penaltyA(); //其它时间是咬错了，罚  
                             a.ateWrong++;
                             //a.pain = 1;//pain将会用来调整最近活跃的触突（洞）的正负权重

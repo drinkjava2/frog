@@ -16,8 +16,11 @@ public class OneDotEye extends DefaultEnvObject {
     private static int[] food = new int[Env.STEPS_PER_ROUND];
     static {
         //食物只会出现在15为周期但不固定的时间点上，以防止细胞进化出周期进入鞍点, 食物用数字表示，0为不存在 
-        for (int i = 15; i < Env.STEPS_PER_ROUND - 15; i += 15)
-            food[i + RandomUtils.nextNegOrPosInt(5)] = 1;
+        for (int i = 15; i < Env.STEPS_PER_ROUND - 15; i += 15) {
+            int j = i + RandomUtils.nextNegOrPosInt(5);
+            food[j] = 1;
+            food[j+1] = 1;
+        }
     }
 
     public static boolean seeFood(int step) {
@@ -25,14 +28,11 @@ public class OneDotEye extends DefaultEnvObject {
     }
 
     public static boolean foodSweet(int step) {//食物是甜还是苦？ 苦甜不给视觉信号
-        //将step分为4段，1、3段为甜，2、4段为苦，这样看到食物就咬下是行不通的，要想满分必须根据苦甜动态调整权重
+        //将step分为2段，1段为甜，2段为苦，这样看到食物就咬下是行不通的，要想满分必须根据苦甜动态调整权重
         if (food[step] == 0)
             return false;
         int q = Env.STEPS_PER_ROUND / 2;
-        return step<q;
-//        if (step < q || (step > 2 * q && step < 3 * q))
-//            return true;
-//        return false;
+        return step < q; 
     }
 
     @Override
