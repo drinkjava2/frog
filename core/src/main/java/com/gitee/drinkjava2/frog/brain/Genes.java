@@ -100,11 +100,7 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
     public static void active(Animal a, int step) {
-        //a.happy *= 0.9; //animal的快乐和痛苦随时间流逝而减弱但不会消失
-        //a.pain *= 0.9;
-        if (a.no == 1) { //debug
-            Logger.info("BEFstep=" + step + ", posHoleSize=" + a.posHoleSize + ", negHoleSize=" + a.negHoleSize + ", eye=" + a.getEng(Genes.EYE_POS) + ", bite=" + a.getEng(Genes.BITE_POS) + ", ate="
-                    + a.ateFood + ",wrong=" + a.ateWrong);
+        if (a.no == 1) {
         }
         for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--)
             for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
@@ -112,65 +108,20 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
                 long cell = a.cells[x][y][z];
                 if (cell == 0)
                     continue; //cell不存在时跳过  
-
-                if (OneDotEye.seeFood(step) && hasGene(cell, BITE)) {//如果看到食物，有小机率咬下，模拟天然的随机咬下动作
-                    if (RandomUtils.percent(30)) {
-                        a.setEng1(x, y, z);
-                        if (a.no == 1)
-                            System.out.println("STEP=" + step + ", food=" + OneDotEye.foodSweet(step));
-                    }
-                }
-
                 float e = a.getEng(x, y, z);
-                if (e > 1) //细胞能量超过1的要削除超过部分,详风TestInput3
-                    a.setEng(x, y, z, 1);
-                //a.setEng(x, y, z, a.getEng(x, y, z) * .98f);
-                if (a.no == 1) {
-                    System.out.println("e=" + e+", x="+x);
-                }
 
                 if (a.energys[x][y][z] >= 0.5f) {//如果细胞激活了
 
-                    if (hasGene(cell, EYE)) { //如果是视细胞激活
-                        a.addEng(BITE_POS, a.energys[x][y][z] * a.posHoleSize);
-                        a.addEng(BITE_POS, -a.energys[x][y][z] * a.negHoleSize);
-                        a.setEng0(x, y, z);
-                    }
-                    
-                    if (hasGene(cell, BITE)) {//如果是咬细胞激活
-                        if (OneDotEye.foodSweet(step)) { //如食物是甜的
-                            if (a.no == 1)  
-                                System.out.println("ate right");
-                            a.awardAAAA(); //奖励 
-                            a.ateFood++;
-                            //a.happy = 1; //happy将会用来调整最近活跃的触突（洞）的正负权重
-                            //a.pain = 0;
-                            a.posHoleSize = 1f;
-                            a.negHoleSize = 0f;
-                        } else {
-                            if (a.no == 1)  
-                                System.out.println("ate wrong");
-                            a.penaltyA(); //其它时间是咬错了，罚  
-                            a.ateWrong++;
-                            //a.pain = 1;//pain将会用来调整最近活跃的触突（洞）的正负权重
-                            //a.happy = 0;
-                            a.negHoleSize = 1;
-                            a.posHoleSize = 0;
-                        }
-                        a.setEng0(BITE_POS);
+                    if (hasGene(cell, EYE)) { //如果是视细胞激活 
                     }
 
- 
+                    if (hasGene(cell, BITE)) {//如果是咬细胞激活 
+                    } else {
+                    }
                 }
 
-                if (a.energys[x][y][z] > 1) //细胞能量超过1的要削除超过部分,详风TestInput3
-                    a.setEng1(x, y, z);
             }
 
-        if (a.no == 1) { //debug
-            Logger.info("AFTstep=" + step + ", posHoleSize=" + a.posHoleSize + ", negHoleSize=" + a.negHoleSize + ", eye=" + a.getEng(Genes.EYE_POS) + ", bite=" + a.getEng(Genes.BITE_POS) + ", ate="
-                    + a.ateFood + ",wrong=" + a.ateWrong);
-        }
     }
 
 }

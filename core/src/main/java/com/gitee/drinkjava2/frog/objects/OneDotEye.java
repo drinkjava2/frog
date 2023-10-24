@@ -19,7 +19,7 @@ public class OneDotEye extends DefaultEnvObject {
         for (int i = 15; i < Env.STEPS_PER_ROUND - 15; i += 15) {
             int j = i + RandomUtils.nextNegOrPosInt(5);
             food[j] = 1;
-            food[j+1] = 1;
+            food[j + 1] = 1;
         }
     }
 
@@ -32,7 +32,7 @@ public class OneDotEye extends DefaultEnvObject {
         if (food[step] == 0)
             return false;
         int q = Env.STEPS_PER_ROUND / 2;
-        return step < q; 
+        return step < q;
     }
 
     @Override

@@ -68,16 +68,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public int ateFood = 0; // 青蛙曾吃过的食物总数
     public int ateWrong = 0; // 青蛙咬了个空气的次数
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
-    
-    public float happy=0; //愉快值，比如吃到甜食这个值会增加
-    //public float pain=0; //痛苦值，比如吃到苦食或受伤害这个值会增加
-    
-    public float posHoleSize=0; //临时变量，仅适用于只有一个细胞的情况，待测完后删除，把它们移到 cell组数中的洞上去
-    public float posHoleFresh=0;
-    public float negHoleSize=0;
-    public float negHoleFresh=0;
-    
-    
 
     public int animalMaterial;
     public Image animalImage;
