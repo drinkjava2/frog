@@ -356,29 +356,17 @@ public class BrainPicture extends JPanel {
                     // if (cell == 0) //只显示有效的细胞点
                     //    continue;
 
-//                    int[] holes = a.holes[x][y][z];
-//                    if (holes != null) {
-//                        setPicColor(Color.GRAY);
-//                        for (int i = 0; i < holes.length / Animal.HOLE_ARR_SIZE; i++) {//这里画出hole连线 
-//                            int n = i * Animal.HOLE_ARR_SIZE;
-//                            drawCentLine(x, y, z, holes[n], holes[n + 1], holes[n + 2]);
-//                        }
-//                    }
-
                     if (x >= xMask && y >= yMask && cell != 0)//画出细胞每个基因存在的细胞格子
                         for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
                             if ((cell & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
                                 setPicColor(ColorUtils.colorByCode(geneIndex)); //开始画出对应的细胞基因参数，用不同颜色直径圆表示
-                                //setPicColor(Color.RED);
-                                //drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, geneIndex == 0 ? 0.8f : 0.5f - geneIndex * 0.05f);
                                 drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.6f);
                             }
                         }
                     float e = a.energys[x][y][z];
-                    if (e > 0.1f || e < -0.1f) {
-                        setPicColor(e > 0 ? Color.RED : Color.BLUE); //用红色小圆表示正能量，蓝色表示负能量
-                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.2f);
-                        float size = (float) (0.5f + 0.4 *  Math.abs(e*3));//再用不同大小圆形表示不同能量值  
+                    if (e > 0.03f || e < -0.03f) {
+                        setPicColor(e > 0 ? Color.black : Color.BLUE); //用红色小圆表示正能量，蓝色表示负能量
+                        float size = (float) (0.4 * Math.abs(e * 3));//再用不同大小圆形表示不同能量值
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
                     }
 

@@ -40,7 +40,7 @@ public class OneDotEye extends DefaultEnvObject {
         if (seeFood(step)) { //如看到食物, 激活所有青蛙的视网膜
             for (int i = screen; i < screen + Env.FROG_PER_SCREEN; i++) {
                 Frog f = Env.frogs.get(i);
-                f.setEng1(Genes.EYE_POS);
+                f.setEng(Genes.EYE_POS,  1f);
             }
         }
     }

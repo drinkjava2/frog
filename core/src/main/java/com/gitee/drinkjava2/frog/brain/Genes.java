@@ -100,8 +100,6 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
     public static void active(Animal a, int step) {
-        if (a.no == 1) {
-        }
         for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--)
             for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
                 int y = 0;
