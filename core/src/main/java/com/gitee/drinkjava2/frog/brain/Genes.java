@@ -95,14 +95,28 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     public static int[] EYE_POS = new int[]{0, 0, 0};
     public static long EYE = registerFill(EYE_POS); //视网膜细胞 
 
-    public static int[] BITE_POS = new int[]{2, 0, 0};
+    public static int[] BITE_POS = new int[]{0, 0, 1};
     public static long BITE = registerFill(BITE_POS); //咬动作细胞 
+
+    public static int[] HUNGRY_POS = new int[]{0, 0, 2};
+    public static long HUNGRY = registerFill(HUNGRY_POS); //饿细胞 
+
+    public static int[] SWEET_POS = new int[]{0, 1, 0};
+    public static long SWEET = registerFill(SWEET_POS); //甜味细胞
+
+    public static int[] BITTER_POS = new int[]{0, 1, 1};
+    public static long BITTER = registerFill(BITTER_POS); //苦味细胞
+
+    //登记细胞间关联(触突树突)
+    static {
+        register(8, false, false, 0, NA, NA); //8个方向的信号发送联接，每个联接有正负两个权重的单向联接, 目前只考虑向相邻细胞发信息，没有远发功能
+    }
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
     public static void active(Animal a, int step) {
-        for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--)
-            for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
-                int y = 0;
+        for (int y = Env.BRAIN_SIZE - 1; y >= 0; y--)
+            for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--) {
+                int x = 0;
                 long cell = a.cells[x][y][z];
                 if (cell == 0)
                     continue; //cell不存在时跳过  
