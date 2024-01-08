@@ -14,7 +14,6 @@ import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
-import com.gitee.drinkjava2.frog.objects.OneDotEye;
 import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -83,7 +82,7 @@ public class Env extends JPanel {
 
     public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{new OneDotEye()};// 所有外界物体，如食物、字母测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{};// 所有外界物体，如食物、字母测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 

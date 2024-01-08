@@ -12,9 +12,6 @@ package com.gitee.drinkjava2.frog.brain;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.objects.OneDotEye;
-import com.gitee.drinkjava2.frog.util.Logger;
-import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * Genes代表不同的脑细胞参数，对应每个参数，用8叉/4叉/2叉树算法给每个细胞添加细胞参数和行为。
@@ -92,48 +89,44 @@ public class Genes { //Genes登记所有的基因， 指定每个基因允许分
     private static final int CS4 = Env.BRAIN_SIZE / 4;
 
     //============开始登记有名字的基因==========
-    public static int[] EYE_POS = new int[]{0, 0, 0};
-    public static long EYE = registerFill(EYE_POS); //视网膜细胞 
+    public static int[] EYE1_POS = new int[]{0, 0, 0};
+    public static long EYE1 = registerFill(EYE1_POS); //视网膜细胞 
 
-    public static int[] BITE_POS = new int[]{0, 0, 1};
-    public static long BITE = registerFill(BITE_POS); //咬动作细胞 
+    public static int[] EYE2_POS = new int[]{0, 0, 1};
+    public static long EYE2 = registerFill(EYE2_POS); //视网膜细胞
 
-    public static int[] HUNGRY_POS = new int[]{0, 0, 2};
-    public static long HUNGRY = registerFill(HUNGRY_POS); //饿细胞 
-
-    public static int[] SWEET_POS = new int[]{0, 1, 0};
+    public static int[] SWEET_POS = new int[]{0, 2, 0};
     public static long SWEET = registerFill(SWEET_POS); //甜味细胞
 
-    public static int[] BITTER_POS = new int[]{0, 1, 1};
+    public static int[] BITTER_POS = new int[]{0, 2, 1};
     public static long BITTER = registerFill(BITTER_POS); //苦味细胞
+
+    public static int[] BITE_POS = new int[]{0, 3, 3};
+    public static long BITE = registerFill(BITE_POS); //咬动作细胞  
+
+    public static int[] ACT_POS = new int[]{0, 0, 3};
+    public static long ACT = registerFill(ACT_POS); //活跃细胞，这个始终激活  `
 
     //登记细胞间关联(触突树突)
     static {
-        register(8, false, false, 0, NA, NA); //8个方向的信号发送联接，每个联接有正负两个权重的单向联接, 目前只考虑向相邻细胞发信息，没有远发功能
+        //register(8, true, false, 0, NA, NA); //8个方向的信号发送联接
     }
 
     //========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法  ===========
     public static void active(Animal a, int step) {
+        a.setEng(ACT_POS, 20f);
+        a.setEng(EYE1_POS, 1f);
+        a.setEng(EYE2_POS, 1f);
+        int x = 0;
         for (int y = Env.BRAIN_SIZE - 1; y >= 0; y--)
             for (int z = Env.BRAIN_SIZE - 1; z >= 0; z--) {
-                int x = 0;
                 long cell = a.cells[x][y][z];
                 if (cell == 0)
                     continue; //cell不存在时跳过  
                 float e = a.getEng(x, y, z);
-
-                if (a.energys[x][y][z] >= 0.5f) {//如果细胞激活了
-
-                    if (hasGene(cell, EYE)) { //如果是视细胞激活 
-                    }
-
-                    if (hasGene(cell, BITE)) {//如果是咬细胞激活 
-                    } else {
-                    }
+                if (a.energys[x][y][z] >= 0.5f) {
                 }
-
             }
-
     }
 
 }

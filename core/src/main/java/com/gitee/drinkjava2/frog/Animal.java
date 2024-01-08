@@ -17,11 +17,13 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Consts;
 import com.gitee.drinkjava2.frog.brain.Genes;
+import com.gitee.drinkjava2.frog.brain.Line;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.GeneUtils;
@@ -51,15 +53,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
 
     public int[] consts = new int[Consts.CountsQTY]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
-
+ 
+    public List<Line> lines = new ArrayList<>();
+    
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
     public long[][][] cells = new long[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE]; //所有脑细胞
 
     public float[][][] energys = new float[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
-
-    public int[][][][] holes = new int[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE][]; //每个细胞的洞（相当于触突）
 
     public int xPos; // animal在Env中的x坐标
     public int yPos; // animal在Env中的y坐标
@@ -212,112 +214,5 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public float getEng(int x, int y, int z) {//返回指定的a坐标对应的cell能量值
         return energys[x][y][z];
     }
-
-    //TODO: =================以下这些方法太复杂，删除除或重新整理================= 
-
-    //    
-    //    static final int HOLE_MAX_SIZE = 1000 * 1000;
-    //
-    //    public void digHole(int[] srcPos, int[] targetPos, int holeSize, int fresh) {
-    //        digHole(srcPos[0], srcPos[1], srcPos[2], targetPos[0], targetPos[1], targetPos[2], holeSize, fresh);
-    //    }
-    //
-    //    public void digHole(int sX, int sY, int sZ, int[] targetPos, int holeSize, int fresh) {
-    //        digHole(sX, sY, sZ, targetPos[0], targetPos[1], targetPos[2], holeSize, fresh);
-    //    }
-    //
-    //    public static final int HOLE_ARR_SIZE = 5; //洞由几个参数构成 
-    //
-    //    
-    //    
-    //  
-    //    public void digHole(int sX, int sY, int sZ, int tX, int tY, int tZ, int size, int fresh) {//在t细胞上挖洞，将洞的方向链接到源s，如果洞已存在，扩大洞, 新洞大小为1，洞最大不超过100
-    //        if (!hasGene(tX, tY, tZ))
-    //            return;
-    //        if (!Env.insideBrain(sX, sY, sZ))
-    //            return;
-    //        if (!Env.insideBrain(tX, tY, tZ))
-    //            return;
-    //        if (getEng(tX, tY, tZ) < 1) //要调整
-    //            addEng(tX, tY, tZ, 1); //要调整
-    //
-    //        int[] cellHoles = holes[tX][tY][tZ];
-    //        if (cellHoles == null) { //洞不存在，新建一个， 洞参数是一个一维数组，分别为源坐标X,Y,Z, 洞的大小，洞的新鲜度 
-    //            holes[tX][tY][tZ] = new int[]{sX, sY, sZ, size, fresh}; //
-    //            return;
-    //        } else {
-    //            int emptyPos = -1; //找指定源坐标已存在的洞，如果不存在，如发现空洞也可以占用
-    //            for (int i = 0; i < cellHoles.length / HOLE_ARR_SIZE; i++) {
-    //                int n = i * HOLE_ARR_SIZE;
-    //                if (cellHoles[n] == sX && cellHoles[n + 1] == sY && cellHoles[n + 2] == sZ) {//找到已有的洞了
-    //                    if (cellHoles[n + 3] < 1000) //要改成由基因调整
-    //                        cellHoles[n + 3] += size;
-    //                    if (cellHoles[n + 4] < 1000) //要改成由基因调整
-    //                        cellHoles[n + 4] += fresh;
-    //                    return;
-    //                }
-    //                if (emptyPos == -1 && cellHoles[n + 3] <= 1)//如发现空洞也可以，先记下它的位置
-    //                    emptyPos = n;
-    //            }
-    //
-    //            if (emptyPos > -1) { //找到一个空洞
-    //                cellHoles[emptyPos] = sX;
-    //                cellHoles[emptyPos + 1] = sY;
-    //                cellHoles[emptyPos + 2] = sZ;
-    //                if (cellHoles[emptyPos + 3] < 1000) //要改成由基因调整
-    //                    cellHoles[emptyPos + 3] += size;
-    //                if (cellHoles[emptyPos + 4] < 1000) //要改成由基因调整
-    //                    cellHoles[emptyPos + 4] += fresh;
-    //                return;
-    //            }
-    //
-    //            int length = cellHoles.length; //没找到已有的洞，也没找到空洞，新建一个并追加到原洞数组未尾
-    //            int[] newHoles = new int[length + HOLE_ARR_SIZE];
-    //            System.arraycopy(cellHoles, 0, newHoles, 0, length);
-    //            newHoles[length] = sX;
-    //            newHoles[length + 1] = sY;
-    //            newHoles[length + 2] = sZ;
-    //            newHoles[length + 3] = size; //要改成由基因调整
-    //            newHoles[length + 4] = fresh; //要改成由基因调整
-    //            holes[tX][tY][tZ] = newHoles;
-    //            return;
-    //        }
-    //    }
-    //
-    //    public void holeSendEngery(int[] pos, float e) {//在当前细胞所有洞上反向发送能量（光子)，le是向左边的细胞发， re是向右边的细胞发
-    //        holeSendEngery(pos[0], pos[1], pos[2], e);
-    //    }
-    //
-    //    public void holeSendEngery(int x, int y, int z, float e) {//在当前细胞所有洞上反向发送能量（光子)，le是向左边的细胞发， re是向右边的细胞发
-    //        int[] cellHoles = holes[x][y][z]; //cellHoles是单个细胞的所有洞(触突)，4个一组，前三个是洞的坐标，后一个是洞的大小
-    //        if (cellHoles == null) //如洞不存在，不发送能量 
-    //            return;
-    //        for (int i = 0; i < cellHoles.length / HOLE_ARR_SIZE; i++) {
-    //            int n = i * HOLE_ARR_SIZE;
-    //            float size = cellHoles[n + 3];
-    //            if (size > 1) {
-    //                addEng(cellHoles[n], cellHoles[n + 1], cellHoles[n + 2], e + cellHoles[n + 3] + cellHoles[n + 4]); //向源细胞反向发送常量大小的能量 
-    //            }
-    //        }
-    //    }
-    //
-    //    public void holesReduce() {//所有hole大小都会慢慢减小，模拟触突连接随时间消失，即细胞的遗忘机制，这保证了系统不会被信息撑爆
-    //        for (int x = 0; x < Env.BRAIN_SIZE - 1; x++)
-    //            for (int y = 0; y < Env.BRAIN_SIZE - 1; y++)
-    //                for (int z = 0; z < Env.BRAIN_SIZE - 1; z++) {
-    //                    int[] cellHoles = holes[x][y][z];
-    //                    if (cellHoles != null)
-    //                        for (int i = 0; i < cellHoles.length / HOLE_ARR_SIZE; i++) {
-    //                            int n = i * HOLE_ARR_SIZE;
-    //                            int size = cellHoles[n + 3];
-    //                            if (size > 0)
-    //                                cellHoles[n + 3] = (int) (size * 0.9);//要改成由基因调整
-    //                            int fresh = cellHoles[n + 4];
-    //                            if (fresh > 0)
-    //                                cellHoles[n + 4] -= Consts.HOLE_REDUCE;//要改成由基因调整
-    //
-    //                        }
-    //                }
-    //    }
 
 }
