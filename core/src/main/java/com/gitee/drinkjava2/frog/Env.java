@@ -37,7 +37,7 @@ public class Env extends JPanel {
     public static final int SCREEN = 4; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
-    public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
+    public static final boolean DELETE_FROG_EGGS = false;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
 
     public static boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
 
@@ -224,7 +224,7 @@ public class Env extends JPanel {
     }
 
     public void run() {
-        FrogEggTool.loadFrogEggs(); // 从磁盘加载蛙egg，或新建一批egg
+        FrogEggTool.loadFrogEggs(); // 首次运行时，从磁盘加载蛙egg，如加载失败就新建一批egg
         Image buffImg = createImage(this.getWidth(), this.getHeight());
         Graphics g = buffImg.getGraphics();
         long time0;// 计时用
@@ -264,7 +264,7 @@ public class Env extends JPanel {
                     drawWorld(g);// 画整个虚拟环境
                     for (int j = 0; j < FROG_PER_SCREEN; j++) { // 显示青蛙
                         Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
-                        f.show(g);
+                        f.showInEnv(g);
                     }
 
                     if (SHOW_FIRST_ANIMAL_BRAIN) {// 在showAnimal上画一个红圈

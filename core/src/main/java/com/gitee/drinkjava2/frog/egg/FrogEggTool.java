@@ -26,6 +26,7 @@ import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.brain.Consts;
 import com.gitee.drinkjava2.frog.util.LocalFileUtils;
 import com.gitee.drinkjava2.frog.util.Logger;
+import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * FrogEggTool save/load frog eggs to file
@@ -50,7 +51,7 @@ public class FrogEggTool {
             Env.frog_eggs.clear();
             for (int i = 0; i < Env.FROG_EGG_QTY; i++) //每次下蛋数量固定为EGG_QTY个
                 Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
-            Logger.info("Fist frog fat={}, gene size={}, Last frog fat={}", first.fat, getGeneSize(first), last.fat);
+            Logger.info("Fist frog fat={}, gene size={}, lines size={}, Last frog fat={}", first.fat, getGeneSize(first), first.lines.size(), last.fat);
 
 
             if (Env.SAVE_EGGS_FILE) {
@@ -104,6 +105,7 @@ public class FrogEggTool {
             ObjectInputStream eggsInputStream = new ObjectInputStream(eggsFile);
             Env.frog_eggs = (List<Egg>) eggsInputStream.readObject();
             Logger.info("Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH + "frog_eggs.ser" + "'.\n");
+            //System.out.println(Env.frog_eggs.get(0).lines.get(0).value);  //debug
             eggsInputStream.close();
         } catch (Exception e) {
             errorfound = true;

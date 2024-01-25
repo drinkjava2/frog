@@ -149,7 +149,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
-    public void show(Graphics g) {// 显示当前动物
+    public void showInEnv(Graphics g) {// 在虚拟环境显示当前动物，这个方法直接调用Env的Graphics对象
         if (!alive)
             return;
         //g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
