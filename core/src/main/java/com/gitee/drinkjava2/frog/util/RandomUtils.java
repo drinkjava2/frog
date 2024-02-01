@@ -41,6 +41,12 @@ public class RandomUtils {
     public static float nextFloat() {
         return rand.nextFloat();
     }
+    
+    public static float nextNegOrPosFloat() {
+        if (percent(50))
+            return rand.nextFloat();
+        return -rand.nextFloat();
+    }
 
     public static boolean percent(float percent) {// 有百分这percent的机率为true
         return rand.nextFloat() * 100 < percent;

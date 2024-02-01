@@ -175,23 +175,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void setEng(int[] a, float e) { //打开指定的xyz坐标对应的cell能量值为极大
         energys[a[0]][a[1]][a[2]] = e;
     }
-
-    public void setEng1(int x, int y, int z) { //打开指定的xyz坐标对应的cell能量值为极大
-        energys[x][y][z] = 1;
-    }
-
-    public void setEng1(int[] a) { //打开指定的a坐标对应的cell能量值为极大
-        energys[a[0]][a[1]][a[2]] = 1;
-    }
-
-    public void setEng0(int x, int y, int z) { //关闭指定的xyz坐标对应的cell能量值为0
-        energys[x][y][z] = 0;
-    }
-
-    public void setEng0(int[] a) {//关闭指定的a坐标对应的cell能量值为0
-        energys[a[0]][a[1]][a[2]] = 0;
-    }
-
+ 
     public void addEng(int[] a, float e) {//指定的a坐标对应的cell能量值加e
         addEng(a[0], a[1], a[2], e);
     }

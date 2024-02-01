@@ -387,11 +387,11 @@ public class BrainPicture extends JPanel {
 		}
 
 		setPicColor(Color.BLACK);
-		for (Line l : a.lines) { //画出所有细胞间连线
+		for (Line l : a.lines) { // 画出所有细胞间连线
 			l.drawOnBrainPicture(a, this);
 		}
 
-		for (Object[] o : Genes.dots) { //画出所有登记的点的名字
+		for (Object[] o : Genes.dots) { // 画出所有登记的点的名字
 			String name = (String) o[0];
 			int x = (int) o[1];
 			int y = (int) o[2];
