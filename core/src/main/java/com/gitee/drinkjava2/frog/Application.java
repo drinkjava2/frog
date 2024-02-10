@@ -19,6 +19,16 @@ import com.gitee.drinkjava2.frog.brain.Genes;
 /**
  * Application's main method start the program
  * 
+ * Application是程序入口
+ * 
+ * 关于本项目代码格式的约定:
+ * 1.不使用tab，而是使用空白符
+ * 2.注释在代码格式化工具里要设成不允许自动合并多行
+ * 3.源码采用UTF-8编码
+ * 4.源码换行设定为UNIX风格单个LF字符结尾。 git里设定 git config --global core.autocrlf input，即提交时把CRLF改成单个LF字符，签出时不改
+ * 5.其它人提交时，只能修改自已修改的部分，代码格式化工具也必须设置成不能变动未修改的其它行
+ * 
+ * 
  * @author Yong Zhu
  * @since 1.0
  */
@@ -70,7 +80,7 @@ public class Application {
         button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
         ActionListener al = new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent arg0) {//显示或隐藏脑图
+            public void actionPerformed(ActionEvent arg0) {// 显示或隐藏脑图
                 Env.SHOW_FIRST_ANIMAL_BRAIN = !Env.SHOW_FIRST_ANIMAL_BRAIN;
                 checkIfShowBrainPicture(button);
             }
@@ -112,7 +122,7 @@ public class Application {
         label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
         mainFrame.add(label);
 
-        //是否把egg文件存盘
+        // 是否把egg文件存盘
         JCheckBox saveFileCheckBox = new JCheckBox("Save egg file");
         saveFileCheckBox.setBounds(buttonXpos, Env.ENV_HEIGHT + 80, 120, 22);
         ActionListener saveAction = new ActionListener() {
@@ -126,7 +136,7 @@ public class Application {
         saveFileCheckBox.addActionListener(saveAction);
         mainFrame.add(saveFileCheckBox);
 
-        //基因维数显示控制
+        // 基因维数显示控制
         for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
             JRadioButton geneRadio = new JRadioButton();
             geneRadio.setBounds(buttonXpos + 300 + i * 16, Env.ENV_HEIGHT + 8, 20, 22);
@@ -145,7 +155,7 @@ public class Application {
             mainFrame.add(geneRadio);
         }
 
-        //是否显示分裂过程
+        // 是否显示分裂过程
         JCheckBox showSplitDetailCheckBox = new JCheckBox("Show split detail");
         showSplitDetailCheckBox.setBounds(buttonXpos + 300, Env.ENV_HEIGHT + 40, 120, 22);
         ActionListener detailAction = new ActionListener() {
@@ -158,7 +168,7 @@ public class Application {
         };
         showSplitDetailCheckBox.addActionListener(detailAction);
         mainFrame.add(showSplitDetailCheckBox);
-        //mainFrame.setBounds(0, 400, 5, 5);
+        // mainFrame.setBounds(0, 400, 5, 5);
         mainFrame.setVisible(true);
         env.run();
     }
