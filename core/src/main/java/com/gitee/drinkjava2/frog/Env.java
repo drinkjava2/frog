@@ -37,7 +37,7 @@ public class Env extends JPanel {
     public static final int SCREEN = 4; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
-    public static final boolean DELETE_FROG_EGGS = false;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
+    public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
 
     public static boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
 
@@ -59,10 +59,10 @@ public class Env extends JPanel {
     public static final int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
 
     /** Frog's brain display width on screen, not important */
-    public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
+    public static final int FROG_BRAIN_DISP_WIDTH = 800; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 800;// 每轮测试步数,可调
+    public static final int STEPS_PER_ROUND = 100;// 每轮测试步数,可调
     public static int step;// 当前测试步数
 
     public static final int FOOD_QTY = 3000; // 食物数量, 可调
@@ -78,9 +78,9 @@ public class Env extends JPanel {
 
     public static int[][] bricks = new int[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，见Material.java
 
-    public static List<Frog> frogs = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
+    public static ArrayList<Frog> frogs = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
-    public static List<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
+    public static ArrayList<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
     public static EnvObject[] things = new EnvObject[]{};// 所有外界物体，如食物、字母测试工具都放在这个things里面
 

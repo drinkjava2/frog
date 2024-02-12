@@ -15,18 +15,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
-import com.gitee.drinkjava2.frog.brain.Consts;
 import com.gitee.drinkjava2.frog.util.LocalFileUtils;
 import com.gitee.drinkjava2.frog.util.Logger;
-import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * FrogEggTool save/load frog eggs to file
@@ -103,9 +101,9 @@ public class FrogEggTool {
         try {
             FileInputStream eggsFile = new FileInputStream(Application.CLASSPATH + "frog_eggs.ser");
             ObjectInputStream eggsInputStream = new ObjectInputStream(eggsFile);
-            Env.frog_eggs = (List<Egg>) eggsInputStream.readObject();
+            Env.frog_eggs = (ArrayList<Egg>) eggsInputStream.readObject();
             Logger.info("Loaded " + Env.frog_eggs.size() + " eggs from file '" + Application.CLASSPATH + "frog_eggs.ser" + "'.\n");
-            //System.out.println(Env.frog_eggs.get(0).lines.get(0).value);  //debug
+            //System.out.println(Env.frog_eggs.get(0).lines.size());  //debug
             eggsInputStream.close();
         } catch (Exception e) {
             errorfound = true;

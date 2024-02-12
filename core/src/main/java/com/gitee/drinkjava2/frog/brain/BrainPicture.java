@@ -21,7 +21,6 @@ import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Application;
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.util.ColorUtils;
-import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.Tree8Util;
 
 /**
@@ -211,6 +210,10 @@ public class BrainPicture extends JPanel {
 				(int) round(y2) + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset);
 	}
 
+	public void drawPointCent(float px1, float py1, float pz1, float r) {
+	    drawPoint(px1+0.5f, py1+0.5f, pz1+0.5f, r);
+	}
+	
 	/** 画点，固定以top视角的角度，所以只需要在x1,y1位置画一个点 */
 	public void drawPoint(float px1, float py1, float pz1, float r) {
 		double x1 = px1 - Env.BRAIN_SIZE / 2;
@@ -362,6 +365,9 @@ public class BrainPicture extends JPanel {
 		for (int z = 0; z < Env.BRAIN_SIZE; z++) {// 画它所有的脑细胞位置和颜色
 			for (int y = Env.BRAIN_SIZE - 1; y >= 0; y--) {
 				for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
+				    setPicColor(BLACK); // 画边框
+				    drawPointCent(x, y, z, 0.03f); //画每个细胞小点
+				    
 					long cell = a.cells[x][y][z];
 					// if (cell == 0) //只显示有效的细胞点
 					// continue;
@@ -386,10 +392,8 @@ public class BrainPicture extends JPanel {
 			}
 		}
 
-		setPicColor(Color.BLACK);
-		for (Line l : a.lines) { // 画出所有细胞间连线
-			l.drawOnBrainPicture(a, this);
-		}
+		setPicColor(Color.BLACK); 
+		Line.drawOnBrainPicture(a, this);
 
 		for (Object[] o : Genes.dots) { // 画出所有登记的点的名字
 			String name = (String) o[0];

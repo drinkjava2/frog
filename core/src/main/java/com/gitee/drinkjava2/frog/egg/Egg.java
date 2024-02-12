@@ -12,12 +12,9 @@ package com.gitee.drinkjava2.frog.egg;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
-import com.gitee.drinkjava2.frog.brain.Consts;
-import com.gitee.drinkjava2.frog.brain.Line;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -39,8 +36,8 @@ public class Egg implements Serializable {
     // gene record the 8-tree structure of brain cells
     // 基因是随机生成的8叉树数据结构，和实际生物每个细胞都要保存一份基因不同，程序中每个脑细胞并不需要保存基因的副本，这样可以极大地减少内存占用
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>();
-    public int[] constGenes = new int[Consts.CountsQTY]; //animal中的全局常量基因全放在这里，用随机数来生成，用遗传算法筛选
-    public List<Line> lines = new ArrayList<>();//随机连线是可以遗传的
+    public float[] consts = new float[Animal.CountsQTY]; //全局常量全放在这里，用随机数来生成，用遗传算法筛选
+    public ArrayList<int[]> lines = new ArrayList<>();//随机连线是可以遗传的
 
     public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
         x = RandomUtils.nextInt(Env.ENV_WIDTH);
@@ -56,7 +53,7 @@ public class Egg implements Serializable {
             g.addAll(gene);
             genes.add(g);
         }
-        System.arraycopy(a.consts, 0, this.constGenes, 0, constGenes.length); //把a的常量数组拷到蛋里
+        System.arraycopy(a.consts, 0, this.consts, 0, consts.length); //把a的常量数组拷到蛋里
         lines.addAll(a.lines); //把a的连线拷到蛋里
     }
 
@@ -67,9 +64,10 @@ public class Egg implements Serializable {
         x = a.x;
         y = a.y;
         genes.addAll(a.genes);
-        System.arraycopy(a.constGenes, 0, this.constGenes, 0, constGenes.length);
+        System.arraycopy(a.consts, 0, this.consts, 0, consts.length);
         lines.addAll(a.lines); //把a的连线拷到蛋里
-        if (RandomUtils.percent(5)) { //插入b的连线到a蛋中
+        
+        if (RandomUtils.percent(3)) { //小概率插入b的连线到a蛋中
             if (!b.lines.isEmpty())
                 a.lines.add(b.lines.get(RandomUtils.nextInt(b.lines.size())));
         }
@@ -85,8 +83,8 @@ public class Egg implements Serializable {
                 }
             }
         if (RandomUtils.percent(20)) {//交换蛋B的常量基因到A蛋中, 不重要，先写上
-            int n = RandomUtils.nextInt(this.constGenes.length);
-            this.constGenes[n] = b.constGenes[n];
+            int n = RandomUtils.nextInt(this.consts.length);
+            this.consts[n] = b.consts[n];
         }
     }
 }

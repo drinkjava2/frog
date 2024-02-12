@@ -17,11 +17,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.gitee.drinkjava2.frog.brain.Consts;
 import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.brain.Line;
 import com.gitee.drinkjava2.frog.egg.Egg;
@@ -52,10 +50,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
 
-    public int[] consts = new int[Consts.CountsQTY]; //常量基因，用来存放不参与分裂算法的全局常量，这些常量也参与遗传算法筛选，规则是有大概率小变异，小概率大变异，见constGenesMutation方法
- 
-    public List<Line> lines = new ArrayList<>();
-    
+    public static int CountsQTY = 100; //常量总数多少
+    public float[] consts = new float[CountsQTY]; // 常量，范围0~1之间，这些常量并不常，会参与遗传算法筛选，规则是有大概率小变异，小概率大变异
+
+    public ArrayList<int[]> lines = new ArrayList<>();
+
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
@@ -75,13 +74,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public Image animalImage;
 
     public Animal(Egg egg) {// x, y 是虑拟环境的坐标
-        System.arraycopy(egg.constGenes, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数
+        System.arraycopy(egg.consts, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数
         for (int i = 0; i < GENE_NUMBERS; i++) {
             genes.add(new ArrayList<>());
         }
         int i = 0;
         for (ArrayList<Integer> gene : egg.genes)//动物的基因是蛋的基因的拷贝 
             genes.get(i++).addAll(gene);
+        lines.addAll(egg.lines); //复制蛋的所有线条
         i = 0;
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             xPos = RandomUtils.nextInt(Env.ENV_WIDTH);
@@ -101,13 +101,19 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
-        GeneUtils.geneMutation(this); //有小概率基因突变
-        Consts.constMutation(this);//常量基因突变  
+        constMutate();//常量基因突变, 线条的参数都在常量里  
+        boolean jumpout = true;
+        if (jumpout) //下面的是与分裂算法有关的代码，本版本暂时用不到
+            return;
+        
+        GeneUtils.geneMutation(this); //分裂算法控制的基因突变
         if (RandomUtils.percent(40))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat -= gene.size();
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
+
+ 
 
     public boolean active(int step) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数
         // 如果fat小于0、出界、与非食物的点重合则判死
@@ -119,11 +125,19 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return false;
         }
 
-        //holesReduce(); //所有细胞上的洞都随时间消逝，即信息的遗忘，旧的不去新的不来
         Genes.active(this, step); //调用每个细胞的活动，重要！
+        Line.lineMutate(this);// //Line的随机增删变异
+        Line.active(this, step); //调用每个连线(触突)的活动，重要！
         return alive;
     }
 
+    public void constMutate() { // 全局参数变异, 这一个方法此动物个体的所有常量
+        for (int i = 0; i < CountsQTY; i++) {
+            if (RandomUtils.percent(5))
+                consts[i] = RandomUtils.vary(consts[i]);
+        }
+    }
+    
     private static final int MIN_FAT_LIMIT = Integer.MIN_VALUE + 5000;
     private static final int MAX_FAT_LIMIT = Integer.MAX_VALUE - 5000;
 
@@ -169,13 +183,21 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void setEng(int x, int y, int z, float e) { //打开指定的xyz坐标对应的cell能量值为极大
+        if(e>1)
+            e=1;
+        if(e<0)
+            e=0;
         energys[x][y][z] = e;
     }
 
     public void setEng(int[] a, float e) { //打开指定的xyz坐标对应的cell能量值为极大
+        if(e>1)
+            e=1;
+        if(e<0)
+            e=0;
         energys[a[0]][a[1]][a[2]] = e;
     }
- 
+
     public void addEng(int[] a, float e) {//指定的a坐标对应的cell能量值加e
         addEng(a[0], a[1], a[2], e);
     }
@@ -186,7 +208,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         float eng = energys[x][y][z] + e;
         if (eng > 1) //如果饱和，不再增加，通过这个方法可以实现异或逻辑或更复杂的模式识别，详见TestInput3测试
             eng = 1;
-        if (eng < 0) //回到传统方式，细胞不允许出现负能量。（但是权值，即树突的正负两个通道中的负通道上，可以出现负信号，这个与实际细胞的抑制信号相似）
+        if (eng < 0) //回到传统方式，细胞不允许出现负能量。（但是能量可以出现负值，这个与实际细胞的抑制信号相似）
             eng = 0;
         energys[x][y][z] = eng;
     }

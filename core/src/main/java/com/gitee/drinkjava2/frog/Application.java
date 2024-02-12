@@ -18,16 +18,18 @@ import com.gitee.drinkjava2.frog.brain.Genes;
 
 /**
  * Application's main method start the program
- * 
  * Application是程序入口
  * 
- * 关于本项目代码格式的约定:
+ * 关于本项目代码格式化工具的约定:
  * 1.不使用tab，而是使用空白符
- * 2.注释在代码格式化工具里要设成不允许自动合并多行
- * 3.源码采用UTF-8编码
- * 4.源码换行设定为UNIX风格单个LF字符结尾。 git里设定 git config --global core.autocrlf input，即提交时把CRLF改成单个LF字符，签出时不改
- * 5.其它人提交时，只能修改自已修改的部分，代码格式化工具也必须设置成不能变动未修改的其它行
- * 
+ * 2.源码采用UTF-8编码
+ * 3.源码换行设定为UNIX风格单个LF字符结尾。 git里设定git config --global core.autocrlf input，即提交时把CRLF改成单个LF字符，签出时不改
+ * 4.所有注释内容不允许被格式化，即：
+ *    Never join lines 设为true，不允许自动合并注释行 
+ *    Enable Javadoc comment formatting 设为false
+ *    Enable block comment formatting 设为false
+ *    Enable line comment formatting 设为false
+ * 5.其他人提交时，只能修改自已修改的部分，不要随便使用代码格式化工具。如果要使用代码格式化工具，也必须参照以上内容设置成不能变动未修改的其它行。 
  * 
  * @author Yong Zhu
  * @since 1.0
