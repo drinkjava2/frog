@@ -376,15 +376,15 @@ public class BrainPicture extends JPanel {
 						for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
 							if ((cell & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
 								setPicColor(ColorUtils.colorByCode(geneIndex)); // 开始画出对应的细胞基因参数，用不同颜色圆表示
-								drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.6f);
+								drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.3f);
 							}
 						}
 					float e = a.energys[x][y][z];
 					if (e > 0.03f || e < -0.03f) {
 						setPicColor(e > 0 ? Color.red : Color.BLUE); // 用红色小圆表示正能量，蓝色表示负能量
-						float size = (float) (0.4 * Math.abs(e * 3));// 再用不同大小圆形表示不同能量值
-						if (size > 3)
-							size = 3;
+						float size = Math.abs(e);// 再用不同大小圆形表示不同能量值
+						if (size > 1)
+							size = 1;
 						drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
 					}
 
@@ -392,7 +392,7 @@ public class BrainPicture extends JPanel {
 			}
 		}
 
-		setPicColor(Color.BLACK); 
+		setPicColor(Color.BLACK); //画出 a.lines里所有线条
 		Line.drawOnBrainPicture(a, this);
 
 		for (Object[] o : Genes.dots) { // 画出所有登记的点的名字

@@ -12,6 +12,7 @@ package com.gitee.drinkjava2.frog;
 
 import static com.gitee.drinkjava2.frog.brain.Genes.GENE_NUMBERS;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -73,7 +74,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public int animalMaterial;
     public Image animalImage;
 
-    public Animal(Egg egg) {// x, y 是虑拟环境的坐标
+    public Animal(Egg egg) {//构造方法，Animal从蛋中诞生
         System.arraycopy(egg.consts, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数
         for (int i = 0; i < GENE_NUMBERS; i++) {
             genes.add(new ArrayList<>());
@@ -101,19 +102,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
-        constMutate();//常量基因突变, 线条的参数都在常量里  
-        boolean jumpout = true;
-        if (jumpout) //下面的是与分裂算法有关的代码，本版本暂时用不到
-            return;
-        
+        constMutate();//常量基因突变, 线条的参数都在常量里
+        Line.randomAddorRemoveLine(this);// //Line的随机增删变异
+
         GeneUtils.geneMutation(this); //分裂算法控制的基因突变
         if (RandomUtils.percent(40))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat -= gene.size();
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
-
- 
 
     public boolean active(int step) {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数
         // 如果fat小于0、出界、与非食物的点重合则判死
@@ -124,9 +121,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             kill();
             return false;
         }
-
+        this.setEng(Genes.ACT_POS, 1f); //ACT这个细胞就象太阳永远保持激活，某些情况下当无外界信号时，它是驱动系统运行的能量来源
         Genes.active(this, step); //调用每个细胞的活动，重要！
-        Line.lineMutate(this);// //Line的随机增删变异
         Line.active(this, step); //调用每个连线(触突)的活动，重要！
         return alive;
     }
@@ -134,10 +130,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void constMutate() { // 全局参数变异, 这一个方法此动物个体的所有常量
         for (int i = 0; i < CountsQTY; i++) {
             if (RandomUtils.percent(5))
-                consts[i] = RandomUtils.vary(consts[i]);
+                //consts[i] = RandomUtils.vary(consts[i]);
+                consts[i] = RandomUtils.nextFloat(); //debug
         }
     }
-    
+
     private static final int MIN_FAT_LIMIT = Integer.MIN_VALUE + 5000;
     private static final int MAX_FAT_LIMIT = Integer.MAX_VALUE - 5000;
 
@@ -163,10 +160,16 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
-    public void showInEnv(Graphics g) {// 在虚拟环境显示当前动物，这个方法直接调用Env的Graphics对象
+    public void showInEnv(Graphics g) {// 在虚拟环境显示当前动物，这个方法直接调用Env的Graphics对象        
+        if (no == (Env.current_screen * Env.FROG_PER_SCREEN + 1)) { //如果是当前第一个青蛙，给它画个红圈
+            Color c=g.getColor();
+            g.setColor(Color.red);
+            g.drawArc(xPos - 15, yPos - 15, 30, 30, 0, 360);
+            g.setColor(c);
+        }
         if (!alive)
             return;
-        //g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处
+        //g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处 
     }
 
     /** Check if x,y,z out of animal's brain range */
@@ -183,18 +186,18 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void setEng(int x, int y, int z, float e) { //打开指定的xyz坐标对应的cell能量值为极大
-        if(e>1)
-            e=1;
-        if(e<0)
-            e=0;
+        if (e > 1)
+            e = 1;
+        if (e < 0)
+            e = 0;
         energys[x][y][z] = e;
     }
 
     public void setEng(int[] a, float e) { //打开指定的xyz坐标对应的cell能量值为极大
-        if(e>1)
-            e=1;
-        if(e<0)
-            e=0;
+        if (e > 1)
+            e = 1;
+        if (e < 0)
+            e = 0;
         energys[a[0]][a[1]][a[2]] = e;
     }
 

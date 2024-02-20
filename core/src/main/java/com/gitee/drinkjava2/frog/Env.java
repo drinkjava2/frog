@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -14,6 +13,7 @@ import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
+import com.gitee.drinkjava2.frog.objects.OneInputJudge;
 import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -30,11 +30,11 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 300; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 200; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
-    public static final int SCREEN = 4; // 分几屏测完
+    public static final int SCREEN = 1; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
     public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
@@ -44,7 +44,7 @@ public class Env extends JPanel {
     public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出青蛙落在地图上随机位置，而不是在蛋所在地
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用三维数组来表示
-    public static final int BRAIN_SIZE =4; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法 
+    public static final int BRAIN_SIZE = 4; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法 
 
     /** SHOW first animal's brain structure */
     public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -62,7 +62,7 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 800; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 100;// 每轮测试步数,可调
+    public static final int STEPS_PER_ROUND = 500;// 每轮测试步数,可调
     public static int step;// 当前测试步数
 
     public static final int FOOD_QTY = 3000; // 食物数量, 可调
@@ -82,7 +82,7 @@ public class Env extends JPanel {
 
     public static ArrayList<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{};// 所有外界物体，如食物、字母测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[] { new OneInputJudge() };// 所有外界物体，如食物、测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -198,8 +198,7 @@ public class Env extends JPanel {
         for (Frog f : frogs)
             if (f.ateFood > maxFound)
                 maxFound = f.ateFood;
-        return new StringBuilder("吃食率:").append(format100.format(Food.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ").append(Food.food_ated * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound)
-                .toString();
+        return new StringBuilder("吃食率:").append(format100.format(Food.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ").append(Food.food_ated * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound).toString();
     }
 
     public static void checkIfPause(int step) {
@@ -219,7 +218,7 @@ public class Env extends JPanel {
         }
     }
 
-    public static Animal getShowAnimal() {
+    public static Animal getShowAnimal() { //取当前屏第一个青蛙
         return frogs.get(current_screen * FROG_PER_SCREEN);
     }
 
@@ -233,16 +232,20 @@ public class Env extends JPanel {
             rebuildFrogs(); // 根据蛙蛋重新孵化出蛙，注意基因变异有可能在孵化过程中发生
             for (current_screen = 0; current_screen < SCREEN; current_screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
                 time0 = System.currentTimeMillis();
+                
+                g.setColor(Color.white);
+                g.fillRect(0, 0, this.getWidth(), this.getHeight()); // 先清空虚拟环境
+                g.setColor(Color.BLACK);
                 for (EnvObject thing : things) // 创建食物、陷阱等物体
-                    thing.build();
+                    thing.build(g);
+                
                 boolean allDead = false;
                 for (int j = 0; j < FROG_PER_SCREEN; j++) {
                     Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
                     f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
                 }
+ 
                 for (step = 0; step < STEPS_PER_ROUND; step++) {
-                    for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
-                        thing.active(current_screen, step);
                     if (allDead)
                         break; // 青蛙全死光了就直接跳到下一轮,以节省时间
                     allDead = true;
@@ -257,24 +260,16 @@ public class Env extends JPanel {
                     else if (step % SHOW_SPEED != 0)// 用是否跳帧画图的方式来控制速度
                         continue;
 
-                    // 开始画虚拟环境和青蛙
-                    g.setColor(Color.white);
-                    g.fillRect(0, 0, this.getWidth(), this.getHeight()); // 先清空虚拟环境
-                    g.setColor(Color.BLACK);
-                    drawWorld(g);// 画整个虚拟环境
+                    // 开始画things和青蛙 
+                    drawWorld(g);// 画整个虚拟环境中的material
+                    for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
+                        thing.active(current_screen, step, g);
+                    
                     for (int j = 0; j < FROG_PER_SCREEN; j++) { // 显示青蛙
                         Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
                         f.showInEnv(g);
                     }
 
-                    if (SHOW_FIRST_ANIMAL_BRAIN) {// 在showAnimal上画一个红圈
-                        Animal showAnimal = getShowAnimal();
-                        if (showAnimal != null) {
-                            g.setColor(Color.red);
-                            g.drawArc(showAnimal.xPos - 15, showAnimal.yPos - 15, 30, 30, 0, 360);
-                            g.setColor(Color.BLACK);
-                        }
-                    }
                     if (DRAW_BRAIN_AFTER_STEPS > 0 && step % DRAW_BRAIN_AFTER_STEPS == 0) //显示脑图是耗时操作，这个开关可以跳过一些脑图显示
                         Application.brainPic.drawBrainPicture(step);
                     if (SHOW_SPEED == 1 && SHOW_FIRST_ANIMAL_BRAIN) //如果速度为1，强制每步都显示脑图
@@ -289,13 +284,12 @@ public class Env extends JPanel {
                     Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
                 }
                 StringBuilder sb = new StringBuilder("Round: ");
-                sb.append(round).append(", screen:").append(current_screen).append(", speed:").append(Env.SHOW_SPEED).append(", ").append(", 用时: ").append(System.currentTimeMillis() - time0)
-                        .append("ms, ");
+                sb.append(round).append(", screen:").append(current_screen).append(", speed:").append(Env.SHOW_SPEED).append(", ").append(", 用时: ").append(System.currentTimeMillis() - time0).append("ms, ");
                 sb.append(foodAtedCount());
 
                 Application.mainFrame.setTitle(sb.toString());
                 for (EnvObject thing : things)// 去除食物、陷阱等物体
-                    thing.destory();
+                    thing.destory(g);
             }
             round++;
             FrogEggTool.layEggs(); //能量高的青蛙才有权下蛋

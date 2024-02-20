@@ -49,21 +49,18 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public class Line implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static int countsQTY = 8; // res, drs, ovf , ovb, not ...等常量参数
+    public static int countsQTY = 8; // res, drs, ovf , ovb, not ...等常量参数 
 
-    public static int[] randomLine() {//新建一条类型、起始位置都随机的线条
-        int i = RandomUtils.nextInt(Genes.dots.size());
-        Object[] d1 = Genes.dots.get(i);
-        i = RandomUtils.nextInt(Genes.dots.size());
-        Object[] d2 = Genes.dots.get(i);
-        return new int[] { RandomUtils.nextInt(Animal.CountsQTY / countsQTY), (int) d1[1], (int) d1[2], (int) d1[3], (int) d2[1], (int) d2[2], (int) d2[3], 1 };
-    }
-
-    public static void lineMutate(Animal a) {//对animal的线条个数进行随机增减变异。线条参数的变异不在这个方法中，而是在常量变异，见anmial的constMutate方法
-        if (RandomUtils.percent(0.1f)) // 这两行随机加减Line
-            a.lines.add(Line.randomLine());
-        if (!a.lines.isEmpty() && RandomUtils.percent(0.101f))
-            a.lines.remove(RandomUtils.nextInt(a.lines.size()));
+    public static void randomAddorRemoveLine(Animal a) {//对animal的线条个数进行随机增减。线条参数的变异不在这个方法中，而是在常量变异，见anmial的constMutate方法
+        if (RandomUtils.percent(10f)) { // 这两行随机加减Line
+            int i = RandomUtils.nextInt(Genes.dots.size());
+            Object[] d1 = Genes.dots.get(i);
+            i = RandomUtils.nextInt(Genes.dots.size());
+            Object[] d2 = Genes.dots.get(i);
+            a.lines.add(new int[] { RandomUtils.nextInt(Animal.CountsQTY / countsQTY), (int) d1[1], (int) d1[2], (int) d1[3], (int) d2[1], (int) d2[2], (int) d2[3], 5000 });
+        }
+        if (!a.lines.isEmpty() && RandomUtils.percent(10f))
+            a.lines.remove(0);
     }
 
     // ========= active方法在每个主循环都会调用，调用animal所有Line的行为，这是个重要方法 ===========
@@ -76,46 +73,52 @@ public class Line implements Serializable {
             int x2 = l[4];
             int y2 = l[5];
             int z2 = l[6];
-            int dres = l[7]; //dres取值0~100对应电阻率0~1
-            float res = a.consts[start];
-            float drs = a.consts[start + 1];
-            float ovf = a.consts[start + 2]; 
-            float ovb = a.consts[start + 3];
-            float not = a.consts[start + 4];
-            float mul = a.consts[start + 5];
-            float min = a.consts[start + 6];
-            float add = a.consts[start + 7];
+            int dres = l[7]; //dres取值0~10000对应电阻率0~1
+            float res = a.consts[start++]; //resistance, 常量电阻，即通常说的权重, 0时为断路，1时为全通，
+            float drs = a.consts[start++]; //dynamic resistance sensitivity 动态电阻率敏感度，0时电阻率不会变动， 1时电阻率会随信号重复立即变到1(全通），其它值处于两者之间
+            float ovf = a.consts[start++]; //overflow 常量溢流阀值， 当传递的能量大于阀值时，高于阀值的部分能量传递
+            float ovb = a.consts[start++]; //overflow break 常量溃坝阀值， 当传递的能量大于阀值时, 能量全部传递
+            float not = a.consts[start++]; //not logic 反相器，如>0.5, 将会对通过的能量反相，即乘以-1
+            float mul = a.consts[start++]; //乘法器，会对通过的能量值乘以一个倍数，0为1，1时为10倍
+            float min = a.consts[start++]; //扣能器， 会对细胞的能量扣除一部分，0为0，1时为1，直到细胞能量为0
+            float add = a.consts[start++]; //加能器，会对细胞能量增加一部分，0为0，1时为1
 
             float e = a.getEng(x1, y1, z1);
-            if (min > 0.1) { //扣能器
-                float newSrcEng = a.getEng(x1, y1, z1) - min;
-                a.setEng(x1, y1, z1, newSrcEng);
-            }
-            if (add > 0.1) { //加能器
-                float newSrcEng = a.getEng(x1, y1, z1) + add;
-                a.setEng(x1, y1, z1, newSrcEng);
+            if (e < 0.1f)
+                continue;
+            if (e > 0.3f) {
+                if (min > 0.1) { //扣能器
+                    float newSrcEng = a.getEng(x1, y1, z1) - min;
+                    a.setEng(x1, y1, z1, newSrcEng);
+                }
+                if (add > 0.1) { //加能器
+                    float newSrcEng = a.getEng(x1, y1, z1) + add;
+                    a.setEng(x1, y1, z1, newSrcEng);
+                }
             }
             if (e < ovb) //溃坝阀值
                 continue;
-            if(ovf>0.1) { //溢流阀
-                e=e-ovf;
+            if (ovf > 0.1) { //溢流阀
+                e = e - ovf;
             }
             e = e * res; //静态电阻
-            e = e * dres*.0001f; //动态电阻0~10000之间
-            if(drs>0.1) { //如果动态电阻敏感系统存在，则每次传送一次能量，电阻就变小一次
-                dres+=drs; 
-                if(dres>10000)
-                    dres=10000;
+            e = e * dres * .0001f; //动态电阻0~10000之间
+            if (drs > 0.1) { //如果动态电阻敏感系统存在，则每次传送一次能量，电阻就变小一次
+                dres += drs;
+                if (dres > 10000)
+                    dres = 10000;
             }
             if (not > 0.5) //反相器
                 e = -e;
-            a.addEng(x2, y2, z2, e); //能量传到target cell
-            l[7]--;  //dres随时间能量消失，对应信息的遗忘
+            if(mul>0.1) {
+                e=e*10*mul; //mul是乘法器，mul在0~1之间，但是它控制的倍率在0~10倍之间
+            }
+           a.addEng(x2, y2, z2, e); //能量传到target cell
         }
 
     }
-    
-    //TODO： 1 模式识别的环境模拟和判定   2.静态参数的初值、变异  3.上面这个方法的检查，很可能跑不出结果，有必要调整到0.5f或去掉一些参数
+
+    //TODO： 1 模式识别的环境模拟和判定   2.静态参数的初值、变异 ，上面这个方法只是随便写的，很可能跑不出结果，要调整为大多数参数不起作为,即大多数情况下设为0
 
     public static void drawOnBrainPicture(Animal a, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
         for (int[] l : a.lines) { // 画出所有细胞间连线

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -49,8 +50,8 @@ public class FrogEggTool {
             Env.frog_eggs.clear();
             for (int i = 0; i < Env.FROG_EGG_QTY; i++) //每次下蛋数量固定为EGG_QTY个
                 Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
-            Logger.info("Fist frog fat={}, gene size={}, lines size={}, Last frog fat={}", first.fat, getGeneSize(first), first.lines.size(), last.fat);
-
+            Logger.info("Frist frog fat={}, gene size={}, lines size={}, Last frog fat={}", first.fat, getGeneSize(first), first.lines.size(), last.fat);
+            //Logger.info("Frist frog consts="+Arrays.toString(first.consts)); debug
 
             if (Env.SAVE_EGGS_FILE) {
                 FileOutputStream fo = new FileOutputStream(Application.CLASSPATH + "frog_eggs.ser");
