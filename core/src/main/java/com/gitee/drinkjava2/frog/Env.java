@@ -30,7 +30,7 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 200; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 400; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
@@ -62,7 +62,7 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 800; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 500;// 每轮测试步数,可调
+    public static final int STEPS_PER_ROUND = 100;// 每轮测试步数,可调
     public static int step;// 当前测试步数
 
     public static final int FOOD_QTY = 3000; // 食物数量, 可调
@@ -248,6 +248,8 @@ public class Env extends JPanel {
                 for (step = 0; step < STEPS_PER_ROUND; step++) {
                     if (allDead)
                         break; // 青蛙全死光了就直接跳到下一轮,以节省时间
+                    for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
+                        thing.active(current_screen, step, g);
                     allDead = true;
                     for (int j = 0; j < FROG_PER_SCREEN; j++) {
                         Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
@@ -261,9 +263,7 @@ public class Env extends JPanel {
                         continue;
 
                     // 开始画things和青蛙 
-                    drawWorld(g);// 画整个虚拟环境中的material
-                    for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
-                        thing.active(current_screen, step, g);
+                    drawWorld(g);// 画整个虚拟环境中的material 
                     
                     for (int j = 0; j < FROG_PER_SCREEN; j++) { // 显示青蛙
                         Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);

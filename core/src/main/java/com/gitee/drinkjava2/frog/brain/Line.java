@@ -60,7 +60,7 @@ public class Line implements Serializable {
             a.lines.add(new int[] { RandomUtils.nextInt(Animal.CountsQTY / countsQTY), (int) d1[1], (int) d1[2], (int) d1[3], (int) d2[1], (int) d2[2], (int) d2[3], 5000 });
         }
         if (!a.lines.isEmpty() && RandomUtils.percent(10f))
-            a.lines.remove(0);
+            a.lines.remove(RandomUtils.nextInt(a.lines.size()));
     }
 
     // ========= active方法在每个主循环都会调用，调用animal所有Line的行为，这是个重要方法 ===========
@@ -73,59 +73,60 @@ public class Line implements Serializable {
             int x2 = l[4];
             int y2 = l[5];
             int z2 = l[6];
-            int dres = l[7]; //dres取值0~10000对应电阻率0~1
+ //           int dres = l[7]; //dres取值0~10000对应电阻率0~1
             float res = a.consts[start++]; //resistance, 常量电阻，即通常说的权重, 0时为断路，1时为全通，
-            float drs = a.consts[start++]; //dynamic resistance sensitivity 动态电阻率敏感度，0时电阻率不会变动， 1时电阻率会随信号重复立即变到1(全通），其它值处于两者之间
-            float ovf = a.consts[start++]; //overflow 常量溢流阀值， 当传递的能量大于阀值时，高于阀值的部分能量传递
-            float ovb = a.consts[start++]; //overflow break 常量溃坝阀值， 当传递的能量大于阀值时, 能量全部传递
+ //           float drs = a.consts[start++]; //dynamic resistance sensitivity 动态电阻率敏感度，0时电阻率不会变动， 1时电阻率会随信号重复立即变到1(全通），其它值处于两者之间
+            //float ovf = a.consts[start++]; //overflow 常量溢流阀值， 当传递的能量大于阀值时，高于阀值的部分能量传递
+            //float ovb = a.consts[start++]; //overflow break 常量溃坝阀值， 当传递的能量大于阀值时, 能量全部传递
             float not = a.consts[start++]; //not logic 反相器，如>0.5, 将会对通过的能量反相，即乘以-1
-            float mul = a.consts[start++]; //乘法器，会对通过的能量值乘以一个倍数，0为1，1时为10倍
-            float min = a.consts[start++]; //扣能器， 会对细胞的能量扣除一部分，0为0，1时为1，直到细胞能量为0
-            float add = a.consts[start++]; //加能器，会对细胞能量增加一部分，0为0，1时为1
+//            float mul = a.consts[start++]; //乘法器，会对通过的能量值乘以一个倍数，0为1，1时为10倍
+//            float min = a.consts[start++]; //扣能器， 会对细胞的能量扣除一部分，0为0，1时为1，直到细胞能量为0
+//            float add = a.consts[start++]; //加能器，会对细胞能量增加一部分，0为0，1时为1
 
             float e = a.getEng(x1, y1, z1);
             if (e < 0.1f)
                 continue;
             if (e > 0.3f) {
-                if (min > 0.1) { //扣能器
-                    float newSrcEng = a.getEng(x1, y1, z1) - min;
-                    a.setEng(x1, y1, z1, newSrcEng);
-                }
-                if (add > 0.1) { //加能器
-                    float newSrcEng = a.getEng(x1, y1, z1) + add;
-                    a.setEng(x1, y1, z1, newSrcEng);
-                }
+//                if (min > 0.1) { //扣能器
+//                    float newSrcEng = a.getEng(x1, y1, z1) - min;
+//                    a.setEng(x1, y1, z1, newSrcEng);
+//                }
+//                if (add > 0.1) { //加能器
+//                    float newSrcEng = a.getEng(x1, y1, z1) + add;
+//                    a.setEng(x1, y1, z1, newSrcEng);
+//                }
             }
-            if (e < ovb) //溃坝阀值
-                continue;
-            if (ovf > 0.1) { //溢流阀
-                e = e - ovf;
-            }
+//            if (e < ovb) //溃坝阀值
+//                continue;
+//            if (ovf > 0.1) { //溢流阀
+//                e = e - ovf;
+//            }
             e = e * res; //静态电阻
-            e = e * dres * .0001f; //动态电阻0~10000之间
-            if (drs > 0.1) { //如果动态电阻敏感系统存在，则每次传送一次能量，电阻就变小一次
-                dres += drs;
-                if (dres > 10000)
-                    dres = 10000;
-            }
+//            e = e * dres * .0001f; //动态电阻0~10000之间
+//            if (drs > 0.1) { //如果动态电阻敏感系统存在，则每次传送一次能量，电阻就变小一次
+//                dres += drs;
+//                if (dres > 10000)
+//                    dres = 10000;
+//            }
             if (not > 0.5) //反相器
                 e = -e;
-            if(mul>0.1) {
-                e=e*10*mul; //mul是乘法器，mul在0~1之间，但是它控制的倍率在0~10倍之间
-            }
-           a.addEng(x2, y2, z2, e); //能量传到target cell
+//            if (mul > 0.1) {
+//                e = e * 10 * mul; //mul是乘法器，mul在0~1之间，但是它控制的倍率在0~10倍之间
+//            }
+            a.addEng(x2, y2, z2, e); //能量传到target cell
         }
 
     }
 
     //TODO： 1 模式识别的环境模拟和判定   2.静态参数的初值、变异 ，上面这个方法只是随便写的，很可能跑不出结果，要调整为大多数参数不起作为,即大多数情况下设为0
 
-    public static void drawOnBrainPicture(Animal a, BrainPicture pic) {// 把自已这个器官在脑图上显示出来
-        for (int[] l : a.lines) { // 画出所有细胞间连线
-            float f1 = RandomUtils.nextFloat() * .1f;
+    public static void drawOnBrainPicture(Animal a, BrainPicture pic) {// 画出所有细胞间连线
+        for (int[] l : a.lines) { 
+            float f1 = RandomUtils.nextFloat() * .1f;//稍微调整下位置好看出来是否有多条线在同一个位置
             float f2 = RandomUtils.nextFloat() * .1f;
             pic.drawCentLine(l[1] + f1, l[2] + f2, l[3] + f2, l[4] + f1, l[5], l[6]);
             pic.drawTextCenter(0.5f * (l[1] + l[4]), 0.5f * (l[2] + l[5]), 0.5f * (l[3] + l[6]), Integer.toString(l[0]), 0.15f);
+            pic.drawPointCent(l[4] + f1, l[5], l[6], .1f);
         }
     }
 }

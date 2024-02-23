@@ -15,20 +15,19 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  *  
  */
 public class OneInputJudge implements EnvObject {
-    private int n = 15; //n是小方块边长
+    private int n = 5; //n是小方块边长
     private static int[] food = new int[Env.STEPS_PER_ROUND];
 
     static {
         int step = 0;
-        while (step < (Env.STEPS_PER_ROUND - 20)) {
-            int foodExist = 2;//+RandomUtils.nextInt(7);
-            for (int i = 0; i < foodExist; i++)
-                food[step + i] = 1; //有食物的step
-            step += foodExist;
-            int foodDispear = 10 - foodExist;
-            for (int i = 0; i < foodDispear; i++)
-                food[step + i] = 0; //无食物的step
-            step += foodDispear;
+        while (step < (Env.STEPS_PER_ROUND - 10)) {
+            int firstFood = 1 + RandomUtils.nextInt(4); //以10为一组，随机安排5个食物
+            for (int i = 0; i < 10; i++)
+                if (i < firstFood || i > firstFood + 5)
+                    food[step + i] = 0;
+                else
+                    food[step + i] = 1;
+            step += 10;
         }
     }
 
@@ -41,14 +40,12 @@ public class OneInputJudge implements EnvObject {
                 x = 0;
                 y++;
             }
-            if (food[i] == 1) {
+            if (food[i] == 1)
                 g.fillRect(x * n, y * n, n, n);
-            } else {
+            else
                 g.drawRect(x * n, y * n, n, n);
-            }
             x++;
         }
-
     }
 
     @Override
@@ -69,6 +66,7 @@ public class OneInputJudge implements EnvObject {
                 f.setEng(Genes.EYE1_POS, 1f);
             else
                 f.setEng(Genes.EYE1_POS, 0f);
+
             if (f.getEng(Genes.BITE_POS) > 0.8 && f.getEng(Genes.EYE1_POS) > 0.8) {
                 f.awardA();
             }
@@ -77,15 +75,10 @@ public class OneInputJudge implements EnvObject {
             }
         }
 
-        int x = step % (Env.ENV_WIDTH / n);
+        int x = step % (Env.ENV_WIDTH / n);//用红色标记当前走到哪一步食物位置
         int y = step / (Env.ENV_WIDTH / n);
         g.setColor(Color.RED);
-        g.drawRect(x * n, y * n, n, n);
-        if(x>0) {
-        g.setColor(Color.BLACK);
-        g.drawRect((x-1) * n, y * n, n, n);
-        }
-
+        g.fillRect(x * n, y * n + 2, n, 2);
     }
 
 }
