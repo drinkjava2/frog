@@ -29,6 +29,11 @@ public class OneInputJudge implements EnvObject {
                     food[step + i] = 1;
             step += 10;
         }
+        int j = 0;
+        for (int i : food)
+            if (i == 1)
+                j++;
+        System.out.println("total food=" + j);
     }
 
     @Override
@@ -67,11 +72,19 @@ public class OneInputJudge implements EnvObject {
             else
                 f.setEng(Genes.EYE1_POS, 0f);
 
-            if (f.getEng(Genes.BITE_POS) > 0.8 && f.getEng(Genes.EYE1_POS) > 0.8) {
-                f.awardA();
-            }
-            if (f.getEng(Genes.BITE_POS) > 0.8 && f.getEng(Genes.EYE1_POS) < 0.8) {
-                f.penaltyA();
+            if (f.getEng(Genes.BITE_POS) > 0.8) {
+                if (f.getEng(Genes.EYE1_POS) > 0.8) {
+                    f.awardA(); //咬到了有奖
+                    f.setEng(Genes.SWEET_POS, 1); //咬到能感觉到甜，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
+                    f.setEng(Genes.BITTER_POS, 0);
+                } else {
+                    f.penaltyA();
+                    f.setEng(Genes.SWEET_POS, 0);
+                    f.setEng(Genes.BITTER_POS, 1); //咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
+                }
+            } else { //如果都没有咬，关闭甜和苦味感觉
+                f.setEng(Genes.SWEET_POS, 0);
+                f.setEng(Genes.BITTER_POS, 0);
             }
         }
 
