@@ -30,11 +30,11 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 400; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 1000; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
-    public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
+    public static final int FROG_PER_EGG = 6; // 每个青蛙蛋可以孵出几个青蛙
 
-    public static final int SCREEN = 1; // 分几屏测完
+    public static final int SCREEN = 3; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
     public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
@@ -59,10 +59,10 @@ public class Env extends JPanel {
     public static final int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
 
     /** Frog's brain display width on screen, not important */
-    public static final int FROG_BRAIN_DISP_WIDTH = 800; // Frog的脑图在屏幕上的显示大小,可调
+    public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 100;// 每轮测试步数,可调
+    public static final int STEPS_PER_ROUND = 200;// 每轮测试步数,可调
     public static int step;// 当前测试步数
 
     public static final int FOOD_QTY = 3000; // 食物数量, 可调
@@ -222,12 +222,13 @@ public class Env extends JPanel {
         return frogs.get(current_screen * FROG_PER_SCREEN);
     }
 
+    public static int round = 1;
     public void run() {
         FrogEggTool.loadFrogEggs(); // 首次运行时，从磁盘加载蛙egg，如加载失败就新建一批egg
         Image buffImg = createImage(this.getWidth(), this.getHeight());
         Graphics g = buffImg.getGraphics();
         long time0;// 计时用
-        int round = 1;
+        round = 1;
         do {
             rebuildFrogs(); // 根据蛙蛋重新孵化出蛙，注意基因变异有可能在孵化过程中发生
             for (current_screen = 0; current_screen < SCREEN; current_screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
@@ -258,7 +259,7 @@ public class Env extends JPanel {
                     }
 
                     if (SHOW_SPEED == 1) // 如果speed为1，人为加入延迟
-                        sleep((100));
+                        sleep((200));
                     else if (step % SHOW_SPEED != 0)// 用是否跳帧画图的方式来控制速度
                         continue;
 
@@ -280,9 +281,7 @@ public class Env extends JPanel {
                 if (SHOW_FIRST_ANIMAL_BRAIN) //一轮结束后再强制再显示脑图一次
                     Application.brainPic.drawBrainPicture(step);
                 checkIfPause(step);
-                for (int j = 0; j < FROG_PER_SCREEN; j++) {
-                    Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
-                }
+
                 StringBuilder sb = new StringBuilder("Round: ");
                 sb.append(round).append(", screen:").append(current_screen).append(", speed:").append(Env.SHOW_SPEED).append(", ").append(", 用时: ").append(System.currentTimeMillis() - time0).append("ms, ");
                 sb.append(foodAtedCount());

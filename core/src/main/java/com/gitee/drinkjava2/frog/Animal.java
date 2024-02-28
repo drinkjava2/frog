@@ -106,9 +106,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         Line.randomAddorRemoveLine(this);// //Line的随机增删变异
 
         GeneUtils.geneMutation(this); //分裂算法控制的基因突变
-        if (RandomUtils.percent(40))
+        if (RandomUtils.percent(5))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat -= gene.size();
+        if (RandomUtils.percent(3)) //线条多也小扣点分，防止线条无限增长
+            fat -= lines.size() / 10;
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
 
@@ -128,11 +130,18 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void constMutate() { // 全局参数变异, 这一个方法此动物个体的所有常量
-        for (int i = 0; i < CountsQTY; i++) {
-            if (RandomUtils.percent(5))
-                //consts[i] = RandomUtils.vary(consts[i]);
-                consts[i] = RandomUtils.nextFloat(); //debug
-        }
+        if (RandomUtils.percent(30)) //这个30%机率的变异方法让所有常量都有3%的机率随机在0~1之间重新取值
+            for (int i = 0; i < CountsQTY; i++) { 
+                if (RandomUtils.percent(3))
+                    consts[i] = RandomUtils.nextFloat(); //debug
+            }
+
+        if (RandomUtils.percent(10)) //这个10%机率的变异方法让所有常量都有5%的机率随机在原基础上变异，即大概率有小变异，小概率有大变异
+            for (int i = 0; i < CountsQTY; i++) {
+                if (RandomUtils.percent(5))
+                    consts[i] = RandomUtils.vary(consts[i]);
+            }
+
     }
 
     private static final int MIN_FAT_LIMIT = Integer.MIN_VALUE + 5000;
@@ -160,16 +169,18 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
     //@formatter:on
 
-    public void showInEnv(Graphics g) {// 在虚拟环境显示当前动物，这个方法直接调用Env的Graphics对象        
+    public void showInEnv(Graphics g) {// 在虚拟环境显示当前动物，这个方法直接调用Env的Graphics对象
+        if (g != null) //这个版本借用环境区测试模式功能，不需要显示青蛙，所以直接跳出
+            return;
         if (no == (Env.current_screen * Env.FROG_PER_SCREEN + 1)) { //如果是当前第一个青蛙，给它画个红圈
-            Color c=g.getColor();
+            Color c = g.getColor();
             g.setColor(Color.red);
             g.drawArc(xPos - 15, yPos - 15, 30, 30, 0, 360);
             g.setColor(c);
         }
         if (!alive)
             return;
-        //g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处 
+        g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处 
     }
 
     /** Check if x,y,z out of animal's brain range */

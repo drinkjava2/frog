@@ -60,7 +60,7 @@ public class Line implements Serializable {
             a.lines.add(new int[] { RandomUtils.nextInt(Animal.CountsQTY / countsQTY), (int) d1[1], (int) d1[2], (int) d1[3], (int) d2[1], (int) d2[2], (int) d2[3], 5000 });
         }
         if (!a.lines.isEmpty() && RandomUtils.percent(10f))
-            a.lines.remove(RandomUtils.nextInt(a.lines.size()));
+            a.lines.remove(RandomUtils.nextInt(a.lines.size())); 
     }
 
     // ========= active方法在每个主循环都会调用，调用animal所有Line的行为，这是个重要方法 ===========
