@@ -19,20 +19,24 @@ public class OneInputJudge implements EnvObject {
     private static int[] food = new int[Env.STEPS_PER_ROUND];
     private static int totalFood;
 
-    private static void resetFood() {
+    private static void resetFood() {     
         int step = 0;
+        int x=2;
         while (step <= (Env.STEPS_PER_ROUND - 10)) {
             int firstFood = RandomUtils.nextInt(5); //以10为一组，随机安排5个食物
             for (int i = 0; i < 10; i++)
-                if (i < firstFood || i > firstFood + 4)
+                if (i < firstFood || i > firstFood + x)
                     food[step + i] = 0;
                 else
                     food[step + i] = 1;
             step += 10;
+            if(x==2)
+                x=6;
+            else x=2;
         }
         for (int i : food)
             if (i == 1)
-                totalFood++;
+                totalFood++;    
     }
 
     @Override
