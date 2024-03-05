@@ -16,13 +16,13 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  */
 public class OneInputJudge implements EnvObject {
     private int n = 16; //n是小方块边长
-    private static int[] food = new int[Env.STEPS_PER_ROUND];
+    private static int[] food = new int[Env.STEPS_PER_ROUND + 10];
     private static int totalFood;
 
     private static void resetFood() {
         int step = 0;
-        int x=2;
-        while (step <= (Env.STEPS_PER_ROUND - 10)) {
+        int x = 2;
+        while (step < (Env.STEPS_PER_ROUND)) {
             int firstFood = RandomUtils.nextInt(5); //以10为一组，随机安排5个食物
             for (int i = 0; i < 10; i++)
                 if (i < firstFood || i > firstFood + x)
@@ -30,9 +30,10 @@ public class OneInputJudge implements EnvObject {
                 else
                     food[step + i] = 1;
             step += 10;
-            if(x==2)
-                x=6;
-            else x=2;
+            if (x == 2)
+                x = 6;
+            else
+                x = 2;
         }
         for (int i : food)
             if (i == 1)
@@ -70,9 +71,12 @@ public class OneInputJudge implements EnvObject {
      */
     @Override
     public void active(int screen, int step, Graphics g) {
+        Frog f;
+        int x, y;
+        boolean hasFood = food[step] == 1;
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
-            Frog f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
-            if (food[step] == 1)
+            f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
+            if (hasFood)
                 f.setEng(Genes.EYE1_POS, 1f);
             else
                 f.setEng(Genes.EYE1_POS, 0f);
@@ -83,22 +87,31 @@ public class OneInputJudge implements EnvObject {
                     f.ateFood++;
                     f.setEng(Genes.SWEET_POS, 1); //咬到能感觉到甜，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
                     f.setEng(Genes.BITTER_POS, 0);
+                    g.setColor(Color.GREEN);
                 } else {
                     f.ateWrong++;
                     f.penaltyA(); //咬空了扣分
                     f.setEng(Genes.SWEET_POS, 0);
                     f.setEng(Genes.BITTER_POS, 1); //咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
+                    g.setColor(Color.RED);
                 }
             } else { //如果都没有咬，关闭甜和苦味感觉
                 f.setEng(Genes.SWEET_POS, 0);
                 f.setEng(Genes.BITTER_POS, 0);
+                if (hasFood) {
+                    g.setColor(Color.RED);
+                    f.ateMiss++;
+                }
+                else
+                    g.setColor(Color.GREEN);
+            }
+            if (i == 0) {
+                x = step % (Env.ENV_WIDTH / n);//用红色标记当前走到哪一步食物位置
+                y = step / (Env.ENV_WIDTH / n);
+                g.fillRect(x * n, y * n + n / 2, n, 2);
             }
         }
 
-        int x = step % (Env.ENV_WIDTH / n);//用红色标记当前走到哪一步食物位置
-        int y = step / (Env.ENV_WIDTH / n);
-        g.setColor(Color.RED);
-        g.fillRect(x * n, y * n + n / 2, n, 2);
     }
 
 }

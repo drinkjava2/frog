@@ -259,7 +259,7 @@ public class Env extends JPanel {
                     }
 
                     if (SHOW_SPEED == 1) // 如果speed为1，人为加入延迟
-                        sleep((200));
+                        sleep(400);
                     else if (step % SHOW_SPEED != 0)// 用是否跳帧画图的方式来控制速度
                         continue;
 

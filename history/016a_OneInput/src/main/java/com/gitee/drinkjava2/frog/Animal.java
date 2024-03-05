@@ -69,6 +69,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public boolean alive = true; // 设为false表示青蛙死掉了，将不参与计算和显示，以节省时间
     public int ateFood = 0; // 青蛙曾吃过的食物总数
     public int ateWrong = 0; // 青蛙咬了个空气的次数
+    public int ateMiss = 0; // 该咬却没咬下去的次数
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
 
     public int animalMaterial;

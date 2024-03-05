@@ -421,7 +421,7 @@ public class BrainPicture extends JPanel {
 		}
 
 		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-		g.drawString("step:" + step + ", ate:" + a.ateFood + ", wrong:" + a.ateWrong+", fat="+a.fat, 10, 15);
+		g.drawString("step:" + step + ", ate:" + a.ateFood + ", wrong:" + a.ateWrong+", miss:" + a.ateMiss+", fat="+a.fat, 10, 15);
 
 		// for (int y = 0; y < ColorUtils.rainbow.length; y += 1) {//调试彩虹色
 		// g.setColor(ColorUtils.rainbow[y]);
