@@ -114,11 +114,11 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     private static final int CS4 = Env.BRAIN_SIZE / 4;
 
     // ============开始登记有名字的基因==========
-    public static int[] EYE1_POS = new int[] { 0, 0, 0 };
+    public static int[] EYE1_POS = new int[] { 0, 0, 1 };
     public static long EYE1 = registerFill("眼1", EYE1_POS); // 视网膜细胞
 //
-//    public static int[] EYE2_POS = new int[] { 0, 0, 1 };
-//    public static long EYE2 = registerFill("眼2", EYE2_POS); // 视网膜细胞
+    public static int[] EYE2_POS = new int[] { 0, 0, 0 };
+    public static long EYE2 = registerFill("眼2", EYE2_POS); // 视网膜细胞
 
     public static int[] SWEET_POS = new int[] { 0, 2, 0 };
     public static long SWEET = registerFill("甜", SWEET_POS); // 甜味细胞
