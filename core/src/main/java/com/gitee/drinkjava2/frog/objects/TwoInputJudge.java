@@ -27,17 +27,18 @@ public class TwoInputJudge extends DefaultEnvObject {
         //System.out.println("sweetFoodCode="+sweetFoodCode); //debug
         int step = 0;
         int x = 2;
+        int group=19;
         while (step < (Env.STEPS_PER_ROUND)) {
-            int firstFood = RandomUtils.nextInt(5); //以10为一组，随机安排5个食物
-            int foodCode = RandomUtils.nextInt(4); //食物有1,2,3四种图案，分别对应两个细胞的01,10,11四种情况
-            for (int i = 0; i < 10; i++)
+            int firstFood = RandomUtils.nextInt(group/2); //以group为一组，随机安排一半为食物
+            int foodCode = 1+RandomUtils.nextInt(3); //食物有1,2,3四种图案，分别对应两个细胞的01,10,11四种情况
+            for (int i = 0; i < group; i++)
                 if (i < firstFood || i > firstFood + x)
                     food[step + i] = 0;
                 else
                     food[step + i] = foodCode;
-            step += 10;
+            step += group;
             if (x == 2)
-                x = 6;
+                x = group/2+1;
             else
                 x = 2;
         }

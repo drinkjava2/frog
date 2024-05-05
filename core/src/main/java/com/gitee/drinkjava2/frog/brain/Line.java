@@ -73,11 +73,11 @@ public class Line implements Serializable {
             int x2 = l[4];
             int y2 = l[5];
             int z2 = l[6];
- //           int dres = l[7]; //dres取值0~10000对应电阻率0~1
+           // int dres = l[7]; //dres取值0~10000对应电阻率0~1
             float res = a.consts[start++]; //resistance, 常量电阻，即通常说的权重, 0时为断路，1时为全通，
- //           float drs = a.consts[start++]; //dynamic resistance sensitivity 动态电阻率敏感度，0时电阻率不会变动， 1时电阻率会随信号重复立即变到1(全通），其它值处于两者之间
-            //float ovf = a.consts[start++]; //overflow 常量溢流阀值， 当传递的能量大于阀值时，高于阀值的部分能量传递
-            //float ovb = a.consts[start++]; //overflow break 常量溃坝阀值， 当传递的能量大于阀值时, 能量全部传递
+            float drs = a.consts[start++]; //dynamic resistance sensitivity 动态电阻率敏感度，0时电阻率不会变动， 1时电阻率会随信号重复立即变到1(全通），其它值处于两者之间
+            float ovf = a.consts[start++]; //overflow 常量溢流阀值， 当传递的能量大于阀值时，高于阀值的部分能量传递
+            float ovb = a.consts[start++]; //overflow break 常量溃坝阀值， 当传递的能量大于阀值时, 能量全部传递
             float not = a.consts[start++]; //not logic 反相器，如>0.5, 将会对通过的能量反相，即乘以-1
 //            float mul = a.consts[start++]; //乘法器，会对通过的能量值乘以一个倍数，0为1，1时为10倍
 //            float min = a.consts[start++]; //扣能器， 会对细胞的能量扣除一部分，0为0，1时为1，直到细胞能量为0
@@ -96,11 +96,11 @@ public class Line implements Serializable {
 //                    a.setEng(x1, y1, z1, newSrcEng);
 //                }
             }
-//            if (e < ovb) //溃坝阀值
-//                continue;
-//            if (ovf > 0.1) { //溢流阀
-//                e = e - ovf;
-//            }
+            if (e < ovb) //溃坝阀值
+                continue;
+            if (ovf > 0.1) { //溢流阀
+                e = e - ovf;
+            }
             e = e * res; //静态电阻
 //            e = e * dres * .0001f; //动态电阻0~10000之间
 //            if (drs > 0.1) { //如果动态电阻敏感系统存在，则每次传送一次能量，电阻就变小一次
