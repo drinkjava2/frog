@@ -2,9 +2,9 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>com.gitee.drinkjava2</groupId>
- <artifactId>frog016c</artifactId>
+ <artifactId>frog016b</artifactId>
  <packaging>jar</packaging>
- <version>16c.0</version>
+ <version>16b.0</version>
  
  <name>frog</name>
  <description>当前目标是用分裂算法来实现模式识别，当前小目标是实现两点输入的模式识别</description>
