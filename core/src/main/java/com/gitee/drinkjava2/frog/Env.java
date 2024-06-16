@@ -34,7 +34,7 @@ public class Env extends JPanel {
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
-    public static final int SCREEN = 1; // 分几屏测完
+    public static final int SCREEN = 5; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
     public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
@@ -44,7 +44,7 @@ public class Env extends JPanel {
     public static final boolean BORN_AT_RANDOM_PLACE = true;// 孵出青蛙落在地图上随机位置，而不是在蛋所在地
 
     /** Frog's brain size */ // 脑细胞位于脑范围内，是个三维结构，在animal中用三维数组来表示
-    public static final int BRAIN_SIZE = 4; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法 
+    public static final int BRAIN_SIZE = 16; //脑立方边长大小，必须是2的幂数如4,8,16...，原因参见8叉树算法 
 
     /** SHOW first animal's brain structure */
     public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
@@ -82,7 +82,7 @@ public class Env extends JPanel {
 
     public static ArrayList<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[] { new TwoInputJudge() };// 所有外界物体，如食物、测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{new TwoInputJudge()};// 所有外界物体，如食物、测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -198,7 +198,8 @@ public class Env extends JPanel {
         for (Frog f : frogs)
             if (f.ateFood > maxFound)
                 maxFound = f.ateFood;
-        return new StringBuilder("吃食率:").append(format100.format(Food.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ").append(Food.food_ated * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound).toString();
+        return new StringBuilder("吃食率:").append(format100.format(Food.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ").append(Food.food_ated * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound)
+                .toString();
     }
 
     public static void checkIfPause(int step) {
@@ -223,29 +224,34 @@ public class Env extends JPanel {
     }
 
     public static int round = 1;
+
     public void run() {
         FrogEggTool.loadFrogEggs(); // 首次运行时，从磁盘加载蛙egg，如加载失败就新建一批egg
         Image buffImg = createImage(this.getWidth(), this.getHeight());
         Graphics g = buffImg.getGraphics();
-        long time0;// 计时用
+        long timerScreen;// 一屏要花多少时间的计时器
+        long timerRound;//一轮要花多少时间的计时器，一轮可以由几屏组成
+        long timeRound = 0;//一轮要花多少时间
+        StringBuilder sb = new StringBuilder();
         round = 1;
         do {
-            rebuildFrogs(); // 根据蛙蛋重新孵化出蛙，注意基因变异有可能在孵化过程中发生
+            timerRound = System.currentTimeMillis();
+            rebuildFrogs(); // 根据蛙蛋重新孵化出蛙，注意基因变异有可能在孵化过程中发生。初始化数组时间算在一轮时间里
             for (current_screen = 0; current_screen < SCREEN; current_screen++) {// 分屏测试，每屏FROG_PER_SCREEN个蛙
-                time0 = System.currentTimeMillis();
-                
+                timerScreen = System.currentTimeMillis();
+
                 g.setColor(Color.white);
                 g.fillRect(0, 0, this.getWidth(), this.getHeight()); // 先清空虚拟环境
                 g.setColor(Color.BLACK);
                 for (EnvObject thing : things) // 创建食物、陷阱等物体
                     thing.build(g);
-                
+
                 boolean allDead = false;
                 for (int j = 0; j < FROG_PER_SCREEN; j++) {
                     Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
                     f.initAnimal(); // 初始化器官延迟到这一步，是因为脑细胞太占内存，而且当前屏测完后会清空
                 }
- 
+
                 for (step = 0; step < STEPS_PER_ROUND; step++) {
                     if (allDead)
                         break; // 青蛙全死光了就直接跳到下一轮,以节省时间
@@ -265,7 +271,7 @@ public class Env extends JPanel {
 
                     // 开始画things和青蛙 
                     drawWorld(g);// 画整个虚拟环境中的material 
-                    
+
                     for (int j = 0; j < FROG_PER_SCREEN; j++) { // 显示青蛙
                         Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
                         f.showInEnv(g);
@@ -282,8 +288,9 @@ public class Env extends JPanel {
                     Application.brainPic.drawBrainPicture(step);
                 checkIfPause(step);
 
-                StringBuilder sb = new StringBuilder("Round: ");
-                sb.append(round).append(", screen:").append(current_screen).append(", speed:").append(Env.SHOW_SPEED).append(", ").append(", 用时: ").append(System.currentTimeMillis() - time0).append("ms, ");
+                sb.delete(0, sb.length()).append("轮:").append(round).append(", 屏:").append(current_screen).append(", 速:").append(Env.SHOW_SPEED);
+                sb.append(", ").append("屏费时:").append(System.currentTimeMillis() - timerScreen).append("ms");
+                sb.append(", 轮费时:").append(timeRound).append("ms, ");
                 sb.append(foodAtedCount());
 
                 Application.mainFrame.setTitle(sb.toString());
@@ -291,7 +298,8 @@ public class Env extends JPanel {
                     thing.destory(g);
             }
             round++;
-            FrogEggTool.layEggs(); //能量高的青蛙才有权下蛋
+            FrogEggTool.layEggs(); //能量高的青蛙才有权下蛋   
+            timeRound = System.currentTimeMillis() - timerRound;
         } while (true);
     }
 
