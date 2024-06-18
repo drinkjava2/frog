@@ -50,7 +50,7 @@ public class FrogEggTool {
             Env.frog_eggs.clear();
             for (int i = 0; i < Env.FROG_EGG_QTY; i++) //每次下蛋数量固定为EGG_QTY个
                 Env.frog_eggs.add(new Egg(Env.frogs.get(i)));
-            Logger.info(Env.round+" Frist frog fat={}, gene size={}, lines size={}, Last frog fat={}", first.fat, getGeneSize(first), first.lines.size(), last.fat);
+            Logger.info(Env.round+" Frist frog fat={}, gene size={}, Last frog fat={}", first.fat, getGeneSize(first), last.fat);
             //Logger.info("Frist frog consts="+Arrays.toString(first.consts)); debug
 
             if (Env.SAVE_EGGS_FILE) {

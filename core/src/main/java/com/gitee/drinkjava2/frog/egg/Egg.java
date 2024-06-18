@@ -36,8 +36,7 @@ public class Egg implements Serializable {
     // gene record the 8-tree structure of brain cells
     // 基因是随机生成的8叉树数据结构，和实际生物每个细胞都要保存一份基因不同，程序中每个脑细胞并不需要保存基因的副本，这样可以极大地减少内存占用
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>();
-    public float[] consts = new float[Animal.CountsQTY]; //全局常量全放在这里，用随机数来生成，用遗传算法筛选
-    public ArrayList<int[]> lines = new ArrayList<>();//随机连线是可以遗传的
+    public float[] consts = new float[Animal.CountsQTY]; //全局常量全放在这里，用随机数来生成，用遗传算法筛选 
 
     public Egg() {// 无中生有，创建一个蛋，先有蛋，后有蛙
         x = RandomUtils.nextInt(Env.ENV_WIDTH);
@@ -53,8 +52,7 @@ public class Egg implements Serializable {
             g.addAll(gene);
             genes.add(g);
         }
-        System.arraycopy(a.consts, 0, this.consts, 0, consts.length); //把a的常量数组拷到蛋里
-        lines.addAll(a.lines); //把a的连线拷到蛋里
+        System.arraycopy(a.consts, 0, this.consts, 0, consts.length); //把a的常量数组拷到蛋里 
     }
 
     /**
@@ -64,13 +62,7 @@ public class Egg implements Serializable {
         x = a.x;
         y = a.y;
         genes.addAll(a.genes);
-        System.arraycopy(a.consts, 0, this.consts, 0, consts.length);
-        lines.addAll(a.lines); //把a的连线拷到蛋里
-        
-        if (RandomUtils.percent(3)) { //小概率插入b的连线到a蛋中
-            if (!b.lines.isEmpty())
-                a.lines.add(b.lines.get(RandomUtils.nextInt(b.lines.size())));
-        }
+        System.arraycopy(a.consts, 0, this.consts, 0, consts.length); 
 
         if (RandomUtils.percent(20)) //插入蛋B的基因到A蛋中
             for (int i = 0; i < b.genes.size(); i++) {

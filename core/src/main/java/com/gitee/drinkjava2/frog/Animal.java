@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Genes;
-import com.gitee.drinkjava2.frog.brain.Line;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.GeneUtils;
@@ -53,13 +52,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public static int CountsQTY = 100; //常量总数多少
     public float[] consts = new float[CountsQTY]; // 常量，范围0~1之间，这些常量并不常，会参与遗传算法筛选，规则是有大概率小变异，小概率大变异
-
-    public ArrayList<int[]> lines = new ArrayList<>();
+ 
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
-    public long[][][] cells = new long[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE]; //所有脑细胞
+    public long[][][] cells = new long[1][1][Env.BRAIN_SIZE]; //所有脑细胞
 
     public float[][][] energys = new float[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
 
@@ -82,8 +80,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         }
         int i = 0;
         for (ArrayList<Integer> gene : egg.genes)//动物的基因是蛋的基因的拷贝 
-            genes.get(i++).addAll(gene);
-        lines.addAll(egg.lines); //复制蛋的所有线条
+            genes.get(i++).addAll(gene); 
         i = 0;
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             xPos = RandomUtils.nextInt(Env.ENV_WIDTH);
@@ -104,14 +101,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void initAnimal() { // 初始化animal,生成脑细胞是在这一步，这个方法是在当前屏animal生成之后调用，比方说有一千个青蛙分为500屏测试，每屏只生成2个青蛙的脑细胞，可以节约内存
         constMutate();//常量基因突变, 线条的参数都在常量里
-        Line.randomAddorRemoveLine(this);// //Line的随机增删变异
 
         GeneUtils.geneMutation(this); //分裂算法控制的基因突变
         if (RandomUtils.percent(5))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
-                fat -= gene.size();
-        if (RandomUtils.percent(3)) //线条多也小扣点分，防止线条无限增长
-            fat -= lines.size() / 10;
+                fat -= gene.size(); 
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
 
@@ -124,9 +118,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             kill();
             return false;
         }
-        this.setEng(Genes.ACT_POS, 1f); //ACT这个细胞就象太阳永远保持激活，某些情况下当无外界信号时，它是驱动系统运行的能量来源
         Genes.active(this, step); //调用每个细胞的活动，重要！
-        Line.active(this, step); //调用每个连线(触突)的活动，重要！
+
         return alive;
     }
 

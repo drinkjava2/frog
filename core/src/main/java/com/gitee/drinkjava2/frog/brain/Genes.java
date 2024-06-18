@@ -113,35 +113,12 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     private static final int NA = -1;
     private static final int CS4 = Env.BRAIN_SIZE / 4;
 
-    // ============开始登记有名字的基因==========
-    public static int[] EYE1_POS = new int[] { 0, 0, 1 };
-    public static long EYE1 = registerFill("眼1", EYE1_POS); // 视网膜细胞
-//
-    public static int[] EYE2_POS = new int[] { 0, 0, 0 };
-    public static long EYE2 = registerFill("眼2", EYE2_POS); // 视网膜细胞
-
-    public static int[] SWEET_POS = new int[] { 0, 2, 0 };
-    public static long SWEET = registerFill("甜", SWEET_POS); // 甜味细胞
-
-    public static int[] BITTER_POS = new int[] { 0, 2, 1 };
-    public static long BITTER = registerFill("苦", BITTER_POS); // 苦味细胞
-
-    public static int[] BITE_POS = new int[] { 0, 3, 3 };
-    public static long BITE = registerFill("咬", BITE_POS); // 咬动作细胞
-
-    public static int[] ACT_POS = new int[] { 0, 1, 3 };
-    public static long ACT = registerFill("活", ACT_POS); // 活跃细胞，这个始终激活 `
-    
-
-      
+    // ============开始登记基因==========
+       
 
     // 登记细胞间关联(触突树突)
     static {
-        registerFill("空1", 1,1,0); //随便登记几个空细胞，万一能用上呢 
-        registerFill("空2", 1,1,1); // 
-        registerFill("空3", 1,1,2); // 
-        registerFill("空4", 1,1,3); //
-        // register(8, true, false, 0, NA, NA); //8个方向的信号发送联接
+        register(null, 32,true, false, 0,0,-1); //先登记32个基因位，每个基因位的作用（对应各种细胞类型、行为）后面再说
     }
 
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 ===========

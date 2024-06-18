@@ -362,38 +362,35 @@ public class BrainPicture extends JPanel {
 		g.setColor(BLACK); // 画边框
 		g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-		for (int z = 0; z < Env.BRAIN_SIZE; z++) {// 画它所有的脑细胞位置和颜色
-			for (int y = Env.BRAIN_SIZE - 1; y >= 0; y--) {
-				for (int x = Env.BRAIN_SIZE - 1; x >= 0; x--) {
-				    setPicColor(BLACK); // 画边框
-				    drawPointCent(x, y, z, 0.03f); //画每个细胞小点
-				    
-					long cell = a.cells[x][y][z];
-					// if (cell == 0) //只显示有效的细胞点
-					// continue;
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {// 画它所有的脑细胞位置和颜色
+            for (int y = 0; y < 1; y++) {
+                for (int x = 0; x < 1; x++) {
+                    setPicColor(BLACK); // 画边框
+                    drawPointCent(x, y, z, 0.03f); //画每个细胞小点
+ 
+                    long cell = a.cells[x][y][z];
+                    // if (cell == 0) //只显示有效的细胞点
+                    // continue;
 
-					if (x >= xMask && y >= yMask && cell != 0)// 画出细胞每个基因存在的细胞格子
-						for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
-							if ((cell & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
-								setPicColor(ColorUtils.colorByCode(geneIndex)); // 开始画出对应的细胞基因参数，用不同颜色圆表示
-								drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.3f);
-							}
-						}
-					float e = a.energys[x][y][z];
-					if (e > 0.03f || e < -0.03f) {
-						setPicColor(e > 0 ? Color.red : Color.BLUE); // 用红色小圆表示正能量，蓝色表示负能量
-						float size = Math.abs(e);// 再用不同大小圆形表示不同能量值
-						if (size > 1)
-							size = 1;
-						drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
-					}
+                    if (x >= xMask && y >= yMask && cell != 0)// 画出细胞每个基因存在的细胞格子
+                        for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
+                            if ((cell & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
+                                setPicColor(ColorUtils.colorByCode(geneIndex)); // 开始画出对应的细胞基因参数，用不同颜色圆表示
+                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.3f);
+                            }
+                        }
+                    float e = a.energys[x][y][z];
+                    if (e > 0.03f || e < -0.03f) {
+                        setPicColor(e > 0 ? Color.red : Color.BLUE); // 用红色小圆表示正能量，蓝色表示负能量
+                        float size = Math.abs(e);// 再用不同大小圆形表示不同能量值
+                        if (size > 1)
+                            size = 1;
+                        drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
+                    }
 
-				}
-			}
-		}
-
-		setPicColor(Color.BLACK); //画出 a.lines里所有线条
-		Line.drawOnBrainPicture(a, this);
+                }
+            }
+        }
 
 		for (Object[] o : Genes.dots) { // 画出所有登记的点的名字
 			String name = (String) o[0];
