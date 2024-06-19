@@ -1,8 +1,10 @@
 package com.gitee.drinkjava2.frog.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.Frog;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
@@ -67,6 +69,44 @@ public class OneInputJudge implements EnvObject {
      * 3.在左边Env显示区画出当前food的进度条
      */
     @Override
-    public void active(int screen, int step, Graphics g) {}
+    public void active(int screen, int step, Graphics g) {
+        Frog f;
+        int x, y;
+        boolean hasFood = food[step] == 1;
+        for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
+            f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
+            f.see1=hasFood;  
+            if (f.bite) { //如果咬下
+                if (f.see1) {
+                    f.awardA(); //咬到了有奖
+                    f.ateFood++;
+                    f.sweet=true;
+                    f.bitter=false;
+                    g.setColor(Color.GREEN);
+                } else {
+                    f.ateWrong++;
+                    f.penaltyA(); //咬空了扣分
+                    f.sweet=false;
+                    f.bitter=true;//咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
+                    g.setColor(Color.RED);
+                }
+            } else { //如果都没有咬，关闭甜和苦味感觉
+                f.sweet=false;
+                f.bitter=false;
+                if (hasFood) {
+                    g.setColor(Color.RED);
+                    f.ateMiss++;
+                }
+                else
+                    g.setColor(Color.GREEN);
+            }
+            if (i == 0) {
+                x = step % (Env.ENV_WIDTH / n);//用红色标记当前走到哪一步食物位置
+                y = step / (Env.ENV_WIDTH / n);
+                g.fillRect(x * n, y * n + n / 2, n, 2);
+            }
+        }
+
+    }
 
 }

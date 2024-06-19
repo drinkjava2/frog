@@ -57,9 +57,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
-    public long[][][] cells = new long[1][1][Env.BRAIN_SIZE]; //所有脑细胞
+    public long[][][] cells = new long[1][1][Env.BRAIN_SIZE]; //所有脑细胞，先排在一条线上，用2叉分裂算法
 
-    public float[][][] energys = new float[Env.BRAIN_SIZE][Env.BRAIN_SIZE][Env.BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
+    public float[][][] energys = new float[1][1][Env.BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
 
     public int xPos; // animal在Env中的x坐标
     public int yPos; // animal在Env中的y坐标
@@ -70,8 +70,17 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public int ateMiss = 0; // 该咬却没咬下去的次数
     public int no; // 青蛙在Env.animals中的序号，从1开始， 会在运行期写到当前brick的最低位，可利用Env.animals.get(no-1)快速定位青蛙
 
-    public int animalMaterial;
-    public Image animalImage;
+    public int animalMaterial; //见Material
+    public Image animalImage;  //动物图片,由子类给出
+    
+    //========================以下是感觉细胞和输入输出细胞，这些细胞和大脑中的神经元相连==========
+    //因为脑中的神经元要参与随机空间排列，所以感觉细胞和输出细胞不参与排列，这都是开关量，由神经元控制，控制或受控的神经元参与排列
+    public boolean see1=false; //看到第一个像素点
+    public boolean see2=false; //看到第二个像素点
+    public boolean sweet=false; //尝到甜味
+    public boolean bitter=false; //尝到甜味    
+    public boolean bite=false; //发出咬下动作
+    
 
     public Animal(Egg egg) {//构造方法，Animal从蛋中诞生
         System.arraycopy(egg.consts, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数

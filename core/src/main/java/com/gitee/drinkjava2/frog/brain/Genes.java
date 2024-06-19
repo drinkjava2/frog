@@ -33,7 +33,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static int GENE_NUMBERS = 0; // 这里统计定义了多少个基因
     private static int zeros = 0; // 当前基因位掩码0个数
 
-    public static boolean[] display_gene = new boolean[GENE_MAX]; // 如果这个参数为真，此基因显示在脑图上
+    public static boolean[] display_gene = new boolean[GENE_MAX]; // 如果这个参数为真，此基因显示在脑图上,此设定不影响逻辑
     public static boolean[] fill_gene = new boolean[GENE_MAX]; // 如果这个参数为真，此基因填充指定的区域，而不是由分裂算法随机生成
 
     public static int[] xLimit = new int[GENE_MAX]; // 用来手工限定基因分布范围，详见register方法
