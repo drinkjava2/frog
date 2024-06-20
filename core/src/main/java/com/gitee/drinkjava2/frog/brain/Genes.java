@@ -68,7 +68,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
      */
     public static long register(String name, int maskBits, boolean display, boolean fill, int x_limit, int y_limit, int z_limit) {
         if (x_limit > -1 && y_limit > -1 && z_limit > -1) {// 临时，如果登录的范围是个三座标点，把它放在这里，以方便随机连线只落在登记的细胞上
-            dots.add(new Object[] {name, x_limit, y_limit, z_limit });
+            dots.add(new Object[]{name, x_limit, y_limit, z_limit});
         }
 
         for (int i = GENE_NUMBERS; i < GENE_NUMBERS + maskBits; i++) {
@@ -106,7 +106,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         return register(name, 1, true, true, pos[0], pos[1], pos[2]);
     }
 
-    public static boolean hasGene(long cell, long geneMask) { // 判断cell是否含某个基因
+    public static boolean is(long cell, long geneMask) { // 判断cell是否含某个基因
         return (cell & geneMask) > 0;
     }
 
@@ -114,17 +114,78 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     private static final int CS4 = Env.BRAIN_SIZE / 4;
 
     // ============开始登记基因==========
-       
 
     // 登记细胞间关联(触突树突)
     static {
-        register(null, 32,true, false, 0,0,-1); //先登记32个基因位，每个基因位的作用（对应各种细胞类型、行为）后面再说
+        register(null, 24, true, false, 0, 0, -1); //先登记一些基因位，每个基因位的作用（对应各种细胞类型、行为）后面再说
     }
 
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 ===========
-    //但是本版本因为没用到分裂算法，所以这个方法体为空
     public static void active(Animal a, int step) {
+        int start = 0; //start是常数数组的起始点 ， 下面这些常量，先假设所有类型的细胞都共用相同的一组常量参数           
+        float res = a.consts[start++]; //resistance, 常量电阻，即通常说的权重, 0时为断路，1时为全通，
+        float not = a.consts[start++]; //not logic 反相器，如>0.5, 将会对通过的能量反相，即乘以-1
+        float cellValve = a.consts[start++]; //细胞激活的阀值，神经元细胞至少能量多少，才会对激活输出细胞
+        
 
+        int hasSee1=0,hasSee2=0,hasBite=0,hasnotBite=0,hasSweet=0, hasBitter=0, hasActive=0;
+        
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
+            long c = a.cells[0][0][z];//当前细胞是一个long类型           
+            float e = a.getEng(0, 0, z);//当前细胞的能量
+            
+            long b=1l<<17; //特殊基因从32开始,基因本身没什么意义，你给它什么意义它就代表什么
+            boolean see1 = is(c, b); //是视细胞1?
+            b=b<<1;
+            boolean bite = is(c, b); //是咬细胞?
+            b=b<<1;
+            boolean notBite = is(c, b); //是不咬细胞?即张嘴
+            b=b<<1;
+            boolean sweet = is(c, b); //是甜细胞?
+            b=b<<1;
+            boolean bitter = is(c, b); //是苦细胞?
+            b=b<<1;
+            boolean active = is(c, b); //是活细胞? 
+            
+            if(see1)hasSee1=1; 
+            if(bite)hasBite=1;
+            if(notBite)hasnotBite=1;
+            if(sweet)hasSweet=1;
+            if(bitter)hasBitter=1;
+            if(active)hasActive=1;
+            
+            if(active)
+                a.setEngZ(z, 1);
+                
+            if (see1 & a.see1)//如果青蛙看到食物像素1，激活对应包含视细胞像素1基因的本细胞
+                a.setEngZ(z, 1);
+            else
+                a.setEngZ(z, 0); 
+           
+            if (bite && e > cellValve) {//如果咬细胞激活，咬下
+                a.bite = true;
+            }
+
+            if (notBite && e > cellValve) {//如果张嘴细胞激活，停止咬
+                a.bite = false;
+            }
+
+            //下面是细胞之间的能量传送           
+            if (e < 0.1f) //能量太小就跳过
+                continue;
+            e = e * res; //静态电阻 //如果有静态电阻，能量要损耗一些
+            
+            if (not > 0.5) //如果有反相器，能量要反相
+                e = -e;
+            
+            b = 1;
+            for (int i = 0; i < Env.BRAIN_SIZE; i++) { //能量传到target cell
+                b=b<<1;
+               if (is(c, b << i)) //如果包含某线胞的序号，就传送能量给这个细胞
+                    a.addEng(0, 0, i, e);
+            }
+        }
+         a.fat+=(hasSee1+hasBite+hasnotBite+hasSweet+ hasBitter+ hasActive); //如果有基因在细胞里，加点分  
     }
 
 }

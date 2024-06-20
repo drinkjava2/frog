@@ -114,7 +114,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         GeneUtils.geneMutation(this); //分裂算法控制的基因突变
         if (RandomUtils.percent(5))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
-                fat -= gene.size(); 
+                fat=fat- gene.size(); 
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
     }
 
@@ -132,7 +132,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return alive;
     }
 
-    public void constMutate() { // 全局参数变异, 这一个方法此动物个体的所有常量
+    public void constMutate() { // 全局参数变异, 这一个方法变异此动物个体的所有常量
         if (RandomUtils.percent(30)) //这个30%机率的变异方法让所有常量都有3%的机率随机在0~1之间重新取值
             for (int i = 0; i < CountsQTY; i++) { 
                 if (RandomUtils.percent(3))
@@ -199,7 +199,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return cells[x][y][z] > 0;
     }
 
-    public void setEng(int x, int y, int z, float e) { //打开指定的xyz坐标对应的cell能量值为极大
+    public void setEng(int x, int y, int z, float e) { //设定x,y,z坐标对应的cell能量值
         if (e > 1)
             e = 1;
         if (e < 0)
@@ -207,6 +207,14 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         energys[x][y][z] = e;
     }
 
+    public void setEngZ(int z, float e) { //设定0,0,z坐标对应的cell能量值
+        if (e > 1)
+            e = 1;
+        if (e < 0)
+            e = 0;
+        energys[0][0][z] = e;
+    }
+    
     public void setEng(int[] a, float e) { //打开指定的xyz坐标对应的cell能量值为极大
         if (e > 1)
             e = 1;

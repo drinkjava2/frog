@@ -78,14 +78,14 @@ public class OneInputJudge implements EnvObject {
             f.see1=hasFood;  
             if (f.bite) { //如果咬下
                 if (f.see1) {
-                    f.awardA(); //咬到了有奖
+                    f.awardAAA(); //咬到了有奖
                     f.ateFood++;
                     f.sweet=true;
                     f.bitter=false;
                     g.setColor(Color.GREEN);
                 } else {
                     f.ateWrong++;
-                    f.penaltyA(); //咬空了扣分
+                    f.penaltyAAA(); //咬空了扣分
                     f.sweet=false;
                     f.bitter=true;//咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
                     g.setColor(Color.RED);

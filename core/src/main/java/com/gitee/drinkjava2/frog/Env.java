@@ -34,7 +34,7 @@ public class Env extends JPanel {
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
-    public static final int SCREEN = 5; // 分几屏测完
+    public static final int SCREEN = 1; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
     public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
@@ -62,7 +62,7 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 500;// 每屏测试步数,可调
+    public static final int STEPS_PER_ROUND = 300;// 每屏测试步数,可调
     public static int step;// 当前测试步数
 
     public static final int FOOD_QTY = 3000; // 食物数量, 可调
