@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.Frog;
+import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.objects.EnvObject.DefaultEnvObject;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -23,7 +25,7 @@ public class TwoInputJudge extends DefaultEnvObject {
     private static void resetFood() {
         sweetFoodCode = 1 + RandomUtils.nextInt(3); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，从三种食物中找出正确的那一种食物,
                                                     // 下一步是每一轮测试中途都有可能改变甜食code，让青蛙活着时就就能找出食物(即记忆功能)
-        System.out.println("sweetFoodCode="+sweetFoodCode); //debug
+        //System.out.println("sweetFoodCode="+sweetFoodCode); //debug
         int step = 0;
         int x = 2; 
         while (step < (Env.STEPS_PER_ROUND)) {
@@ -82,6 +84,48 @@ public class TwoInputJudge extends DefaultEnvObject {
      * 3.在左边Env显示区画出当前food的进度条
      */
     @Override
-    public void active(int screen, int step, Graphics g) {}
+    public void active(int screen, int step, Graphics g) {
+        Frog f;
+        int x, y;
+        int foodCode = food[step];
+        boolean seeFood1 = (foodCode & 1) > 0;
+        boolean seeFood2 = (foodCode & 0b10) > 0;
+        boolean isSweet = (foodCode == sweetFoodCode);
+        for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
+            f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
+            f.see1=seeFood1;  
+            f.see2=seeFood2;  
+
+            if (f.bite) {
+                if (isSweet) {
+                    f.awardA(); //咬到了有奖
+                    f.ateFood++;
+                    f.sweet=true;  //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
+                    f.bitter=false;
+                    g.setColor(Color.GREEN);
+                } else { //咬错了扣分
+                    f.ateWrong++;
+                    f.penaltyA();
+                    f.sweet=false;
+                    f.bitter=true; //咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
+                    g.setColor(Color.RED);
+                }
+            } else { //如果没有咬
+                f.sweet=false;//关闭甜和苦味感觉
+                f.bitter=false; 
+                if (isSweet) { //如果没有咬但是食物是甜的，说明miss了一个甜食
+                    g.setColor(Color.RED);
+                    f.ateMiss++;
+                } else
+                    g.setColor(Color.GREEN); //如果没有咬且食物不甜，miss对了
+            }
+            if (i == 0) {//虚拟环境只显示第一个青蛙的红绿线
+                x = step % (Env.ENV_WIDTH / n);//用红色标记当前走到哪一步食物位置
+                y = step / (Env.ENV_WIDTH / n);
+                g.fillRect(x * n, y * n + n / 2, n, 2);
+            }
+        }
+
+    }
 
 }
