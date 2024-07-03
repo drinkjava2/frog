@@ -84,7 +84,7 @@ public class TwoInputJudge extends DefaultEnvObject {
      * 3.在左边Env显示区画出当前food的进度条
      */
     @Override
-    public void active(int screen, int step, Graphics g) {
+    public void active(int screen, int step, Graphics g) {//这个方法不和脑细胞打交道，只和输入输出细胞（即Animal中的简单变量)打交道，不要和胞细胞搞混了
         Frog f;
         int x, y;
         int foodCode = food[step];
