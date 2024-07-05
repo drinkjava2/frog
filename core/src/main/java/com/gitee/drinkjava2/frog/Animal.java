@@ -60,7 +60,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public long[][][] cells = new long[1][1][Env.BRAIN_SIZE]; //所有脑细胞，先排在一条线上，用2叉分裂算法
 
     public float[][][] energys = new float[1][1][Env.BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
-
+    
+    public float[][] pweight = new float[Env.BRAIN_SIZE][16]; //这个数组保存所有细胞的所有连线的正权重，这是动态变化的权重，脑细胞线状时，这是双重数组，脑细胞3维后，将定义成4维数组
+    
     public int xPos; // animal在Env中的x坐标
     public int yPos; // animal在Env中的y坐标
     public long fat = 1000000000; // 青蛙的肥胖度, 只有胖的青蛙才允许下蛋, 以前版本这个变量名为energy，为了不和脑细胞的能量重名，从这个版本起改名为fat
@@ -81,7 +83,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public boolean bitter=false; //尝到甜味    
     public boolean bite=false; //发出咬下动作
     
-
+    
     public Animal(Egg egg) {//构造方法，Animal从蛋中诞生
         System.arraycopy(egg.consts, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数
         for (int i = 0; i < GENE_NUMBERS; i++) {
