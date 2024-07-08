@@ -95,6 +95,10 @@ public class TwoInputJudge extends DefaultEnvObject {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
             f.see1=seeFood1;  
             f.see2=seeFood2;  
+            
+            if(step<Env.STEPS_PER_ROUND-2) { //提前看到食物正在靠近
+                f.seeFoodComing =((food[step+1]>0)  || (food[step+2]>0) );
+            }
 
             if (f.bite) {
                 if (isSweet) {

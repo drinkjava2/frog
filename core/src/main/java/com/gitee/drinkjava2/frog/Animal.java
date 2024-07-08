@@ -52,6 +52,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public static int CountsQTY = 100; //常量总数多少
     public float[] consts = new float[CountsQTY]; // 常量，范围0~1之间，这些常量并不常，会参与遗传算法筛选，规则是有大概率小变异，小概率大变异
+    
  
 
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
@@ -79,9 +80,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     //因为脑中的神经元要参与随机空间排列，所以感觉细胞和输出细胞不参与排列，这都是开关量，由神经元控制，控制或受控的神经元参与排列
     public boolean see1=false; //看到第一个像素点
     public boolean see2=false; //看到第二个像素点
+    public boolean seeFoodComing=false; //看到食物正在靠近
     public boolean sweet=false; //尝到甜味
     public boolean bitter=false; //尝到甜味    
     public boolean bite=false; //发出咬下动作
+    
     
     
     public Animal(Egg egg) {//构造方法，Animal从蛋中诞生

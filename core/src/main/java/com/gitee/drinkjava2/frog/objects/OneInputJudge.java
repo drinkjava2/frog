@@ -72,10 +72,14 @@ public class OneInputJudge implements EnvObject {
     public void active(int screen, int step, Graphics g) {
         Frog f;
         int x, y;
-        boolean hasFood = food[step] == 1;
+        boolean hasFood = food[step] == 1; 
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
             f.see1=hasFood;  
+            if(step<Env.STEPS_PER_ROUND-2) { //提前看到食物正在靠近
+                f.seeFoodComing =((food[step+1]==1)  || (food[step+2]==1) );
+            }
+            
             if (f.bite) { //如果咬下
                 if (f.see1) {
                     f.awardAAA(); //咬到了有奖
