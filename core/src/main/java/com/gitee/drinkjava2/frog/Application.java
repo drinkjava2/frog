@@ -170,7 +170,7 @@ public class Application {
         };
         showSplitDetailCheckBox.addActionListener(detailAction);
         mainFrame.add(showSplitDetailCheckBox);
-        mainFrame.setBounds(0,100, 1, 1);
+        mainFrame.setBounds(0,100, 900, 600);
         mainFrame.setVisible(true);
         env.run();
     }
