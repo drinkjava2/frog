@@ -62,7 +62,11 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public float[][][] energys = new float[1][1][Env.BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
     
-    public float[][] pweight = new float[Env.BRAIN_SIZE][16]; //这个数组保存所有细胞的所有连线的正权重，这是动态变化的权重，脑细胞线状时，这是双重数组，脑细胞3维后，将定义成4维数组
+    public float[][] posWeight = new float[Env.BRAIN_SIZE][16]; //所有细胞的所有连线的正权重，
+    public float[][] posActivity = new float[Env.BRAIN_SIZE][16]; //所有细胞的所有连线的正权重的活跃度，活跃度是近期流动的能量值的平均值。活跃度的出现是为了能实现"甜信号加强最近活跃的权重"这一目的
+    
+    public float[][] negWeight = new float[Env.BRAIN_SIZE][16]; //所有细胞的所有连线的负权重，
+    public float[][] negActivity = new float[Env.BRAIN_SIZE][16]; //所有细胞的所有连线的负权重的活跃度。此处活跃度的出现是为了能实现"苦信号加强最近活跃的负权重"这一目的
     
     public int xPos; // animal在Env中的x坐标
     public int yPos; // animal在Env中的y坐标
@@ -77,7 +81,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public Image animalImage;  //动物图片,由子类给出
     
     //========================以下是感觉细胞和输入输出细胞，这些细胞和大脑中的神经元相连==========
-    //因为脑中的神经元要参与随机空间排列，所以感觉细胞和输出细胞不参与排列，这都是开关量，由神经元控制，控制或受控的神经元参与排列
+    //感觉和输出细胞不参与脑细胞排列，这都是开关量，由神经元控制，神经元参与脑细胞随机排列筛选
     public boolean see1=false; //看到第一个像素点
     public boolean see2=false; //看到第二个像素点
     public boolean seeFoodComing=false; //看到食物正在靠近
