@@ -85,6 +85,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public boolean see1=false; //看到第一个像素点
     public boolean see2=false; //看到第二个像素点
     public boolean seeFoodComing=false; //看到食物正在靠近
+    public boolean seeEmptyComing=false; //看到空白正在靠近
     public boolean sweet=false; //尝到甜味
     public boolean bitter=false; //尝到甜味    
     public boolean bite=false; //发出咬下动作
@@ -121,7 +122,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         constMutate();//常量基因突变, 线条的参数都在常量里
 
         GeneUtils.geneMutation(this); //分裂算法控制的基因突变
-        if (RandomUtils.percent(5))
+        if (RandomUtils.percent(30))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat=fat- gene.size(); 
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞

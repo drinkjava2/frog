@@ -76,8 +76,9 @@ public class OneInputJudge implements EnvObject {
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
             f.see1=hasFood;  
-            if(step<Env.STEPS_PER_ROUND-2) { //提前看到食物正在靠近
+            if(step<Env.STEPS_PER_ROUND-3) { //提前看到食物正在靠近
                 f.seeFoodComing =((food[step+1]==1)  || (food[step+2]==1) );
+                f.seeEmptyComing =((food[step+1]==0)  || (food[step+2]==0) );
             }
             
             if (f.bite) { //如果咬下
