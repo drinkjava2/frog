@@ -392,14 +392,6 @@ public class BrainPicture extends JPanel {
             }
         }
 
-		for (Object[] o : Genes.dots) { // 画出所有登记的点的名字
-			String name = (String) o[0];
-			int x = (int) o[1];
-			int y = (int) o[2];
-			int z = (int) o[3];
-			drawTextCenter(x, y, z, name, 0.3f);
-		}
-
 		drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来
 
 		setPicColor(BLACK); // 把x,y,z坐标画出来
