@@ -98,13 +98,13 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         return register(1, true, true, pos[0], pos[1], pos[2]);
     }
 
-    private static boolean is(long cell, long geneMask) { // 判断cell是否含某个基因
+    private static boolean is(long cell, long geneMask) { // 判断cell是否含某个基因，这个不移位b
         return (cell & geneMask) > 0;
     }
 
-    private static long b = 1; //全局静态变量，以实现is(cell)方法每调用一次b就移位一次的效果
+    private static long b = 1; //以实现is(cell)方法每调用一次b就移位一次的效果，用全局静态变量可以省去方法调用时多传一个参数
 
-    private static boolean is(long cell) { // 判断cell是否含b这个基因掩码，并左移位全局静态变量b一位
+    private static boolean is_(long cell) { // 判断cell是否含b这个基因掩码，并左移位全局静态变量b一位，用下划线命名表示移位
         boolean result = (cell & b) > 0;
         b = b << 1;
         if (b > totalGenesLenth)
@@ -112,7 +112,17 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         return result;
     }
 
-    private static int num(long cell, int n) { //cell以当前基因掩码b开始，连续取n位成为0~2^n之间的整数返回，并把全局静态变量b左移n位
+    private static void is_(Animal a, int z, long c, boolean bl) { // 判断cell是否含b这个基因掩码，并左移位全局静态变量b一位
+        b = b << 1;
+        if (b > totalGenesLenth)
+            b = 1 / 0;
+        if ((c & b) > 0 && bl)
+            a.setEngZ(z, 1);
+        else
+            a.setEngZ(z, 0);
+    }
+
+    private static int int_(long cell, int n) { //cell以当前基因掩码b开始，连续取n位成为0~2^n之间的整数返回，并把全局静态变量b左移n位
         int result = 0;
         long bb = 1L;
         for (int i = 0; i < n; i++) {
@@ -134,7 +144,8 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         register(16 + 16, true, false, 0, 0, NA); //先登记一些基因位，每个基因位的作用（对应各种细胞类型、行为）后面再说
     }
 
-    private static long specialGenesStartFrom = 1L << 17;
+    private static long specialGenesStart = 1L << 16; //特殊基因的起点
+    private static long bstart = specialGenesStart << 6; //跳过6个位，这6个位已用于表示初始电阻了
     private static long totalGenesLenth = 1L << GENE_NUMBERS; //最大掩码不能超过这个值
 
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 ===========
@@ -142,8 +153,9 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         int start = 0; //start是常数数组的起始点 ，起点随机最小是0，最大是8*10;     
         float cellValve = a.consts[start++]; //细胞激活的阀值，神经元细胞至少能量多少，才会对激活输出细胞 
 
-        if (step == 0) {//在首次调用时，统计一排细胞中如果至少有一个特殊基因在细胞里，加点分
-            b = specialGenesStartFrom;
+        //===============首先是第一次调用时==============
+        if (1==0 && step == 0) {//在首次调用时，统计一排细胞中如果至少有一个特殊基因在细胞里，加点分
+            b = specialGenesStart;
             for (int i = 0; i < 16; i++) {
                 for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
                     long c = a.cells[0][0][z];
@@ -159,9 +171,9 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         if (step == 0) {//在首次调用时，初始化每个细胞的初始电阻，暂定一个细胞的所有连线初始电阻相同
             for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
                 long c = a.cells[0][0][z]; //当前细胞是一个long类型   
-                b = specialGenesStartFrom;
-                float pRes = 0.14f * num(c, 3); //res 在0~1之间，初始值由基因决定的常数位置的值决定
-                float nRes = 0.14f * num(c, 3); //res 在0~1之间
+                b = specialGenesStart; //特殊基因从17开始，开头6位定义静态正负初始电阻
+                float pRes = 0.14f * int_(c, 3); //res 在0~1之间，初始值由基因决定的常数位置的值决定
+                float nRes = 0.14f * int_(c, 3); //res 在0~1之间
                 for (int i = 0; i < Env.BRAIN_SIZE; i++) {
                     a.posWeight[z][i] = pRes;
                     a.negWeight[z][i] = nRes;
@@ -169,44 +181,35 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             }
         }
 
-        long bstart = specialGenesStartFrom << 6;
+
         for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
             long c = a.cells[0][0][z];
             float e = a.getEng(0, 0, z);//当前细胞的能量
 
+            //===============先根据细胞能量产生输出行动, 注意细胞能量是由上轮产生的 ==============
+            if (e > 0.1f) { //
+                if (is_(c) && e > cellValve) {//如果是咬细胞，且处于激活态，咬下
+                    a.bite = true;
+                }
+
+                if (is_(c) && e > cellValve) {//如果张嘴细胞激活，停止咬
+                    a.bite = false;
+                }
+
+            }
+
+            //===============然后根据所含的各种乱七八糟基因，激活细胞或关闭细胞 ==============
+
             b = bstart; //特殊基因从17开始,基因本身没什么意义，你给它什么假设并且它正好进化出这个掩码位，它就拥有什么行为 
-
-            if (is(c)) {//如果有active基因，此细胞始终激活. is方法在判断c有无b掩码后，将b左移一位
+            if (is_(c)) {//如果有active基因, 此细胞始终激活, is_方法在判断c有无b掩码后，将b左移一位
                 a.setEngZ(z, 1);
             }
 
-            if (is(c) && a.see1)//如果有像素1基因，且食物像素1出现，激活此细胞
-                a.setEngZ(z, 1);
-            else
-                a.setEngZ(z, 0); //否则关闭此细胞激活
-
-            if (is(c) && a.seeFoodComing)//如果看到食物正在靠近，激活此基因
-                a.setEngZ(z, 1);
-            else
-                a.setEngZ(z, 0); //否则关闭此细胞激活
-
-            if (is(c) && a.seeEmptyComing)//如果看到空白正在靠近，激活此基因
-                a.setEngZ(z, 1);
-            else
-                a.setEngZ(z, 0); //否则关闭此细胞激活
-
-            //下面是细胞之间的能量传送           
-            if (e <= 0.1f) //能量太小不到阀值就跳过
-                continue;
-
-            if (is(c) && e > cellValve) {//如果是咬细胞，且处于激活态，咬下
-                a.bite = true;
-            }
-
-            if (is(c) && e > cellValve) {//如果张嘴细胞激活，停止咬
-                a.bite = false;
-            }
-
+            is_(a, z, c, a.see1); //如果有像素1基因，且食物像素1出现，激活此细胞, 否则关闭此细胞
+            is_(a, z, c, a.seeFoodComing); //如果看到食物正在靠近，激活此细胞, 否则关闭此细胞
+            is_(a, z, c, a.seeEmptyComing); //如果看到空白正在靠近，激活此细胞, 否则关闭此细胞
+            
+            //==================下面是细胞之间的能量传送=======================   
             //下面要实现以下规则，规则针对细胞级别，产生的效果是宏观级别，宏观级别的效果可以用遗传算法来判定筛选。
             // 单个细胞反复活跃，增加它所有正权重, 宏观效果：单个视信号反复激活，会刺激无关的咬细胞激活
             // 两个细胞同时活跃，增加它们间的正权重， 宏观效果：两个不相干的信号相邻时间内激活，两个不相干信号会形成关联
@@ -215,29 +218,29 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
 
             //TODO ================下面要改进，不是说有能量就要传的，两点模式下有的模式是毒食物，所以要利用甜苦味觉和记忆细胞，现学现改=============  
             //正权重和负权重每根线条上都是不同的，并不是一个可以共享的常量，存贮这些权重要花很多空间,如果一个细胞有16个正负连线，16*2就要有32个字节来保存权重
+            if (e > 0.1f) { //
+                boolean hasPosLines = is_(c);//神经元是否有正权重连线
+                boolean hasNegLines = is_(c);//神经元是否有负权重连线
 
-            boolean hasPosLines = is(c);//神经元是否有正权重连线
-            boolean hasNegLines = is(c);//神经元是否有负权重连线
-
-            b = 1; //从头开始，处理与相邻16个细胞之间的正权重能量传递
-            if (hasPosLines) {//正权重线条
-                for (int i = 0; i < Env.BRAIN_SIZE; i++) {
-                    if (is(c)) {//如果包含某线胞的序号，就传送能量给这个细胞
-                        float et = e * a.posWeight[z][i]; //要传输的能量=细胞能量*连线权重
-                        a.addEng(0, 0, i, et);
+                b = 1; //从头开始，处理与相邻16个细胞之间的正权重能量传递
+                if (hasPosLines) {//正权重线条
+                    for (int i = 0; i < Env.BRAIN_SIZE; i++) {
+                        if (is_(c)) {//如果包含某线胞的序号，就传送能量给这个细胞
+                            float et = e * a.posWeight[z][i]; //要传输的能量=细胞能量*连线权重
+                            a.addEng(0, 0, i, et);
+                        }
+                    }
+                }
+                b = 1; //从头开始，处理与相邻16个细胞之间的负权重线条能量传递
+                if (hasNegLines) {//负权重线条
+                    for (int i = 0; i < Env.BRAIN_SIZE; i++) {
+                        if (is_(c)) {//如果包含某线胞的序号，就传送能量给这个细胞
+                            float et = -e * a.negWeight[z][i]; //要传输的能量=细胞能量*连线权重
+                            a.addEng(0, 0, i, et);
+                        }
                     }
                 }
             }
-            b = 1; //从头开始，处理与相邻16个细胞之间的负权重线条能量传递
-            if (hasNegLines) {//负权重线条
-                for (int i = 0; i < Env.BRAIN_SIZE; i++) {
-                    if (is(c)) {//如果包含某线胞的序号，就传送能量给这个细胞
-                        float et = -e * a.negWeight[z][i]; //要传输的能量=细胞能量*连线权重
-                        a.addEng(0, 0, i, et);
-                    }
-                }
-            }
-
         }
 
     }
