@@ -5,7 +5,6 @@ import java.awt.Graphics;
 
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
-import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.objects.EnvObject.DefaultEnvObject;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -55,7 +54,7 @@ public class TwoInputJudge extends DefaultEnvObject {
     @Override
     public void build(Graphics g) { //build在每屏测试前调用一次，这里用随机数准备好食物出现和消失的顺序为测试作准备
         resetFood();
-        //System.out.println("totalSweetFood=" + totalSweetFood);//debug
+        System.out.println("totalSweetFood=" + totalSweetFood);//debug
 
         for (int i = 0; i < Env.STEPS_PER_ROUND; i++) { //画出当前食物分布图
             int x = i % (Env.ENV_WIDTH / n);
@@ -86,7 +85,7 @@ public class TwoInputJudge extends DefaultEnvObject {
      * 3.在左边Env显示区画出当前food的进度条
      */
     @Override
-    public void active(int screen, int step, Graphics g) {//这个方法不和脑细胞打交道，只和输入输出细胞（即Animal中的简单变量)打交道，不要和胞细胞搞混了
+    public void active(int screen, int step, Graphics g) {//这个方法不和脑细胞打交道，只和输入输出细胞（即Animal中的简单变量)打交道，不要和脑细胞搞混了
         Frog f;
         int x, y;
         int foodCode = food[step];
