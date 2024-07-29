@@ -101,6 +101,7 @@ public class OneInputJudge implements EnvObject {
                 if (hasFood) {
                     g.setColor(Color.RED);
                     f.ateMiss++;
+                    f.penaltyAAA();
                 }
                 else
                     g.setColor(Color.GREEN);

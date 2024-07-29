@@ -103,14 +103,14 @@ public class TwoInputJudge extends DefaultEnvObject {
 
             if (f.bite) {
                 if (isSweet) {
-                    f.awardA(); //咬到了有奖
+                    f.awardAAA3(); //咬到了有奖
                     f.ateFood++;
                     f.sweet = true; //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
                     f.bitter = false;
                     g.setColor(Color.GREEN);
                 } else { //咬错了扣分
                     f.ateWrong++;
-                    f.penaltyA();
+                    f.penaltyAAA2();
                     f.sweet = false;
                     f.bitter = true; //咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
                     g.setColor(Color.RED);
@@ -121,6 +121,7 @@ public class TwoInputJudge extends DefaultEnvObject {
                 if (isSweet) { //如果没有咬但是食物是甜的，说明miss了一个甜食，打红色
                     g.setColor(Color.RED);
                     f.ateMiss++;
+                    f.penaltyAAA();
                 } else
                     g.setColor(Color.GREEN); //如果没有咬且食物不甜或不存在，不咬就对了，绿色
             }
