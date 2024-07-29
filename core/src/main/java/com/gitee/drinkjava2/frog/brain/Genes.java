@@ -117,9 +117,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         if (b > totalGenesLenth)
             b = 1 / 0;
         if ((c & b) > 0 && bl)
-            a.setEngZ(z, 1);
-        else
-            a.setEngZ(z, 0);
+            a.setEngZ(z, 1); 
     }
 
     private static int int_(long cell, int n) { //cell以当前基因掩码b开始，连续取n位成为0~2^n之间的整数返回，并把全局静态变量b左移n位
@@ -150,7 +148,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
 
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 ===========
     public static void active(Animal a, int step) {
-        int start = 0; //start是常数数组的起始点 ，起点随机最小是0，最大是8*10;     
+        int start = 0; //start是常数数组的起始点    
         float cellValve = a.consts[start++]; //细胞激活的阀值，神经元细胞至少能量多少，才会对激活输出细胞 
 
         //===============首先是第一次调用时, 进行所有细胞的初始化设定==============
@@ -205,9 +203,9 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                 e = 1f;
             }
 
-            is_(a, z, c, a.see1); //如果有像素1基因，且食物像素1出现，激活此细胞, 否则关闭此细胞
-            is_(a, z, c, a.seeFoodComing); //如果看到食物正在靠近，激活此细胞, 否则关闭此细胞
-            is_(a, z, c, a.seeEmptyComing); //如果看到空白正在靠近，激活此细胞, 否则关闭此细胞
+            //is_(a, z, c, a.see1); //如果有像素1基因，且食物像素1出现，激活此细胞 
+            is_(a, z, c, a.seeFoodComing); //如果看到食物正在靠近，激活此细胞
+            is_(a, z, c, a.seeEmptyComing); //如果看到空白正在靠近，激活此细胞
 
             if (e < 0.1f) //所有基因都是针对一个细胞的，如果这个细胞都没有能量，就跳过这个细胞
                 continue;

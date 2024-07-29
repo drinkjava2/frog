@@ -50,7 +50,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
 
-    public static int CountsQTY = 100; //常量总数多少
+    public static int CountsQTY = 10; //常量总数多少
     public float[] consts = new float[CountsQTY]; // 常量，范围0~1之间，这些常量并不常，会参与遗传算法筛选，规则是有大概率小变异，小概率大变异
     
  
