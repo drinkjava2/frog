@@ -10,9 +10,6 @@
  */
 package com.gitee.drinkjava2.frog.brain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
 
@@ -40,6 +37,13 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static int[] xLimit = new int[GENE_MAX]; // 用来手工限定基因分布范围，详见register方法
     public static int[] yLimit = new int[GENE_MAX];
     public static int[] zLimit = new int[GENE_MAX];
+
+    public static float cCellValve; //细胞激活的常量阀值，神经元细胞至少能量多少，才会对激活输出细胞 
+    public static float cWeigthLostRate; //权重随时间的遗忘率
+    public static float cActiveLostRate; //活跃度随时间的遗忘率
+    public static float cWeightSweetAddRate; //权重随奖励的增加率
+    public static float cWeightBitterAddRate; //权重随苦味的增加率
+    public static float cEnergyLostRate; //每个细胞能量丢失的速度
 
     /**
      * Register a gene 依次从底位到高位登记所有的基因掩码及对应的相关参数
@@ -146,15 +150,25 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     private static long specialGenesStart6 = specialGenesStart << 6; //再跳过6位，前6位已用于表示初始电阻了
     private static long totalGenesLenth = 1L << GENE_NUMBERS; //最大掩码位数不能超过登记的基因数量
 
+    public static void printDebug() {
+        System.out.println("=======Genes debug info========");
+        System.out.println("cCellValve=" + cCellValve);
+        System.out.println("cWeigthLostRate=" + cWeigthLostRate);
+        System.out.println("cActiveLostRate=" + cCellValve);
+        System.out.println("cWeightSweetAddRate=" + cWeightSweetAddRate);
+        System.out.println("cWeightBitterAddRate=" + cWeightBitterAddRate);
+        System.out.println("cEnergyLostRate=" + cEnergyLostRate);
+    }
+
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 ===========
     public static void active(Animal a, int step) {
         int start = 0; //start是常数数组的起始点    
-        float cCellValve = a.consts[start++]; //细胞激活的常量阀值，神经元细胞至少能量多少，才会对激活输出细胞 
-        float cWeigthLostRate = a.consts[start++]; //权重随时间的遗忘率
-        float cActiveLostRate = a.consts[start++]; //活跃度随时间的遗忘率
-        float cWeightSweetAddRate = a.consts[start++]; //权重随奖励的增加率
-        float cWeightBitterAddRate = a.consts[start++]; //权重随苦味的增加率
-        float cEnergyLostRate = a.consts[start++]; //每个细胞能量丢失的速度
+        cCellValve = a.consts[start++]; //细胞激活的常量阀值，神经元细胞至少能量多少，才会对激活输出细胞 
+        cWeigthLostRate = a.consts[start++]; //权重随时间的遗忘率
+        cActiveLostRate = a.consts[start++]; //活跃度随时间的遗忘率
+        cWeightSweetAddRate = a.consts[start++]; //权重随奖励的增加率
+        cWeightBitterAddRate = a.consts[start++]; //权重随苦味的增加率
+        cEnergyLostRate = a.consts[start++]; //每个细胞能量丢失的速度
 
         //===============首先是第一次调用时, 进行所有细胞的初始化设定==============
         if (1 == 0 && step == 0) {//一排细胞中特殊基因越多越好，基因种类多的加点分
@@ -216,31 +230,16 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                 continue;
 
             //==================下面是细胞之间的能量传送=======================   
-            //下面要实现以下规则，规则针对细胞级别，产生的效果是宏观级别，宏观级别的效果可以用遗传算法来判定筛选。
-            // 单个细胞反复活跃，增加它所有正权重, 宏观效果：单个视信号反复激活，会刺激无关的咬细胞激活
-            // 两个细胞同时活跃，增加它们间的正权重， 宏观效果：两个不相干的信号相邻时间内激活，两个不相干信号会形成关联
-            // 甜觉加强最近正权重，宏观效果：甜味加强正向行为条件反射
-            // 痛觉加强最近负权重，宏观效果：苦味抑制正向条件反射，加强负向条件反射
-
-            //TODO ================下面要改进，不是说有能量就要传的，两点模式下有的模式是毒食物，所以要利用甜苦味觉和记忆细胞，现学现改=============  
-            //正权重和负权重每根线条上都是不同的，并不是一个可以共享的常量，存贮这些权重要花很多空间,如果一个细胞有16个正负连线，16*2就要有32个字节来保存权重
-
             boolean hasPosLines = is_(c);//当前神经元是否有正权重连线
             boolean hasNegLines = is_(c);//当前神经元是否有负权重连线
 
             b = 1; //从头开始，处理与相邻16个细胞之间的正权重能量传递
 
             for (int i = 0; i < Env.BRAIN_SIZE; i++) {
-                a.posActivity[z][i] = a.posActivity[z][i] * cWeigthLostRate; //活跃度随时间消失
+                a.posActivity[z][i] = a.posActivity[z][i] * cActiveLostRate; //活跃度随时间消失
                 a.negActivity[z][i] = a.negActivity[z][i] * cActiveLostRate; //活跃度随时间消失
                 a.setEngZ(z, e * cEnergyLostRate); //细胞的能量也随时间消失，不能一直激活，一直激活就相当于阻断了新的信号。所以细胞神经网络是脉冲神经网络，所有被激活的细胞,其细胞能量都在慢慢减小
             }
-
-            //活跃度、权重、细胞能量的关系：
-            //活跃度：表示最近细胞或连线有没有激活过，活跃度是时间信息存诸的地方，与时间相关最密切，活跃度与奖罚激素联合，可以方便地动态调控权重
-            //活跃度是记录在细胞上还是记录在连线上？有疑问，记录在细胞上可以节约内存，记录在连线上可以独立控制每个连线
-            //权重：即电阻，模拟触突，表示细胞之间的连线的能量通过能力，是静态信息保存的地方
-            //能量：能量作用在细胞上，是当前信息暂存的载体，以脉冲形式在细胞间传播
 
             for (int i = 0; i < Env.BRAIN_SIZE; i++)
                 if (is_(c)) {//如果包含某线胞的序号，就传送能量给这个细胞
@@ -254,11 +253,12 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                         }
 
                         if (a.sweet) { //如果最近尝到甜味，正权重增加
-                            w = w * (1 + cWeightSweetAddRate*5);
+                            w = w * (1 + cWeightSweetAddRate * 5);
                             w = w > 1 ? 1 : w;
                             a.posWeight[z][i] = w;
                         }
                     }
+
                     if (hasNegLines) { //如有负权重线条
                         float w = a.negWeight[z][i];
                         float p = a.negActivity[z][i];
@@ -269,16 +269,21 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                         }
 
                         if (a.bitter) { //如果最近尝到苦味，负权重增加
-                            w = w * (1 + cWeightBitterAddRate*5);
+                            w = w * (1 + cWeightBitterAddRate * 5);
                             w = w > 1 ? 1 : w;
                             a.negWeight[z][i] = w;
                         }
                     }
-
                 }
-
+            
         }
+    }
+
+    public static void sweetEvent(Animal a) {//尝到甜味时调用这个方法，模仿激素，对所有细胞进行权重调整
 
     }
 
+    public static void bitterEvent(Animal a) {//尝到苦味时调用这个方法，模仿激素，对所有细胞进行权重调整
+
+    }
 }

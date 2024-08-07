@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
@@ -62,7 +63,7 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 800;// 每屏测试步数,可调
+    public static final int STEPS_PER_ROUND = 400;// 每屏测试步数,可调
     public static int step;// 当前测试步数
 
     public static final int FOOD_QTY = 3000; // 食物数量, 可调
@@ -203,11 +204,16 @@ public class Env extends JPanel {
     }
 
     public static void checkIfPause(int step) {
+        boolean first=true;
         if (pause)
             do {
                 Application.brainPic.drawBrainPicture(step);
                 Application.brainPic.requestFocus();
-                sleep(100);
+                if(first) {
+                    Genes.printDebug();
+                    first=false;
+                }
+                sleep(500);
             } while (pause);
     }
 

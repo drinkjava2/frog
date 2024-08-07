@@ -16,24 +16,20 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  */
 public class TwoInputJudge extends DefaultEnvObject {
     private int n = 16; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
-    private static int group = 15; //以group为一组，随机安排一半为食物
+    private static int group=15; //以group为一组，随机安排一半为食物
     private static int[] food = new int[Env.STEPS_PER_ROUND + group];
-    private static int sweetFoodCode1; //甜食code，食物code有三种，但只有2种与甜食code相同的食物可食。
-    private static int sweetFoodCode2; //甜食code，食物code有三种，但只有2种与甜食code相同的食物可食。
-    private static int totalSweetFood = 0;
+    private static int sweetFoodCode; //甜食code，食物code有三种，但只有一种与甜食code相同的食物可食。
+    private static int totalSweetFood=0; 
 
     private static void resetFood() {
-        sweetFoodCode1 = 1 + RandomUtils.nextInt(3); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，从三种食物中找出正确的2种食物,
-                                                     // 下一步是每一轮测试中途都有可能改变甜食code，让青蛙活着时就就能找出食物(即记忆功能)
-        do {
-            sweetFoodCode2 = 1 + RandomUtils.nextInt(3);
-        } while (sweetFoodCode2 == sweetFoodCode1);
-
+        sweetFoodCode = 1 + RandomUtils.nextInt(3); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，从三种食物中找出正确的那一种食物,
+                                                    // 下一步是每一轮测试中途都有可能改变甜食code，让青蛙活着时就就能找出食物(即记忆功能)
+        //System.out.println("sweetFoodCode="+sweetFoodCode); //debug
         int step = 0;
-        int x = 2;
+        int x = 2; 
         while (step < (Env.STEPS_PER_ROUND)) {
-            int firstFood = RandomUtils.nextInt(group / 2); //以group为一组，随机安排一半为食物
-            int foodCode = 1 + RandomUtils.nextInt(3); //食物有1,2,3四种图案，分别对应两个细胞的01,10,11四种情况
+            int firstFood = RandomUtils.nextInt(group/2); //以group为一组，随机安排一半为食物
+            int foodCode = 1+RandomUtils.nextInt(3); //食物有1,2,3四种图案，分别对应两个细胞的01,10,11四种情况
             for (int i = 0; i < group; i++)
                 if (i < firstFood || i > firstFood + x)
                     food[step + i] = 0;
@@ -41,27 +37,29 @@ public class TwoInputJudge extends DefaultEnvObject {
                     food[step + i] = foodCode;
             step += group;
             if (x == 2)
-                x = group / 2 + 1;
+                x = group/2+1;
             else
                 x = 2;
         }
-        totalSweetFood = 0;
         for (int f : food)
-            if (f == sweetFoodCode1 || f == sweetFoodCode2)
+            if (f==sweetFoodCode)
                 totalSweetFood++;
     }
 
     @Override
     public void build(Graphics g) { //build在每屏测试前调用一次，这里用随机数准备好食物出现和消失的顺序为测试作准备
+        if (totalSweetFood == 0) {
+            resetFood();
+            System.out.println("totalSweetFood=" + totalSweetFood);
+        }
         resetFood();
-        System.out.println("totalSweetFood=" + totalSweetFood);//debug
 
         for (int i = 0; i < Env.STEPS_PER_ROUND; i++) { //画出当前食物分布图
             int x = i % (Env.ENV_WIDTH / n);
             int y = i / (Env.ENV_WIDTH / n);
             g.drawRect(x * n, y * n, n, n);
             int foodCode = food[i];
-            boolean isSweet = (foodCode == sweetFoodCode1 || foodCode == sweetFoodCode2);
+            boolean isSweet = (foodCode == sweetFoodCode);
             if (isSweet)
                 g.setColor(Color.BLUE); //食物是甜的时，用蓝色表示，蓝莓?
             else
@@ -85,45 +83,44 @@ public class TwoInputJudge extends DefaultEnvObject {
      * 3.在左边Env显示区画出当前food的进度条
      */
     @Override
-    public void active(int screen, int step, Graphics g) {//这个方法不和脑细胞打交道，只和输入输出细胞（即Animal中的简单变量)打交道，不要和脑细胞搞混了
+    public void active(int screen, int step, Graphics g) {//这个方法不和脑细胞打交道，只和输入输出细胞（即Animal中的简单变量)打交道，不要和胞细胞搞混了
         Frog f;
         int x, y;
         int foodCode = food[step];
         boolean seeFood1 = (foodCode & 1) > 0;
         boolean seeFood2 = (foodCode & 0b10) > 0;
-        boolean isSweet = (foodCode == sweetFoodCode1 || foodCode == sweetFoodCode2);
+        boolean isSweet = (foodCode == sweetFoodCode);
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
-            f.see1 = seeFood1;
-            f.see2 = seeFood2;
-
-            if (step < Env.STEPS_PER_ROUND - 2) { //提前看到食物正在靠近
-                f.seeFoodComing = ((food[step + 1] > 0) || (food[step + 2] > 0));
+            f.see1=seeFood1;  
+            f.see2=seeFood2;  
+            
+            if(step<Env.STEPS_PER_ROUND-2) { //提前看到食物正在靠近
+                f.seeFoodComing =((food[step+1]>0)  || (food[step+2]>0) );
             }
 
             if (f.bite) {
                 if (isSweet) {
-                    f.awardAAA3(); //咬到了有奖
+                    f.awardAAA2(); //咬到了有奖
                     f.ateFood++;
-                    f.sweet = true; //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
-                    f.bitter = false;
+                    f.sweet=true;  //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
+                    f.bitter=false;
                     g.setColor(Color.GREEN);
                 } else { //咬错了扣分
                     f.ateWrong++;
-                    f.penaltyAAA2();
-                    f.sweet = false;
-                    f.bitter = true; //咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
+                    f.penaltyAAA();
+                    f.sweet=false;
+                    f.bitter=true; //咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
                     g.setColor(Color.RED);
                 }
             } else { //如果没有咬
-                f.sweet = false;//关闭甜和苦味感觉
-                f.bitter = false;
-                if (isSweet) { //如果没有咬但是食物是甜的，说明miss了一个甜食，打红色
+                f.sweet=false;//关闭甜和苦味感觉
+                f.bitter=false; 
+                if (isSweet) { //如果没有咬但是食物是甜的，说明miss了一个甜食
                     g.setColor(Color.RED);
                     f.ateMiss++;
-                    f.penaltyAAA();
                 } else
-                    g.setColor(Color.GREEN); //如果没有咬且食物不甜或不存在，不咬就对了，绿色
+                    g.setColor(Color.GREEN); //如果没有咬且食物不甜，miss对了
             }
             if (i == 0) {//虚拟环境只显示第一个青蛙的红绿线
                 x = step % (Env.ENV_WIDTH / n);//用红色标记当前走到哪一步食物位置
