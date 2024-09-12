@@ -21,6 +21,12 @@ import com.gitee.drinkjava2.frog.Env;
  * 
  * 这个类里定义每个基因位的掩码以及对应基因的细胞行为, 脑结构的所有参数，都要用基因来控制。开始时可以有常量、魔数，但以后都放到基因里去自动进化。
  * 
+ * 原则：
+ * 1.复杂的人脑是由单个细胞通过随机算法和遗传算法进化出来，所以所有算法都只需要针对一个细胞进行编程就可以了。
+ * 2.随机的组合如果想要获得唯一的复杂结果，哪么随机的因素必然不能太多，道理很简单，因为如果随机因素太多，那么从概率上就是极小概率事件，也就不可能发生。
+ * 3.神经网络即是决定性的，也是无法预测的。当太多细胞组合后，就相当于有无数个三体，所以虽然系统是决定性的，但也是无法预测行为的。但因为随机的因素必然不能太多,所以宏观表现上也有共性，即动物和人的思维表现有相似的现象。
+ * 
+ * 
  * @author Yong Zhu
  * @since 10.0
  */
@@ -275,15 +281,27 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                         }
                     }
                 }
-            
+
         }
     }
 
-    public static void sweetEvent(Animal a) {//尝到甜味时调用这个方法，模仿激素，对所有细胞进行权重调整
-
+    public static void sweetEvent(Animal a) {//尝到甜味时调用这个方法，模仿激素，增加所有最近活跃的细胞的正权重
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
+            long c = a.cells[0][0][z];
+            for (int i = 0; i < Env.BRAIN_SIZE; i++) { 
+                float f=a.posWeight[z][i]+a.posActivity[z][i]*0.5f; //新的权值等于原有的权值再加上最近活跃度，用这个公式来表达活跃度对权重的影响，这个容易理解吧,0.5f魔数暂定，以后用常数控制
+                a.posWeight[z][i]=f>1?1:f; //权重最多只能为1;
+            }
+        }
     }
 
-    public static void bitterEvent(Animal a) {//尝到苦味时调用这个方法，模仿激素，对所有细胞进行权重调整
-
+    public static void bitterEvent(Animal a) {//尝到苦味时调用这个方法，模仿激素，增加所有最近活跃的细胞的负权重
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
+            long c = a.cells[0][0][z];
+            for (int i = 0; i < Env.BRAIN_SIZE; i++) { 
+                float f=a.negWeight[z][i]+a.negActivity[z][i]*0.5f; //新的权值等于原有的权值再加上最近活跃度，用这个公式来表达活跃度对权重的影响，这个容易理解吧,0.5f魔数暂定，以后用常数控制
+                a.negWeight[z][i]=f>1?1:f; //权重最多只能为1;
+            }
+        }
     }
 }

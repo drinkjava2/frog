@@ -5,6 +5,7 @@ import java.awt.Graphics;
 
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
+import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.objects.EnvObject.DefaultEnvObject;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -23,7 +24,7 @@ public class TwoInputJudge extends DefaultEnvObject {
 
     private static void resetFood() {
         sweetFoodCode = 1 + RandomUtils.nextInt(3); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，从三种食物中找出正确的那一种食物,
-                                                    // 下一步是每一轮测试中途都有可能改变甜食code，让青蛙活着时就就能找出食物(即记忆功能)
+                                                    // 下一步是每一轮测试中途都有可能改变甜食code，让青蛙活着时就就能找出食物(即记忆功能) 
         //System.out.println("sweetFoodCode="+sweetFoodCode); //debug
         int step = 0;
         int x = 2; 
@@ -100,18 +101,20 @@ public class TwoInputJudge extends DefaultEnvObject {
             }
 
             if (f.bite) {
-                if (isSweet) {
+                if (isSweet) { 
                     f.awardAAA2(); //咬到了有奖
                     f.ateFood++;
                     f.sweet=true;  //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
                     f.bitter=false;
                     g.setColor(Color.GREEN);
+                    Genes.sweetEvent(f);//sweet事件发生，相当于脑内产生激素，导致脑内部最近活跃的细胞正权重增加
                 } else { //咬错了扣分
                     f.ateWrong++;
                     f.penaltyAAA();
                     f.sweet=false;
                     f.bitter=true; //咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
                     g.setColor(Color.RED);
+                    Genes.bitterEvent(f);//bitter事件发生，相当于脑内产生激素，导致脑内部最近活跃的细胞负权重变化
                 }
             } else { //如果没有咬
                 f.sweet=false;//关闭甜和苦味感觉

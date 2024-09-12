@@ -204,17 +204,14 @@ public class Env extends JPanel {
     }
 
     public static void checkIfPause(int step) {
-        boolean first=true;
-        if (pause)
+        if (pause) {
+            Genes.printDebug();
             do {
                 Application.brainPic.drawBrainPicture(step);
                 Application.brainPic.requestFocus();
-                if(first) {
-                    Genes.printDebug();
-                    first=false;
-                }
-                sleep(500);
+                sleep(100);
             } while (pause);
+        }
     }
 
     public static void sleep(long millis) {
