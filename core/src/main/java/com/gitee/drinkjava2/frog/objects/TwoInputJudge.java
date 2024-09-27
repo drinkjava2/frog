@@ -16,7 +16,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  *  
  */
 public class TwoInputJudge extends DefaultEnvObject {
-    private int n = 16; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
+    private int n = 10; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
     private static int group=15; //以group为一组，随机安排一半为食物
     private static int[] food = new int[Env.STEPS_PER_ROUND + group];
     private static int sweetFoodCode; //甜食code，食物code有三种，但只有一种与甜食code相同的食物可食。
