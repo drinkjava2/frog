@@ -14,7 +14,7 @@ import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
-import com.gitee.drinkjava2.frog.objects.TwoInputJudge;
+import com.gitee.drinkjava2.frog.objects.OneInputJudge;
 import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -31,7 +31,7 @@ public class Env extends JPanel {
     /** Speed of test */
     public static int SHOW_SPEED = 1000; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
-    public static final int FROG_EGG_QTY = 200; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
+    public static final int FROG_EGG_QTY = 100; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 
     public static final int FROG_PER_EGG = 4; // 每个青蛙蛋可以孵出几个青蛙
 
@@ -63,7 +63,7 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 800;// 每屏测试步数,可调
+    public static final int STEPS_PER_ROUND = 400;// 每屏测试步数,可调
     
     public static final int BEGINNING_STEPS= STEPS_PER_ROUND / 3; //每屏步数的 1/3，用来表示这是学习阶段
     
@@ -86,7 +86,7 @@ public class Env extends JPanel {
 
     public static ArrayList<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{ new TwoInputJudge()};// 所有外界物体，如食物、测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{ new OneInputJudge()};// 所有外界物体，如食物、测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -208,7 +208,6 @@ public class Env extends JPanel {
 
     public static void checkIfPause(int step) {
         if (pause) {
-            Genes.printDebug();
             do {
                 Application.brainPic.drawBrainPicture(step);
                 Application.brainPic.requestFocus();

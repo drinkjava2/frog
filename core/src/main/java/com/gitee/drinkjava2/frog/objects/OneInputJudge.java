@@ -76,9 +76,12 @@ public class OneInputJudge implements EnvObject {
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
             f.see1=hasFood;  
-            if(step<Env.STEPS_PER_ROUND-3) { //提前看到食物正在靠近
-                f.seeFoodComing =((food[step+1]==1)  || (food[step+2]==1) );
-                f.seeEmptyComing =((food[step+1]==0)  || (food[step+2]==0) );
+            if(step<Env.STEPS_PER_ROUND-3) {//需要在食物到达或消失之前就能看到，才能给脑神经信号传递足够的时间帧。如果不给青蛙这个信号是不合理的，无法实现预判效果
+                f.seeFoodComing =((food[step+1]==1)  || (food[step+2]==1) ); //提前看到食物正在靠近
+                f.seeEmptyComing =((food[step+1]==0)  || (food[step+2]==0) ); //提前看到空白正在靠近
+            } else {
+                f.seeFoodComing=false;
+                f.seeEmptyComing=false;
             }
             
             if (f.bite) { //如果咬下
