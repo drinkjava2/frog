@@ -177,7 +177,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public void awardAA()     { changeFat(100);}      
     public void awardA()   { changeFat(10);}
     
-    public void penaltyAAAA()    { changeFat(-20000);}
+    public void penaltyAAAA()    { changeFat(-10000);}
     public void penaltyAAA3() { changeFat(-3000);}    
     public void penaltyAAA2() { changeFat(-2000);}    
     public void penaltyAAA() { changeFat(-1000);}

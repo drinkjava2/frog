@@ -17,20 +17,19 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  */
 public class TwoInputJudge extends DefaultEnvObject {
     private int n = 10; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
-    private static int group=15; //以group为一组，随机安排一半为食物
+    private static int group = 15; //以group为一组，随机安排一半为食物
     private static int[] food = new int[Env.STEPS_PER_ROUND + group];
-    private static int sweetFoodCode; //甜食code，食物code有三种，但只有一种与甜食code相同的食物可食。
-    private static int totalSweetFood=0; 
+    private static int bitterFoodCode; //苦食code，食物code有三种，但有一种食物是苦的不可食，另两种是甜的可食
+    private static int totalSweetFood = 0;
 
     private static void resetFood() {
-        sweetFoodCode = 1 + RandomUtils.nextInt(3); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，从三种食物中找出正确的那一种食物,
-                                                    // 下一步是每一轮测试中途都有可能改变甜食code，让青蛙活着时就就能找出食物(即记忆功能) 
-        //System.out.println("sweetFoodCode="+sweetFoodCode); //debug
+        bitterFoodCode = 1 + RandomUtils.nextInt(3); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，从三种食物中找出正确的那一种食物,
+                                                     // 下一步是每一轮测试中途都有可能改变甜食code，让青蛙活着时就就能找出食物(即记忆功能) 
         int step = 0;
-        int x = 2; 
+        int x = 2;
         while (step < (Env.STEPS_PER_ROUND)) {
-            int firstFood = RandomUtils.nextInt(group/2); //以group为一组，随机安排一半为食物
-            int foodCode = 1+RandomUtils.nextInt(3); //食物有1,2,3四种图案，分别对应两个细胞的01,10,11四种情况
+            int firstFood = RandomUtils.nextInt(group / 2); //以group为一组，随机安排一半为食物
+            int foodCode = 1 + RandomUtils.nextInt(3); //食物有1,2,3四种图案，分别对应两个细胞的01,10,11四种情况
             for (int i = 0; i < group; i++)
                 if (i < firstFood || i > firstFood + x)
                     food[step + i] = 0;
@@ -38,12 +37,12 @@ public class TwoInputJudge extends DefaultEnvObject {
                     food[step + i] = foodCode;
             step += group;
             if (x == 2)
-                x = group/2+1;
+                x = group / 2 + 1;
             else
                 x = 2;
         }
         for (int f : food)
-            if (f==sweetFoodCode)
+            if (f > 0 && f != bitterFoodCode)
                 totalSweetFood++;
     }
 
@@ -60,7 +59,7 @@ public class TwoInputJudge extends DefaultEnvObject {
             int y = i / (Env.ENV_WIDTH / n);
             g.drawRect(x * n, y * n, n, n);
             int foodCode = food[i];
-            boolean isSweet = (foodCode == sweetFoodCode);
+            boolean isSweet = (foodCode > 0 && foodCode != bitterFoodCode);
             if (isSweet)
                 g.setColor(Color.BLUE); //食物是甜的时，用蓝色表示，蓝莓?
             else
@@ -90,36 +89,44 @@ public class TwoInputJudge extends DefaultEnvObject {
         int foodCode = food[step];
         boolean seeFood1 = (foodCode & 1) > 0;
         boolean seeFood2 = (foodCode & 0b10) > 0;
-        boolean isSweet = (foodCode == sweetFoodCode);
+        boolean isSweet = (foodCode > 0 && foodCode != bitterFoodCode);
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
-            f.see1=seeFood1;  
-            f.see2=seeFood2;  
-            
-            if(step<Env.STEPS_PER_ROUND-2) { //提前看到食物正在靠近
-                f.seeFoodComing =((food[step+1]>0)  || (food[step+2]>0) );
+            f.see1 = seeFood1;
+            f.see2 = seeFood2;
+
+            if (step < Env.STEPS_PER_ROUND - 2) { //提前看到食物正在靠近
+                f.seeFoodComing = ((food[step + 1] > 0) || (food[step + 2] > 0));
             }
 
             if (f.bite) {
-                if (isSweet) { 
-                    f.awardAAA2(); //咬到了有奖
+                if (isSweet) {
+                    f.awardAAA(); //咬到了有奖
                     f.ateFood++;
-                    f.sweet=true;  //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
-                    f.bitter=false;
+                    f.sweet = true; //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
+                    f.bitter = false;
                     g.setColor(Color.GREEN);
                     Genes.sweetEvent(f);//sweet事件发生，相当于脑内产生激素，导致脑内部最近活跃的细胞正权重增加
-                } else { //咬错了扣分
+                } else { //咬到苦的或咬空了
                     f.ateWrong++;
-                    f.penaltyAAA();
-                    f.sweet=false;
-                    f.bitter=true; //咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
                     g.setColor(Color.RED);
-                    Genes.bitterEvent(f);//bitter事件发生，相当于脑内产生激素，导致脑内部最近活跃的细胞负权重变化
+                    if (foodCode == 0) {//咬空了也要少扣一点分(因为消耗能量了) 
+                        f.sweet = false;//关闭甜和苦味感觉
+                        f.bitter = false;
+                        f.penaltyA();
+                    } else { //咬到苦的了
+                        f.sweet = false;//关闭甜和苦味感觉
+                        f.bitter = true; //咬错了，能感觉到苦味，这是大自然随机进化出来的感官功能，给青蛙一个知道自己咬错的信号
+                        f.penaltyAAA2(); //咬到苦的扣分（因为苦的食物吃多了会毒死青蛙）, 为了防止青蛙进化成始终保持咬状态，或躺平一口也不咬，这里设计成苦味食物扣分为甜食奖励两倍
+                                         //这里扣分只影响青蛙的生存率，不直接影响苦激素对权重的调节量，但是长期淘汰下来，自然调节大的被生存下来，通过这种方式用进化来找到成苦激素对对权重的合适调节量大小
+                                         //目前青蛙会进化成每次遇到食物先尝一下来绕过模式识别的条件反射形成，这个问题要解决   
+                        Genes.bitterEvent(f);//bitter事件发生，相当于脑内产生激素，导致脑内部最近活跃的细胞负权重变化
+                    }
                 }
-            } else { //如果没有咬
-                f.sweet=false;//关闭甜和苦味感觉
-                f.bitter=false; 
-                if (isSweet) { //如果没有咬但是食物是甜的，说明miss了一个甜食
+            } else { //如果没有咬，就不扣分，因为不消耗能量
+                f.sweet = false;//关闭甜和苦味感觉
+                f.bitter = false;
+                if (isSweet) { //如果没有咬但是食物是甜的，说明漏咬了一个甜食，但这里也不扣分，因为没有扣分的理由，但是因为漏咬了躺平了，所以它比其它青蛙吃的少，大自然会淘汰这个青蛙
                     g.setColor(Color.RED);
                     f.ateMiss++;
                 } else
