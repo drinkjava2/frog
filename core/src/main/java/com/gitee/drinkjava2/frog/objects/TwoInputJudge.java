@@ -103,20 +103,22 @@ public class TwoInputJudge extends DefaultEnvObject {
                 if (isSweet) {
                     f.awardAAA(); //咬到了有奖
                     f.ateFood++;
-                    f.sweet = true; //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
-                    f.bitter = false;
+                    if (step < Env.HALF_STEPS_PER_ROUND) {//前半段能尝到甜苦味，后半段不能，要凭借已经形成的条件反射来判断是不是可以咬
+                        f.sweet = true; //咬对了，能感觉到甜味，这是大自然进化出来的功能，给青蛙一个知道自己咬对的信号
+                        f.bitter = false;
+                    }
                     g.setColor(Color.GREEN);
                     Genes.sweetEvent(f);//sweet事件发生，相当于脑内产生激素，导致脑内部最近活跃的细胞正权重增加
                 } else { //咬到苦的或咬空了
                     f.ateWrong++;
                     g.setColor(Color.RED);
                     if (foodCode == 0) {//咬空了也要少扣一点分(因为消耗能量了) 
-                        f.sweet = false;//关闭甜和苦味感觉
-                        f.bitter = false;
                         f.penaltyA();
                     } else { //咬到苦的了
-                        f.sweet = false;//关闭甜和苦味感觉
-                        f.bitter = true; //咬错了，能感觉到苦味，这是大自然随机进化出来的感官功能，给青蛙一个知道自己咬错的信号
+                        if (step < Env.HALF_STEPS_PER_ROUND) {//前半段能尝到甜苦味，后半段不能，要凭借已经形成的条件反射来判断是不是可以咬
+                            f.sweet = false;//关闭甜和苦味感觉
+                            f.bitter = true; //咬错了，能感觉到苦味，这是大自然随机进化出来的感官功能，给青蛙一个知道自己咬错的信号
+                        }
                         f.penaltyAAA2(); //咬到苦的扣分（因为苦的食物吃多了会毒死青蛙）, 为了防止青蛙进化成始终保持咬状态，或躺平一口也不咬，这里设计成苦味食物扣分为甜食奖励两倍
                                          //这里扣分只影响青蛙的生存率，不直接影响苦激素对权重的调节量，但是长期淘汰下来，自然调节大的被生存下来，通过这种方式用进化来找到成苦激素对对权重的合适调节量大小
                                          //目前青蛙会进化成每次遇到食物先尝一下来绕过模式识别的条件反射形成，这个问题要解决   

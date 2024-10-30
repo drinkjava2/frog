@@ -63,7 +63,8 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 300;// 每屏测试步数,可调
+    public static final int STEPS_PER_ROUND = 200;// 每屏测试步数,可调
+    public static final int HALF_STEPS_PER_ROUND = STEPS_PER_ROUND / 2; // 每屏测试步数一半    
     
     public static final int BEGINNING_STEPS= STEPS_PER_ROUND / 3; //每屏步数的 1/3，用来表示这是学习阶段
     

@@ -117,7 +117,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     private static boolean is_(long cell) { // 判断cell是否含b这个基因掩码，并左移位全局静态变量b一位，用下划线命名表示移位
         boolean result = (cell & b) > 0;
         b = b << 1;
-        if (b > totalGenesLenth)
+        if (b > totalGenesLenth) //如果除0出现，说明登记的基因位不够用，要再登记多一点
             b = 1 / 0;
         return result;
     }
@@ -149,7 +149,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
 
     // 登记细胞间关联(触突树突)
     static {
-        register(16 + 16, true, false, 0, 0, NA); //先登记一些基因位，每个基因位的作用（对应各种细胞类型、行为）后面再说
+        register(16 + 20, true, false, 0, 0, NA); //先登记一些基因位，每个基因位的作用（对应各种细胞类型、行为）后面再说
     }
 
     private static long specialGenesStart = 1L << 16; //特殊基因的起点
@@ -207,35 +207,46 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
             long c = a.cells[0][0][z];
             float e = a.getEng(0, 0, z);//当前细胞的能量
+            b = specialGenesStart6; ////特殊基因从17开始，开头6位定义静态正负初始电阻，所以这里跳过前17+6个
 
             //===============先根据细胞能量产生输出行动, 注意细胞能量是由上轮产生的 ==============
-            if (e > 0.1f) { //
-                if (is_(c) && e > cCellValve) {//如果是咬细胞，且处于激活态，咬下
-                    a.bite = true;
-                }
+            if (is_(c) && e > cCellValve) {//如果是咬细胞，且处于激活态，咬下，（上版本有个bug只有能量才会调用is_方法是不对的）
+                a.bite = true;
+            }
 
-                if (is_(c) && e > cCellValve) {//如果张嘴细胞激活，停止咬
-                    a.bite = false;
-                }
-
+            if (is_(c) && e > cCellValve) {//如果张嘴细胞激活，停止咬
+                a.bite = false;
             }
 
             //===============然后根据所含的各种乱七八糟基因，激活细胞或关闭细胞 ==============
 
-            b = specialGenesStart6; //基因本身没什么意义，你给它什么假设并且它正好进化出这个掩码位，它就拥有什么行为 
+            if (is_(c)) {//如果有反相器基因，将能量反相，即实现非门功能
+                e = 1f - e;
+                e = e < 0 ? 0 : e;
+                e = e > 1f ? 1 : e;
+            }
+
             if (is_(c)) {//如果有active基因, 此细胞始终激活, is_方法在判断c有无b掩码后，将b左移一位
                 a.setEngZ(z, 1);
                 e = 1f;
             }
 
-            is_(a, z, c, step<Env.BEGINNING_STEPS); //如果在开始学习阶段，激活此细胞
-            is_(a, z, c, step>=Env.BEGINNING_STEPS); //如果不在开始学习阶段，激活此细胞  
+            is_(a, z, c, step < Env.BEGINNING_STEPS); //如果在开始学习阶段，激活此细胞
+            is_(a, z, c, step >= Env.BEGINNING_STEPS); //如果不在开始学习阶段，激活此细胞  
             is_(a, z, c, a.seeFoodComing); //如果看到食物正在靠近，激活此细胞
             is_(a, z, c, a.seeEmptyComing); //如果看到空白正在靠近，激活此细胞
+            is_(a, z, c, a.sweet); //如果尝到甜味，激活此脑细胞
+            is_(a, z, c, a.bitter); //如果尝到苦味，激活此脑细胞
 
             if (e < 0.1f) //所有基因都是针对一个细胞的，如果这个细胞都没有能量，就跳过这个细胞
                 continue;
-
+            
+//            if (is_(c) && e > cCellValve)//如果这个细胞激活，将触发加甜味事件，产生激素，相当于一个广播信号，进行正向加权
+//                sweetEvent(a);    
+//            
+//            if (is_(c) && e > cCellValve)//如果这个细胞激活，将触发加苦味事件，产生激素相当于一个广播信号，进行负向加权
+//                bitterEvent(a);   
+            
             //==================下面是细胞之间的能量传送=======================   
             boolean hasPosLines = is_(c);//当前神经元是否有正权重连线
             boolean hasNegLines = is_(c);//当前神经元是否有负权重连线
@@ -264,12 +275,10 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                             w = w > 1 ? 1 : w;
                             a.posWeight[z][i] = w;
                         }
-                    } 
+                    }
                 }
-            
 
             b = 1; //从头开始，处理与相邻16个细胞之间的正权重能量传递
- 
 
             for (int i = 0; i < Env.BRAIN_SIZE; i++)
                 if (is_(c)) {//如果包含某线胞的序号，就传送能量给这个细胞 
@@ -293,9 +302,13 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         }
     }
 
+    //注意从此版开始，苦甜事件由脑细胞来驱动，而不是根据感官来直接驱动！
     public static void sweetEvent(Animal a) {//尝到甜味时调用这个方法，模仿激素，增加所有最近活跃的细胞的正权重
         for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
             long c = a.cells[0][0][z];
+            b=1l<<(Genes.GENE_NUMBERS-3);
+            if(!is_(c))
+                return;
             for (int i = 0; i < Env.BRAIN_SIZE; i++) {
                 float f = a.posWeight[z][i] + a.posActivity[z][i] * 0.5f; //新的权值等于原有的权值再加上最近活跃度，用这个公式来表达活跃度对权重的影响，这个容易理解吧,0.5f魔数暂定，以后用常数控制
                 a.posWeight[z][i] = f > 1 ? 1 : f; //权重最多只能为1;
@@ -306,6 +319,9 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static void bitterEvent(Animal a) {//尝到苦味时调用这个方法，模仿激素，增加所有最近活跃的细胞的负权重
         for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
             long c = a.cells[0][0][z];
+            b=1l<<(Genes.GENE_NUMBERS-2);
+            if(!is_(c))
+                return;
             for (int i = 0; i < Env.BRAIN_SIZE; i++) {
                 float f = a.negWeight[z][i] + a.negActivity[z][i] * 0.5f; //新的权值等于原有的权值再加上最近活跃度，用这个公式来表达活跃度对权重的影响，这个容易理解吧,0.5f魔数暂定，以后用常数控制
                 a.negWeight[z][i] = f > 1 ? 1 : f; //权重最多只能为1;
