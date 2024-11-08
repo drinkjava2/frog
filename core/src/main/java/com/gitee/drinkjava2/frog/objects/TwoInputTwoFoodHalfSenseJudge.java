@@ -11,11 +11,17 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * 
- * TwoInputJudge 用来模拟：当有两个视细胞、一个甜细胞、一个咬细胞这种情况下， 判断青蛙能否根据甜味细胞的训练，在下次相同视信号出现时提前咬下去。
- * 因为只有两个视细胞，即青蛙要实现与、或、异或这三种模式识别, 目前三种情况只随机每轮设一个甜值，青蛙咬下三种情况中有甜值的code时才有奖励
+ * 用来模拟：当有两个视细胞、一个甜细胞、一个咬细胞这种情况下， 判断青蛙能否根据甜味细胞的训练，在下次相同视信号出现时决定咬还是不咬。
+ * 有两个视细胞输入，有4种排列组合，去除全为0的，即青蛙要实现与、或、异或这三种模式识别, 每轮测试随机定一种或两种模式对应可食甜食，其它情况对应不可食苦食，详见下面组合
+ * 
+ * 
+ * TwoInputOneFoodFullSenseJudge: 两点输入，4种排列组合中有一种是食物，青蛙全过程能感到甜苦味，经实测约2000轮后青蛙会进化出先尝一尝再决定咬还是不咬，利用味觉绕过了图像的模式识别，所以要改进测试条件，取消它后半段的味觉，让它只根据图像和记忆来决定咬不咬
+ * TwoInputOneFoodHalfSenseJudge: 两点输入，4种排列组合中有一种是食物，青蛙前半程能感到甜苦味，后半程屏蔽青蛙的味觉，强迫它根据惯性来决定咬不咬。  （开发中，未完成)
+ * TwoInputTwoFoodFullSenseJudge: 两点输入，4种排列组合中有两种是食物，青蛙全过程能感到甜苦味，(开发中，未完成)
+ * TwoInputTwoFoodHalfSenseJudge: 两点输入，4种排列组合中有两种是食物，青蛙前半程能感到甜苦味，后半程屏蔽青蛙的味觉，强迫它根据惯性来决定咬不咬。 （开发中，未完成)
  *  
  */
-public class TwoInputJudge extends DefaultEnvObject {
+public class TwoInputTwoFoodHalfSenseJudge extends DefaultEnvObject { //注：开发中，未完成
     private int n = 10; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
     private static int group = 15; //以group为一组，随机安排一半为食物
     private static int[] food = new int[Env.STEPS_PER_ROUND + group];
