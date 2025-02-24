@@ -34,7 +34,7 @@ public class TwoInputOneFoodFullSenseJudge extends DefaultEnvObject { //注：�
         int x = 2;
         while (step < (Env.STEPS_PER_ROUND)) {
             int firstFood = RandomUtils.nextInt(group / 2); //以group为一组，随机安排一半为食物
-            int foodCode = 1 + RandomUtils.nextInt(3); //食物有1,2,3四种图案，分别对应两个细胞的01,10,11四种情况
+            int foodCode = 1 + RandomUtils.nextInt(3); //食物有0,1,2,3四种图案，分别对应两个细胞的00,01,10,11四种情况
             for (int i = 0; i < group; i++)
                 if (i < firstFood || i > firstFood + x)
                     food[step + i] = 0;

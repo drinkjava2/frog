@@ -89,9 +89,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     public boolean sweet=false; //尝到甜味
     public boolean bitter=false; //尝到甜味    
     public boolean bite=false; //发出咬下动作
-    //nerveDelay 模仿神经的转输延迟，实物动物从咬下到尝到食物味道是有延迟的，这里就模仿它
-    public boolean[] sweetNerveDelay= new boolean[Env.STEPS_PER_ROUND]; //以后也可优化用环来节省内存
-    public boolean[] bitterNerveDelay= new boolean[Env.STEPS_PER_ROUND]; //以后也可优化用环来节省内存 
+	// nerveDelay 模仿神经的转输延迟，实物动物从咬下到尝到食物味道是有延迟的，下面两个buff就模仿它,把当前味觉放到后n个时钟周期
+	public int nerveDelay = 5; // 先假设一个味觉的延迟时长
+	public boolean[] sweetNerveDelay = new boolean[Env.STEPS_PER_ROUND + nerveDelay];
+	public boolean[] bitterNerveDelay = new boolean[Env.STEPS_PER_ROUND + nerveDelay];
     
     
     public Animal(Egg egg) {//构造方法，Animal从蛋中诞生
@@ -172,8 +173,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
    
     //没定各个等级的奖罚值，目前是手工设定的常数
-    public void awardAAAA()      { changeFat(20000);}
-    public void awardAAA3()   { changeFat(2000);}
+    public void awardAAAA()      { changeFat(10000);}
+    public void awardAAA3()   { changeFat(3000);}
     public void awardAAA2()   { changeFat(2000);}    
     public void awardAAA()   { changeFat(1000);}
     public void awardAA()     { changeFat(100);}      
