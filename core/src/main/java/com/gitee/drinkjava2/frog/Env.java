@@ -14,6 +14,7 @@ import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
 import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
+import com.gitee.drinkjava2.frog.objects.TwoInputOneFoodDelaySenseJudge;
 import com.gitee.drinkjava2.frog.objects.TwoInputOneFoodFullSenseJudge;
 import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -38,7 +39,7 @@ public class Env extends JPanel {
     public static final int SCREEN = 1; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
-    public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
+    public static final boolean DELETE_FROG_EGGS = false            ;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
 
     public static boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
 
@@ -86,7 +87,7 @@ public class Env extends JPanel {
 
     public static ArrayList<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[]{ new TwoInputOneFoodFullSenseJudge()};// 所有外界物体，如食物、测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{ new TwoInputOneFoodDelaySenseJudge()};// 所有外界物体，如食物、测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
