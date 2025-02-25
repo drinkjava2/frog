@@ -14,8 +14,6 @@ import static com.gitee.drinkjava2.frog.Env.ENV_HEIGHT;
 import static com.gitee.drinkjava2.frog.Env.ENV_WIDTH;
 import static com.gitee.drinkjava2.frog.Env.FOOD_QTY;
 
-import java.awt.Graphics;
-
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.objects.EnvObject.DefaultEnvObject;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -33,7 +31,7 @@ public class Food extends DefaultEnvObject {//食物除了被吃，它自己没�
     public static int food_ated = 0;
 
     @Override
-    public void build(Graphics g) {
+    public void build() {
         food_ated = 0;
         for (int i = 0; i < FOOD_QTY; i++) { // 随机位置生成食物
             int x = RandomUtils.nextInt(ENV_WIDTH);
@@ -45,7 +43,7 @@ public class Food extends DefaultEnvObject {//食物除了被吃，它自己没�
     }
 
     @Override
-    public void destory(Graphics g) {
+    public void destory() {
         food_ated = 0;
         for (int x = 0; x < ENV_WIDTH; x++) // 清除食物
             for (int y = 0; y < ENV_HEIGHT; y++) {

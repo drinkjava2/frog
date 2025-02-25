@@ -40,7 +40,7 @@ public class OneInputJudge implements EnvObject {
     }
 
     @Override
-    public void build(Graphics g) { //build在每屏测试前调用一次，这里用随机数准备好食物出现和消失的顺序为测试作准备
+    public void build() { //build在每屏测试前调用一次，这里用随机数准备好食物出现和消失的顺序为测试作准备
         if (totalFood == 0) {
             resetFood();
             System.out.println("totalFood=" + totalFood);
@@ -51,15 +51,15 @@ public class OneInputJudge implements EnvObject {
             int x = i % (Env.ENV_WIDTH / n);
             int y = i / (Env.ENV_WIDTH / n);
             if (food[i] == 1)
-                g.fillRect(x * n, y * n, n, n);
+                Env.graph.fillRect(x * n, y * n, n, n);
             else
-                g.drawRect(x * n, y * n, n, n);
+                Env.graph.drawRect(x * n, y * n, n, n);
             x++;
         }
     }
 
     @Override
-    public void destory(Graphics g) {
+    public void destory() {
     }
 
     /*
@@ -69,41 +69,42 @@ public class OneInputJudge implements EnvObject {
      * 3.在左边Env显示区画出当前food的进度条
      */
     @Override
-    public void active(int screen, int step, Graphics g) {
+    public void active() {
+        Graphics g=Env.graph;
+        int step = Env.step;
         Frog f;
         int x, y;
-        boolean hasFood = food[step] == 1; 
+        boolean hasFood = food[step] == 1;
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
-            f.see1=hasFood;  
-            if(step<Env.STEPS_PER_ROUND-3) { //提前看到食物正在靠近
-                f.seeFoodComing =((food[step+1]==1)  || (food[step+2]==1) );
-                f.seeEmptyComing =((food[step+1]==0)  || (food[step+2]==0) );
+            f.see1 = hasFood;
+            if (step < Env.STEPS_PER_ROUND - 3) { //提前看到食物正在靠近
+                f.seeFoodComing = ((food[step + 1] == 1) || (food[step + 2] == 1));
+                f.seeEmptyComing = ((food[step + 1] == 0) || (food[step + 2] == 0));
             }
-            
+
             if (f.bite) { //如果咬下
                 if (f.see1) {
                     f.awardAAA(); //咬到了有奖
                     f.ateFood++;
-                    f.sweet=true;
-                    f.bitter=false;
+                    f.sweet = true;
+                    f.bitter = false;
                     g.setColor(Color.GREEN);
                 } else {
                     f.ateWrong++;
                     f.penaltyAAA(); //咬空了扣分
-                    f.sweet=false;
-                    f.bitter=true;//咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
+                    f.sweet = false;
+                    f.bitter = true;//咬错了，能感觉到苦味，这是大自然进化出来的功能，给青蛙一个知道自己咬错的信号
                     g.setColor(Color.RED);
                 }
             } else { //如果都没有咬，关闭甜和苦味感觉
-                f.sweet=false;
-                f.bitter=false;
+                f.sweet = false;
+                f.bitter = false;
                 if (hasFood) {
                     g.setColor(Color.RED);
                     f.ateMiss++;
                     f.penaltyAAA();
-                }
-                else
+                } else
                     g.setColor(Color.GREEN);
             }
             if (i == 0) {

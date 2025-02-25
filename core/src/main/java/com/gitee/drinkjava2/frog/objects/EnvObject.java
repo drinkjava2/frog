@@ -10,8 +10,6 @@
  */
 package com.gitee.drinkjava2.frog.objects;
 
-import java.awt.Graphics;
-
 /**
  * EnvObject means some virtual object in Env
  * 
@@ -19,22 +17,23 @@ import java.awt.Graphics;
  * @since 1.0
  */
 public interface EnvObject {//EnvObject接口代表虚拟环境中的一种物体，每定义一个物体，要在Env的things变量中添加它
+    //以下三个方法不带参数，因为Env中的全局静态变量
 
-    public void build(Graphics g);// 在Env中创建本身物体，只在每屏测试前调用一次
+    public void build();// 在Env中创建本身物体，只在每屏测试前调用一次
 
-    public void destory(Graphics g);// 从Env中清除本身物体，只在每屏测试完成后调用一次
+    public void destory();// 从Env中清除本身物体，只在每屏测试完成后调用一次
 
-    public void active(int screen, int step, Graphics g);// 每个步长（即时间最小单位)都会调用一次这个方法, 前两个参数分别是当前屏数和当前步长数
+    public void active();// 每个步长（即时间最小单位)都会调用一次这个方法 
 
     public static class DefaultEnvObject implements EnvObject {//EnvObject接口的缺省实现
 
-        public void build(Graphics g) {
+        public void build() {
         }
 
-        public void destory(Graphics g) {
+        public void destory() {
         }
 
-        public void active(int screen, int step, Graphics g) {
+        public void active() {
         }
     }
 }
