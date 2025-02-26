@@ -96,6 +96,8 @@ public class GeneUtils {
     }
  
     public static void geneMutation(Animal a) { //基因变异,注意这一个方法同时变异所有条基因
+        if(percent(50)) //50%的机率不变异
+            return;
         for (int g = 0; g < GENE_NUMBERS; g++)
             if (percent(50)) {
                 if (Genes.fill_gene[g]) //如果这个基因是fill型的，永远会存在指定区域的所有细胞中，所以不需要参与变异

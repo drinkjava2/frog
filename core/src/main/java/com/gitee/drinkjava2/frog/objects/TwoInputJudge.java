@@ -116,7 +116,7 @@ public class TwoInputJudge implements EnvObject {
                 } else {//不甜也不苦说明咬到空气
                     f.sweetNerveDelay[step + nerveDelay] = false;
                     f.bitterNerveDelay[step + nerveDelay] = false;
-                    f.penaltyA();//咬空气也要消耗能量，少扣点分
+                    f.penaltyAAA();//咬空气也要消耗能量，扣点分
                     f.ateWrong++;
                     g.setColor(Color.MAGENTA); //紫=====咬到空气
                 }
@@ -125,7 +125,7 @@ public class TwoInputJudge implements EnvObject {
                 f.bitterNerveDelay[step + nerveDelay] = false;
                 if (isSweet) { //如果没有咬但是食物是甜的，说明错过了一个甜食
                     f.ateMiss++;
-                    g.setColor(Color.CYAN); //青=====漏了食物
+                    g.setColor(Color.MAGENTA); //青=====漏了食物
                 } else
                     g.setColor(Color.LIGHT_GRAY); //灰=====漏对了，毒物或空气
             }

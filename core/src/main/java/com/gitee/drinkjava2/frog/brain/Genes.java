@@ -230,18 +230,16 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                 a.setEngZ(z, 1);
                 e = 1f;
             }
-
-            is_(a, z, c, step < Env.HALF_STEPS_PER_ROUND); //如果在开始学习阶段，激活此细胞
-            is_(a, z, c, step >= Env.HALF_STEPS_PER_ROUND); //如果不在开始学习阶段，激活此细胞  
+ 
             is_(a, z, c, a.seeFoodComing); //如果看到食物正在靠近，激活此细胞
             is_(a, z, c, a.seeEmptyComing); //如果看到空白正在靠近，激活此细胞
-            //is_(a, z, c, a.sweet); //如果尝到甜味，激活此脑细胞
-            //is_(a, z, c, a.bitter); //如果尝到苦味，激活此脑细胞
+            is_(a, z, c, a.sweet); //如果尝到甜味，激活此脑细胞
+            is_(a, z, c, a.bitter); //如果尝到苦味，激活此脑细胞
 
-            if (e < 0.1f) //所有基因都是针对一个细胞的，如果这个细胞都没有能量，就跳过这个细胞
+            if (e < 0.1f) //所有能量操作都是针对一个细胞的传出（没有接收能量的编程，因为传出就相当于另一个细胞在接收能量），如果细胞都没有能量就不可能传出，所以就跳过这个细胞
                 continue;
 
-            //==================下面是细胞之间的能量传送=======================   
+            //==================下面是细胞之间的能量传输=======================   
             boolean hasPosLines = is_(c);//当前神经元是否有正权重连线
             boolean hasNegLines = is_(c);//当前神经元是否有负权重连线
 
