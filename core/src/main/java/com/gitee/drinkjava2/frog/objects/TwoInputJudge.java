@@ -20,6 +20,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public class TwoInputJudge implements EnvObject {
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
     int group = 15; //以group为一组，随机安排一半为食物
+    int groupspace = 15; //TODO:group之间有一段空白间隔, 以免干扰 
     int[] food = new int[Env.STEPS_PER_ROUND + group];
     int sweetFoodCode; //甜食code，食物code有三种，但只有一种与甜食code相同的食物可食。
     int totalSweetFood = 0;
@@ -68,9 +69,9 @@ public class TwoInputJudge implements EnvObject {
             int foodCode = food[i];
             boolean isSweet = (foodCode == sweetFoodCode);
             if (isSweet)
-                g.setColor(Color.BLUE); //食物是甜的时，用蓝色表示，蓝莓?
+                g.setColor(Color.DARK_GRAY); //食物是甜的时，用蓝色表示，蓝莓?
             else
-                g.setColor(Color.GRAY);
+                g.setColor(Color.LIGHT_GRAY);
             if ((foodCode & 1) > 0)
                 g.fillRect(x * n, y * n, n, n / 2);
             if ((foodCode & 2) > 0)
@@ -138,6 +139,14 @@ public class TwoInputJudge implements EnvObject {
                 int x = step % (Env.ENV_WIDTH / n);
                 int y = step / (Env.ENV_WIDTH / n);
                 g.fillRect(x * n, y * n + n / 2, n, 2);
+                if (f.sweet) {
+                    g.setColor(Color.CYAN);
+                    g.fillRect(x * n, y * n + n / 2 - 2, n, 2);
+                } else if (f.bitter) {
+                    g.setColor(Color.BLUE);
+                    g.fillRect(x * n, y * n + n / 2 - 2, n, 2);
+                }
+
             }
         }
     }
