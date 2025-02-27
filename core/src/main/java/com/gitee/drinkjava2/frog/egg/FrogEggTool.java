@@ -89,8 +89,8 @@ public class FrogEggTool {
     }
 
     public static void deleteEggs() {
-        Logger.info("Delete exist egg file: '{}frog_eggs.ser'", Application.CLASSPATH);
-        LocalFileUtils.deleteFile(Application.CLASSPATH + "frog_eggs.ser");
+        boolean success = LocalFileUtils.deleteFile(Application.CLASSPATH + "frog_eggs.ser");
+        Logger.info("Deleting egg file '{}frog_eggs.ser': {}", Application.CLASSPATH, success ? "Deleted" : "Not found");
     }
 
     /**

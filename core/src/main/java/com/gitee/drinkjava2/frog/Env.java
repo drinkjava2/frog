@@ -38,7 +38,7 @@ public class Env extends JPanel {
     public static final int SCREEN = 1; // 分几屏测完
 
     /** Delete eggs at beginning of each run */
-    public static final boolean DELETE_FROG_EGGS = true;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
+    public static final boolean DELETE_FROG_EGGS = false;// 每次运行是否先删除以前保存的青蛙蛋文件，如果为false将加载旧蛋文件继续运行
 
     public static boolean SAVE_EGGS_FILE = false; //从2021-11-23起，添加这个选项，允许不输出蛋文件到磁盘上
 
@@ -63,20 +63,20 @@ public class Env extends JPanel {
     public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
-    public static final int STEPS_PER_ROUND = 300;// 每屏测试步数,可调
+    public static final int STEPS_PER_ROUND = 400;// 每屏测试步数,可调
 
     public static final int HALF_STEPS_PER_ROUND = STEPS_PER_ROUND / 2; // 每屏测试步数一半    
 
     public static final int FOOD_QTY = 3000; // 食物数量, 可调
 
     // 以下是程序内部变量，不要手工修改它们
-    public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 蛇的总数
+    public static final int TOTAL_FROG_QTY = FROG_EGG_QTY * FROG_PER_EGG; // 青蛙总数
 
     public static final int FROG_PER_SCREEN = TOTAL_FROG_QTY / SCREEN; // 每屏显示几个青蛙，这个数值由其它常量计算得来
 
     public static int current_screen = 0; //当前测试屏
 
-    public static int step;// 当前测试步数
+    public static int step;// 当前测试步数, 也可以理解为虚拟世界的当前时间
 
     private static Image buffImg; //当前虚拟作图区
 
@@ -161,7 +161,7 @@ public class Env extends JPanel {
             Env.bricks[x][y] = Env.bricks[x][y] & ~material;
     }
 
-    private void rebuildFrogs() {// 根据蛙蛋重新孵化出蛙
+    public static void rebuildFrogs() {// 根据蛙蛋重新孵化出蛙
         frogs.clear();
         for (int i = 0; i < frog_eggs.size(); i++) {// 创建青蛙，每个蛋生成n个蛙，并随机取一个别的蛋作为精子
             int loop = FROG_PER_EGG;

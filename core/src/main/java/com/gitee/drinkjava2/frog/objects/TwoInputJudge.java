@@ -19,8 +19,8 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  */
 public class TwoInputJudge implements EnvObject {
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
-    int group = 15; //以group为一组，随机安排一半为食物
-    int groupspace = 15; //TODO:group之间有一段空白间隔, 以免干扰 
+    int group = 8; //以group为一组，随机安排一半为食物
+    int groupspace = 8; //group之间有一段空白间隔, 以免干扰 
     int[] food = new int[Env.STEPS_PER_ROUND + group];
     int sweetFoodCode; //甜食code，食物code有三种，但只有一种与甜食code相同的食物可食。
     int totalSweetFood = 0;
@@ -33,20 +33,16 @@ public class TwoInputJudge implements EnvObject {
     public void resetFood() {
         sweetFoodCode = 1 + RandomUtils.nextInt(3); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，从三种食物中找出正确的那一种食物
         int step = 0;
-        int x = 2;
         while (step < (Env.STEPS_PER_ROUND)) {
-            int firstFood = RandomUtils.nextInt(group / 2); //以group为一组，随机安排一半为食物
+            int x = 2+RandomUtils.nextInt(4); //连续出现x个相同食物
+            int firstFood = RandomUtils.nextInt(group-x); //以group为一组，随机安排一半为食物
             int foodCode = 1 + RandomUtils.nextInt(3); //食物有0,1,2,3四种图案，分别对应两个细胞的00,01,10,11四种情况
             for (int i = 0; i < group; i++)
-                if (i < firstFood || i > firstFood + x)
+                if (i < firstFood || i >= firstFood + x)
                     food[step + i] = 0;
                 else
                     food[step + i] = foodCode;
-            step += group;
-            if (x == 2)
-                x = group / 2 + 1;
-            else
-                x = 2;
+            step += group+groupspace;
         }
         for (int f : food)
             if (f == sweetFoodCode)
@@ -103,14 +99,16 @@ public class TwoInputJudge implements EnvObject {
                 f.seeFoodComing = ((food[step + 1] > 0) || (food[step + 2] > 0));
             }
 
-            if (f.bite) { // 咬下了不能立刻感到味觉，而要过段时间，所以这里我们代替大自然先把当前味觉暂存到sweet/bitter缓存的后面位置上
+            //下面的ateFood, ateWrong, ateMiss以及各种色条都是统计和调试用的，不参与逻辑
+            
+            if (f.bite) {//如果咬下 
                 if (isSweet) { //甜食
-                    f.sweetNerveDelay[step + nerveDelay] = true;
-                    f.awardAAA3(); //因为甜食数量少比苦食少，为了鼓励多咬，甜食加分比苦食扣分多
-                    f.ateFood++; //ateFood, ateWrong, ateMiss以及各种色条都是统计和调试用的，不参与逻辑
+                    f.sweetNerveDelay[step + nerveDelay] = true; // 咬下了不能立刻感到味觉，而要过段时间，所以这里我们代替大自然先把当前味觉暂存到sweet/bitter缓存的后面位置上
+                    f.awardAAA5(); //因为甜食数量少比苦食少，为了鼓励多咬，甜食加分比苦食扣分多
+                    f.ateFood++; 
                     g.setColor(Color.GREEN); //绿=====咬到食物
                 } else if (isBitter) { // 苦食
-                    f.bitterNerveDelay[step + nerveDelay] = true;
+                    f.bitterNerveDelay[step + nerveDelay] = true; //同理，苦味缓存
                     f.penaltyAAA(); //
                     f.ateWrong++;
                     g.setColor(Color.RED);//红=====咬到毒物
@@ -119,32 +117,32 @@ public class TwoInputJudge implements EnvObject {
                     f.bitterNerveDelay[step + nerveDelay] = false;
                     f.penaltyAAA();//咬空气也要消耗能量，扣点分
                     f.ateWrong++;
-                    g.setColor(Color.MAGENTA); //紫=====咬到空气
+                    g.setColor(Color.RED); //紫=====咬到空气
                 }
             } else { //如果没有咬，当然味觉也没有，也不用扣分，但是大自然会把躺平的青蛙淘汰，因为躺平的青蛙吃的少
                 f.sweetNerveDelay[step + nerveDelay] = false;
                 f.bitterNerveDelay[step + nerveDelay] = false;
                 if (isSweet) { //如果没有咬但是食物是甜的，说明错过了一个甜食
                     f.ateMiss++;
-                    g.setColor(Color.MAGENTA); //青=====漏了食物
+                    g.setColor(Color.RED); //青=====漏了食物
                 } else
-                    g.setColor(Color.LIGHT_GRAY); //灰=====漏对了，毒物或空气
+                    g.setColor(Color.DARK_GRAY); //灰=====漏对了，毒物或空气
             }
 
             f.sweet = f.sweetNerveDelay[step]; //当前青蛙感到的味觉实际上是前几个时间周期咬下时产生的味觉
             f.bitter = f.bitterNerveDelay[step];
 
-            // 开始显示状态色条供调试用，
+            // 开始画出状态色条
             if (i == 0) {// 虚拟环境只显示第一个青蛙的色条
                 int x = step % (Env.ENV_WIDTH / n);
                 int y = step / (Env.ENV_WIDTH / n);
-                g.fillRect(x * n, y * n + n / 2, n, 2);
+                g.fillRect(x * n, y * n + n / 2, n, 3);
                 if (f.sweet) {
-                    g.setColor(Color.CYAN);
-                    g.fillRect(x * n, y * n + n / 2 - 2, n, 2);
+                    g.setColor(Color.GREEN);
+                    g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
                 } else if (f.bitter) {
-                    g.setColor(Color.BLUE);
-                    g.fillRect(x * n, y * n + n / 2 - 2, n, 2);
+                    g.setColor(Color.RED);
+                    g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
                 }
 
             }

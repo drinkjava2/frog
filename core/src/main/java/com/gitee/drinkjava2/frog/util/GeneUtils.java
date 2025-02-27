@@ -96,7 +96,7 @@ public class GeneUtils {
     }
  
     public static void geneMutation(Animal a) { //基因变异,注意这一个方法同时变异所有条基因
-        if(percent(50)) //50%的机率不变异
+        if(percent(20)) //50%的机率不变异
             return;
         for (int g = 0; g < GENE_NUMBERS; g++)
             if (percent(50)) {

@@ -17,7 +17,8 @@ package com.gitee.drinkjava2.frog.objects;
  * @since 1.0
  */
 public interface EnvObject {//EnvObject接口代表虚拟环境中的一种物体，每定义一个物体，要在Env的things变量中添加它
-    //以下三个方法不带参数，因为Env中的全局静态变量
+    
+    //以下三个方法不带参数，因为Env中的全局静态变量随时都可以访问，不需要当参数传入
 
     public void build();// 在Env中创建本身物体，只在每屏测试前调用一次
 

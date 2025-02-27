@@ -15,6 +15,7 @@ import javax.swing.event.ChangeListener;
 
 import com.gitee.drinkjava2.frog.brain.BrainPicture;
 import com.gitee.drinkjava2.frog.brain.Genes;
+import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 
 /**
  * Application's main method start the program
@@ -125,8 +126,8 @@ public class Application {
         mainFrame.add(label);
 
         // 是否把egg文件存盘
-        JCheckBox saveFileCheckBox = new JCheckBox("Save egg file");
-        saveFileCheckBox.setBounds(buttonXpos, Env.ENV_HEIGHT + 80, 120, 22);
+        JCheckBox saveFileCheckBox = new JCheckBox("Save egg");
+        saveFileCheckBox.setBounds(buttonXpos-50, Env.ENV_HEIGHT + 80, 90, 22);
         ActionListener saveAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (saveFileCheckBox.isSelected())
@@ -136,7 +137,16 @@ public class Application {
             }
         };
         saveFileCheckBox.addActionListener(saveAction);
-        mainFrame.add(saveFileCheckBox);
+        mainFrame.add(saveFileCheckBox); 
+        
+        //删除蛋文件按钮
+        JButton deleteEggButton = new JButton("Delete egg");
+        deleteEggButton.setBounds(buttonXpos + 50, Env.ENV_HEIGHT + 80, buttonWidth, buttonHeight);
+        deleteEggButton.addActionListener((e) -> {
+            FrogEggTool.deleteEggs();
+        });
+        mainFrame.add(deleteEggButton);
+        
 
         // 基因维数显示控制
         for (int i = 0; i < Genes.GENE_NUMBERS; i++) {

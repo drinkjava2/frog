@@ -173,6 +173,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
    
     //没定各个等级的奖罚值，目前是手工设定的常数
     public void awardAAAA()      { changeFat(10000);}
+    public void awardAAA5()   { changeFat(5000);}
     public void awardAAA3()   { changeFat(3000);}
     public void awardAAA2()   { changeFat(2000);}    
     public void awardAAA()   { changeFat(1000);}
