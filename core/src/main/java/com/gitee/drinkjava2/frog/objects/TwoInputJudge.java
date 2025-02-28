@@ -61,6 +61,7 @@ public class TwoInputJudge implements EnvObject {
         for (int i = 0; i < Env.STEPS_PER_ROUND; i++) { //画出当前食物分布图
             int x = i % (Env.ENV_WIDTH / n);
             int y = i / (Env.ENV_WIDTH / n);
+            g.setColor(Color.LIGHT_GRAY);
             g.drawRect(x * n, y * n, n, n);
             int foodCode = food[i];
             boolean isSweet = (foodCode == sweetFoodCode);
@@ -100,33 +101,35 @@ public class TwoInputJudge implements EnvObject {
             }
 
             //下面的ateFood, ateWrong, ateMiss以及各种色条都是统计和调试用的，不参与逻辑
+            //主线条中的绿表示作出正确咬动作， 红表示咬错或漏咬
+            //主线条上方的副线条绿色表示尝到甜味，红色表示尝到苦味
             
             if (f.bite) {//如果咬下 
                 if (isSweet) { //甜食
                     f.sweetNerveDelay[step + nerveDelay] = true; // 咬下了不能立刻感到味觉，而要过段时间，所以这里我们代替大自然先把当前味觉暂存到sweet/bitter缓存的后面位置上
                     f.awardAAA5(); //因为甜食数量少比苦食少，为了鼓励多咬，甜食加分比苦食扣分多
                     f.ateFood++; 
-                    g.setColor(Color.GREEN); //绿=====咬到食物
-                } else if (isBitter) { // 苦食
+                    g.setColor(Color.GREEN); //咬到食物
+                } else if (isBitter) { //苦食
                     f.bitterNerveDelay[step + nerveDelay] = true; //同理，苦味缓存
                     f.penaltyAAA(); //
                     f.ateWrong++;
-                    g.setColor(Color.RED);//红=====咬到毒物
+                    g.setColor(Color.RED);//咬到毒物
                 } else {//不甜也不苦说明咬到空气
                     f.sweetNerveDelay[step + nerveDelay] = false;
                     f.bitterNerveDelay[step + nerveDelay] = false;
                     f.penaltyAAA();//咬空气也要消耗能量，扣点分
                     f.ateWrong++;
-                    g.setColor(Color.RED); //紫=====咬到空气
+                    g.setColor(Color.RED); //咬到空气
                 }
             } else { //如果没有咬，当然味觉也没有，也不用扣分，但是大自然会把躺平的青蛙淘汰，因为躺平的青蛙吃的少
                 f.sweetNerveDelay[step + nerveDelay] = false;
                 f.bitterNerveDelay[step + nerveDelay] = false;
                 if (isSweet) { //如果没有咬但是食物是甜的，说明错过了一个甜食
                     f.ateMiss++;
-                    g.setColor(Color.RED); //青=====漏了食物
+                    g.setColor(Color.RED); //漏了食物
                 } else
-                    g.setColor(Color.DARK_GRAY); //灰=====漏对了，毒物或空气
+                    g.setColor(Color.DARK_GRAY); //漏对了，毒物或空气
             }
 
             f.sweet = f.sweetNerveDelay[step]; //当前青蛙感到的味觉实际上是前几个时间周期咬下时产生的味觉
@@ -137,11 +140,11 @@ public class TwoInputJudge implements EnvObject {
                 int x = step % (Env.ENV_WIDTH / n);
                 int y = step / (Env.ENV_WIDTH / n);
                 g.fillRect(x * n, y * n + n / 2, n, 3);
-                if (f.sweet) {
-                    g.setColor(Color.GREEN);
+                if (f.sweet) { //副线条显示味觉
+                    g.setColor(Color.GREEN); //绿表示甜
                     g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
                 } else if (f.bitter) {
-                    g.setColor(Color.RED);
+                    g.setColor(Color.RED); //苦用红表示
                     g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
                 }
 
