@@ -9,40 +9,37 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 
 /**
  * 
- * 用来模拟：当有两个视细胞、一个甜细胞、一个咬细胞这种情况下， 判断青蛙能否根据甜味细胞的训练，在下次相同视信号出现时决定咬还是不咬。
- * 有两个视细胞输入，有4种排列组合，去除全为0的，即青蛙要实现与、或、异或这三种模式识别, 每轮测试随机定一种或两种模式对应可食甜食，其它情况对应不可食苦食，详见下面组合
- * 
- * 
- * TwoInputJudge（0）: 两点输入，4种排列组合中有一种是食物，青蛙全过程能感到甜苦味，经实测约2000轮后青蛙会进化出先尝一尝再决定咬还是不咬，利用味觉绕过了图像的模式识别，所以要改进测试条件，让味觉延迟于视觉，让它只能根据图像和记忆来预判咬不咬
- * TwoInputJudge（n）: 甜苦味会延迟咬动作n个时间单位产生，强迫它不能根据味觉，而必须根据视觉和之前的条件反射来预判咬不咬。 
+ * XinputJudge用来代替以前的oneInputJudge/twoInputJudge/ThreeInputJudge..., 区别只是视觉像素点的多少，逻辑都相似所以可以合并
  *  
  */
-public class TwoInputJudge implements EnvObject {
+public class FoodJudge implements EnvObject {
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
-    int group = 8; //以group为一组，随机安排一半为食物
-    int groupspace = 8; //group之间有一段空白间隔, 以免干扰 
+    final int p; //p表示食物由有几个视觉像素点
+    final int nerveDelay; //nerveDelay表示从咬下到感到甜苦味之间的延迟
+    int group = 8; //时间上，以group为一组，随机安排一段连续区为食物
+    int groupspace = 8; //group之间有一段空白间隔时间, 以免干扰 
     int[] food = new int[Env.STEPS_PER_ROUND + group];
-    int sweetFoodCode; //甜食code，食物code有三种，但只有一种与甜食code相同的食物可食。
+    int sweetFoodCode; //p个像素点的所有组合中，只有一个组合表示可食，先不考虑多种食物可食， sweetFoodCode可为零，表示所有食物都是有毒的苦食
     int totalSweetFood = 0;
-    int nerveDelay = 0;
 
-    public TwoInputJudge(int nerveDelay) { // nerveDelay表示从咬下到感到甜苦味之间的延迟
+    public FoodJudge(int p, int nerveDelay) { //p表示食物由有几个视觉像素点， nerveDelay表示从咬下到感到甜苦味之间的延迟， 如为0表示没有延迟
+        this.p = p;
         this.nerveDelay = nerveDelay;
     }
 
     public void resetFood() {
-        sweetFoodCode = 1 + RandomUtils.nextInt(3); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，从三种食物中找出正确的那一种食物
+        sweetFoodCode = RandomUtils.nextInt(2 ^ p); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，根据视觉预判是可以咬的食物
         int step = 0;
         while (step < (Env.STEPS_PER_ROUND)) {
-            int x = 2+RandomUtils.nextInt(4); //连续出现x个相同食物
-            int firstFood = RandomUtils.nextInt(group-x); //以group为一组，随机安排一半为食物
-            int foodCode = 1 + RandomUtils.nextInt(3); //食物有0,1,2,3四种图案，分别对应两个细胞的00,01,10,11四种情况
+            int x = 2 + RandomUtils.nextInt(4); //连续出现x个相同食物
+            int firstFood = RandomUtils.nextInt(group - x); //以group为一组，随机安排一半为食物
+            int foodCode = 1 + RandomUtils.nextInt(2 ^ p - 1); //食物
             for (int i = 0; i < group; i++)
                 if (i < firstFood || i >= firstFood + x)
                     food[step + i] = 0;
                 else
                     food[step + i] = foodCode;
-            step += group+groupspace;
+            step += group + groupspace;
         }
         for (int f : food)
             if (f == sweetFoodCode)
@@ -69,11 +66,11 @@ public class TwoInputJudge implements EnvObject {
                 g.setColor(Color.DARK_GRAY); //食物是甜的时，用蓝色表示，蓝莓?
             else
                 g.setColor(Color.LIGHT_GRAY);
-            if ((foodCode & 1) > 0)
-                g.fillRect(x * n, y * n, n, n / 2);
-            if ((foodCode & 2) > 0)
-                g.fillRect(x * n, y * n + n / 2, n, n / 2);
-            x++;
+
+            for (int j = 0; j < p; j++) {
+                if ((foodCode & (1 << j)) > 0)
+                    g.fillRect(x * n, y * n + n / p * j, n, n / p);
+            }
         }
     }
 
@@ -103,12 +100,12 @@ public class TwoInputJudge implements EnvObject {
             //下面的ateFood, ateWrong, ateMiss以及各种色条都是统计和调试用的，不参与逻辑
             //主线条中的绿表示作出正确咬动作， 红表示咬错或漏咬
             //主线条上方的副线条绿色表示尝到甜味，红色表示尝到苦味
-            
+
             if (f.bite) {//如果咬下 
                 if (isSweet) { //甜食
                     f.sweetNerveDelay[step + nerveDelay] = true; // 咬下了不能立刻感到味觉，而要过段时间，所以这里我们代替大自然先把当前味觉暂存到sweet/bitter缓存的后面位置上
                     f.awardAAA5(); //因为甜食数量少比苦食少，为了鼓励多咬，甜食加分比苦食扣分多
-                    f.ateFood++; 
+                    f.ateFood++;
                     g.setColor(Color.GREEN); //咬到食物
                 } else if (isBitter) { //苦食
                     f.bitterNerveDelay[step + nerveDelay] = true; //同理，苦味缓存

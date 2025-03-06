@@ -12,9 +12,8 @@ import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
-import com.gitee.drinkjava2.frog.objects.Food;
 import com.gitee.drinkjava2.frog.objects.Material;
-import com.gitee.drinkjava2.frog.objects.TwoInputJudge;
+import com.gitee.drinkjava2.frog.objects.FoodJudge;
 import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -90,7 +89,7 @@ public class Env extends JPanel {
 
     public static ArrayList<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[] { new TwoInputJudge(4) };// 所有外界物体，如食物、测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[] { new FoodJudge(3,4) };// 所有外界物体，如食物、测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -201,15 +200,7 @@ public class Env extends JPanel {
         format100.setMaximumFractionDigits(2);
     }
 
-    private String foodAtedCount() {// 统计吃食总数等
-        int maxFound = 0;
-        for (Frog f : frogs)
-            if (f.ateFood > maxFound)
-                maxFound = f.ateFood;
-        return new StringBuilder("吃食率:").append(format100.format(Food.food_ated * 1.00 / FOOD_QTY)).append(", 平均: ").append(Food.food_ated * 1.0f / FROG_PER_SCREEN).append("，最多:").append(maxFound)
-                .toString();
-    }
-
+ 
     public static void checkIfPause(int step) {
         if (pause) {
             Genes.printDebug();
@@ -301,7 +292,6 @@ public class Env extends JPanel {
                 sb.delete(0, sb.length()).append("轮:").append(round).append(", 屏:").append(current_screen).append(", 速:").append(Env.SHOW_SPEED);
                 sb.append(", ").append("屏费时:").append(System.currentTimeMillis() - timerScreen).append("ms");
                 sb.append(", 轮费时:").append(timeRound).append("ms, ");
-                sb.append(foodAtedCount());
 
                 Application.mainFrame.setTitle(sb.toString());
                 for (EnvObject thing : things)// 去除食物、陷阱等物体
