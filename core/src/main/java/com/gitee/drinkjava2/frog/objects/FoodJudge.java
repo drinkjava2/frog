@@ -15,6 +15,7 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
 public class FoodJudge implements EnvObject {
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
     final int p; //p表示食物由有几个视觉像素点
+    final int bits;
     final int nerveDelay; //nerveDelay表示从咬下到感到甜苦味之间的延迟
     int group = 8; //时间上，以group为一组，随机安排一段连续区为食物
     int groupspace = 8; //group之间有一段空白间隔时间, 以免干扰 
@@ -24,16 +25,17 @@ public class FoodJudge implements EnvObject {
 
     public FoodJudge(int p, int nerveDelay) { //p表示食物由有几个视觉像素点， nerveDelay表示从咬下到感到甜苦味之间的延迟， 如为0表示没有延迟
         this.p = p;
+        bits=(int) Math.pow(2, p);
         this.nerveDelay = nerveDelay;
     }
 
     public void resetFood() {
-        sweetFoodCode = RandomUtils.nextInt(2 ^ p); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，根据视觉预判是可以咬的食物
+        sweetFoodCode = RandomUtils.nextInt(bits); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，根据视觉预判是可以咬的食物
         int step = 0;
         while (step < (Env.STEPS_PER_ROUND)) {
             int x = 2 + RandomUtils.nextInt(4); //连续出现x个相同食物
             int firstFood = RandomUtils.nextInt(group - x); //以group为一组，随机安排一半为食物
-            int foodCode = 1 + RandomUtils.nextInt(2 ^ p - 1); //食物
+            int foodCode = 1 + RandomUtils.nextInt(bits - 1); //食物
             for (int i = 0; i < group; i++)
                 if (i < firstFood || i >= firstFood + x)
                     food[step + i] = 0;
