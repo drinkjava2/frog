@@ -23,7 +23,7 @@ public class FoodJudge implements EnvObject {
     int sweetFoodCode; //p个像素点的所有组合中，只有一个组合表示可食，先不考虑多种食物可食， sweetFoodCode可为零，表示所有食物都是有毒的苦食
     int totalSweetFood = 0;
 
-    public FoodJudge(int p, int nerveDelay) { //p表示食物由有几个视觉像素点， nerveDelay表示从咬下到感到甜苦味之间的延迟， 如为0表示没有延迟
+    public FoodJudge(int p, int nerveDelay) { //p表示食物由有几个视觉像素点， nerveDelay表示从咬下到感到甜苦味之间的延迟， 如为0表示没有延迟。有延迟才可以避免青蛙利用味觉绕过模式识别，只好根据视觉预判是否可以咬
         this.p = p;
         bits=(int) Math.pow(2, p);
         this.nerveDelay = nerveDelay;
@@ -31,6 +31,7 @@ public class FoodJudge implements EnvObject {
 
     public void resetFood() {
         sweetFoodCode = RandomUtils.nextInt(bits); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，根据视觉预判是可以咬的食物
+        
         int step = 0;
         while (step < (Env.STEPS_PER_ROUND)) {
             int x = 2 + RandomUtils.nextInt(4); //连续出现x个相同食物
@@ -81,15 +82,15 @@ public class FoodJudge implements EnvObject {
     }
 
     @Override
-    public void active() { //改成甜苦味会延迟咬nerveDelay个时间单位产生, 如果设为0表示没有延迟, 
+    public void active() { //改成甜苦味会延迟咬nerveDelay个时间单位产生, 如果设为0表示没有延迟,
         Graphics g = Env.graph;
         int step = Env.step;
         Frog f;
         int foodCode = food[step];
         boolean seeFood1 = (foodCode & 1) > 0;
         boolean seeFood2 = (foodCode & 0b10) > 0;
-        boolean isSweet = (foodCode == sweetFoodCode); //甜味只能有一种情况
-        boolean isBitter = !isSweet && (seeFood1 || seeFood2); //食物存在但又不是甜的，那就是个苦食物
+        boolean isSweet = sweetFoodCode>0 && foodCode == sweetFoodCode; //甜味只能有一种情况
+        boolean isBitter = !isSweet && (foodCode>0); //食物存在但又不是甜的，那就是个苦食物
 
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
@@ -106,10 +107,12 @@ public class FoodJudge implements EnvObject {
             if (f.bite) {//如果咬下 
                 if (isSweet) { //甜食
                     f.sweetNerveDelay[step + nerveDelay] = true; // 咬下了不能立刻感到味觉，而要过段时间，所以这里我们代替大自然先把当前味觉暂存到sweet/bitter缓存的后面位置上
-                    f.awardAAA5(); //因为甜食数量少比苦食少，为了鼓励多咬，甜食加分比苦食扣分多
+                    f.bitterNerveDelay[step + nerveDelay] = false;                     
+                    f.awardAAAA(); //因为甜食数量少比苦食少，为了鼓励多咬，甜食加分比苦食扣分多
                     f.ateFood++;
                     g.setColor(Color.GREEN); //咬到食物
                 } else if (isBitter) { //苦食
+                    f.sweetNerveDelay[step + nerveDelay] = false;
                     f.bitterNerveDelay[step + nerveDelay] = true; //同理，苦味缓存
                     f.penaltyAAA(); //
                     f.ateWrong++;
