@@ -110,9 +110,9 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         return (cell & geneMask) > 0;
     }
 
-    private static long b = 1; //以实现is(cell)方法每调用一次b就移位一次的效果，用全局静态变量可以省去方法调用时多传一个参数
+    public static long b = 1; //以实现is(cell)方法每调用一次b就移位一次的效果，用全局静态变量可以省去方法调用时多传一个参数
 
-    private static boolean is_(long cell) { // 判断cell是否含b这个基因掩码，并左移位全局静态变量b一位，用下划线命名表示移位
+    public static boolean is_(long cell) { // 判断cell是否含b这个基因掩码，并左移位全局静态变量b一位，用下划线命名表示移位
         boolean result = (cell & b) > 0;
         b = b << 1;
         if (b > totalGenesLenth) //如果除0出现，说明登记的基因位不够用，要再登记多一点
@@ -150,8 +150,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         register(16 + 18, true, false, 0, 0, NA); //先登记一些基因位，每个基因位的作用（对应各种细胞类型、行为）后面再说
     }
 
-    private static long specialGenesStart = 1L << 16; //特殊基因的起点
-    private static long specialGenesStart6 = specialGenesStart << 6; //再跳过6位，前6位已用于表示初始电阻了
+    public static long specialGenesStart = 1L << 16; //特殊基因的起点
     private static long totalGenesLenth = 1L << GENE_NUMBERS; //最大掩码位数不能超过登记的基因数量
 
     public static void printDebug() {
@@ -196,7 +195,10 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
             long c = a.cells[0][0][z];
             float e = a.getEng(0, 0, z);//当前细胞的能量
-            b = specialGenesStart6; ////特殊基因从17开始，开头6位定义静态正负初始电阻，所以这里跳过前17+6个
+            b = specialGenesStart; ////特殊基因从17开始， 这里跳过前16个
+            
+            boolean hasPosLines = is_(c);//当前神经元是否有正权重连线
+            boolean hasNegLines = is_(c);//当前神经元是否有负权重连线
 
             //===============先根据细胞能量产生输出行动, 注意细胞能量是由上轮产生的 ==============
             if (is_(c) && e > cCellValve) {//如果是咬细胞，且处于激活态，咬下，（上版本有个bug只有能量才会调用is_方法是不对的）
@@ -240,9 +242,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             }
   
             
-            //==================下面是细胞之间的能量传输=======================   
-            boolean hasPosLines = is_(c);//当前神经元是否有正权重连线
-            boolean hasNegLines = is_(c);//当前神经元是否有负权重连线
+            //==================下面是细胞之间的能量传输=======================    
 
             b = 1; //从头开始，处理与相邻16个细胞之间的正权重能量传递
 

@@ -66,9 +66,9 @@ public class FoodJudge implements EnvObject {
             int foodCode = food[i];
             boolean isSweet = (foodCode == sweetFoodCode);
             if (isSweet)
-                g.setColor(Color.DARK_GRAY); //食物是甜的时，用蓝色表示，蓝莓?
+                g.setColor(Color.DARK_GRAY); //食物是甜的时，用深灰表示
             else
-                g.setColor(Color.LIGHT_GRAY);
+                g.setColor(Color.LIGHT_GRAY); //食物是苦时，用浅灰表示
 
             for (int j = 0; j < p; j++) {
                 if ((foodCode & (1 << j)) > 0)
