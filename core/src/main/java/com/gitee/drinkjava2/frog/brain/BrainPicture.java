@@ -1,6 +1,6 @@
 package com.gitee.drinkjava2.frog.brain;
 
-import static com.gitee.drinkjava2.frog.brain.Genes.b;
+import static com.gitee.drinkjava2.frog.brain.Genes.from;
 import static com.gitee.drinkjava2.frog.brain.Genes.is_;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.BLUE;
@@ -278,6 +278,8 @@ public class BrainPicture extends JPanel {
     }
 
     public void drawTextCenter(float px1, float py1, float pz1, String text, float textSize) {
+        if(text==null)
+            return;
         drawText(px1 + 0.5f, py1 + 0.5f, pz1 + 0.5f, text, textSize);
     }
 
@@ -371,7 +373,7 @@ public class BrainPicture extends JPanel {
                     setPicColor(BLACK); // 画边框
                     drawPointCent(x, y, z, 0.03f); //画每个细胞小点
 
-                    long c = a.cells[x][y][z];
+                    long c = a.cells[x][y][z]; //当前细胞用一个long表示，它最多可以含有64位基因
                     // if (cell == 0) //只显示有效的细胞点
                     // continue;
 
@@ -392,10 +394,10 @@ public class BrainPicture extends JPanel {
                     }
 
                     //开始画出每个细胞的触突连线
-                    b = Genes.specialGenesStart; ////特殊基因从17开始， 这里跳过前16个
+                    from(22); ////特殊基因从22开始， 这里跳过前22个
                     boolean hasPosLines = is_(c);//当前神经元是否有正权重连线
                     boolean hasNegLines = is_(c);//当前神经元是否有负权重连线
-                    b = 1;
+                    from(0);
                     setPicColor(RED); //红色画出正权重线
                     if (hasPosLines)
                         for (int i = 0; i < Env.BRAIN_SIZE; i++)
@@ -411,7 +413,7 @@ public class BrainPicture extends JPanel {
                                 drawCentLine(xm, ym, zm, x2, y2, z2);
                             }
 
-                    b = 1;
+                    from(0);
                     setPicColor(BLUE); //红色画出正权重线
                     if (hasNegLines)
                         for (int i = 0; i < Env.BRAIN_SIZE; i++)
@@ -425,7 +427,17 @@ public class BrainPicture extends JPanel {
                                 drawCentLine(x, y, z, xm, ym, zm); //不能直接画一条线，否则线全重合在一起看不清
                                 drawCentLine(xm, ym, zm, x2, y2, z2);
                             }
-                    //setPicColor(BLACK);
+                    setPicColor(BLACK);
+                    
+                    //开始给这个细胞写上所有基因名字
+                    from(22);
+                    int xpos=0;
+                    for (int i = 22; i < Genes.GENE_NUMBERS; i++) {
+                        if(is_(c)) {
+                            xpos++;
+                            drawText(xpos, y , z+0.2f, Genes.name_gene[i], 1);
+                        }
+                    }
                 }
             }
         }
