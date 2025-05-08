@@ -397,7 +397,7 @@ public class BrainPicture extends JPanel {
                     from(22); ////特殊基因从22开始， 这里跳过前22个
                     boolean hasPosLines = is_(c);//当前神经元是否有正权重连线
                     boolean hasNegLines = is_(c);//当前神经元是否有负权重连线
-                    from(0);
+                    from(0); 
                     setPicColor(RED); //红色画出正权重线
                     if (hasPosLines)
                         for (int i = 0; i < Env.BRAIN_SIZE; i++)
@@ -407,13 +407,13 @@ public class BrainPicture extends JPanel {
                                 float z2 = i;
                                 float xm = i * 0.2f + 0.2f; //中间点
                                 float ym = 0;
-                                float zm = i;
+                                float zm = z; 
 
                                 drawCentLine(x, y, z, xm, ym, zm); //不能直接画一条线，否则线全重合在一起看不清
                                 drawCentLine(xm, ym, zm, x2, y2, z2);
                             }
 
-                    from(0);
+                    from(0); 
                     setPicColor(BLUE); //红色画出正权重线
                     if (hasNegLines)
                         for (int i = 0; i < Env.BRAIN_SIZE; i++)
@@ -423,7 +423,7 @@ public class BrainPicture extends JPanel {
                                 float z2 = i;
                                 float xm = -i * 0.2f - 0.2f; //中间点
                                 float ym = 0;
-                                float zm = i;
+                                float zm = z;  
                                 drawCentLine(x, y, z, xm, ym, zm); //不能直接画一条线，否则线全重合在一起看不清
                                 drawCentLine(xm, ym, zm, x2, y2, z2);
                             }
@@ -435,7 +435,7 @@ public class BrainPicture extends JPanel {
                     for (int i = 22; i < Genes.GENE_NUMBERS; i++) {
                         if(is_(c)) {
                             xpos++;
-                            drawText(xpos, y , z+0.2f, Genes.name_gene[i], 1);
+                            drawText(xpos, y , z+0.2f, Genes.name_gene[i], .6f);
                         }
                     }
                 }

@@ -89,12 +89,12 @@ public class Env extends JPanel {
 
     public static ArrayList<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[] { new FoodJudge(1,0) };// 所有外界物体，如食物、测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[] { new FoodJudge(2, 2) };// 所有外界物体，如食物、测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
     static {
-        Logger.info("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，因为遗传算法建立在杀生选优的基础上，用这个方式表示一下对生命的尊重。智能研究不光是技术，还涉及到伦理，对虚拟生命的尊重也是对人类自身的尊重。
+        Logger.info("唵缚悉波罗摩尼莎诃!"); // 杀生前先打印往生咒，因为遗传算法建立在杀生选优的基础上，用这个方式表示对生命的尊重。智能研究不光是技术，还涉及到伦理，对虚拟生命的尊重也是对人类自身的尊重。
                                    // （意识不是一种实体存在，只是一种表象，但正因为此，我们才要尊重所有表现出或低级或高级的意识现象的虚拟智能系统，包括避免制造不必要的虚拟生命的痛苦感觉现象，己所不欲勿施于人。）
         Logger.info("脑图快捷键： T:顶视  F：前视  L:左视  R:右视  X:斜视  方向键：剖视  空格:暂停  鼠标：缩放旋转平移");
         if (DELETE_FROG_EGGS)
@@ -203,7 +203,6 @@ public class Env extends JPanel {
  
     public static void checkIfPause(int step) {
         if (pause) {
-            Genes.printDebug();
             do {
                 Application.brainPic.drawBrainPicture(step);
                 Application.brainPic.requestFocus();
@@ -266,7 +265,7 @@ public class Env extends JPanel {
                     }
 
                     if (SHOW_SPEED == 1) // 如果speed为1，人为加入延迟
-                        sleep(100);
+                        sleep(400);
                     else if (step % SHOW_SPEED != 0)// 用是否跳帧画图的方式来控制速度
                         continue;
 

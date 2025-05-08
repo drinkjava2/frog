@@ -16,17 +16,17 @@ public class FoodJudge implements EnvObject {
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
     final int p; //p表示食物由有几个视觉像素点
     final int bits;
-    final int nerveDelay; //nerveDelay表示从咬下到感到甜苦味之间的延迟
+    final int tasteDelay; //nerveDelay表示从咬下到感到甜苦味之间的延迟
     int group = 8; //时间上，以group为一组，随机安排一段连续区为食物
     int groupspace = 8; //group之间有一段空白间隔时间, 以免干扰 
     int[] food = new int[Env.STEPS_PER_ROUND + group];
     int sweetFoodCode; //p个像素点的所有组合中，只有一个组合表示可食，先不考虑多种食物可食， sweetFoodCode可为零，表示所有食物都是有毒的苦食
     int totalSweetFood = 0;
 
-    public FoodJudge(int p, int nerveDelay) { //p表示食物由有几个视觉像素点， nerveDelay表示从咬下到感到甜苦味之间的延迟， 如为0表示没有延迟。有延迟才可以避免青蛙利用味觉绕过模式识别，只好根据视觉预判是否可以咬
+    public FoodJudge(int p, int tasteDelay) { //p表示食物有几个视觉像素点， tasteDelay表示从咬下到感到甜苦味之间的延迟， 如为0表示没有延迟。有延迟才可以避免青蛙利用味觉绕过模式识别，只好根据视觉预判是否可以咬
         this.p = p;
         bits=(int) Math.pow(2, p);
-        this.nerveDelay = nerveDelay;
+        this.tasteDelay = tasteDelay;
     }
 
     public void resetFood() {
@@ -106,27 +106,27 @@ public class FoodJudge implements EnvObject {
 
             if (f.bite) {//如果咬下 
                 if (isSweet) { //甜食
-                    f.sweetNerveDelay[step + nerveDelay] = true; // 咬下了不能立刻感到味觉，而要过段时间，所以这里我们代替大自然先把当前味觉暂存到sweet/bitter缓存的后面位置上
-                    f.bitterNerveDelay[step + nerveDelay] = false;                     
+                    f.sweetNerveDelay[step + tasteDelay] = true; // 咬下了不能立刻感到味觉，而要过段时间，所以这里我们代替大自然先把当前味觉暂存到sweet/bitter缓存的后面位置上
+                    f.bitterNerveDelay[step + tasteDelay] = false;                     
                     f.awardAAAA(); //因为甜食数量少比苦食少，为了鼓励多咬，甜食加分比苦食扣分多
                     f.ateFood++;
                     g.setColor(Color.GREEN); //咬到食物
                 } else if (isBitter) { //苦食
-                    f.sweetNerveDelay[step + nerveDelay] = false;
-                    f.bitterNerveDelay[step + nerveDelay] = true; //同理，苦味缓存
+                    f.sweetNerveDelay[step + tasteDelay] = false;
+                    f.bitterNerveDelay[step + tasteDelay] = true; //同理，苦味缓存
                     f.penaltyAAA(); //
                     f.ateWrong++;
                     g.setColor(Color.RED);//咬到毒物
                 } else {//不甜也不苦说明咬到空气
-                    f.sweetNerveDelay[step + nerveDelay] = false;
-                    f.bitterNerveDelay[step + nerveDelay] = false;
+                    f.sweetNerveDelay[step + tasteDelay] = false;
+                    f.bitterNerveDelay[step + tasteDelay] = false;
                     f.penaltyAAA();//咬空气也要消耗能量，扣点分
                     f.ateWrong++;
                     g.setColor(Color.RED); //咬到空气
                 }
             } else { //如果没有咬，当然味觉也没有，也不用扣分，但是大自然会把躺平的青蛙淘汰，因为躺平的青蛙吃的少
-                f.sweetNerveDelay[step + nerveDelay] = false;
-                f.bitterNerveDelay[step + nerveDelay] = false;
+                f.sweetNerveDelay[step + tasteDelay] = false;
+                f.bitterNerveDelay[step + tasteDelay] = false;
                 if (isSweet) { //如果没有咬但是食物是甜的，说明错过了一个甜食
                     f.ateMiss++;
                     g.setColor(Color.RED); //漏了食物
