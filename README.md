@@ -88,5 +88,6 @@ FOOD_QTY：食物的数量，食物越多，则Frog的生存率就越高，能�
 
 ## 关注我 | About Me
 [Gitee](https://gitee.com/drinkjava2)   
+[GitCode](https://gitcode.com/drinkjava22222/frog)  
 [GitHub](https://github.com/drinkjava2)  
 微信:yong99819981(如想长期关注本项目、或参与开发，请加我并留言"人工生命群")  
