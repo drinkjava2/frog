@@ -2,12 +2,12 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>com.gitee.drinkjava2</groupId>
- <artifactId>frog016d1</artifactId>
+ <artifactId>frog017</artifactId>
  <packaging>jar</packaging>
- <version>16d1.0</version>
+ <version>17</version>
  
  <name>frog</name>
- <description>当前目标是用分裂算法来实现模式识别，当前小目标是实现两点输入的模式识别</description>
+ <description>放弃016d1版，开始进行17版编程。016d1版的胡乱连接碰运气这种方式做起来太累，完全不好控制所以先放弃，从017版起改成新的思路，借签005b版的面全息存储模式识别，先做一个简化版的线全息存储模式识别出来，去除光子、中间传递过程这些啰嗦的复杂设计，简化编程，直接在细胞上打洞，在一条线分布的脑细胞上实现全息存贮，肉眼观察是否完成即可，完成这个功能后下一步再想办法把咬、松口、甜、苦信号加入进来，这些信号参与进来才能实现了完整进化链。FoodJudge也要简化一下，先不要用随机信号，而是手工安排几个固定的几个模式好方便观察和调试。</description>
  <url>https://gitee.com/drinkjava2/frog</url>
   
  <issueManagement>
