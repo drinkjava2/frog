@@ -14,48 +14,36 @@ import com.gitee.drinkjava2.frog.util.RandomUtils;
  */
 public class FoodJudge implements EnvObject {
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
-    final int p; //p表示食物由有几个视觉像素点
-    final int bits;
-    final int tasteDelay; //nerveDelay表示从咬下到感到甜苦味之间的延迟
-    int group = 8; //时间上，以group为一组，随机安排一段连续区为食物
-    int groupspace = 8; //group之间有一段空白间隔时间, 以免干扰 
-    int[] food = new int[Env.STEPS_PER_ROUND + group];
+    final int p = 2; //p表示食物由有几个视觉像素点
+    final int bits = (int) Math.pow(2, p); //bits = 2 ^ p; 
+    final int tasteDelay = 4; //tasteDelay表示从咬下到感到甜苦味之间的延迟 
+    int groupSize = 15; //groupSize表示连续多少个食物
+    int[] food = new int[Env.STEPS_PER_ROUND + groupSize]; //食物在时间上的分布用一个数组表示
     int sweetFoodCode; //p个像素点的所有组合中，只有一个组合表示可食，先不考虑多种食物可食， sweetFoodCode可为零，表示所有食物都是有毒的苦食
-    int totalSweetFood = 0;
+    int[] foodOrders = new int[] { 1, 10, 11 }; //视觉信号固定顺序
 
-    public FoodJudge(int p, int tasteDelay) { //p表示食物有几个视觉像素点， tasteDelay表示从咬下到感到甜苦味之间的延迟， 如为0表示没有延迟。有延迟才可以避免青蛙利用味觉绕过模式识别，只好根据视觉预判是否可以咬
-        this.p = p;
-        bits=(int) Math.pow(2, p);
-        this.tasteDelay = tasteDelay;
+    public FoodJudge() {
     }
 
     public void resetFood() {
-        sweetFoodCode = RandomUtils.nextInt(bits); // 甜食code每一轮测试都不一样，强迫青蛙每一轮都要根据苦和甜味快速适应，根据视觉预判是可以咬的食物
-        
-        int step = 0;
-        while (step < (Env.STEPS_PER_ROUND)) {
-            int x = 2 + RandomUtils.nextInt(4); //连续出现x个相同食物
-            int firstFood = RandomUtils.nextInt(group - x); //以group为一组，随机安排一半为食物
-            int foodCode = 1 + RandomUtils.nextInt(bits - 1); //食物
-            for (int i = 0; i < group; i++)
-                if (i < firstFood || i >= firstFood + x)
-                    food[step + i] = 0;
-                else
-                    food[step + i] = foodCode;
-            step += group + groupspace;
+        int pos = 0;
+        for (int i = 0; i < foodOrders.length; i++) {
+            for (int j = 0; j < 50; j++) {
+                if (pos >= Env.STEPS_PER_ROUND)
+                    return;
+                food[pos++] = foodOrders[i];
+            }
+            for (int j = 0; j < 2; j++) { //间隔
+                if (pos >= Env.STEPS_PER_ROUND)
+                    return;
+                food[pos++] = 0;
+            }
         }
-        for (int f : food)
-            if (f == sweetFoodCode)
-                totalSweetFood++;
     }
 
     @Override
     public void build() { //build在每屏测试前调用一次，这里用随机数准备好食物出现和消失的顺序为测试作准备
         Graphics g = Env.graph;
-        if (totalSweetFood == 0) {
-            resetFood();
-            System.out.println("totalSweetFood=" + totalSweetFood);
-        }
         resetFood();
 
         for (int i = 0; i < Env.STEPS_PER_ROUND; i++) { //画出当前食物分布图
@@ -89,8 +77,8 @@ public class FoodJudge implements EnvObject {
         int foodCode = food[step];
         boolean seeFood1 = (foodCode & 1) > 0;
         boolean seeFood2 = (foodCode & 0b10) > 0;
-        boolean isSweet = sweetFoodCode>0 && foodCode == sweetFoodCode; //甜味只能有一种情况
-        boolean isBitter = !isSweet && (foodCode>0); //食物存在但又不是甜的，那就是个苦食物
+        boolean isSweet = sweetFoodCode > 0 && foodCode == sweetFoodCode; //甜味只能有一种情况
+        boolean isBitter = !isSweet && (foodCode > 0); //食物存在但又不是甜的，那就是个苦食物
 
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
@@ -107,7 +95,7 @@ public class FoodJudge implements EnvObject {
             if (f.bite) {//如果咬下 
                 if (isSweet) { //甜食
                     f.sweetNerveDelay[step + tasteDelay] = true; // 咬下了不能立刻感到味觉，而要过段时间，所以这里我们代替大自然先把当前味觉暂存到sweet/bitter缓存的后面位置上
-                    f.bitterNerveDelay[step + tasteDelay] = false;                     
+                    f.bitterNerveDelay[step + tasteDelay] = false;
                     f.awardAAAA(); //因为甜食数量少比苦食少，为了鼓励多咬，甜食加分比苦食扣分多
                     f.ateFood++;
                     g.setColor(Color.GREEN); //咬到食物

@@ -393,51 +393,8 @@ public class BrainPicture extends JPanel {
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
                     }
 
-                    //开始画出每个细胞的触突连线
-                    from(22); ////特殊基因从22开始， 这里跳过前22个
-                    boolean hasPosLines = is_(c);//当前神经元是否有正权重连线
-                    boolean hasNegLines = is_(c);//当前神经元是否有负权重连线
-                    from(0); 
-                    setPicColor(RED); //红色画出正权重线
-                    if (hasPosLines)
-                        for (int i = 0; i < Env.BRAIN_SIZE; i++)
-                            if (is_(c)) {//如果包含某细胞的序号，就与这个细胞的触突线，用两段折线表示
-                                float x2 = 0;
-                                float y2 = 0;
-                                float z2 = i;
-                                float xm = i * 0.2f + 0.2f; //中间点
-                                float ym = 0;
-                                float zm = z; 
-
-                                drawCentLine(x, y, z, xm, ym, zm); //不能直接画一条线，否则线全重合在一起看不清
-                                drawCentLine(xm, ym, zm, x2, y2, z2);
-                            }
-
-                    from(0); 
-                    setPicColor(BLUE); //红色画出正权重线
-                    if (hasNegLines)
-                        for (int i = 0; i < Env.BRAIN_SIZE; i++)
-                            if (is_(c)) {//如果包含某细胞的序号，就与这个细胞的触突线，用两段折线表示
-                                float x2 = 0;
-                                float y2 = 0;
-                                float z2 = i;
-                                float xm = -i * 0.2f - 0.2f; //中间点
-                                float ym = 0;
-                                float zm = z;  
-                                drawCentLine(x, y, z, xm, ym, zm); //不能直接画一条线，否则线全重合在一起看不清
-                                drawCentLine(xm, ym, zm, x2, y2, z2);
-                            }
-                    setPicColor(BLACK);
-                    
-                    //开始给这个细胞写上所有基因名字
-                    from(22);
-                    int xpos=0;
-                    for (int i = 22; i < Genes.GENE_NUMBERS; i++) {
-                        if(is_(c)) {
-                            xpos++;
-                            drawText(xpos, y , z+0.2f, Genes.name_gene[i], .6f);
-                        }
-                    }
+                    // 
+ 
                 }
             }
         }

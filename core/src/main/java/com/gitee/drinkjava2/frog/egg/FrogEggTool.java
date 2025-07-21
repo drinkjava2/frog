@@ -43,10 +43,10 @@ public class FrogEggTool {
      * 用fat值来作为唯一的生存竟争标准
      */
     public static void layEggs() {
-        for (Frog f : Env.frogs) { 
-            if (f.fat == 1000000000) //躺平的扣最多分，不允许躺平
-                f.kill();
-        }
+//        for (Frog f : Env.frogs) { 
+//            if (f.fat == 1000000000) //躺平的扣最多分，不允许躺平
+//                f.kill();
+//        }
         sortFrogsOrderByFat();
         Frog first = Env.frogs.get(0);
         Frog last = Env.frogs.get(Env.frogs.size() - 1);
