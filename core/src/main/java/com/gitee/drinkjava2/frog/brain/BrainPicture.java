@@ -278,12 +278,14 @@ public class BrainPicture extends JPanel {
     }
 
     public void drawTextCenter(float px1, float py1, float pz1, String text, float textSize) {
-        if(text==null)
+        if (text == null)
             return;
         drawText(px1 + 0.5f, py1 + 0.5f, pz1 + 0.5f, text, textSize);
     }
 
     public void drawText(float px1, float py1, float pz1, String text, float textSize) {
+        if (text == null)
+            text = "";
         double x1 = px1 - Env.BRAIN_SIZE / 2;
         double y1 = -py1 + Env.BRAIN_SIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
         double z1 = pz1 - Env.BRAIN_SIZE / 2;
@@ -367,34 +369,38 @@ public class BrainPicture extends JPanel {
         g.setColor(BLACK); // 画边框
         g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
+        int x = 0, y = 0;
         for (int z = 0; z < Env.BRAIN_SIZE; z++) {// 画它所有的脑细胞位置和颜色
-            for (int y = 0; y < 1; y++) {
-                for (int x = 0; x < 1; x++) {
-                    setPicColor(BLACK); // 画边框
-                    drawPointCent(x, y, z, 0.03f); //画每个细胞小点
+            setPicColor(BLACK); // 画边框
+            drawPointCent(x, y, z, 0.03f); //画代表这个细胞的小点
 
-                    long c = a.cells[x][y][z]; //当前细胞用一个long表示，它最多可以含有64位基因
-                    // if (cell == 0) //只显示有效的细胞点
-                    // continue;
+            long c = a.cells[x][y][z]; //当前细胞用一个long表示，它最多可以含有64位基因
+            // if (cell == 0) //只显示有效的细胞点
+            // continue;
 
-                    if (x >= xMask && y >= yMask && c != 0)// 画出细胞每个基因存在的细胞格子
-                        for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
-                            if ((c & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
-                                setPicColor(ColorUtils.colorByCode(geneIndex)); // 开始画出对应的细胞基因参数，用不同颜色圆表示
-                                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.3f);
-                            }
-                        }
-                    float e = a.energys[x][y][z];
-                    if (e > 0.03f || e < -0.03f) {
-                        setPicColor(e > 0 ? Color.red : Color.BLUE); // 用红色小圆表示正能量，蓝色表示负能量
-                        float size = Math.abs(e);// 再用不同大小圆形表示不同能量值
-                        if (size > 1)
-                            size = 1;
-                        drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
+            if (x >= xMask && y >= yMask && c != 0)// 画出细胞每个基因存在的细胞格子
+                for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
+                    if ((c & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
+                        setPicColor(ColorUtils.colorByCode(geneIndex)); // 开始画出对应的细胞基因参数，用不同颜色圆表示
+                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.3f);
                     }
+                }
+            float e = a.energys[x][y][z];
+            if (e > 0.03f || e < -0.03f) {
+                setPicColor(e > 0 ? Color.red : Color.BLUE); // 用红色小圆表示正能量，蓝色表示负能量
+                float size = Math.abs(e);// 再用不同大小圆形表示不同能量值
+                if (size > 1)
+                    size = 1;
+                drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
+            }
 
-                    // 
- 
+            //开始给这个细胞写上所有基因名字，一个细胞可能有多个基因
+            from(0);
+            int txtXPos = 0;
+            for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
+                if (is_(c)) {
+                    txtXPos++;
+                    drawText(txtXPos, y, z + 0.2f, Genes.name_gene[i], .6f);
                 }
             }
         }

@@ -12,6 +12,8 @@ package com.gitee.drinkjava2.frog.brain;
 
 import com.gitee.drinkjava2.frog.Animal;
 import com.gitee.drinkjava2.frog.Env;
+import com.gitee.drinkjava2.frog.objects.FoodJudge;
+
 import static com.gitee.drinkjava2.frog.Env.BRAIN_SIZE;
 
 /**
@@ -173,12 +175,40 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     private static final int NA = -1;
     // ============开始登记基因==========
 
-    // 登记细胞间关联(触突树突)
+    // 登记细胞基因分布
     static {
-        // register(BRAIN_SIZE + 20, true, false, 0, 0, NA); //先登记一些基因位，分布在x=0, y=0的z轴上， 每个基因位的作用（对应各种细胞类型、行为）后面再说
+        //先登记一些外设细胞如眼和嘴巴，布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {
+            register(1, true, true, 0, 0, z);
+        }
+
     }
- 
+
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 ===========
-    public static void active(Animal a) { }
+    public static void active(Animal a) {
+        int step = Env.step;
+        if (step == 0) {//在每屏第一次调用时初始化工作
+        }
+
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
+            long c = a.cells[0][0][z];
+            float e = a.getEng(0, 0, z);//当前细胞的能量
+
+            from(0); //从0开始根据所含的各种基因，实作细胞的逻辑
+
+            if (is_(c, "激")) {//如果有active基因, 此细胞始终激活, 也就是说这个细胞自己会产生能量。
+                a.setEngZ(z, 1); //is_方法在判断c有无b掩码后，将b左移一位，在使用基因位的同时给它赋一个名字以方便调试，名字不影响逻辑
+                e = 1f;
+            }
+
+            if (is_(c, "甜训")) {//如果FoodJudge中有甜训信号
+                if (FoodJudge.sweet[step]) {
+                    a.setEngZ(z, 1);
+                } else
+                    a.setEngZ(z, 0);
+            }
+
+        }
+    }
 
 }

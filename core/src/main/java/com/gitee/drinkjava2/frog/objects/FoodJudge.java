@@ -8,17 +8,20 @@ import com.gitee.drinkjava2.frog.Frog;
 
 /**
  * 
- * XinputJudge用来代替以前的oneInputJudge/twoInputJudge/ThreeInputJudge..., 区别只是视觉像素点的多少，逻辑都相似所以可以合并
+ * FoodJudge用来代替以前的oneInputJudge/twoInputJudge/ThreeInputJudge..., 区别只是视觉像素点的多少，逻辑都相似所以可以合并
  *  
  */
 public class FoodJudge implements EnvObject {
+    public static boolean foodBit1;
+    public static boolean foodBit2;
+
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
     final int p = 2; //p表示食物由有几个视觉像素点
     final int bits = (int) Math.pow(2, p); //bits = 2 ^ p; 
     final int tasteDelay = 4; //tasteDelay表示从咬下到感到甜苦味之间的延迟 
-    int groupSize = Env.STEPS_PER_ROUND / 6-2; //groupSize表示连续多少个食物
-    int[] food = new int[Env.STEPS_PER_ROUND + groupSize]; //食物在时间上的分布用一个数组表示
-    boolean[] sweetTrain = new boolean[Env.STEPS_PER_ROUND + groupSize]; //甜味训练信号在时间上的分布用一个数组表示，训练信号允许延迟几个时钟
+    public static int groupSize = Env.STEPS_PER_ROUND / 6 - 2; //groupSize表示连续多少个食物
+    public static int[] food = new int[Env.STEPS_PER_ROUND + groupSize]; //食物在时间上的分布用一个数组表示
+    public static boolean[] sweet = new boolean[Env.STEPS_PER_ROUND + groupSize]; //甜味训练信号在时间上的分布用一个数组表示，训练信号允许延迟几个时钟
 
     final int sweetFoodCode = 2; //p个像素点的所有组合中，只有一个组合表示可食，先不考虑多种食物可食， sweetFoodCode可为零，表示所有食物都是有毒的苦食
     int[] foodOrders = new int[] { 1, 2, 3 }; //视觉信号固定顺序
@@ -36,9 +39,9 @@ public class FoodJudge implements EnvObject {
                         return;
                     food[pos] = foodOrders[i];
                     if (pos < Env.STEPS_PER_ROUND / 2) //在前半段给出甜味训练信号 
-                        sweetTrain[pos] = foodOrders[i] == sweetFoodCode;
+                        sweet[pos] = foodOrders[i] == sweetFoodCode;
                     else
-                        sweetTrain[pos] = false;
+                        sweet[pos] = false;
                     pos++;
                 }
                 for (int j = 0; j < 2; j++) { //加点间隔分开每个信号，不影响逻辑
@@ -78,7 +81,7 @@ public class FoodJudge implements EnvObject {
                 g.fillRect(x * n, y * n, 6, n);
             }
 
-            if (sweetTrain[pos]) { //画出甜味训练信号
+            if (sweet[pos]) { //画出甜味训练信号
                 g.setColor(Color.GREEN);
                 g.fillRect(x * n, y * n + n / 2, n, 2);
             }
@@ -99,8 +102,8 @@ public class FoodJudge implements EnvObject {
         int step = Env.step;
         Frog f;
         int foodCode = food[step];
-        boolean seeFood1 = (foodCode & 1) > 0;
-        boolean seeFood2 = (foodCode & 0b10) > 0;
+        foodBit1 = (foodCode & 1) > 0;
+        foodBit2 = (foodCode & 0b10) > 0;
         boolean isFood = foodCode > 0; //食物
         boolean isSweet = foodCode == sweetFoodCode; //甜食
         boolean isBitter = isFood && !isSweet; //苦食
