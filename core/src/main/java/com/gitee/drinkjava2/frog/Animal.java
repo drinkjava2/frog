@@ -83,17 +83,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     
     //========================以下是感觉细胞和输入输出细胞，这些细胞和大脑中的神经元相连==========
     //感觉和输出细胞不参与脑细胞排列，这都是开关量，由神经元控制，神经元参与脑细胞随机排列筛选
-    public boolean see1=false; //看到第一个像素点
-    public boolean see2=false; //看到第二个像素点
-    public boolean seeFoodComing=false; //看到食物正在靠近
-    public boolean seeEmptyComing=false; //看到空白正在靠近
     public boolean sweet=false; //尝到甜味
-    public boolean bitter=false; //尝到甜味    
-    public boolean bite=false; //发出咬下动作
-	// nerveDelay 模仿神经的转输延迟，实物动物从咬下到尝到食物味道是有延迟的，下面两个buff就模仿它,把当前味觉放到后n个时钟周期
-	public boolean[] sweetNerveDelay = new boolean[Env.STEPS_PER_ROUND + 100]; //缓冲区比总步数大一点
-	public boolean[] bitterNerveDelay = new boolean[Env.STEPS_PER_ROUND + 100];
-    
+    public boolean bitter=false; //尝到甜味
     
     public Animal(Egg egg) {//构造方法，Animal从蛋中诞生
         System.arraycopy(egg.consts, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数
