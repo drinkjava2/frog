@@ -12,16 +12,20 @@ import com.gitee.drinkjava2.frog.Frog;
  *  
  */
 public class FoodJudge implements EnvObject {
+    public static boolean foodBit0;
     public static boolean foodBit1;
-    public static boolean foodBit2;
 
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
     final int p = 2; //p表示食物由有几个视觉像素点
     final int bits = (int) Math.pow(2, p); //bits = 2 ^ p; 
-    final int tasteDelay = 4; //tasteDelay表示从咬下到感到甜苦味之间的延迟 
-    public static int groupSize = Env.STEPS_PER_ROUND / 6 - 2; //groupSize表示连续多少个食物
-    public static int[] food = new int[Env.STEPS_PER_ROUND + groupSize]; //食物在时间上的分布用一个数组表示
-    public static boolean[] sweet = new boolean[Env.STEPS_PER_ROUND + groupSize]; //甜味训练信号在时间上的分布用一个数组表示，训练信号允许延迟几个时钟
+    final int tasteDelay = 4; //tasteDelay表示从咬下到感到甜苦味之间的延迟
+    public static int groupSpace = 10; //间隔
+    public static int groupSize = Env.STEPS_PER_ROUND / 6 - groupSpace; //groupSize表示食物在时间上连续出现多少个时间步长    
+    public static int[] food = new int[Env.STEPS_PER_ROUND + groupSize]; //食物在时间上的分布用一个数组表示，先从固定顺序开始测试以方便调试，以后将改成随机出现
+
+    //训练信号在时间上的分布用一个数组表示， 只在测试的前半段有甜味食物时同时给出， 训练信号不等同甜味信号，
+    //甜味信号是味觉本体信号，由食物完全决定，但允许延迟几个时钟， 延迟机制可以防止青蛙利用味觉绕过视觉的模式识别和条件反射预判 
+    public static boolean[] train = new boolean[Env.STEPS_PER_ROUND + groupSize];
 
     final int sweetFoodCode = 2; //p个像素点的所有组合中，只有一个组合表示可食，先不考虑多种食物可食， sweetFoodCode可为零，表示所有食物都是有毒的苦食
     int[] foodOrders = new int[] { 1, 2, 3 }; //视觉信号固定顺序
@@ -38,13 +42,13 @@ public class FoodJudge implements EnvObject {
                     if (pos >= Env.STEPS_PER_ROUND)
                         return;
                     food[pos] = foodOrders[i];
-                    if (pos < Env.STEPS_PER_ROUND / 2) //在前半段给出甜味训练信号 
-                        sweet[pos] = foodOrders[i] == sweetFoodCode;
+                    if (pos < Env.STEPS_PER_ROUND / 2) //在前半段给出训练信号 
+                        train[pos] = foodOrders[i] == sweetFoodCode;
                     else
-                        sweet[pos] = false;
+                        train[pos] = false;
                     pos++;
                 }
-                for (int j = 0; j < 2; j++) { //加点间隔分开每个信号，不影响逻辑
+                for (int j = 0; j < groupSpace; j++) { //加点间隔分开每个信号，不影响逻辑
                     if (pos >= Env.STEPS_PER_ROUND)
                         return;
                     food[pos++] = 0;
@@ -81,7 +85,7 @@ public class FoodJudge implements EnvObject {
                 g.fillRect(x * n, y * n, 6, n);
             }
 
-            if (sweet[pos]) { //画出甜味训练信号
+            if (train[pos]) { //画出甜味训练信号
                 g.setColor(Color.GREEN);
                 g.fillRect(x * n, y * n + n / 2, n, 2);
             }
@@ -102,11 +106,8 @@ public class FoodJudge implements EnvObject {
         int step = Env.step;
         Frog f;
         int foodCode = food[step];
-        foodBit1 = (foodCode & 1) > 0;
-        foodBit2 = (foodCode & 0b10) > 0;
-        boolean isFood = foodCode > 0; //食物
-        boolean isSweet = foodCode == sweetFoodCode; //甜食
-        boolean isBitter = isFood && !isSweet; //苦食
+        foodBit0 = (foodCode & 1) > 0; //foodBit0和foodBit1是代表食物的两个像素点
+        foodBit1 = (foodCode & 0b10) > 0;
 
         for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
             f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
