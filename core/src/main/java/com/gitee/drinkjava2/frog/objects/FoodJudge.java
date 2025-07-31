@@ -5,13 +5,14 @@ import java.awt.Graphics;
 
 import com.gitee.drinkjava2.frog.Env;
 import com.gitee.drinkjava2.frog.Frog;
+import com.gitee.drinkjava2.frog.objects.EnvObject.DefaultEnvObject;
 
 /**
  * 
  * FoodJudge用来代替以前的oneInputJudge/twoInputJudge/ThreeInputJudge..., 区别只是视觉像素点的多少，逻辑都相似所以可以合并
  *  
  */
-public class FoodJudge implements EnvObject {
+public class FoodJudge extends DefaultEnvObject {
     public static boolean foodBit0;
     public static boolean foodBit1;
 
@@ -97,36 +98,27 @@ public class FoodJudge implements EnvObject {
     }
 
     @Override
-    public void destory() {
-    }
-
-    @Override
-    public void active() { //改成甜苦味会延迟咬nerveDelay个时间单位产生, 如果设为0表示没有延迟,
-        Graphics g = Env.graph;
+    public void active( ) {
+        Graphics g=Env.graph;
         int step = Env.step;
         Frog f;
         int foodCode = food[step];
         foodBit0 = (foodCode & 1) > 0; //foodBit0和foodBit1是代表食物的两个像素点
         foodBit1 = (foodCode & 0b10) > 0;
 
-        for (int i = 0; i < Env.FROG_PER_SCREEN; i++) {
-            f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + i);
+        f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + 0);
 
-            // 开始画出状态色条
-            if (i == 0) {// 只显示第一个青蛙的色条，其它的跳过
-                int x = step % (Env.ENV_WIDTH / n);
-                int y = step / (Env.ENV_WIDTH / n);
-                g.setColor(Color.BLUE);
-                g.fillRect(x * n, y * n + n / 3, n, 3);
-                if (f.sweet) { //副线条显示味觉
-                    g.setColor(Color.GREEN); //绿表示甜
-                    g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
-                } else if (f.bitter) {
-                    g.setColor(Color.RED); //苦用红表示
-                    g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
-                }
-
-            }
+        // 开始画出状态色条
+        int x = step % (Env.ENV_WIDTH / n);
+        int y = step / (Env.ENV_WIDTH / n);
+        g.setColor(Color.BLUE);
+        g.fillRect(x * n, y * n + n / 3, n, 3);
+        if (f.sweet) { //副线条显示味觉
+            g.setColor(Color.GREEN); //绿表示甜
+            g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
+        } else if (f.bitter) {
+            g.setColor(Color.RED); //苦用红表示
+            g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
         }
     }
 

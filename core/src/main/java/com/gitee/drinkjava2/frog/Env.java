@@ -8,12 +8,11 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 import com.gitee.drinkjava2.frog.objects.EnvObject;
-import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.objects.FoodJudge;
+import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.Logger;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -48,9 +47,6 @@ public class Env extends JPanel {
 
     /** SHOW first animal's brain structure */
     public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
-
-    /** Draw first frog's brain after some steps */
-    public static int DRAW_BRAIN_AFTER_STEPS = 0; // 以此值为间隔动态画出脑图，设为0则关闭这个动态脑图功能，只显示一个静态、不闪烁的脑图
 
     /** Environment x width, unit: pixels */
     public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
@@ -200,7 +196,6 @@ public class Env extends JPanel {
         format100.setMaximumFractionDigits(2);
     }
 
- 
     public static void checkIfPause(int step) {
         if (pause) {
             do {
@@ -255,8 +250,10 @@ public class Env extends JPanel {
                 for (step = 0; step < STEPS_PER_ROUND; step++) {
                     if (allDead)
                         break; // 青蛙全死光了就直接跳到下一轮,以节省时间
-                    for (EnvObject thing : things)// 调用食物、陷阱等物体的动作
+
+                    for (EnvObject thing : things)// 调用物体的动作
                         thing.active();
+
                     allDead = true;
                     for (int j = 0; j < FROG_PER_SCREEN; j++) {
                         Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
@@ -264,37 +261,28 @@ public class Env extends JPanel {
                             allDead = false;
                     }
 
-                    if (SHOW_SPEED == 1) // 如果speed为1，人为加入延迟
-                        sleep(400);
-                    else if (SHOW_SPEED == 8) // 如果speed为1，人为加入延迟
-                        sleep(100);
-                    else if (SHOW_SPEED == 27) // 如果speed为1，人为加入延迟
-                        sleep(50);
-                    else if (SHOW_SPEED == 64) // 如果speed为1，人为加入延迟
-                        sleep(10);
-                    else if (step % SHOW_SPEED != 0)// 用是否跳帧画图的方式来控制速度
+                    int delay = (400 - SHOW_SPEED) / 4; //速度400以内人为加入延迟
+                    if (delay > 0)
+                        sleep(delay);
+                    else if (step % ((SHOW_SPEED - 400) / 3) != 0)//  否则用跳帧画图的方式来加快速度
                         continue;
 
+                    //========================== 以下是纯显示部分，不影响逻辑 ====================================
+
                     // 开始画things和青蛙 
-                    drawWorld(graph);// 画整个虚拟环境中的material 
+                    drawWorld(graph);// 画整个虚拟环境中的material
 
-                    for (int j = 0; j < FROG_PER_SCREEN; j++) { // 显示青蛙
-                        Frog f = frogs.get(current_screen * FROG_PER_SCREEN + j);
-                        f.showInEnv(graph);
-                    }
-
-                    if (DRAW_BRAIN_AFTER_STEPS > 0 && step % DRAW_BRAIN_AFTER_STEPS == 0) //显示脑图是耗时操作，这个开关可以跳过一些脑图显示
-                        Application.brainPic.drawBrainPicture(step);
-                    if (SHOW_SPEED == 1 && SHOW_FIRST_ANIMAL_BRAIN) //如果速度为1，强制每步都显示脑图
+                    if ((SHOW_SPEED <= 400) && SHOW_FIRST_ANIMAL_BRAIN) //如果速度小于400，强制每步都显示脑图
                         Application.brainPic.drawBrainPicture(step);
                     Graphics g2 = this.getGraphics();
                     g2.drawImage(buffImg, 0, 0, this);
                 }
-                if (SHOW_FIRST_ANIMAL_BRAIN) //一轮结束后再强制再显示脑图一次
+                if (SHOW_FIRST_ANIMAL_BRAIN) //有跳帧时可能脑图没画出来，所以一轮结束后再强制再显示脑图一次
                     Application.brainPic.drawBrainPicture(step);
                 checkIfPause(step);
 
-                sb.delete(0, sb.length()).append("轮:").append(round).append(", 屏:").append(current_screen).append(", 速:").append(Env.SHOW_SPEED);
+                sb.delete(0, sb.length()).append("轮:").append(round).append(", 屏:").append(current_screen)
+                        .append(", 速:").append(Env.SHOW_SPEED);
                 sb.append(", ").append("屏费时:").append(System.currentTimeMillis() - timerScreen).append("ms");
                 sb.append(", 轮费时:").append(timeRound).append("ms, ");
 
