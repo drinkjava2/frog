@@ -369,7 +369,8 @@ public class BrainPicture extends JPanel {
         g.setColor(BLACK); // 画边框
         g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-        int x = 0, y = 0;
+        int x = 0;
+        for (int y = 0; y < 2; y++)  
         for (int z = 0; z < Env.BRAIN_SIZE; z++) {// 画它所有的脑细胞位置和颜色
             setPicColor(BLACK); // 画边框
             drawPointCent(x, y, z, 0.03f); //画代表这个细胞的小点
