@@ -396,12 +396,13 @@ public class BrainPicture extends JPanel {
             }
 
             //开始给这个细胞写上所有基因名字，一个细胞可能有多个基因
+            setPicColor(Color.GRAY);
             from(0);
             int txtXPos = 0;
             for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
-                if (is_(c)) {
+                if (is_(c) && Genes.display_gene[i]) { 
                     txtXPos++;
-                    drawText(txtXPos, y, z + 0.2f, Genes.name_gene[i], .6f);
+                    drawText(txtXPos, y+0.5f, z + 0.2f, Genes.name_gene[i], .4f);
                 }
             }
         }

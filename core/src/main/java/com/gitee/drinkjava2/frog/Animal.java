@@ -117,7 +117,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         if (RandomUtils.percent(30))
             for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
                 fat = fat - gene.size();
-        GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞
+        GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞，如有指定基因位置也在这一步指定
     }
 
     public boolean active() {// 这个active方法在每一步循环都会被调用，是脑思考的最小帧，step是当前屏的帧数

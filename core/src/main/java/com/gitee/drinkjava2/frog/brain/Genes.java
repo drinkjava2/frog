@@ -16,6 +16,8 @@ import com.gitee.drinkjava2.frog.objects.FoodJudge;
 
 import static com.gitee.drinkjava2.frog.Env.BRAIN_SIZE;
 
+import java.util.ArrayList;
+
 /**
  * Genes代表不同的脑细胞参数，对应每个参数，用8叉/4叉/2叉树算法给每个细胞添加细胞参数和行为。
  * 每个脑细胞用一个long来存储，所以目前最多允许64个基因位,
@@ -47,6 +49,8 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static int[] xLimit = new int[GENE_MAX]; // 用来手工限定基因分布范围，详见register方法
     public static int[] yLimit = new int[GENE_MAX];
     public static int[] zLimit = new int[GENE_MAX];
+    
+    public static ArrayList<Long> assignGene=new ArrayList<Long>();
 
     /**
      * Register a gene 依次从底位到高位登记所有的基因掩码及对应的相关参数
@@ -93,6 +97,15 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             System.exit(-1);
         }
         return Long.parseLong(one + zero, 2); // 将类似"111000"这种字符串转换为长整
+    }
+    
+    /**把最后一位分配的基因指定到xyz坐标上
+     */
+    public static void copyLastGeneTo( int x, int y, int z) {
+        assignGene.add((long)x);
+        assignGene.add((long)y);
+        assignGene.add((long)z);
+        assignGene.add( 1l << (GENE_NUMBERS-1)); //
     }
 
     public static long register(int... pos) {// 登记并指定基因允许分布的位置
@@ -178,11 +191,14 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     // 登记细胞基因分布
     static {
         //先登记一些外设细胞如眼和嘴巴，布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加
-        for (int z = 0; z < Env.BRAIN_SIZE; z++) {
+        for (int z = 0; z <4; z++) {
             register(1, true, true, 0, 0, z);
         }
 
-        register(1, true, true, 0, 1, NA); //这个是记忆细胞，单独占一行，
+        register(1, true, true, 0, 1, 0); //这个是记忆细胞，单独占一行，
+        for (int y = 1; y <= 3; y++) {
+            copyLastGeneTo(0,1,y);
+        }
 
     }
 
