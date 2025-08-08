@@ -191,12 +191,12 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     // 登记细胞基因分布
     static {
         //先登记一些外设细胞如眼和嘴巴，布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加
-        for (int z = 0; z <4; z++) {
+        for (int z = 0; z <8; z++) {
             register(1, true, true, 0, 0, z);
         }
 
         register(1, true, true, 0, 1, 0); //这个是记忆细胞，单独占一行，
-        for (int y = 1; y <= 3; y++) {
+        for (int y = 1; y <= 7; y++) {
             copyLastGeneTo(0,1,y);
         }
 
@@ -215,10 +215,6 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             boolean engInput = false;
             from(0); //全局变量b从0开始根据所含的各种基因，实作细胞的逻辑
 
-            if (is_(c, "激")) {//如果有激基因, 此细胞始终激活, 也就是说这个细胞自己会产生能量
-                engInput = true;
-            }
-
             if (is_(c, "训")) {//如果FoodJudge中有训练信号
                 if (FoodJudge.train[step])
                     engInput = true;
@@ -227,13 +223,36 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             if (is_(c, "0")) {//如果看到食物的第0位的像素点
                 if (FoodJudge.foodBit0)
                     engInput = true;
+                //TODO
             }
 
             if (is_(c, "1")) {//如果看到食物的第1位的像素点
                 if (FoodJudge.foodBit1)
                     engInput = true;
+                //TODO
+            }
+            
+            if (is_(c, "甜")) {//如果尝到食物的甜味
+                 //TODO
+            }
+            
+            if (is_(c, "苦")) {//如果尝到食物的苦味
+                //TODO
+            }
+            
+            if (is_(c, "愉")) {//如果感到愉快
+                //TODO
+            }
+            
+            if (is_(c, "痛")) {//如果感到痛苦
+                //TODO
             }
 
+            if (is_(c, "咬")) {//如果是咬细胞
+                //TODO
+            }
+            
+            
             if (engInput) //如果有信号输入则赋给细胞满能量1
                 a.setEngZ(z, 1);
             else { //否则细胞能量衰减80%
@@ -242,10 +261,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                 a.setEngZ(z, e);
             }
             
-            //TODO: work on memory cell
-            if (is_(c, "忆")) {//如果是忆细胞
-                if (FoodJudge.foodBit0)
-                    engInput = true;
+            if (is_(c, "忆")) {//如果是忆细胞，啥也不干，因为忆细胞只存贮能量，它的能量由连线和其它（第一排的)细胞行为决定，无需给它行为
             }
             
 
