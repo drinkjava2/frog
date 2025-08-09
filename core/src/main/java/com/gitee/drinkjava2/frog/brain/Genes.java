@@ -183,7 +183,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static final int memGeneFrom;
     static {
         //先登记一些基因顺序分布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加 
-        for (int z = 0; z < 8; z++) {
+        for (int z = 0; z < 3; z++) {
             register(true, true, 0, 0, z);
         }
 
@@ -201,43 +201,32 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         }
 
         for (int y = 0; y < 1; y++)
-            for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
+            for (int z = 0; z < Env.BRAIN_SIZE; z++) {//遍历所有脑细胞 
                 long c = a.cells[0][y][z];
-
-                boolean engInput = false;
+                
+                float e = a.getEng(0, 0, z); //当前细胞的能量
+                e = e * .6f; //能量快速衰减，常量以后要改成进化调节 
+                a.setEngZ(z, e); 
+                
+                 
                 from(0); //全局变量b从0开始根据所含的各种基因，实作细胞的逻辑
-
-                if (is_(c, "激")) {//如果有激基因, 此细胞始终激活, 也就是说这个细胞自己会产生能量
-                    engInput = true;
-                }
 
                 if (is_(c, "训")) {//如果FoodJudge中有训练信号
                     if (FoodJudge.train[step])
-                        engInput = true;
+                        a.setEngZ(z, 1);
                 }
 
                 if (is_(c, "0")) {//如果看到食物的第0位的像素点
                     if (FoodJudge.foodBit0)
-                        engInput = true;
+                        a.setEngZ(z, 1);
                 }
 
                 if (is_(c, "1")) {//如果看到食物的第1位的像素点
                     if (FoodJudge.foodBit1)
-                        engInput = true;
+                        a.setEngZ(z, 1);
                 }
-
-                if (engInput) //如果有信号输入则赋给细胞满能量1
-                    a.setEngZ(z, 1);
-                else { //否则细胞能量衰减80%
-                    float e = a.getEng(0, 0, z); //当前细胞的能量
-                    e = e * .6f; //能量快速衰减 , 这个衰减率以后要改成基因或可进化常数控制
-                    a.setEngZ(z, e);
-                }
-
-                from(memGeneFrom);
-                if (is_(c)) {//如果是忆细胞
-
-                }
+  
+               
 
             }
     }
