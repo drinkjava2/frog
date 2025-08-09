@@ -49,71 +49,62 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static int[] xLimit = new int[GENE_MAX]; // 用来手工限定基因分布范围，详见register方法
     public static int[] yLimit = new int[GENE_MAX];
     public static int[] zLimit = new int[GENE_MAX];
-    
-    public static ArrayList<Long> assignGene=new ArrayList<Long>();
+
+    public static ArrayList<Long> assignGene = new ArrayList<Long>();
 
     /**
-     * Register a gene 依次从底位到高位登记所有的基因掩码及对应的相关参数
+     * Register one bit gene 依次一位基因及对应的相关参数
      * 
-     * @param maskBits
-     *            how many mask bits 掩码位数，即有几个1
      * @param display
      *            whether to display the gene on the BrainPicture 是否显示在脑图
      * @param fill
-     *            whether to fill to specified 3D/2D/1D/1Point area
-     *            是否直接用此基因填充指定的区域，区域可以是三维、二维、线状及一个点
+     *            whether to fill to specified 3D/2D/1D/1Point area 是否直接用此基因填充指定的区域，区域可以是三维、二维、线状及一个点
+     *           
      * @param x_limit
-     *            gene only allow on specified x layer 如x_layer大于-1，且y_layer=-1,
-     *            表示只生成在指定的x层对应的yz平面上，这时采用4叉树而不是8叉树以提高进化速度
+     *            gene only allow on specified x layer 如x_layer大于-1，且y_layer=-1, 表示只生成在指定的x层对应的yz平面上，这时采用4叉树而不是8叉树以提高进化速度 
      * @param y_limit
-     *            gene only allow on specified x, y axis
-     *            如大于-1，表示只生成在指定的x,y坐标对应的z轴上，这时采用2叉阴阳树算法
+     *            gene only allow on specified x, y axis 如大于-1，表示只生成在指定的x,y坐标对应的z轴上，这时采用2叉阴阳树算法
+     *            
      * @param z_limit
      *            gene only allow on specified x, y, z 点上, 表示手工指定基因位于x,y,z坐标点上
-     * @return a long wtih mask bits
-     *         返回基因掩码，高位由maskBits个1组成，低位是若干个0，以后判断一个cell上是否含有这个基因，只需要用cell对应的long和这个
-     *         掩码做与运算即可
+     * @return a long wtih mask bits 返回基因掩码，高位由maskBits个1组成，低位是若干个0，以后判断一个cell上是否含有这个基因，只需要用cell对应的long和这个 掩码做与运算即可
+     *        
+     *        
      */
-    public static long register(int maskBits, boolean display, boolean fill, int x_limit, int y_limit, int z_limit) {
+    public static void register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit) {
+        register(display, fill, x_limit, y_limit, z_limit, null);
+    }
 
-        for (int i = GENE_NUMBERS; i < GENE_NUMBERS + maskBits; i++) {
-            display_gene[i] = display;
-            fill_gene[i] = fill;
-            xLimit[i] = x_limit;
-            yLimit[i] = y_limit;
-            zLimit[i] = z_limit;
-        }
-
-        String one = "";
-        String zero = "";
-        for (int i = 1; i <= maskBits; i++)
-            one += "1";
-        for (int i = 1; i <= GENE_NUMBERS; i++)
-            zero += "0";
-        zeros = GENE_NUMBERS;
-        GENE_NUMBERS += maskBits;
-        if (GENE_NUMBERS >= GENE_MAX) {//
+    public static void register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit,
+            String geneNname) {
+        display_gene[GENE_NUMBERS] = display;
+        fill_gene[GENE_NUMBERS] = fill;
+        xLimit[GENE_NUMBERS] = x_limit;
+        yLimit[GENE_NUMBERS] = y_limit;
+        zLimit[GENE_NUMBERS] = z_limit;
+        if (geneNname != null)
+            name_gene[GENE_NUMBERS] = geneNname;
+        if (++GENE_NUMBERS >= GENE_MAX) {//
             System.out.println("目前基因位数不能超过" + GENE_MAX);
             System.exit(-1);
         }
-        return Long.parseLong(one + zero, 2); // 将类似"111000"这种字符串转换为长整
     }
-    
+
     /**把最后一位分配的基因指定到xyz坐标上
      */
-    public static void copyLastGeneTo( int x, int y, int z) {
-        assignGene.add((long)x);
-        assignGene.add((long)y);
-        assignGene.add((long)z);
-        assignGene.add( 1l << (GENE_NUMBERS-1)); //
+    public static void copyLastGeneTo(int x, int y, int z) {
+        assignGene.add((long) x);
+        assignGene.add((long) y);
+        assignGene.add((long) z);
+        assignGene.add(1l << (GENE_NUMBERS - 1)); //
     }
 
-    public static long register(int... pos) {// 登记并指定基因允许分布的位置
-        return register(1, true, false, pos[0], pos[1], pos[2]);
+    public static void register(int... pos) {// 登记并指定基因允许分布的位置
+        register(true, false, pos[0], pos[1], pos[2]);
     }
 
-    public static long registerFill(int... pos) {// 登记并手工指定基因填满的位置
-        return register(1, true, true, pos[0], pos[1], pos[2]);
+    public static void registerFill(int... pos) {// 登记并手工指定基因填满的位置
+        register(true, true, pos[0], pos[1], pos[2]);
     }
 
     private static boolean is(long cell, long geneMask) { // 判断cell是否含某个基因，这个不移位b
@@ -188,17 +179,18 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     private static final int NA = -1; //NA表示基因将随机分布
     // ============开始登记基因==========
 
-    // 登记细胞基因分布
+    // 登记细胞基因分布 
+    public static final int memGeneFrom;
     static {
-        //先登记一些外设细胞如眼和嘴巴，布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加
-        for (int z = 0; z <8; z++) {
-            register(1, true, true, 0, 0, z);
+        //先登记一些基因顺序分布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加 
+        for (int z = 0; z < 8; z++) {
+            register(true, true, 0, 0, z);
         }
 
-        register(1, true, true, 0, 1, 0); //这个是记忆细胞，单独占一行，
-        for (int y = 1; y <= 7; y++) {
-            copyLastGeneTo(0,1,y);
-        }
+        memGeneFrom = GENE_NUMBERS;
+        register(true, true, 0, 1, 0, "忆"); //这个是记忆细胞另起一行 
+        for (int y = 1; y <= 3; y++) //拷贝记忆细胞成一行
+            copyLastGeneTo(0, 1, y);
 
     }
 
@@ -208,64 +200,46 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         if (step == 0) {//在每屏第一次调用时初始化工作
         }
 
-        for (int y = 0; y <1; y++)  
-        for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
-            long c = a.cells[0][y][z];
+        for (int y = 0; y < 1; y++)
+            for (int z = 0; z < Env.BRAIN_SIZE; z++) {//本版本所有细胞都排成一条线，位于 z轴上 
+                long c = a.cells[0][y][z];
 
-            boolean engInput = false;
-            from(0); //全局变量b从0开始根据所含的各种基因，实作细胞的逻辑
+                boolean engInput = false;
+                from(0); //全局变量b从0开始根据所含的各种基因，实作细胞的逻辑
 
-            if (is_(c, "训")) {//如果FoodJudge中有训练信号
-                if (FoodJudge.train[step])
+                if (is_(c, "激")) {//如果有激基因, 此细胞始终激活, 也就是说这个细胞自己会产生能量
                     engInput = true;
-            }
+                }
 
-            if (is_(c, "0")) {//如果看到食物的第0位的像素点
-                if (FoodJudge.foodBit0)
-                    engInput = true;
-                //TODO
-            }
+                if (is_(c, "训")) {//如果FoodJudge中有训练信号
+                    if (FoodJudge.train[step])
+                        engInput = true;
+                }
 
-            if (is_(c, "1")) {//如果看到食物的第1位的像素点
-                if (FoodJudge.foodBit1)
-                    engInput = true;
-                //TODO
-            }
-            
-            if (is_(c, "甜")) {//如果尝到食物的甜味
-                 //TODO
-            }
-            
-            if (is_(c, "苦")) {//如果尝到食物的苦味
-                //TODO
-            }
-            
-            if (is_(c, "愉")) {//如果感到愉快
-                //TODO
-            }
-            
-            if (is_(c, "痛")) {//如果感到痛苦
-                //TODO
-            }
+                if (is_(c, "0")) {//如果看到食物的第0位的像素点
+                    if (FoodJudge.foodBit0)
+                        engInput = true;
+                }
 
-            if (is_(c, "咬")) {//如果是咬细胞
-                //TODO
-            }
-            
-            
-            if (engInput) //如果有信号输入则赋给细胞满能量1
-                a.setEngZ(z, 1);
-            else { //否则细胞能量衰减80%
-                float e = a.getEng(0, 0, z); //当前细胞的能量
-                e = e * .6f; //能量快速衰减 , 这个衰减率以后要改成基因或可进化常数控制
-                a.setEngZ(z, e);
-            }
-            
-            if (is_(c, "忆")) {//如果是忆细胞，啥也不干，因为忆细胞只存贮能量，它的能量由连线和其它（第一排的)细胞行为决定，无需给它行为
-            }
-            
+                if (is_(c, "1")) {//如果看到食物的第1位的像素点
+                    if (FoodJudge.foodBit1)
+                        engInput = true;
+                }
 
-        }
+                if (engInput) //如果有信号输入则赋给细胞满能量1
+                    a.setEngZ(z, 1);
+                else { //否则细胞能量衰减80%
+                    float e = a.getEng(0, 0, z); //当前细胞的能量
+                    e = e * .6f; //能量快速衰减 , 这个衰减率以后要改成基因或可进化常数控制
+                    a.setEngZ(z, e);
+                }
+
+                from(memGeneFrom);
+                if (is_(c)) {//如果是忆细胞
+
+                }
+
+            }
     }
 
 }
