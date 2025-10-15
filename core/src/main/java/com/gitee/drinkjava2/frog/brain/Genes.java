@@ -50,10 +50,10 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static int[] yLimit = new int[GENE_MAX];
     public static int[] zLimit = new int[GENE_MAX];
 
-    public static ArrayList<Long> assignGene = new ArrayList<Long>();
+    public static ArrayList<Long> assignGene = new ArrayList<Long>(); //四位一组，前三位表示坐标，后一位表示基因, 用的时候顺序遍历4个一组取出来
 
     /**
-     * Register one bit gene 依次一位基因及对应的相关参数
+     * Register one bit gene 登记一位基因及对应的相关参数，只是登记基因的分布，细胞生成后要根据这些数据在细胞里分布对应基因
      * 
      * @param display
      *            whether to display the gene on the BrainPicture 是否显示在脑图
@@ -67,8 +67,6 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
      *            
      * @param z_limit
      *            gene only allow on specified x, y, z 点上, 表示手工指定基因位于x,y,z坐标点上
-     * @return a long wtih mask bits 返回基因掩码，高位由maskBits个1组成，低位是若干个0，以后判断一个cell上是否含有这个基因，只需要用cell对应的long和这个 掩码做与运算即可
-     *        
      *        
      */
     public static void register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit) {
@@ -96,7 +94,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         assignGene.add((long) x);
         assignGene.add((long) y);
         assignGene.add((long) z);
-        assignGene.add(1l << (GENE_NUMBERS - 1)); //
+        assignGene.add(1l << (GENE_NUMBERS - 1)); //四位一组，前三位表示坐标，后一位表示基因
     }
 
     public static void register(int... pos) {// 登记并指定基因允许分布的位置
@@ -187,10 +185,10 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             register(true, true, 0, 0, z);
         }
 
-        memGeneFrom = GENE_NUMBERS;
-        register(true, true, 0, 1, 0, "忆"); //这个是记忆细胞另起一行 
-        for (int y = 1; y <= 3; y++) //拷贝记忆细胞成一行
-            copyLastGeneTo(0, 1, y);
+        memGeneFrom = GENE_NUMBERS; //记基因的序号
+        register(true, true, 0, 0, 0, "忆"); //先登记一个忆基因  
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) //再把忆基因拷贝到整行
+          copyLastGeneTo(0, 0, z);
 
     }
 
@@ -200,34 +198,35 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         if (step == 0) {//在每屏第一次调用时初始化工作
         }
 
-        for (int y = 0; y < 1; y++)
+        for (int y = 0; y < 2; y++)
             for (int z = 0; z < Env.BRAIN_SIZE; z++) {//遍历所有脑细胞 
                 long c = a.cells[0][y][z];
-                
+
                 float e = a.getEng(0, 0, z); //当前细胞的能量
                 e = e * .6f; //能量快速衰减，常量以后要改成进化调节 
                 a.setEngZ(z, e); 
                 
-                 
-                from(0); //全局变量b从0开始根据所含的各种基因，实作细胞的逻辑
+                
+                from(0); //全局变量b从0开始根据所含的各种基因，实作细胞的逻辑 
+                if (is_(c, "点0")) {//如果看到食物的第0位的像素点
+                    if (FoodJudge.foodBit0)
+                        a.setEngZ(z, FoodJudge.ep ); //点亮视细胞0
+                }
 
+                if (is_(c, "点1")) {//如果看到食物的第1位的像素点
+                    if (FoodJudge.foodBit1)
+                        a.setEngZ(z, FoodJudge.ep); //点亮视细胞1
+                }
+                
                 if (is_(c, "训")) {//如果FoodJudge中有训练信号
                     if (FoodJudge.train[step])
-                        a.setEngZ(z, 1);
+                        a.setEngZ(z, FoodJudge.ep);
                 }
 
-                if (is_(c, "0")) {//如果看到食物的第0位的像素点
-                    if (FoodJudge.foodBit0)
-                        a.setEngZ(z, 1);
+                if (is_(c, "忆")) {//如果FoodJudge中有忆基因 
+                    //TODO 忆基因的行为是把相邻两个细胞如果都激活，就增加它们的连线权值，如果有甜激素，就显著增加正连线权值，如果有苦激素，就显著增加负连线权值，如果没有激素，就少量增加正连线权值
                 }
-
-                if (is_(c, "1")) {//如果看到食物的第1位的像素点
-                    if (FoodJudge.foodBit1)
-                        a.setEngZ(z, 1);
-                }
-  
-               
-
+                
             }
     }
 

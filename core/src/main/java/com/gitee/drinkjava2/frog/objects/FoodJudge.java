@@ -17,8 +17,10 @@ public class FoodJudge extends DefaultEnvObject {
     public static boolean foodBit1;
 
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
-    final int p = 2; //p表示食物由有几个视觉像素点
-    final int bits = (int) Math.pow(2, p); //bits = 2 ^ p; 
+    public static final int p = 2; //p表示食物由有几个像素点
+    //ep由视细胞像素点多少决定，视细胞像素是食物像素点变焦得到，因为暂时还没有引入变焦和动眼参数，所以这个版本视细胞和食物细胞像素点数量相等
+    public static final float ep = 1f / 2; //每个视细胞收到的能量，视细胞越多，每个视细胞上分到的能量就越少，所有视细胞上能量总和始终为1。也就是说人眼在看复杂图像和简单图像时眼睛收到的总能量一样多
+    public static final int bits = (int) Math.pow(2, p); //bits = 2 ^ p; 
     final int tasteDelay = 4; //tasteDelay表示从咬下到感到甜苦味之间的延迟
     public static int groupSpace = 10; //间隔
     public static int groupSize = Env.STEPS_PER_ROUND / 6 - groupSpace; //groupSize表示食物在时间上连续出现多少个时间步长    
