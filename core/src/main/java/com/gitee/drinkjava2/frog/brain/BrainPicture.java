@@ -1,9 +1,7 @@
 package com.gitee.drinkjava2.frog.brain;
 
 import static com.gitee.drinkjava2.frog.brain.Genes.from;
-import static com.gitee.drinkjava2.frog.brain.Genes.is_;
 import static java.awt.Color.BLACK;
-import static java.awt.Color.BLUE;
 import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
 import static java.lang.Math.cos;
@@ -396,14 +394,15 @@ public class BrainPicture extends JPanel {
             }
 
             //开始给这个细胞写上所有基因名字，一个细胞可能有多个基因
-            setPicColor(Color.GRAY);
-            from(0);
+            setPicColor(Color.GRAY); 
             int txtXPos = 0;
+            long mask=1l;
             for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
-                if (is_(c) && Genes.display_gene[i]) { 
+                if (Genes.is(c,  mask) && Genes.display_gene[i]) { 
                     txtXPos++;
                     drawText(txtXPos, y+0.5f, z + 0.2f, Genes.name_gene[i], .4f);
                 }
+                mask=mask<<1;
             }
         }
 

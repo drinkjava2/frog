@@ -67,13 +67,14 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
      *            
      * @param z_limit
      *            gene only allow on specified x, y, z 点上, 表示手工指定基因位于x,y,z坐标点上
-     *        
+     *            
+     * @return a long integer mask 返回代表当前基因掩码的一个长整数，要判断一个细胞是否含有此基因只要与其作and运算即可
      */
-    public static void register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit) {
-        register(display, fill, x_limit, y_limit, z_limit, null);
+    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit) {
+       return register(display, fill, x_limit, y_limit, z_limit, null);
     }
 
-    public static void register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit,
+    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit,
             String geneNname) {
         display_gene[GENE_NUMBERS] = display;
         fill_gene[GENE_NUMBERS] = fill;
@@ -86,6 +87,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             System.out.println("目前基因位数不能超过" + GENE_MAX);
             System.exit(-1);
         }
+        return 1L<<(GENE_NUMBERS-1);
     }
 
     /**把最后一位分配的基因指定到xyz坐标上
@@ -105,8 +107,12 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         register(true, true, pos[0], pos[1], pos[2]);
     }
 
-    private static boolean is(long cell, long geneMask) { // 判断cell是否含某个基因，这个不移位b
+    public static boolean is(long cell, long geneMask) { // 判断cell是否含某个基因的掩码
         return (cell & geneMask) > 0;
+    }
+    
+    public static boolean isNo(long cell, int geneNo) { // 判断cell是否含某个基因的序号
+        return (cell & (1l<<geneNo)) > 0;
     }
 
     private static long b = 1; //以实现is(cell)方法每调用一次b就移位一次的效果，用全局静态变量可以省去方法调用时多传一个参数
@@ -117,23 +123,6 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         bIndex = n;
     }
 
-    public static boolean is_(long cell) { // 判断cell是否含b这个基因掩码，并左移位全局静态变量b一位，用下划线命名表示移位
-        checkIndex();
-        boolean result = (cell & b) > 0;
-        b = b << 1;
-        bIndex++;
-        return result;
-    }
-
-    public static boolean is_(long cell, String name) { // 判断cell是否含b这个基因掩码，并左移位全局静态变量b一位，用下划线命名表示移位，第二个参数赋给基因一个名字以方便调试，名字不影响逻辑
-        name_gene[bIndex] = name;
-        checkIndex();
-        boolean result = (cell & b) > 0;
-        b = b << 1;
-        bIndex++;
-        return result;
-    }
-
     public static void checkIndex() {//范围检查，使用的基因位数不能超过登记的位数, 这个方法
         if (bIndex > GENE_NUMBERS) {
             System.out.println("bIndex=" + bIndex);
@@ -142,51 +131,27 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             throw new RuntimeException("登记的基因位不够用，要再登记多一点");
         }
     }
-
-    private static void is_(Animal a, int z, long c, boolean bl) { // 判断c是否含当前b这个基因掩码且符合条件bl,则左移位全局静态变量b一位且激活当前细胞c
-        checkIndex();
-        if ((c & b) > 0 && bl)
-            a.setEngZ(z, 1);
-        b = b << 1;
-        bIndex++;
-    }
-
-    private static void is_(Animal a, int z, long c, boolean bl, String name) {
-        name_gene[bIndex] = name;
-        checkIndex();
-        if ((c & b) > 0 && bl)
-            a.setEngZ(z, 1);
-        b = b << 1;
-        bIndex++;
-    }
-
-    private static int int_(long cell, int n) { //cell以当前基因掩码b开始，连续取n位成为0~2^n之间的整数返回，并把全局静态变量b左移n位
-        int result = 0;
-        long bb = 1L;
-        for (int i = 0; i < n; i++) {
-            checkIndex();
-            if ((cell & b) > 0)
-                result += bb;
-            bb = bb << 1;
-            bIndex++;
-            b = b << 1;
-        }
-        return result;
-    }
-
+   
     private static final int NA = -1; //NA表示基因将随机分布
     // ============开始登记基因==========
 
     // 登记细胞基因分布 
-    public static final int memGeneFrom;
+    public static int memGeneFrom;
+    public static long 点0;
+    public static long 点1;
+    public static long 训;
+    public static long 忆;
+    public static long 咬;
+    public static long 甜;
+    public static long 苦;
+    
     static {
         //先登记一些基因顺序分布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加 
-        for (int z = 0; z < 3; z++) {
-            register(true, true, 0, 0, z);
-        }
-
-        memGeneFrom = GENE_NUMBERS; //记基因的序号
-        register(true, true, 0, 0, 0, "忆"); //先登记一个忆基因  
+        点0=register(true, true, 0, 0, 0, "点0"); //先登记一个忆基因  
+        点1=register(true, true, 0, 0, 1, "点1"); //先登记一个忆基因
+        训=register(true, true, 0, 0, 2, "训"); //先登记一个忆基因
+         
+        忆=register(true, true, 0, 0, 0, "忆"); //先登记一个忆基因  
         for (int z = 0; z < Env.BRAIN_SIZE; z++) //再把忆基因拷贝到整行
           copyLastGeneTo(0, 0, z);
 
@@ -205,25 +170,23 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                 float e = a.getEng(0, 0, z); //当前细胞的能量
                 e = e * .6f; //能量快速衰减，常量以后要改成进化调节 
                 a.setEngZ(z, e); 
-                
-                
-                from(0); //全局变量b从0开始根据所含的各种基因，实作细胞的逻辑 
-                if (is_(c, "点0")) {//如果看到食物的第0位的像素点
+                 
+                if (is(c, 点0)) {//如果看到食物的第0位的像素点
                     if (FoodJudge.foodBit0)
                         a.setEngZ(z, FoodJudge.ep ); //点亮视细胞0
                 }
 
-                if (is_(c, "点1")) {//如果看到食物的第1位的像素点
+                if (is(c, 点1)) {//如果看到食物的第1位的像素点
                     if (FoodJudge.foodBit1)
                         a.setEngZ(z, FoodJudge.ep); //点亮视细胞1
                 }
                 
-                if (is_(c, "训")) {//如果FoodJudge中有训练信号
+                if (is(c, 训)) {//如果FoodJudge中有训练信号
                     if (FoodJudge.train[step])
                         a.setEngZ(z, FoodJudge.ep);
                 }
 
-                if (is_(c, "忆")) {//如果FoodJudge中有忆基因 
+                if (is(c, 忆)) {//如果FoodJudge中有忆基因 
                     //TODO 忆基因的行为是把相邻两个细胞如果都激活，就增加它们的连线权值，如果有甜激素，就显著增加正连线权值，如果有苦激素，就显著增加负连线权值，如果没有激素，就少量增加正连线权值
                 }
                 
