@@ -16,6 +16,7 @@ import com.gitee.drinkjava2.frog.objects.FoodJudge;
 
 import static com.gitee.drinkjava2.frog.Env.BRAIN_SIZE;
 
+import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
 
 /**
@@ -50,7 +51,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static int[] yLimit = new int[GENE_MAX];
     public static int[] zLimit = new int[GENE_MAX];
 
-    public static ArrayList<Long> assignGene = new ArrayList<Long>(); //四位一组，前三位表示坐标，后一位表示基因, 用的时候顺序遍历4个一组取出来
+    public static ArrayList<long[]> assignGene = new ArrayList<long[]>(); //手工指定的基因坐标和掩码，每项四位一组，前三位表示坐标，后一位表示基因掩码
 
     /**
      * Register one bit gene 登记一位基因及对应的相关参数，只是登记基因的分布，细胞生成后要根据这些数据在细胞里分布对应基因
@@ -71,11 +72,10 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
      * @return a long integer mask 返回代表当前基因掩码的一个长整数，要判断一个细胞是否含有此基因只要与其作and运算即可
      */
     public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit) {
-       return register(display, fill, x_limit, y_limit, z_limit, null);
+        return register(display, fill, x_limit, y_limit, z_limit, null);
     }
 
-    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit,
-            String geneNname) {
+    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit, String geneNname) {
         display_gene[GENE_NUMBERS] = display;
         fill_gene[GENE_NUMBERS] = fill;
         xLimit[GENE_NUMBERS] = x_limit;
@@ -87,16 +87,48 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             System.out.println("目前基因位数不能超过" + GENE_MAX);
             System.exit(-1);
         }
-        return 1L<<(GENE_NUMBERS-1);
+        return 1L << (GENE_NUMBERS - 1);
     }
 
-    /**把最后一位分配的基因指定到xyz坐标上
-     */
-    public static void copyLastGeneTo(int x, int y, int z) {
-        assignGene.add((long) x);
-        assignGene.add((long) y);
-        assignGene.add((long) z);
-        assignGene.add(1l << (GENE_NUMBERS - 1)); //四位一组，前三位表示坐标，后一位表示基因
+    /**手工在xyz坐标上添加一个基因  */
+    public static void assignGene(int x, int y, int z, long geneMask) {
+        assignGene.add(new long[]{x, y, z, geneMask}); //四位一组，前三位表示坐标，后一位表示基因
+    }
+
+    /** 移除xyz坐标上已添加的基因 */
+    public static void removeGene(int x, int y, int z, long geneMask) {
+        int _x, _y, _z;
+        for (int i = 0; i < assignGene.size(); i++) {
+            long[] l = assignGene.get(i);
+            if (l[0] == x && l[1] == y && l[2] == z)
+                assignGene.set(i, new long[]{x, y, z, l[3] & ~geneMask});
+        }
+    }
+
+    public static int deleteFourElementsInPlace(long[] array, int startIndex) {
+        final int FIXED_SIZE = 100;
+        final int NUM_TO_DELETE = 4;
+        final long FILL_VALUE = 0L;
+
+        if (array == null || array.length != FIXED_SIZE) {
+            return -1;
+        }
+
+        if (startIndex < 0 || startIndex + NUM_TO_DELETE > FIXED_SIZE) {
+            return -1;
+        }
+
+        int numToMove = FIXED_SIZE - (startIndex + NUM_TO_DELETE);
+
+        if (numToMove > 0) {
+            System.arraycopy(array, startIndex + NUM_TO_DELETE, array, startIndex, numToMove);
+        }
+
+        int fillStart = FIXED_SIZE - NUM_TO_DELETE;
+
+        java.util.Arrays.fill(array, fillStart, FIXED_SIZE, FILL_VALUE);
+
+        return 0;
     }
 
     public static void register(int... pos) {// 登记并指定基因允许分布的位置
@@ -110,9 +142,9 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static boolean is(long cell, long geneMask) { // 判断cell是否含某个基因的掩码
         return (cell & geneMask) > 0;
     }
-    
+
     public static boolean isNo(long cell, int geneNo) { // 判断cell是否含某个基因的序号
-        return (cell & (1l<<geneNo)) > 0;
+        return (cell & (1l << geneNo)) > 0;
     }
 
     private static long b = 1; //以实现is(cell)方法每调用一次b就移位一次的效果，用全局静态变量可以省去方法调用时多传一个参数
@@ -131,66 +163,77 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
             throw new RuntimeException("登记的基因位不够用，要再登记多一点");
         }
     }
-   
+
     private static final int NA = -1; //NA表示基因将随机分布
     // ============开始登记基因==========
 
     // 登记细胞基因分布 
-    public static int memGeneFrom;
     public static long 点0;
     public static long 点1;
-    public static long 训;
+    public static long 饿;
     public static long 忆;
     public static long 咬;
     public static long 甜;
     public static long 苦;
-    
+
     static {
         //先登记一些基因顺序分布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加 
-        点0=register(true, true, 0, 0, 0, "点0"); //先登记一个忆基因  
-        点1=register(true, true, 0, 0, 1, "点1"); //先登记一个忆基因
-        训=register(true, true, 0, 0, 2, "训"); //先登记一个忆基因
-         
-        忆=register(true, true, 0, 0, 0, "忆"); //先登记一个忆基因  
-        for (int z = 0; z < Env.BRAIN_SIZE; z++) //再把忆基因拷贝到整行
-          copyLastGeneTo(0, 0, z);
+        点0 = register(true, true, 0, 0, 0, "点0");
+        点1 = register(true, true, 0, 0, 1, "点1");
+        饿 = register(true, true, 0, 0, 2, "饿");
+        甜 = register(true, true, 0, 0, 3, "甜");
+        苦 = register(true, true, 0, 0, 4, "苦");
+        咬 = register(true, true, 0, 0, 5, "咬");
 
+        忆 = register(true, true, 0, 0, 3, "忆"); //先登记一个忆基因  
+        for (int z = 4; z < Env.BRAIN_SIZE; z++) //再把忆基因拷贝到整行
+            assignGene(0, 0, z, 忆);
     }
 
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 ===========
+    // 基于规则编程，结构可以用分裂算法生成，但规则不会
+    // 规则一：任意两个细胞如果有时间上反复相关的激活，则两者之间形成关联
+    // 规则二：动作细胞由饿细胞驱动，饿细胞越强烈，随机产生动作的概率越大，饿是思维的原动力
+    // 规则三：动作细胞和视觉细胞的关联，由甜细胞或苦细胞的激活来调节权重
+    // 规则四：视觉细胞所有像素点收到的信号总和始终为1，像素点越多，每个像素权重越小，变焦可以让像素点变少提高识别率
     public static void active(Animal a) {
         int step = Env.step;
         if (step == 0) {//在每屏第一次调用时初始化工作
         }
 
-        for (int y = 0; y < 2; y++)
-            for (int z = 0; z < Env.BRAIN_SIZE; z++) {//遍历所有脑细胞 
-                long c = a.cells[0][y][z];
+        for (int z = 0; z < Env.BRAIN_SIZE; z++) {//遍历所有脑细胞 
+            long c = a.cells[0][0][z];
 
-                float e = a.getEng(0, 0, z); //当前细胞的能量
-                e = e * .6f; //能量快速衰减，常量以后要改成进化调节 
-                a.setEngZ(z, e); 
-                 
-                if (is(c, 点0)) {//如果看到食物的第0位的像素点
-                    if (FoodJudge.foodBit0)
-                        a.setEngZ(z, FoodJudge.ep ); //点亮视细胞0
-                }
+            float e = a.getEng(0, 0, z); //当前细胞的能量
+            e = e * .6f; //能量快速衰减，常量以后要改成进化调节 
+            a.setEngZ(z, e);
 
-                if (is(c, 点1)) {//如果看到食物的第1位的像素点
-                    if (FoodJudge.foodBit1)
-                        a.setEngZ(z, FoodJudge.ep); //点亮视细胞1
-                }
-                
-                if (is(c, 训)) {//如果FoodJudge中有训练信号
-                    if (FoodJudge.train[step])
-                        a.setEngZ(z, FoodJudge.ep);
-                }
-
-                if (is(c, 忆)) {//如果FoodJudge中有忆基因 
-                    //TODO 忆基因的行为是把相邻两个细胞如果都激活，就增加它们的连线权值，如果有甜激素，就显著增加正连线权值，如果有苦激素，就显著增加负连线权值，如果没有激素，就少量增加正连线权值
-                }
-                
+            //针对单个细胞的行为
+            if (is(c, 点0)) {//如果看到食物的第0位的像素点
+                if (FoodJudge.foodBit0)
+                    a.setEngZ(z, FoodJudge.ep); //点亮视细胞0
             }
+
+            if (is(c, 点1)) {//如果看到食物的第1位的像素点
+                if (FoodJudge.foodBit1)
+                    a.setEngZ(z, FoodJudge.ep); //点亮视细胞1
+            }
+
+            if (is(c, 饿)) {//如果FoodJudge中有饿信号，看到食物时 
+                if(a.ateFood<10)
+                    a.setEngZ(z, 1); //点亮饿细胞
+            }
+
+ 
+            //针对两两细胞之间的行为 
+            for (int z2 = 0; z2 < Env.BRAIN_SIZE; z2++) {
+                long c2 = a.cells[0][0][z2];
+                float e2 = a.getEng(0, 0, z2); //当前细胞的能量 
+                //TODO
+            }
+
+        }
+
     }
 
 }

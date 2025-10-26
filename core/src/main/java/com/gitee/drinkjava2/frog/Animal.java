@@ -57,9 +57,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
-    public long[][][] cells = new long[1][2][BRAIN_SIZE]; //所有脑细胞，先排在一条线上，用2叉分裂算法
+    public long[][][] cells = new long[1][1][BRAIN_SIZE]; //所有脑细胞，先排在一条线上，用2叉分裂算法
 
-    public float[][][] energys = new float[1][2][BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
+    public float[][][] energys = new float[1][1][BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
 
     public float[][] posWeight = new float[BRAIN_SIZE][BRAIN_SIZE]; //所有细胞的所有连线的正权重，
     public float[][] posActivity = new float[BRAIN_SIZE][BRAIN_SIZE]; //所有细胞的所有连线的正权重的活跃度，活跃度是近期流动的能量值的平均值。活跃度的出现是为了能实现"甜信号加强最近活跃的权重"这一目的

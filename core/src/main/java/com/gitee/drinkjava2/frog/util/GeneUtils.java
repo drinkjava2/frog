@@ -94,13 +94,13 @@ public class GeneUtils {
             }
         }
 
-        for (int i = 0; i < Genes.assignGene.size() / 4; i++) {//有些基因是手工指定分布到xyz上的，在这里实现它
-            int x = Genes.assignGene.get(i * 4 + 0).intValue();
-            int y = Genes.assignGene.get(i * 4 + 1).intValue();
-            int z = Genes.assignGene.get(i * 4 + 2).intValue();
-            long gene = Genes.assignGene.get(i * 4 + 3);
-            a.cells[x][y][z] = a.cells[x][y][z] | gene;
+        for (long[] l : Genes.assignGene) {//有些基因是手工指定分布到xyz上的，在这里实现它
+            int x = (int) l[0];
+            int y = (int) l[1];
+            int z = (int) l[2];
+            a.cells[x][y][z] = a.cells[x][y][z] | l[3];
         }
+
     }
 
     public static void geneMutation(Animal a) { //基因变异,注意这一个方法同时变异所有条基因
