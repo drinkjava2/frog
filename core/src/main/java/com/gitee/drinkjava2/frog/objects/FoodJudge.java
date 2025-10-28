@@ -104,10 +104,10 @@ public class FoodJudge extends DefaultEnvObject {
         int y = step / (Env.ENV_WIDTH / n);
         g.setColor(Color.BLUE);
         g.fillRect(x * n, y * n + n / 3, n, 3);
-        if (f.sweet) { //副线条显示味觉
+        if (f.feelSweet) { //副线条显示味觉
             g.setColor(Color.GREEN); //绿表示甜
             g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
-        } else if (f.bitter) {
+        } else if (f.feelBitter) {
             g.setColor(Color.RED); //苦用红表示
             g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
         }
