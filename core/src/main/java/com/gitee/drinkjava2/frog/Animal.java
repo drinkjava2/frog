@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 
 import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
+import com.gitee.drinkjava2.frog.objects.FoodJudge;
 import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.GeneUtils;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
@@ -82,8 +83,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     //========================以下是感觉细胞和输入输出细胞，这些细胞和大脑中的神经元相连==========
     //感觉和输出细胞不参与脑细胞排列，这都是开关量，由神经元控制，神经元参与脑细胞随机排列筛选
     public boolean feelSweet = false; //尝到了外界甜味
-    public boolean feelBitter = false; //尝到外界苦味
-    public boolean actBite = false; //实行咬下动作
+    public boolean feelBitter = false; //尝到外界苦味 
 
     public Animal(Egg egg) {//构造方法，Animal从蛋中诞生
         System.arraycopy(egg.consts, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数
@@ -153,7 +153,6 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     private static final int MIN_FAT_LIMIT = Integer.MIN_VALUE + 5000;
     private static final int MAX_FAT_LIMIT = Integer.MAX_VALUE - 5000;
 
-    //@formatter:off 下面几行是重要的奖罚方法，会经常调整或注释掉，集中放在一起，不要格式化为多行   
     public void changeFat(int fat_) {//正数为奖励，负数为惩罚， fat值是环境对animal唯一的奖罚，也是animal唯一的下蛋竞争标准
         fat += fat_;
         if (fat > MAX_FAT_LIMIT)
@@ -162,65 +161,24 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             fat = MIN_FAT_LIMIT;
     }
 
-    //没定各个等级的奖罚值，目前是手工设定的常数
-    public void awardAAAA() {
-        changeFat(50000);
-    }
-
-    public void awardAAA5() {
-        changeFat(5000);
-    }
-
-    public void awardAAA3() {
-        changeFat(3000);
-    }
-
-    public void awardAAA2() {
-        changeFat(2000);
-    }
-
-    public void awardAAA() {
-        changeFat(1000);
-    }
-
-    public void awardAA() {
-        changeFat(100);
-    }
-
-    public void awardA() {
-        changeFat(10);
-    }
-
-    public void penaltyAAAA() {
-        changeFat(-10000);
-    }
-
-    public void penaltyAAA3() {
-        changeFat(-3000);
-    }
-
-    public void penaltyAAA2() {
-        changeFat(-2000);
-    }
-
-    public void penaltyAAA() {
-        changeFat(-1000);
-    }
-
-    public void penaltyAA() {
-        changeFat(-100);
-    }
-
-    public void penaltyA() {
-        changeFat(-10);
-    }
-
-    public void kill() {
-        this.alive = false;
-        changeFat(-5000000);
-        Env.clearMaterial(xPos, yPos, animalMaterial);
-    } //kill是最大的惩罚
-      //@formatter:on
+    //设定各个等级的奖罚值，目前是手工设定的常数
+    //@formatter:off 下面几行是重要的奖罚方法，会经常调整或注释掉，集中放在一起，不要格式化为多行
+    public void awardAAAA()      { changeFat(10000);}
+    public void awardAAA5()   { changeFat(5000);}
+    public void awardAAA3()   { changeFat(3000);}
+    public void awardAAA2()   { changeFat(2000);}    
+    public void awardAAA()   { changeFat(1000);}
+    public void awardAA()     { changeFat(100);}      
+    public void awardA()   { changeFat(10);}
+    
+    public void penaltyAAAA()    { changeFat(-10000);}
+    public void penaltyAAA3() { changeFat(-3000);}    
+    public void penaltyAAA2() { changeFat(-2000);}    
+    public void penaltyAAA() { changeFat(-1000);}
+    public void penaltyAA()   { changeFat(-100);}
+    public void penaltyA()   { changeFat(-10);}
+    public void kill() {  this.alive = false; changeFat(-5000000);  Env.clearMaterial(xPos, yPos, animalMaterial);  } //kill是最大的惩罚
+    //@formatter:on
 
     public void showInEnv(Graphics g) {// 在虚拟环境显示当前动物，这个方法直接调用Env的Graphics对象 
         if (no == (Env.current_screen * Env.FROG_PER_SCREEN + 1)) { //如果是当前第一个青蛙，给它画个红圈
@@ -292,6 +250,13 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public float getEng(int x, int y, int z) {//返回指定的a坐标对应的cell能量值
         return energys[x][y][z];
+    }
+
+    public void bite() { //咬下 
+        if (FoodJudge.isSweetFood())
+            this.awardAA();
+        else
+            this.penaltyA();
     }
 
 }

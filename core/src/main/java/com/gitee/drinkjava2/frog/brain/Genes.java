@@ -75,7 +75,8 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         return register(display, fill, x_limit, y_limit, z_limit, null);
     }
 
-    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit, String geneNname) {
+    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit,
+            String geneNname) {
         display_gene[GENE_NUMBERS] = display;
         fill_gene[GENE_NUMBERS] = fill;
         xLimit[GENE_NUMBERS] = x_limit;
@@ -92,7 +93,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
 
     /**手工在xyz坐标上添加一个基因  */
     public static void assignGene(int x, int y, int z, long geneMask) {
-        assignGene.add(new long[]{x, y, z, geneMask}); //四位一组，前三位表示坐标，后一位表示基因
+        assignGene.add(new long[] { x, y, z, geneMask }); //四位一组，前三位表示坐标，后一位表示基因
     }
 
     /** 移除xyz坐标上已添加的基因 */
@@ -101,7 +102,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         for (int i = 0; i < assignGene.size(); i++) {
             long[] l = assignGene.get(i);
             if (l[0] == x && l[1] == y && l[2] == z)
-                assignGene.set(i, new long[]{x, y, z, l[3] & ~geneMask});
+                assignGene.set(i, new long[] { x, y, z, l[3] & ~geneMask });
         }
     }
 
@@ -175,6 +176,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static long 咬;
     public static long 甜;
     public static long 苦;
+    public static long 消;
 
     static {
         //先登记一些基因顺序分布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加 
@@ -197,42 +199,43 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     // 规则三：动作细胞和视觉细胞的关联，由甜细胞或苦细胞的激活来调节权重
     // 规则四：视觉细胞所有像素点收到的信号总和始终为1，像素点越多，每个像素权重越小，变焦可以让像素点变少提高识别率
     public static void active(Animal a) {
-        int step = Env.step;
-        if (step == 0) {//在每屏第一次调用时初始化工作
-        }
-
-        for (int z = 0; z < Env.BRAIN_SIZE; z++) {//遍历所有脑细胞 
-            long c = a.cells[0][0][z];
-
-            float e = a.getEng(0, 0, z); //当前细胞的能量
-            e = e * .6f; //能量快速衰减，常量以后要改成进化调节 
-            a.setEngZ(z, e);
-
-            //针对单个细胞的行为
-            if (is(c, 点0) && FoodJudge.foodBit0) { //如果看到食物的第0位的像素点且存在点0基因
-                a.setEngZ(z, FoodJudge.ep); //点亮视细胞1
-            }
-
-            if (is(c, 点1) && FoodJudge.foodBit1) { //如果看到食物的第1位的像素点
-                a.setEngZ(z, FoodJudge.ep); //点亮视细胞1
-            }
-
-            if (is(c, 饿)) {//如果FoodJudge中有饿信号，在开始时几步会强制发出咬动作 
-                a.setEngZ(z, 1); //激活
-                if (step < 5)
-                    a.actBite = true;
-            }
-
-            if (is(c, 咬) && e>0.8) {//如果当前细胞有咬基因，且能量是激活态，作出咬动作  
-                a.actBite = true;
-            }
-
+        for (int z1 = 0; z1 < Env.BRAIN_SIZE; z1++) {//遍历所有脑细胞 
+            long c1 = a.cells[0][0][z1];
+            
             //针对两两细胞之间的行为 
             for (int z2 = 0; z2 < Env.BRAIN_SIZE; z2++) {
                 long c2 = a.cells[0][0][z2];
-                float e2 = a.getEng(0, 0, z2); //当前细胞的能量 
-                //TODO
+                twoCellAction(a, c1, z1, c2, z2);
             }
+        }
+    }
+
+    //两个细胞之间的行为，有信号传递、触突权重调整等行为,z1是自身坐标，z2是对方坐标
+    //触突权重调整有三种情况，一是天生的固有的权重，二是反复发生积累产生的权重，三是受激素群发信号进行大幅度调节的权重
+    private static void twoCellAction(Animal a, long c1, int z1, long c2, int z2) {
+        int step = Env.step;
+
+        float e1 = a.getEng(0, 0, z1); //当前细胞的能量
+        float e2 = a.getEng(0, 0, z2); //对方细胞的能量
+
+        if (z1 == z2) { //z1,z2相等时考虑单个细胞的行为 
+            if (is(c1, 点0) && FoodJudge.foodBit0) { //如果看到食物的第0位的像素点且存在点0基因
+                a.setEngZ(z1, FoodJudge.ep); //点亮视细胞0
+            }
+
+            if (is(c1, 点1) && FoodJudge.foodBit1) { //如果看到食物的第1位的像素点
+                a.setEngZ(z1, FoodJudge.ep); //点亮视细胞1
+            }
+
+            if (is(c1, 饿)) {//如果FoodJudge中有饿信号，在开始时几步会强制发出咬动作 
+                if (step < 5)
+                    a.setEngZ(z1, 1);
+            }
+
+            if (is(c1, 咬) && e1 > 0.8) {//如果当前细胞有咬基因，且能量是激活态，作出咬动作  
+                a.bite();
+            }
+        } else { //z1,z2不等时，是两个细胞之间的相互行为
 
         }
 

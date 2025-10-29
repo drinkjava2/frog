@@ -88,6 +88,10 @@ public class FoodJudge extends DefaultEnvObject {
         }
     }
 
+    public static boolean isSweetFood(){
+        return  food[Env.step]==sweetFoodCode ; 
+    }
+    
     @Override
     public void active() {
         Graphics g = Env.graph;
@@ -113,4 +117,5 @@ public class FoodJudge extends DefaultEnvObject {
         }
     }
 
+    
 }
