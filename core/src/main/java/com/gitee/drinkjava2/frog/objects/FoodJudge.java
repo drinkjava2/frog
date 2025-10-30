@@ -101,20 +101,26 @@ public class FoodJudge extends DefaultEnvObject {
         foodBit0 = (foodCode & 1) > 0; //foodBit0和foodBit1是代表食物的两个像素点
         foodBit1 = (foodCode & 0b10) > 0;
 
+        //因为只是显示，不影响逻辑，这里不需要遍历所有青蛙，只需要显示第一个青蛙的状态就行了
         f = Env.frogs.get(Env.current_screen * Env.FROG_PER_SCREEN + 0);
-
         // 开始画出状态色条
         int x = step % (Env.ENV_WIDTH / n);
         int y = step / (Env.ENV_WIDTH / n);
         g.setColor(Color.BLUE);
-        g.fillRect(x * n, y * n + n / 3, n, 3);
+        g.fillRect(x * n, y * n + n / 2, n, 3);
         if (f.feelSweet) { //副线条显示味觉
             g.setColor(Color.GREEN); //绿表示甜
-            g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
-        } else if (f.feelBitter) {
-            g.setColor(Color.RED); //苦用红表示
-            g.fillRect(x * n, y * n + n / 2 - 4, n, 3);
+            g.fillRect(x * n, y * n + n / 2 - 2, n, 2);
         }
+        if (f.feelBitter) {
+            g.setColor(Color.RED); //苦用红表示
+            g.fillRect(x * n, y * n + n / 2 +2, n, 2);
+        }
+        if (f.inBiting) {
+            g.setColor(Color.YELLOW); //咬下状态用黄表示
+            g.fillRect(x * n, y * n + n / 2 +4, n, 2);
+        }
+        
     }
 
     

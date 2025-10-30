@@ -84,6 +84,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     //感觉和输出细胞不参与脑细胞排列，这都是开关量，由神经元控制，神经元参与脑细胞随机排列筛选
     public boolean feelSweet = false; //尝到了外界甜味
     public boolean feelBitter = false; //尝到外界苦味 
+    public boolean inBiting = false; //咬下状态 
 
     public Animal(Egg egg) {//构造方法，Animal从蛋中诞生
         System.arraycopy(egg.consts, 0, this.consts, 0, consts.length);//从蛋中拷一份全局参数
@@ -253,10 +254,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void bite() { //咬下 
+        this.inBiting=true;
         if (FoodJudge.isSweetFood())
             this.awardAA();
         else
             this.penaltyA();
     }
 
+    public void stopBite() { //停止咬 
+        this.inBiting=false;
+   }
+    
 }
