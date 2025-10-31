@@ -235,22 +235,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void addEng(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
-        if (cells[x][y][z] == 0)
-            return;
         float eng = energys[x][y][z] + e;
         if (eng > 1) //如果饱和，不再增加，通过这个方法可以实现异或逻辑或更复杂的模式识别，详见TestInput3测试
             eng = 1;
         if (eng < 0) //回到传统方式，细胞不允许出现负能量。（但是能量可以出现负值，这个与实际细胞的抑制信号相似）
             eng = 0;
         energys[x][y][z] = eng;
-    }
-
-    public float getEng(int[] a) {//返回指定的a坐标对应的cell能量值
-        return energys[a[0]][a[1]][a[2]];
-    }
-
-    public float getEng(int x, int y, int z) {//返回指定的a坐标对应的cell能量值
-        return energys[x][y][z];
     }
 
     public void bite() { //咬下 

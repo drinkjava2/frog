@@ -134,10 +134,7 @@ public class Env extends JPanel {
     public static boolean foundFrogOrOutEdge(int x, int y) {// 如果指定点看到青蛙或超出边界，返回true
         if (x < 0 || y < 0 || x >= ENV_WIDTH || y >= ENV_HEIGHT)
             return true;// 如果出界返回true
-        if ((Env.bricks[x][y] & Material.FROG_TAG) > 0)
-            return true;
-        else
-            return false;
+        return ((Env.bricks[x][y] & Material.FROG_TAG) > 0);
     }
 
     public static void setMaterial(int x, int y, int material) {
