@@ -92,7 +92,7 @@ public class FoodJudge extends DefaultEnvObject {
     }
     
     public static boolean isBitter() {
-        return food[Env.step] > 0 && food[Env.step] != sweetFoodCode;
+        return food[Env.step] != sweetFoodCode;
     }    
     
     @Override

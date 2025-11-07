@@ -75,8 +75,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         return register(display, fill, x_limit, y_limit, z_limit, null);
     }
 
-    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit,
-            String geneNname) {
+    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit, String geneNname) {
         display_gene[GENE_NUMBERS] = display;
         fill_gene[GENE_NUMBERS] = fill;
         xLimit[GENE_NUMBERS] = x_limit;
@@ -93,16 +92,15 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
 
     /**手工在xyz坐标上添加一个基因  */
     public static void assignGene(int x, int y, int z, long geneMask) {
-        assignGene.add(new long[] { x, y, z, geneMask }); //四位一组，前三位表示坐标，后一位表示基因
+        assignGene.add(new long[]{x, y, z, geneMask}); //四位一组，前三位表示坐标，后一位表示基因
     }
 
     /** 移除xyz坐标上已添加的基因 */
     public static void removeGene(int x, int y, int z, long geneMask) {
-        int _x, _y, _z;
         for (int i = 0; i < assignGene.size(); i++) {
             long[] l = assignGene.get(i);
             if (l[0] == x && l[1] == y && l[2] == z)
-                assignGene.set(i, new long[] { x, y, z, l[3] & ~geneMask });
+                assignGene.set(i, new long[]{x, y, z, l[3] & ~geneMask});
         }
     }
 
@@ -186,7 +184,6 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         甜 = register(true, true, 0, 0, 3, "甜");
         苦 = register(true, true, 0, 0, 4, "苦");
         咬 = register(true, true, 0, 0, 5, "咬");
-
         忆 = register(true, true, 0, 0, 3, "忆"); //先登记一个忆基因  
         for (int z = 4; z < Env.BRAIN_SIZE; z++) //再把忆基因拷贝到整行
             assignGene(0, 0, z, 忆);
@@ -201,15 +198,14 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static void active(Animal a) {
         int step = Env.step;
         for (int z1 = 0; z1 < Env.BRAIN_SIZE; z1++) {//遍历所有脑细胞 
-            
-            
+
             //======================先针对单个细胞的行为=====================
             long c1 = a.cells[0][0][z1];
             float e1 = a.energys[0][0][z1];
-            
-            e1 = e1 * 0.85f; //所有细胞能量都随时间自动衰减，这个衰减率魔数以后要放到常量或基因里控制
-            a.setEng(0, 0, z1, e1); 
-            
+
+            e1 = e1 * 0.95f; //所有细胞能量都随时间自动衰减，这个衰减率魔数以后要放到常量或基因里控制
+            a.setEng(0, 0, z1, e1);
+
             //运动细胞根据能量输出动作
             if (is(c1, 咬)) {//如果当前细胞有咬基因，且能量是激活态，作出咬动作
                 if (e1 > 0.8)
@@ -217,7 +213,7 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                 else
                     a.stopBite();
             }
-            
+
             // 感受细胞接收外界能量输入 
             if (is(c1, 点0) && FoodJudge.foodBit0) { //如果存在点0基因且看到食物的第0位的像素点
                 a.setEngZ(z1, 1); //点亮视细胞0 
@@ -231,15 +227,14 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                 a.setEngZ(z1, 1); //点亮甜细胞  
             }
 
-            if (is(c1, 苦) && a.inBiting && !FoodJudge.isBitter()) { //如果有苦基因且咬下且是苦的，激活这个苦细胞
+            if (is(c1, 苦) && a.inBiting && FoodJudge.isBitter()) { //如果有苦基因且咬下且是苦的，激活这个苦细胞
                 a.setEngZ(z1, 1); //点亮苦细胞  
             }
 
             if (is(c1, 饿)) {//如果细胞有饿基因，在开始时几步会强制激活以模拟饿信号产生 
-                if (step < 5) 
-                    a.setEngZ(z1, 1);  
+                if (step < 8)
+                    a.setEngZ(z1, 1);
             }
- 
 
             //======================然后是细胞两两之间的行为=====================
             for (int z2 = 0; z2 < Env.BRAIN_SIZE; z2++) {
@@ -250,16 +245,17 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     }
 
     //两个细胞之间的行为，有信号传递、触突权重调整等行为,z1是自身坐标，z2是对方坐标
-    //触突权重调整有三种情况，一是天生的固有的权重，二是反复发生积累产生的权重，三是受激素群发信号进行大幅度调节的权重
+    //触突权重调整有三种情况，一是天生的固有的权重，二是反复发生积累产生的权重，三是受奖惩群发信号进行大幅度或反复复盘产生的重复效果累加产生的权重，
+    //重复的作用大于强度，重复可以由内部信号奖惩区驱动。
     private static void twoCellAction(Animal a, long c1, long c2, int z1, int z2) {
-        
+
         float e1 = a.energys[0][0][z1];
         float e2 = a.energys[0][0][z2];
 
         //是两个细胞之间的相互行为，要依次完成以下目标：
         //1.饿细胞激活后会激活咬细胞， 咬细胞产生动作后甜苦细胞相应地会激活
         if (e1 > 0.8f && is(c1, 饿) && is(c2, 咬)) {
-
+            a.setEngZ(z2, 1);
         }
 
         //2.甜/苦细胞的激活会影响到原本不相干的视觉细胞和咬动作之间的条件反射

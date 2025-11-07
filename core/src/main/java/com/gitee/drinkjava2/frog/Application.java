@@ -117,6 +117,7 @@ public class Application {
             public void stateChanged(ChangeEvent e) {
                 Env.SHOW_SPEED = speedSlider.getValue() * speedSlider.getValue() * speedSlider.getValue();
                 brainPic.requestFocus();
+                mainFrame.setTitle("speed:"+Env.SHOW_SPEED);
             }
         };
         speedSlider.addChangeListener(slideAction);

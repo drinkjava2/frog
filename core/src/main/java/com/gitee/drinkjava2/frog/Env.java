@@ -85,7 +85,7 @@ public class Env extends JPanel {
 
     public static ArrayList<Egg> frog_eggs = new ArrayList<>(); // 这里存放新建或从磁盘载入上轮下的蛋，每个蛋可能生成几个青蛙，
 
-    public static EnvObject[] things = new EnvObject[] { new FoodJudge() };// 所有外界物体，如食物、测试工具都放在这个things里面
+    public static EnvObject[] things = new EnvObject[]{new FoodJudge()};// 所有外界物体，如食物、测试工具都放在这个things里面
 
     public static boolean show_split_detail = false; //是否显示脑分裂的细节过程，即从一个细胞开始分裂分裂，而不是只显示分裂的最终结果
 
@@ -258,11 +258,32 @@ public class Env extends JPanel {
                             allDead = false;
                     }
 
-                    int delay = (400 - SHOW_SPEED) / 4; //速度400以内人为加入延迟
-                    if (delay > 0)
-                        sleep(delay);
-                    else if (step % ((SHOW_SPEED - 400) / 3) != 0)//  否则用跳帧画图的方式来加快速度
-                        continue;
+                    switch (SHOW_SPEED){
+                    case 1:
+                        sleep(400);
+                        break;
+                    case 8:
+                        sleep(100);
+                        break;
+                    case 27:
+                        sleep(50);
+                        break;
+                    case 64:
+                        sleep(20);
+                        break;
+                    case 125:
+                        sleep(10);
+                        break;
+                    case 216:
+                        sleep(2);
+                        break;
+                    case 343:
+                        sleep(1);
+                        break;
+                    default:
+                        if (step % SHOW_SPEED != 0)
+                            continue; // 用是否跳帧画图的方式来控制速度
+                    }
 
                     //========================== 以下是纯显示部分，不影响逻辑 ====================================
 
@@ -278,8 +299,7 @@ public class Env extends JPanel {
                     Application.brainPic.drawBrainPicture(step);
                 checkIfPause(step);
 
-                sb.delete(0, sb.length()).append("轮:").append(round).append(", 屏:").append(current_screen)
-                        .append(", 速:").append(Env.SHOW_SPEED);
+                sb.delete(0, sb.length()).append("轮:").append(round).append(", 屏:").append(current_screen).append(", 速:").append(Env.SHOW_SPEED);
                 sb.append(", ").append("屏费时:").append(System.currentTimeMillis() - timerScreen).append("ms");
                 sb.append(", 轮费时:").append(timeRound).append("ms, ");
 
