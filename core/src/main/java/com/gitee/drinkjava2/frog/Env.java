@@ -258,6 +258,9 @@ public class Env extends JPanel {
                             allDead = false;
                     }
 
+                    if(Application.jumpToStart) //如果jump按扭按下，就跳过所有绘图，相当于直接跳到下一轮
+                        continue;
+                    
                     switch (SHOW_SPEED){
                     case 1:
                         sleep(400);
@@ -306,6 +309,7 @@ public class Env extends JPanel {
                 Application.mainFrame.setTitle(sb.toString());
                 for (EnvObject thing : things)// 去除食物、陷阱等物体
                     thing.destory();
+                Application.jumpToStart=false;
             }
             round++;
             FrogEggTool.layEggs(); //能量高的青蛙才有权下蛋   

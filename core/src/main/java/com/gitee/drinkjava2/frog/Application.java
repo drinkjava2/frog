@@ -39,6 +39,7 @@ import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 public class Application {
 
     public static final String CLASSPATH;
+    public static boolean jumpToStart=false;
 
     static {
         String classpath = new File("").getAbsolutePath();
@@ -128,7 +129,7 @@ public class Application {
 
         // 是否把egg文件存盘
         JCheckBox saveFileCheckBox = new JCheckBox("Save egg");
-        saveFileCheckBox.setBounds(buttonXpos-50, Env.ENV_HEIGHT + 80, 90, 22);
+        saveFileCheckBox.setBounds(buttonXpos-50, Env.ENV_HEIGHT + 80, 80, 22);
         ActionListener saveAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (saveFileCheckBox.isSelected())
@@ -139,14 +140,23 @@ public class Application {
         };
         saveFileCheckBox.addActionListener(saveAction);
         mainFrame.add(saveFileCheckBox); 
+ 
         
-        //删除蛋文件按钮
+        //删除蛋文件按钮, 按下后删除已存盘的蛋文件
         JButton deleteEggButton = new JButton("Delete egg");
-        deleteEggButton.setBounds(buttonXpos + 50, Env.ENV_HEIGHT + 80, buttonWidth, buttonHeight);
+        deleteEggButton.setBounds(buttonXpos + 30, Env.ENV_HEIGHT + 80, buttonWidth, buttonHeight);
         deleteEggButton.addActionListener((e) -> {
             FrogEggTool.deleteEggs();
         });
         mainFrame.add(deleteEggButton);
+        
+        //jump按扭，按下后快速跳到下一轮开始
+        JButton  jumpToStartButton = new JButton("Jump");
+        jumpToStartButton.setBounds(buttonXpos + 140, Env.ENV_HEIGHT + 80, buttonWidth, buttonHeight);
+        jumpToStartButton.addActionListener((e) -> {
+            jumpToStart=true;
+        });
+        mainFrame.add(jumpToStartButton);
         
 
         // 基因维数显示控制
