@@ -22,8 +22,8 @@ public class FoodJudge extends DefaultEnvObject {
     public static final float ep = 1f / p *2; //每个视细胞收到的能量，视细胞越多，每个视细胞上分到的能量就越少，所有视细胞上能量总和始终为1。也就是说眼睛在看复杂图像和简单图像时花的总能量一样多
     public static final int bits = (int) Math.pow(2, p); //bits = 2 ^ p; 
     final int tasteDelay = 4; //tasteDelay表示从咬下到感到甜苦味之间的延迟
-    public static int groupSpace = 10; //每组食物之间的空白间隔
-    public static int groupSize = Env.STEPS_PER_ROUND / 6 - groupSpace; //groupSize表示食物在时间上连续出现多少个时间步长    
+    public static int groupSpace = 6; //每组食物之间的空白间隔
+    public static int groupSize = Env.STEPS_PER_ROUND / 9 - groupSpace; //groupSize表示食物在时间上连续出现多少个时间步长    
     public static int[] food = new int[Env.STEPS_PER_ROUND + groupSize]; //食物在时间上的分布用一个数组表示，先从固定顺序开始测试以方便调试，以后将改成随机出现
 
     int[][] foodOrders = {{1, 2, 3}, {1, 3, 2}, {2, 1, 3}, {2, 3, 1}, {3, 1, 2}, {3, 2, 1}};
@@ -41,7 +41,7 @@ public class FoodJudge extends DefaultEnvObject {
         foodGroup = foodGroup == 5 ? 0 : ++foodGroup; //foodGroup在foodOrders中顺序选一组
         sweetFoodCode = sweetFoodCode == 3 ? 1 : ++sweetFoodCode; //甜食在1,2,3中顺序选一个
         int pos = 0;
-        for (int k = 0; k < 2; k++) {
+        for (int k = 0; k < 3; k++) {
             for (int i = 0; i < foodOrder.length; i++) {//
                 for (int j = 0; j < groupSize; j++) {
                     food[pos] = foodOrder[i];

@@ -49,13 +49,13 @@ public class Env extends JPanel {
     public static boolean SHOW_FIRST_ANIMAL_BRAIN = true; // 是否显示脑图在Env区的右侧
 
     /** Environment x width, unit: pixels */
-    public static final int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
+    public static int ENV_WIDTH = 400; // 虚拟环境的宽度, 可调
 
     /** Environment y height, unit: pixels */
-    public static final int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
+    public static int ENV_HEIGHT = ENV_WIDTH; // 虚拟环境高度, 可调，通常取正方形
 
     /** Frog's brain display width on screen, not important */
-    public static final int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
+    public static int FROG_BRAIN_DISP_WIDTH = 400; // Frog的脑图在屏幕上的显示大小,可调
 
     /** Steps of one test round */
     public static final int STEPS_PER_ROUND = 200;// 每屏测试步数,可调
@@ -73,13 +73,13 @@ public class Env extends JPanel {
 
     public static int step;// 当前测试步数, 也可以理解为虚拟世界的当前时间
 
-    private static Image buffImg; //当前虚拟作图区
+    public static Image buffImg; //当前虚拟作图区
 
     public static Graphics graph;//当前虚拟环境画笔，常用
 
     public static boolean pause = false; // 暂停按钮按下将暂停测试
 
-    public static int[][] bricks = new int[ENV_WIDTH][ENV_HEIGHT];// 组成环境的材料，见Material.java
+    public static int[][] bricks = null; // 组成环境的材料，见Material.java
 
     public static ArrayList<Frog> frogs = new ArrayList<>(); // 这里存放所有待测的青蛙，可能分几次测完，由FROG_PER_SCREEN大小来决定
 
@@ -173,6 +173,8 @@ public class Env extends JPanel {
     }
 
     private void drawWorld(Graphics g) {
+        if (bricks == null) //某些情况下不使用bricks就直接跳出
+            return;
         int brick;
         for (int x = 0; x < ENV_WIDTH; x++)
             for (int y = 0; y < ENV_HEIGHT; y++) {
@@ -258,9 +260,9 @@ public class Env extends JPanel {
                             allDead = false;
                     }
 
-                    if(Application.jumpToStart) //如果jump按扭按下，就跳过所有绘图，相当于直接跳到下一轮
+                    if (Application.jumpToStart) //如果jump按扭按下，就跳过所有绘图，相当于直接跳到下一轮
                         continue;
-                    
+
                     switch (SHOW_SPEED){
                     case 1:
                         sleep(400);
@@ -304,12 +306,11 @@ public class Env extends JPanel {
 
                 sb.delete(0, sb.length()).append("轮:").append(round).append(", 屏:").append(current_screen).append(", 速:").append(Env.SHOW_SPEED);
                 sb.append(", ").append("屏费时:").append(System.currentTimeMillis() - timerScreen).append("ms");
-                sb.append(", 轮费时:").append(timeRound).append("ms, ");
-
+                sb.append(", 轮费时:").append(timeRound).append("ms");
                 Application.mainFrame.setTitle(sb.toString());
                 for (EnvObject thing : things)// 去除食物、陷阱等物体
                     thing.destory();
-                Application.jumpToStart=false;
+                Application.jumpToStart = false;
             }
             round++;
             FrogEggTool.layEggs(); //能量高的青蛙才有权下蛋   

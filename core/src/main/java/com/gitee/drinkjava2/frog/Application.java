@@ -1,8 +1,13 @@
 package com.gitee.drinkjava2.frog;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -39,7 +44,7 @@ import com.gitee.drinkjava2.frog.egg.FrogEggTool;
 public class Application {
 
     public static final String CLASSPATH;
-    public static boolean jumpToStart=false;
+    public static boolean jumpToStart = false;
 
     static {
         String classpath = new File("").getAbsolutePath();
@@ -57,6 +62,8 @@ public class Application {
     public static boolean selectFrog = true;
 
     private static void checkIfShowBrainPicture(JButton button) {
+        if (true)
+            return;
         int y = Env.ENV_HEIGHT + 150;
         if (Env.SHOW_FIRST_ANIMAL_BRAIN) {
             button.setText("Hide brain");
@@ -72,26 +79,25 @@ public class Application {
 
     public static void main(String[] args) {
         mainFrame.setLayout(null);
-        mainFrame.setSize(Env.ENV_WIDTH + 200, Env.ENV_HEIGHT + 150); // 窗口大小
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 关闭时退出程序
         mainFrame.add(env); // 添加虚拟环境Panel
         mainFrame.add(brainPic); // 添加脑图Panel
 
-        JButton button = new JButton("Show brain");// 按钮，显示或隐藏脑图
+        JButton showBrainButton = new JButton("Show brain");// 按钮，显示或隐藏脑图
         int buttonWidth = 100;
         int buttonHeight = 22;
         int buttonXpos = Env.ENV_WIDTH / 2 - buttonWidth / 2;
-        button.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
+        showBrainButton.setBounds(buttonXpos, Env.ENV_HEIGHT + 8, buttonWidth, buttonHeight);
         ActionListener al = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {// 显示或隐藏脑图
                 Env.SHOW_FIRST_ANIMAL_BRAIN = !Env.SHOW_FIRST_ANIMAL_BRAIN;
-                checkIfShowBrainPicture(button);
+                checkIfShowBrainPicture(showBrainButton);
             }
         };
-        checkIfShowBrainPicture(button);
-        button.addActionListener(al);
-        mainFrame.add(button);
+        checkIfShowBrainPicture(showBrainButton);
+        showBrainButton.addActionListener(al);
+        mainFrame.add(showBrainButton);
 
         JButton stopButton = new JButton("Pause");// 暂停或继续按钮
         stopButton.setBounds(buttonXpos, Env.ENV_HEIGHT + 35, buttonWidth, buttonHeight);
@@ -118,7 +124,7 @@ public class Application {
             public void stateChanged(ChangeEvent e) {
                 Env.SHOW_SPEED = speedSlider.getValue() * speedSlider.getValue() * speedSlider.getValue();
                 brainPic.requestFocus();
-                mainFrame.setTitle("speed:"+Env.SHOW_SPEED);
+                mainFrame.setTitle("speed:" + Env.SHOW_SPEED);
             }
         };
         speedSlider.addChangeListener(slideAction);
@@ -129,7 +135,7 @@ public class Application {
 
         // 是否把egg文件存盘
         JCheckBox saveFileCheckBox = new JCheckBox("Save egg");
-        saveFileCheckBox.setBounds(buttonXpos-50, Env.ENV_HEIGHT + 80, 80, 22);
+        saveFileCheckBox.setBounds(buttonXpos - 50, Env.ENV_HEIGHT + 80, 80, 22);
         ActionListener saveAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (saveFileCheckBox.isSelected())
@@ -139,9 +145,8 @@ public class Application {
             }
         };
         saveFileCheckBox.addActionListener(saveAction);
-        mainFrame.add(saveFileCheckBox); 
- 
-        
+        mainFrame.add(saveFileCheckBox);
+
         //删除蛋文件按钮, 按下后删除已存盘的蛋文件
         JButton deleteEggButton = new JButton("Delete egg");
         deleteEggButton.setBounds(buttonXpos + 30, Env.ENV_HEIGHT + 80, buttonWidth, buttonHeight);
@@ -149,17 +154,17 @@ public class Application {
             FrogEggTool.deleteEggs();
         });
         mainFrame.add(deleteEggButton);
-        
+
         //jump按扭，按下后快速跳到下一轮开始
-        JButton  jumpToStartButton = new JButton("Jump");
+        JButton jumpToStartButton = new JButton("Jump");
         jumpToStartButton.setBounds(buttonXpos + 140, Env.ENV_HEIGHT + 80, buttonWidth, buttonHeight);
         jumpToStartButton.addActionListener((e) -> {
-            jumpToStart=true;
+            jumpToStart = true;
         });
         mainFrame.add(jumpToStartButton);
-        
 
         // 基因维数显示控制
+        ArrayList<JRadioButton> geneRadioList = new ArrayList<>();
         for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
             JRadioButton geneRadio = new JRadioButton();
             geneRadio.setBounds(buttonXpos + 300 + i * 16, Env.ENV_HEIGHT + 8, 20, 22);
@@ -176,6 +181,7 @@ public class Application {
             };
             geneRadio.addActionListener(geneRadioAction);
             mainFrame.add(geneRadio);
+            geneRadioList.add(geneRadio);
         }
 
         // 是否显示分裂过程
@@ -190,11 +196,57 @@ public class Application {
             }
         };
         showSplitDetailCheckBox.addActionListener(detailAction);
+
         mainFrame.add(showSplitDetailCheckBox);
-        //mainFrame.setBounds(0,590, 900, 550);
-        mainFrame.setBounds(0,100, 900, 560);
+        mainFrame.setBounds(0, 100, 900, 600);
         mainFrame.setVisible(true);
+
+        mainFrame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Object a = e.getSource();
+                if (a instanceof JFrame) {
+
+                    JFrame f = (JFrame) a;
+                    int w = (f.getWidth() - 30) / 2;
+                    if (w < 100)
+                        return; 
+                    Env.ENV_WIDTH = w;
+                    Env.ENV_HEIGHT = w;
+                    Env.FROG_BRAIN_DISP_WIDTH = w;
+
+                    //如果手工调整窗口后要重新定义一些绘图边界
+                    
+                    brainPic.brainDispWidth = w;
+                    brainPic.setBounds(w + 5, 0, w + 1, w + 1);
+                    brainPic.buffImg = new BufferedImage(w, w, BufferedImage.TYPE_INT_RGB);
+                    brainPic.g = brainPic.buffImg.getGraphics();
+                    brainPic.scale = 0.5f * w / Env.BRAIN_SIZE;
+
+                    env.setBounds(1, 1, w, w);
+                    Env.buffImg = env.createImage(env.getWidth(), env.getHeight());
+                    env.graph = Env.buffImg.getGraphics(); 
+
+                    //如果手工调整窗口后按扭位置也要变
+                    showBrainButton.setBounds(buttonXpos, w + 8, buttonWidth, buttonHeight);
+                    stopButton.setBounds(buttonXpos, w + 35, buttonWidth, buttonHeight);
+                    speedSlider.setBounds(buttonXpos - 50, stopButton.getY() + 25, buttonWidth + 100, buttonHeight);
+                    label.setBounds(buttonXpos - 90, stopButton.getY() + 23, 100, buttonHeight);
+                    saveFileCheckBox.setBounds(buttonXpos - 50, w + 80, 80, 22);
+                    deleteEggButton.setBounds(buttonXpos + 30, w + 80, buttonWidth, buttonHeight);
+                    jumpToStartButton.setBounds(buttonXpos + 140, w + 80, buttonWidth, buttonHeight);
+                    showSplitDetailCheckBox.setBounds(buttonXpos + 300, w + 40, 120, 22);
+                    for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
+                        JRadioButton geneRadio = geneRadioList.get(i);
+                        geneRadio.setBounds(buttonXpos + 300 + i * 16, w + 8, 20, 22);
+                    }
+
+                }
+            }
+        });
+
         env.run();
+
     }
 
 }

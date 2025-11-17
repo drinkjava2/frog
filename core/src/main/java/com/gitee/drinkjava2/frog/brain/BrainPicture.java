@@ -41,8 +41,8 @@ public class BrainPicture extends JPanel {
     private static final float D90 = (float) (Math.PI / 2);
 
     Color picColor = RED;
-    int brainDispWidth; // screen display piexls width
-    float scale; // brain scale
+    public int brainDispWidth; // screen display piexls width
+    public float scale; // brain scale
     int xOffset = 0; // brain display x offset compare to screen
     int yOffset = 0; // brain display y offset compare to screen
     float xAngle = D90 * .8f; // brain rotate on x axis
@@ -50,8 +50,8 @@ public class BrainPicture extends JPanel {
     float zAngle = 0;// brain rotate on z axis
     int xMask = -1;// x Mask
     int yMask = -1;// y Mask
-    BufferedImage buffImg;
-    Graphics g;
+    public BufferedImage buffImg;
+    public Graphics g;
     String note;
     public KeyAdapter keyAdapter;
 
@@ -367,16 +367,21 @@ public class BrainPicture extends JPanel {
         g.setColor(BLACK); // 画边框
         g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-        int x = 0;
-        for (int y = 0; y < 1; y++)  
-        for (int z = 0; z < Env.BRAIN_SIZE; z++) {// 画它所有的脑细胞位置和颜色
+        for (int x = 0; x < Animal.X_WIDTH; x++)  
+        for (int y = 0; y < Animal.Y_WIDTH; y++)  
+        for (int z = 0; z < Animal.Z_WIDTH; z++) {// 画它所有的脑细胞位置和颜色
             setPicColor(BLACK); // 画边框
             drawPointCent(x, y, z, 0.03f); //画代表这个细胞的小点
 
-            long c = a.cells[x][y][z]; //当前细胞用一个long表示，它最多可以含有64位基因
-            // if (cell == 0) //只显示有效的细胞点
-            // continue;
-
+            long c = a.cells[x][y][z]; //当前细胞用一个long表示，它最多可以含有64位基因 
+            
+            if (c == 0) { //如果细胞里什么基因都没有，就是个空细胞，划个小点表示后直接跳过
+                setPicColor(Color.LIGHT_GRAY); 
+                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.1f);
+                continue;
+            }
+            
+            
             if (x >= xMask && y >= yMask && c != 0)// 画出细胞每个基因存在的细胞格子
                 for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
                     if ((c & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {

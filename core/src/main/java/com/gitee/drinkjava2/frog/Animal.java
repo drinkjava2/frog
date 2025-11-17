@@ -25,7 +25,6 @@ import javax.imageio.ImageIO;
 import com.gitee.drinkjava2.frog.brain.Genes;
 import com.gitee.drinkjava2.frog.egg.Egg;
 import com.gitee.drinkjava2.frog.objects.FoodJudge;
-import com.gitee.drinkjava2.frog.objects.Material;
 import com.gitee.drinkjava2.frog.util.GeneUtils;
 import com.gitee.drinkjava2.frog.util.RandomUtils;
 
@@ -58,16 +57,16 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
-    public long[][][] cells = new long[1][1][BRAIN_SIZE]; //所有脑细胞，先排在一条线上，用2叉分裂算法
+    
+    public static int X_WIDTH=2; //cells三维数组各方向的维数常量
+    public static int Y_WIDTH=5;
+    public static int Z_WIDTH=Env.BRAIN_SIZE;
+    
+    public long[][][] cells = new long[X_WIDTH][Y_WIDTH][Z_WIDTH]; //所有脑细胞，先排在一条线上，用2叉分裂算法
 
-    public float[][][] energys = new float[1][1][BRAIN_SIZE]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
+    public float[][][] energys = new float[X_WIDTH][Y_WIDTH][Z_WIDTH]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
 
-    public float[][] posWeight = new float[BRAIN_SIZE][BRAIN_SIZE]; //所有细胞的所有连线的正权重，
-    public float[][] posActivity = new float[BRAIN_SIZE][BRAIN_SIZE]; //所有细胞的所有连线的正权重的活跃度，活跃度是近期流动的能量值的平均值。活跃度的出现是为了能实现"甜信号加强最近活跃的权重"这一目的
-
-    public float[][] negWeight = new float[BRAIN_SIZE][BRAIN_SIZE]; //所有细胞的所有连线的负权重，
-    public float[][] negActivity = new float[BRAIN_SIZE][BRAIN_SIZE]; //所有细胞的所有连线的负权重的活跃度。此处活跃度的出现是为了能实现"苦信号加强最近活跃的负权重"这一目的
-
+  
     public int xPos; // animal在Env中的x坐标
     public int yPos; // animal在Env中的y坐标
     public long fat = 1000000000; // 青蛙的肥胖度, 只有胖的青蛙才允许下蛋, 以前版本这个变量名为energy，为了不和脑细胞的能量重名，从这个版本起改名为fat
@@ -127,7 +126,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         if (!alive) {
             return false;
         }
-        if (fat <= 0 || Env.outsideEnv(xPos, yPos) || Env.bricks[xPos][yPos] >= Material.KILL_ANIMAL) {
+        if (fat <= 0 || Env.outsideEnv(xPos, yPos)) {
             kill();
             return false;
         }
@@ -192,7 +191,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return;
         g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处 
     }
-
+    
+   
     /** Check if x,y,z out of animal's brain range */
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= BRAIN_SIZE || y < 0 || y >= BRAIN_SIZE || z < 0 || z >= BRAIN_SIZE;
