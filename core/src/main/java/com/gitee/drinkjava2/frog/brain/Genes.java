@@ -166,25 +166,17 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     private static final int NA = -1; //NA表示基因将随机分布
     // ============开始登记基因==========
 
-    // 登记细胞基因分布 
-    public static long 点0;
-    public static long 点1;
-    public static long 饿;
-    public static long 忆;
-    public static long 咬;
-    public static long 甜;
-    public static long 苦;
-    public static long 消;
+    //先登记一些基因顺序分布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加  
+    public static final long 点0 = register(true, true, 0, 0, 1, "点0");
+    public static final long 点1 = register(true, true, 0, 0, 0, "点1");
+    public static final long 饿 = register(true, true, 0, 0, 2, "饿");
+    public static final long 甜 = register(true, true, 0, 0, 3, "甜");
+    public static final long 苦 = register(true, true, 0, 0, 4, "苦");
+    public static final long  咬 = register(true, true, 0, 0, 5, "咬");
+    public static final long 忆 = register(true, false, 0, 1, 0, "忆"); //先登记一个忆基因  
+    
 
-    static {
-        //先登记一些基因顺序分布在x=0, y=0的z轴上， 每个位置的基因都唯一且顺序增加 
-        点0 = register(true, true, 0, 0, 1, "点0");
-        点1 = register(true, true, 0, 0, 0, "点1");
-        饿 = register(true, true, 0, 0, 2, "饿");
-        甜 = register(true, true, 0, 0, 3, "甜");
-        苦 = register(true, true, 0, 0, 4, "苦");
-        咬 = register(true, true, 0, 0, 5, "咬");
-        忆 = register(true, false, 0, 1, 0, "忆"); //先登记一个忆基因  
+    static { 
         for (int z = 0; z < Env.BRAIN_SIZE; z++) //再把忆基因拷贝到整行
             assignGene(0, 1, z, 忆);
     }

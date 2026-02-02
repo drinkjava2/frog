@@ -198,7 +198,7 @@ public class Application {
         showSplitDetailCheckBox.addActionListener(detailAction);
 
         mainFrame.add(showSplitDetailCheckBox);
-        mainFrame.setBounds(0, 100, 900, 600);
+        mainFrame.setBounds(0, 100, 1200, 750);
         mainFrame.setVisible(true);
 
         mainFrame.addComponentListener(new ComponentAdapter() {
@@ -221,7 +221,7 @@ public class Application {
                     brainPic.setBounds(w + 5, 0, w + 1, w + 1);
                     brainPic.buffImg = new BufferedImage(w, w, BufferedImage.TYPE_INT_RGB);
                     brainPic.g = brainPic.buffImg.getGraphics();
-                    brainPic.scale = 0.5f * w / Env.BRAIN_SIZE;
+                    brainPic.scale = .65f * w / Env.BRAIN_SIZE;
 
                     env.setBounds(1, 1, w, w);
                     Env.buffImg = env.createImage(env.getWidth(), env.getHeight());

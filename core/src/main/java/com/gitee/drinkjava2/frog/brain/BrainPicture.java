@@ -59,7 +59,7 @@ public class BrainPicture extends JPanel {
         super();
         this.setLayout(null);// 空布局
         this.brainDispWidth = brainDispWidth;
-        scale = 0.5f * brainDispWidth / brainWidth;
+        scale = 0.65f * brainDispWidth / brainWidth;
         this.setBounds(x, y, brainDispWidth + 1, brainDispWidth + 1);
         buffImg = new BufferedImage(Env.FROG_BRAIN_DISP_WIDTH, Env.FROG_BRAIN_DISP_WIDTH, BufferedImage.TYPE_INT_RGB);
         g = buffImg.getGraphics();
@@ -414,9 +414,9 @@ public class BrainPicture extends JPanel {
         drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来
 
         setPicColor(BLACK); // 把x,y,z坐标画出来
-        drawText(Env.BRAIN_SIZE, 0, 0, "x", Env.BRAIN_SIZE * 0.2f);
-        drawText(0, Env.BRAIN_SIZE, 0, "y", Env.BRAIN_SIZE * 0.2f);
-        drawText(0, 0, Env.BRAIN_SIZE, "z", Env.BRAIN_SIZE * 0.2f);
+        drawText(Env.BRAIN_SIZE, 0, 0, "x", Env.BRAIN_SIZE * 0.1f);
+        drawText(0, Env.BRAIN_SIZE, 0, "y", Env.BRAIN_SIZE * 0.1f);
+        drawText(0, 0, Env.BRAIN_SIZE, "z", Env.BRAIN_SIZE * 0.1f);
         setPicColor(RED);
         drawLine(0, 0, 0, Env.BRAIN_SIZE, 0, 0);
         drawLine(0, 0, 0, 0, Env.BRAIN_SIZE, 0);
