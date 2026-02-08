@@ -405,7 +405,7 @@ public class BrainPicture extends JPanel {
             for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
                 if (Genes.is(c,  mask) && Genes.display_gene[i]) { 
                     txtXPos++;
-                    drawText(txtXPos, y+0.5f, z + 0.2f, Genes.name_gene[i], .4f);
+                    drawText(txtXPos, y+0.5f, z + 0.2f, Genes.name_gene[i], .2f);
                 }
                 mask=mask<<1;
             }

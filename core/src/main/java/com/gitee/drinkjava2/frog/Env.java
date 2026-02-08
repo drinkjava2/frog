@@ -27,7 +27,7 @@ public class Env extends JPanel {
     private static final long serialVersionUID = 1L;
 
     /** Speed of test */
-    public static int SHOW_SPEED = 1; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
+    public static int SHOW_SPEED = 8; // 测试速度，-1000~1000,可调, 数值越小，速度越慢
 
     public static final int FROG_EGG_QTY = 200; // 每轮下n个青蛙蛋，可调，只有最优秀的前n个青蛙们才允许下蛋
 

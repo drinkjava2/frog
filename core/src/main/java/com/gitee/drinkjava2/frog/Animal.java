@@ -244,7 +244,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void bite() { //咬下 
-        this.inBiting=true;
+        this.inBiting = true;
         if (FoodJudge.isSweetFood())
             this.awardAA();
         else

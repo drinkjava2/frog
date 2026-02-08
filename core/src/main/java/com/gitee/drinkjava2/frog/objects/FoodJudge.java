@@ -19,17 +19,18 @@ public class FoodJudge extends DefaultEnvObject {
     int n = 20; //n是表示食物的小方块边长，食物code由多个位组成时，小方块显示它的二进制条形码 
     public static final int p = 2; //p表示食物由有几个像素点
     //ep由视细胞像素点多少决定，视细胞像素是食物像素点变焦得到，因为暂时还没有引入变焦和动眼参数，所以这个版本视细胞和食物细胞像素点数量相等
-    public static final float ep = 1f / p *2; //每个视细胞收到的能量，视细胞越多，每个视细胞上分到的能量就越少，所有视细胞上能量总和始终为1。也就是说眼睛在看复杂图像和简单图像时花的总能量一样多
+    //    public static final float ep = 1f / p * 2; //每个视细胞收到的能量，视细胞越多，每个视细胞上分到的能量就越少，所有视细胞上能量总和始终为1。也就是说眼睛在看复杂图像和简单图像时花的总能量一样多
     public static final int bits = (int) Math.pow(2, p); //bits = 2 ^ p; 
-    final int tasteDelay = 4; //tasteDelay表示从咬下到感到甜苦味之间的延迟
+
+    //    public final int tasteDelay = 4; //tasteDelay表示从咬下到感到甜苦味之间的延迟
     public static int groupSpace = 6; //每组食物之间的空白间隔
-    public static int groupSize = Env.STEPS_PER_ROUND / 9 - groupSpace; //groupSize表示食物在时间上连续出现多少个时间步长    
-    public static int[] food = new int[Env.STEPS_PER_ROUND + groupSize]; //食物在时间上的分布用一个数组表示，先从固定顺序开始测试以方便调试，以后将改成随机出现
+    public static int groupSize =10; //groupSize表示食物在时间上连续出现多少个时间步长    
+ 
+    public static int[] food = new int[Env.STEPS_PER_ROUND]; //食物在时间上的分布用一个数组表示，先从固定顺序开始测试以方便调试，以后将改成随机出现
 
     int[][] foodOrders = {{1, 2, 3}, {1, 3, 2}, {2, 1, 3}, {2, 3, 1}, {3, 1, 2}, {3, 2, 1}};
     int foodGroup = 0;
-    int[] foodOrder; //视觉信号固定顺序，每轮选用一组不同的视觉信号
-    int midPos = 0;
+    int[] foodOrder; //视觉信号固定顺序，每轮选用一组不同的视觉信号 
 
     public static int sweetFoodCode; //甜食 
 
@@ -41,7 +42,7 @@ public class FoodJudge extends DefaultEnvObject {
         foodGroup = foodGroup == 5 ? 0 : ++foodGroup; //foodGroup在foodOrders中顺序选一组
         sweetFoodCode = sweetFoodCode == 3 ? 1 : ++sweetFoodCode; //甜食在1,2,3中顺序选一个
         int pos = 0;
-        for (int k = 0; k < 3; k++) {
+        for (int k = 0; k < 4; k++) {
             for (int i = 0; i < foodOrder.length; i++) {//
                 for (int j = 0; j < groupSize; j++) {
                     food[pos] = foodOrder[i];
@@ -51,8 +52,6 @@ public class FoodJudge extends DefaultEnvObject {
                     food[pos++] = 0;
                 }
             }
-            if (k == 0)
-                midPos = pos;
         }
 
     }
@@ -76,25 +75,20 @@ public class FoodJudge extends DefaultEnvObject {
                     g.fillRect(x * n, y * n + n / p * j, n, n / p);
             }
 
-            if (pos == midPos) { //画出中间点S
-                g.setColor(Color.RED);
-                g.fillRect(x * n, y * n, 6, n);
-            }
-
             g.setColor(Color.BLACK);
             g.drawRect(x * n, y * n, n, n);
 
         }
     }
 
-    public static boolean isSweetFood(){
-        return  food[Env.step]==sweetFoodCode ; 
+    public static boolean isSweetFood() {
+        return food[Env.step] == sweetFoodCode;
     }
-    
+
     public static boolean isBitter() {
         return food[Env.step] != sweetFoodCode;
-    }    
-    
+    }
+
     @Override
     public void active() {
         Graphics g = Env.graph;
@@ -109,22 +103,23 @@ public class FoodJudge extends DefaultEnvObject {
         // 开始画出状态色条
         int x = step % (Env.ENV_WIDTH / n);
         int y = step / (Env.ENV_WIDTH / n);
-        g.setColor(Color.BLUE);
-        g.fillRect(x * n, y * n + n / 2, n, 3);
-        if (f.feelSweet) { //副线条显示味觉
-            g.setColor(Color.GREEN); //绿表示甜
-            g.fillRect(x * n, y * n + n / 2 - 2, n, 2);
-        }
-        if (f.feelBitter) {
-            g.setColor(Color.RED); //苦用红表示
-            g.fillRect(x * n, y * n + n / 2 +2, n, 2);
-        }
-        if (f.inBiting) {
-            g.setColor(Color.YELLOW); //咬下状态用黄表示
-            g.fillRect(x * n, y * n + n / 2 +4, n, 2);
-        }
-        
+
+        int ystart = y * n;
+        int xstart = x * n;
+        int h = 4; // 线条显示宽度变量
+
+        g.setColor(Color.BLUE); //主进度条用蓝色
+        g.fillRect(xstart, ystart, n, h);
+
+        g.setColor(Color.GREEN);
+        g.setColor(f.feelSweet ? Color.GREEN : Color.GRAY); //副线条, 绿表示甜味
+        g.fillRect(xstart, ystart + h, n / 2, h);
+
+        g.setColor(f.feelBitter ? Color.RED : Color.GRAY); //副线条, 红表示苦味
+        g.fillRect(xstart, ystart + h * 2, n / 2, h);
+
+        g.setColor(f.inBiting ? Color.YELLOW : Color.GRAY); //黄表示咬下
+        g.fillRect(xstart, ystart + h * 3, n / 2, h);
     }
 
-    
 }
