@@ -170,24 +170,33 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static final long 黑0 = register(true, true, 0, 2, 0, "黑0");
     public static final long 白0 = register(true, true, 0, 2, 1, "白0");
     public static final long 黑1 = register(true, true, 0, 2, 2, "黑1");
-    public static final long 白1 = register(true, true, 0, 2, 3, "白1"); 
+    public static final long 白1 = register(true, true, 0, 2, 3, "白1");
     public static final long 苦 = register(true, true, 0, 0, 0, "苦");
     public static final long 松 = register(true, true, 0, 0, 1, "松");
     public static final long 甜 = register(true, true, 0, 0, 2, "甜");
     public static final long 咬 = register(true, true, 0, 0, 3, "咬");
-    public static final long 饿 = register(true, true, 0, 0, 3, "饿"); //饿基因与咬基因重合，方便编程
+    public static final long 饿 = register(true, true, 0, 0, 4, "饿"); //饿基因与咬基因重合，方便编程
 
     public static final long 忆 = register(true, false, 0, 1, 0, "忆"); //先登记一个忆基因  
+
+    public static final long 衰9 = register(true, false, 0, 0, NA, "衰9"); //衰9 表示细胞能量衰减率为90%, 以下类似
+    public static final long 衰8 = register(true, false, 0, 0, NA, "衰8");
+    public static final long 衰7 = register(true, false, 0, 0, NA, "衰7");
+    public static final long 衰6 = register(true, false, 0, 0, NA, "衰6");
+
+    public static final long 下1 = register(true, true, 0, 0, NA, "下1"); //下一基因代表向下方有一个固定连线，这个基因设计为饿细胞通向咬细胞的固定连线，必须进化出来
 
     static {
         for (int z = 0; z <= 3; z++) //再把忆基因拷贝一些
             assignGene(0, 1, z, 忆);
+
     }
 
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 =========== 
     public static void active(Animal a) {
         int step = Env.step;
         int x = 0;
+        final float T = 0.5f; //threshold, 细胞阈值常量，暂定0.5f, 以后要改成用基因控制 
         for (int y = 0; y <= 2; y++)
             for (int z = 0; z <= 4; z++) {//遍历所有脑细胞  
                 //======================先针对单个细胞的行为=====================
@@ -196,37 +205,55 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                     continue;
 
                 float e = a.energys[x][y][z];
-                e = e * 0.6f; //所有细胞能量都随时间自动衰减，这个衰减率魔数以后要放到常量或基因里控制
-                a.setEng(x, y, z, e);
-                
+                if (is(c, 衰9)) { //如果有衰基因，细胞的能量按基因衰减率衰退
+                    e = e * 0.9f;
+                    a.setEng(x, y, z, e);
+                }
+                if (is(c, 衰8)) {
+                    e = e * 0.8f;
+                    a.setEng(x, y, z, e);
+                }
+                if (is(c, 衰7)) {
+                    e = e * 0.7f;
+                    a.setEng(x, y, z, e);
+                }
+                if (is(c, 衰6)) {
+                    e = e * 0.6f;
+                    a.setEng(x, y, z, e);
+                }
 
                 if (is(c, 饿)) {//如果细胞有饿基因，在开始时几步会强制激活以模拟饿信号产生 
-                    if (step < 8)
-                        a.setEngZ(z, 1);
+                    if (step < 8) {
+                        a.setEngZ(z, 1f);
+                        e = 1f;
+                    }
                 }
 
                 if (is(c, 咬)) {//如果当前细胞有咬基因，且能量是激活态，作出咬动作
-                    if (e > 0.5)
+                    if (e > T)
                         a.bite();
                     else
                         a.stopBite();
                 }
-                
+
+                if (is(c, 下1)) {//如果有下1基因，代表这个细胞如果激活，会通过连线向下方的细胞传递能量
+                    if (e > T)
+                        a.addEngZ(z - 1, e);
+                }
+
                 // 视觉细胞 
-                if (is(c, 黑0) && FoodJudge.foodBit0)  //如果存在点0基因且看到食物的第0位的像素点是黑色
+                if (is(c, 黑0) && FoodJudge.foodBit0) //如果存在点0基因且看到食物的第0位的像素点是黑色
                     a.setEng(x, y, z, 1); //点亮黑0视细胞  
 
-                if (is(c, 白0) && !FoodJudge.foodBit0)  //如果存在点0基因且看到食物的第0位的像素点是白色
+                if (is(c, 白0) && !FoodJudge.foodBit0) //如果存在点0基因且看到食物的第0位的像素点是白色
                     a.setEng(x, y, z, 1); //点亮黑0视细胞  
 
-                if (is(c, 黑1) && FoodJudge.foodBit1)  //如果存在点0基因且看到食物的第0位的像素点是黑色
+                if (is(c, 黑1) && FoodJudge.foodBit1) //如果存在点0基因且看到食物的第0位的像素点是黑色
                     a.setEng(x, y, z, 1);//点亮黑0视细胞  
 
-                if (is(c, 白1) && !FoodJudge.foodBit1)  //如果存在点0基因且看到食物的第0位的像素点是白色
+                if (is(c, 白1) && !FoodJudge.foodBit1) //如果存在点0基因且看到食物的第0位的像素点是白色
                     a.setEng(x, y, z, 1); //点亮黑0视细胞  
-              
-                
-                
+
             }
     }
 

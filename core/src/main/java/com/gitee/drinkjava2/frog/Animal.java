@@ -57,16 +57,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     /** brain cells，每个细胞对应一个神经元。long是64位，所以目前一个细胞只能允许最多64个基因，64个基因有些是8叉分裂，有些是4叉分裂
      *  如果今后要扩充到超过64个基因限制，可以定义多个三维数组，同一个细胞由多个三维数组相同坐标位置的基因共同表达
      */
-    
-    public static int X_WIDTH=2; //cells三维数组各方向的维数常量
-    public static int Y_WIDTH=5;
-    public static int Z_WIDTH=Env.BRAIN_SIZE;
-    
+
+    public static int X_WIDTH = 1; //cells三维数组各方向的维数常量
+    public static int Y_WIDTH = Env.BRAIN_SIZE;
+    public static int Z_WIDTH = Env.BRAIN_SIZE;
+
     public long[][][] cells = new long[X_WIDTH][Y_WIDTH][Z_WIDTH]; //所有脑细胞，先排在一条线上，用2叉分裂算法
 
     public float[][][] energys = new float[X_WIDTH][Y_WIDTH][Z_WIDTH]; //每个细胞的能量值，细胞能量不参与打分。打分是由fat变量承担
 
-  
     public int xPos; // animal在Env中的x坐标
     public int yPos; // animal在Env中的y坐标
     public long fat = 1000000000; // 青蛙的肥胖度, 只有胖的青蛙才允许下蛋, 以前版本这个变量名为energy，为了不和脑细胞的能量重名，从这个版本起改名为fat
@@ -163,17 +162,12 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     //设定各个等级的奖罚值，目前是手工设定的常数
     //@formatter:off 下面几行是重要的奖罚方法，会经常调整或注释掉，集中放在一起，不要格式化为多行
-    public void awardAAAA()      { changeFat(10000);}
-    public void awardAAA5()   { changeFat(5000);}
-    public void awardAAA3()   { changeFat(3000);}
-    public void awardAAA2()   { changeFat(2000);}    
+    public void awardAAAA()      { changeFat(10000);}     
     public void awardAAA()   { changeFat(1000);}
     public void awardAA()     { changeFat(100);}      
     public void awardA()   { changeFat(10);}
     
-    public void penaltyAAAA()    { changeFat(-10000);}
-    public void penaltyAAA3() { changeFat(-3000);}    
-    public void penaltyAAA2() { changeFat(-2000);}    
+    public void penaltyAAAA()    { changeFat(-10000);} 
     public void penaltyAAA() { changeFat(-1000);}
     public void penaltyAA()   { changeFat(-100);}
     public void penaltyA()   { changeFat(-10);}
@@ -191,11 +185,15 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
             return;
         g.drawImage(animalImage, xPos - 8, yPos - 8, 16, 16, null);// 减去坐标，保证嘴巴显示在当前x,y处 
     }
-    
-   
+
     /** Check if x,y,z out of animal's brain range */
     public static boolean outBrainRange(int x, int y, int z) {// 检查指定坐标是否超出animal脑空间界限
         return x < 0 || x >= BRAIN_SIZE || y < 0 || y >= BRAIN_SIZE || z < 0 || z >= BRAIN_SIZE;
+    }
+
+    /** Check if z out of animal's brain range */
+    public static boolean outBrainRangeZ(int z) {// 检查指定坐标是否超出animal脑空间界限
+        return z < 0 || z >= BRAIN_SIZE;
     }
 
     public boolean hasGene(int x, int y, int z, long geneMask) { //判断cell是否含某个基因 
@@ -214,12 +212,23 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         energys[x][y][z] = e;
     }
 
-    public void setEngZ(int z, float e) { //设定0,0,z坐标对应的cell能量值
+    public void setEngZ(int z, float e) { //设定0,0,z坐标对应的cell能量值 
         if (e > 1)
             e = 1;
         if (e < 0)
             e = 0;
         energys[0][0][z] = e;
+    }
+
+    public void addEngZ(int z, float e) { //添加0,0,z坐标对应的cell能量值
+        if (outBrainRangeZ(z))
+            return;
+        float ee = energys[0][0][z] + e;
+        if (ee > 1)
+            ee = 1;
+        if (ee < 0)
+            ee = 0;
+        energys[0][0][z] = ee;
     }
 
     public void setEng(int[] a, float e) { //打开指定的xyz坐标对应的cell能量值为极大
@@ -252,7 +261,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
     }
 
     public void stopBite() { //停止咬 
-        this.inBiting=false;
-   }
-    
+        this.inBiting = false;
+    }
+
 }

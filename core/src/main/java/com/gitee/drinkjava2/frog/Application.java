@@ -45,6 +45,7 @@ public class Application {
 
     public static final String CLASSPATH;
     public static boolean jumpToStart = false;
+    public static boolean debug = false;
 
     static {
         String classpath = new File("").getAbsolutePath();
@@ -162,6 +163,13 @@ public class Application {
             jumpToStart = true;
         });
         mainFrame.add(jumpToStartButton);
+        
+        //debug按扭，按下后切换debug变量，程序中利用这个变量设定debug调设断点
+        JButton debugButton = new JButton("Debug");
+        debugButton.addActionListener((e) -> {
+            debug = !debug;
+        });
+        mainFrame.add(debugButton);
 
         // 基因维数显示控制
         ArrayList<JRadioButton> geneRadioList = new ArrayList<>();
@@ -235,6 +243,7 @@ public class Application {
                     saveFileCheckBox.setBounds(buttonXpos - 50, w + 80, 80, 22);
                     deleteEggButton.setBounds(buttonXpos + 30, w + 80, buttonWidth, buttonHeight);
                     jumpToStartButton.setBounds(buttonXpos + 140, w + 80, buttonWidth, buttonHeight);
+                    debugButton.setBounds(buttonXpos + 250, w + 80, buttonWidth, buttonHeight);
                     showSplitDetailCheckBox.setBounds(buttonXpos + 300, w + 40, 120, 22);
                     for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
                         JRadioButton geneRadio = geneRadioList.get(i);
