@@ -358,6 +358,7 @@ public class BrainPicture extends JPanel {
         }
     }
 
+    static StringBuilder sb=new StringBuilder();
     public void drawBrainStructure(int step) {// 在这个方法里进行动物的三维脑结构的绘制
         Animal a = Env.getShowAnimal(); // 第一个青蛙
         if (a == null || !a.alive)
@@ -399,16 +400,16 @@ public class BrainPicture extends JPanel {
             }
 
             //开始给这个细胞写上所有基因名字，一个细胞可能有多个基因
-            setPicColor(Color.GRAY); 
-            int txtXPos = 0;
-            long mask=1l;
+            setPicColor(Color.red);  
+            long mask=1l; 
+            sb.setLength(0);
             for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
-                if (Genes.is(c,  mask) && Genes.display_gene[i]) { 
-                    txtXPos++;
-                    drawText(txtXPos, y+0.5f, z + 0.2f, Genes.name_gene[i], .2f);
-                }
-                mask=mask<<1;
+                if (Genes.is(c, mask) && Genes.display_gene[i])
+                    sb.append(Genes.name_gene[i]).append(",");
+                mask = mask << 1;
             }
+            drawText(x+0.5f, y+0.5f, z + 0.5f, sb.toString(), .1f);
+            
         }
 
         drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来

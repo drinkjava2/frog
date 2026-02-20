@@ -94,18 +94,46 @@ public class GeneUtils {
             }
         }
 
-        for (long[] l : Genes.assignGene) {//有些基因是手工指定分布到xyz上的，在这里实现它
+        int i = 0;
+        for (Boolean b : a.assignedGenes) {
+            long[] l = Genes.assignGene.get(i);
             int x = (int) l[0];
             int y = (int) l[1];
             int z = (int) l[2];
-            a.cells[x][y][z] = a.cells[x][y][z] | l[3];
+            if (b)
+                a.cells[x][y][z] = a.cells[x][y][z] | l[3];
+            i++;
         }
-
     }
 
     public static void geneMutation(Animal a) { //基因变异,注意这一个方法同时变异所有条基因
+        if (a.assignedGenes.isEmpty()) { //如果手工指定的散点基因还没有生成，则根据Genes中的assignGene的xyz坐标和出现概率生成一份
+            for (long[] l : Genes.assignGene) {
+                if (l[4] == 100)
+                    a.assignedGenes.add(true);
+                else if (l[4] == 0)
+                    a.assignedGenes.add(false);
+                else
+                    a.assignedGenes.add(RandomUtils.percent(l[4]));
+            }
+        }
+
         if (percent(20)) //50%的机率不变异
             return;
+
+        if (percent(30)) { //手工指定的散点基因的变异
+            int i = 0;
+            for (Boolean b : a.assignedGenes) {
+                long[] l = Genes.assignGene.get(i);
+                int x = (int) l[0];
+                int y = (int) l[1];
+                int z = (int) l[2]; 
+                if (l[4] < 100 && l[4] > 0 && RandomUtils.percent(30))
+                    a.assignedGenes.set(i, RandomUtils.percent(l[4]));
+                i++;
+            }
+        }
+
         for (int g = 0; g < GENE_NUMBERS; g++)
             if (percent(50)) {
                 if (Genes.fill_gene[g]) //如果这个基因是fill型的，永远会存在指定区域的所有细胞中，所以不需要参与变异

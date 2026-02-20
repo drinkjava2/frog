@@ -51,7 +51,11 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static int[] yLimit = new int[GENE_MAX];
     public static int[] zLimit = new int[GENE_MAX];
 
-    public static ArrayList<long[]> assignGene = new ArrayList<long[]>(); //手工指定的基因坐标和掩码，每项四位一组，前三位表示坐标，后一位表示基因掩码
+    public static int[] dots = new int[GENE_MAX]; // 用来手工限定基因 多个散点分布范围，dots存放多个散点的xyz坐标值，
+    
+    
+    
+    public static ArrayList<long[]> assignGene = new ArrayList<long[]>(); //手工指定的基因坐标和掩码，每项四位一组，前三位表示坐标，第4位表示基因掩码, 第五位表示出现概率
 
     /**
      * Register one bit gene 登记一位基因及对应的相关参数，只是登记基因的分布，细胞生成后要根据这些数据在细胞里分布对应基因
@@ -91,8 +95,8 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     }
 
     /**手工在xyz坐标上添加一个基因  */
-    public static void assignGene(int x, int y, int z, long geneMask) {
-        assignGene.add(new long[]{x, y, z, geneMask}); //四位一组，前三位表示坐标，后一位表示基因
+    public static void assignGene(int x, int y, int z, long geneMask, int percent) {
+        assignGene.add(new long[]{x, y, z, geneMask, percent}); //四位一组，前三位表示坐标，后一位表示基因
     }
 
     /** 移除xyz坐标上已添加的基因 */
@@ -177,19 +181,22 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
     public static final long 咬 = register(true, true, 0, 0, 3, "咬");
     public static final long 饿 = register(true, true, 0, 0, 4, "饿"); //饿基因与咬基因重合，方便编程
 
-    public static final long 忆 = register(true, false, 0, 1, 0, "忆"); //先登记一个忆基因  
+    public static final long 忆 = register(true, true, 0, 1, 0, "忆"); //先登记一个忆基因  
 
     public static final long 衰9 = register(true, false, 0, 0, NA, "衰9"); //衰9 表示细胞能量衰减率为90%, 以下类似
-    public static final long 衰8 = register(true, false, 0, 0, NA, "衰8");
-    public static final long 衰7 = register(true, false, 0, 0, NA, "衰7");
-    public static final long 衰6 = register(true, false, 0, 0, NA, "衰6");
+    public static final long 衰8 = register(true, false, 0, 0, NA, "衰8"); 
 
     public static final long 下1 = register(true, true, 0, 0, NA, "下1"); //下一基因代表向下方有一个固定连线，这个基因设计为饿细胞通向咬细胞的固定连线，必须进化出来
 
     static {
-        for (int z = 0; z <= 3; z++) //再把忆基因拷贝一些
-            assignGene(0, 1, z, 忆);
-
+        for (int z = 1; z <= 3; z++) //再把忆基因拷贝一些，100表示出现概率为100%，相当于填充
+            assignGene(0, 1, z, 忆, 50);
+        for (int z = 0; z <= 4; z++) { //再把衰基因拷贝一些
+            assignGene(0, 1, z, 衰9, 50);
+            assignGene(0, 2, z, 衰9, 50);
+            assignGene(0, 1, z, 衰8, 50);
+            assignGene(0, 2, z, 衰8, 50);
+        }
     }
 
     // ========= active方法在每个主循环都会调用，用来存放细胞的行为，这是个重要方法 =========== 
@@ -211,14 +218,6 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
                 }
                 if (is(c, 衰8)) {
                     e = e * 0.8f;
-                    a.setEng(x, y, z, e);
-                }
-                if (is(c, 衰7)) {
-                    e = e * 0.7f;
-                    a.setEng(x, y, z, e);
-                }
-                if (is(c, 衰6)) {
-                    e = e * 0.6f;
                     a.setEng(x, y, z, e);
                 }
 

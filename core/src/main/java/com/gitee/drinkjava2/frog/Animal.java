@@ -51,6 +51,8 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public ArrayList<ArrayList<Integer>> genes = new ArrayList<>(); // 基因是多个数列，有点象多条染色体。每个数列都代表一个基因的分裂次序(8叉/4叉/2叉)。
 
+    public ArrayList<Boolean> assignedGenes = new ArrayList<>();//assignedGenes存放手工指定xyz散点的基因根据Genes中指定的概率变异后的结果，取0或1值
+    
     public static int CountsQTY = 10; //常量总数多少
     public float[] consts = new float[CountsQTY]; // 常量，范围0~1之间，这些常量并不常，会参与遗传算法筛选，规则是有大概率小变异，小概率大变异
 
@@ -92,6 +94,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         int i = 0;
         for (ArrayList<Integer> gene : egg.genes)//动物的基因是蛋的基因的拷贝 
             genes.get(i++).addAll(gene);
+        assignedGenes.addAll(egg.assignedGenes);//手工指定的散点分布的基因
         i = 0;
         if (Env.BORN_AT_RANDOM_PLACE) { //是否随机出生在地图上?
             xPos = RandomUtils.nextInt(Env.ENV_WIDTH);
@@ -256,8 +259,10 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         this.inBiting = true;
         if (FoodJudge.isSweetFood())
             this.awardAA();
-        else
-            this.penaltyA();
+        else {
+            if (Env.step > 8)
+                this.penaltyAA();
+        }
     }
 
     public void stopBite() { //停止咬 
