@@ -207,20 +207,22 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         return cells[x][y][z] > 0;
     }
 
-    public void setEng(int x, int y, int z, float e) { //设定x,y,z坐标对应的cell能量值
+    public float setEng(int x, int y, int z, float e) { //设定x,y,z坐标对应的cell能量值
         if (e > 1)
             e = 1;
         if (e < 0)
             e = 0;
         energys[x][y][z] = e;
+        return e;
     }
 
-    public void setEngZ(int z, float e) { //设定0,0,z坐标对应的cell能量值 
+    public float setEngZ(int z, float e) { //设定0,0,z坐标对应的cell能量值 
         if (e > 1)
             e = 1;
         if (e < 0)
             e = 0;
         energys[0][0][z] = e;
+        return e;
     }
 
     public void addEngZ(int z, float e) { //添加0,0,z坐标对应的cell能量值

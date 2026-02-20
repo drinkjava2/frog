@@ -400,12 +400,12 @@ public class BrainPicture extends JPanel {
             }
 
             //开始给这个细胞写上所有基因名字，一个细胞可能有多个基因
-            setPicColor(Color.red);  
+            setPicColor(Color.gray);  
             long mask=1l; 
             sb.setLength(0);
             for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
                 if (Genes.is(c, mask) && Genes.display_gene[i])
-                    sb.append(Genes.name_gene[i]).append(",");
+                    sb.append(Genes.name_gene[i]).append(" ");
                 mask = mask << 1;
             }
             drawText(x+0.5f, y+0.5f, z + 0.5f, sb.toString(), .1f);
@@ -432,12 +432,6 @@ public class BrainPicture extends JPanel {
         g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         g.drawString("step:" + step + ", ate:" + a.ateFood + ", wrong:" + a.ateWrong + ", miss:" + a.ateMiss + ", fat="
                 + a.fat, 10, 15);
-
-        // for (int y = 0; y < ColorUtils.rainbow.length; y += 1) {//调试彩虹色
-        // g.setColor(ColorUtils.rainbow[y]);
-        // for (int i = 0; i < 9; i++)
-        // g.drawLine(0, y * 9 + i, 50, y * 9 + i);
-        // }
 
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
     }
