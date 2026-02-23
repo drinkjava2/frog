@@ -245,8 +245,35 @@ public class BrainPicture extends JPanel {
                 round(r * scale));
     }
 
+    /** 将脑图的xyz坐标转为屏幕的x, y二维坐标 */
+    public int[] toScreenXY(float px1, float py1, float pz1) {
+        double x1 = px1 - Env.BRAIN_SIZE / 2;
+        double y1 = -py1 + Env.BRAIN_SIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
+        double z1 = pz1 - Env.BRAIN_SIZE / 2;
+        x1 = x1 * scale;
+        y1 = y1 * scale;
+        z1 = z1 * scale;
+        double x, y, z;
+        y = y1 * cos(xAngle) - z1 * sin(xAngle);// 绕x轴转
+        z = y1 * sin(xAngle) + z1 * cos(xAngle);
+        y1 = y;
+        z1 = z;
+
+        x = z1 * sin(yAngle) + x1 * cos(yAngle);// 绕y轴转
+        // z = z1 * cos(yAngle) - x1 * sin(yAngle);
+        x1 = x;
+        // z1 = z;
+
+        x = x1 * cos(zAngle) - y1 * sin(zAngle);// 绕z轴转
+        y = x1 * sin(zAngle) + y1 * cos(zAngle);
+        x1 = x;
+        y1 = y;
+        return new int[] { round((float) x1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + xOffset),
+                round((float) y1 + Env.FROG_BRAIN_DISP_WIDTH / 2 + yOffset) };
+    }
+
     /** 画一个圆 */
-    public void drawCircle(float px1, float py1, float pz1, float r) {// 这个方法实际和上面的一样的，只是改成了drawOval
+    public void drawCircle(float px1, float py1, float pz1, float r) {// 这个方法实际和drawPoint一样的，只是改成了drawOval
         double x1 = px1 - Env.BRAIN_SIZE / 2;
         double y1 = -py1 + Env.BRAIN_SIZE / 2;// 屏幕的y坐标是反的，显示时要正过来
         double z1 = pz1 - Env.BRAIN_SIZE / 2;
@@ -358,7 +385,8 @@ public class BrainPicture extends JPanel {
         }
     }
 
-    static StringBuilder sb=new StringBuilder();
+    static StringBuilder sb = new StringBuilder();
+
     public void drawBrainStructure(int step) {// 在这个方法里进行动物的三维脑结构的绘制
         Animal a = Env.getShowAnimal(); // 第一个青蛙
         if (a == null || !a.alive)
@@ -368,49 +396,56 @@ public class BrainPicture extends JPanel {
         g.setColor(BLACK); // 画边框
         g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
-        for (int x = 0; x < Animal.X_WIDTH; x++)  
-        for (int y = 0; y < Animal.Y_WIDTH; y++)  
-        for (int z = 0; z < Animal.Z_WIDTH; z++) {// 画它所有的脑细胞位置和颜色
-            setPicColor(BLACK); // 画边框
-            drawPointCent(x, y, z, 0.03f); //画代表这个细胞的小点
+        for (int x = 0; x < Animal.X_WIDTH; x++)
+            for (int y = 0; y < Animal.Y_WIDTH; y++)
+                for (int z = 0; z < Animal.Z_WIDTH; z++) {// 画它所有的脑细胞位置和颜色
+                    setPicColor(BLACK); // 画边框
+                    drawPointCent(x, y, z, 0.03f); // 画代表这个细胞的小点
 
-            long c = a.cells[x][y][z]; //当前细胞用一个long表示，它最多可以含有64位基因 
-            
-            if (c == 0) { //如果细胞里什么基因都没有，就是个空细胞，划个小点表示后直接跳过
-                setPicColor(Color.LIGHT_GRAY); 
-                drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.1f);
-                continue;
-            }
-            
-            
-            if (x >= xMask && y >= yMask && c != 0)// 画出细胞每个基因存在的细胞格子
-                for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
-                    if ((c & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
-                        setPicColor(ColorUtils.colorByCode(geneIndex)); // 开始画出对应的细胞基因参数，用不同颜色圆表示
-                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.3f);
+                    long c = a.cells[x][y][z]; // 当前细胞用一个long表示，它最多可以含有64位基因
+
+                    if (c == 0) { // 如果细胞里什么基因都没有，就是个空细胞，划个小点表示后直接跳过
+                        setPicColor(Color.LIGHT_GRAY);
+                        drawPoint(x + 0.5f, y + 0.5f, z + 0.5f, 0.1f);
+                        continue;
                     }
-                }
-            float e = a.energys[x][y][z];
-            if (e > 0.03f || e < -0.03f) {
-                setPicColor(e > 0 ? Color.red : Color.BLUE); // 用红色小圆表示正能量，蓝色表示负能量
-                float size = Math.abs(e);// 再用不同大小圆形表示不同能量值
-                if (size > 1)
-                    size = 1;
-                drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
-            }
 
-            //开始给这个细胞写上所有基因名字，一个细胞可能有多个基因
-            setPicColor(Color.gray);  
-            long mask=1l; 
-            sb.setLength(0);
-            for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
-                if (Genes.is(c, mask) && Genes.display_gene[i])
-                    sb.append(Genes.name_gene[i]).append(" ");
-                mask = mask << 1;
-            }
-            drawText(x+0.5f, y+0.5f, z + 0.5f, sb.toString(), .1f);
-            
-        }
+                    int[] xy = toScreenXY(x + 0.5f, y + 0.5f, z + 0.5f);
+                    int gx = xy[0];
+                    int gy = xy[1];
+                    if (x >= xMask && y >= yMask && c != 0) {// 画出细胞每个基因
+                        for (int geneIndex = Genes.GENE_NUMBERS - 1; geneIndex >= 0; geneIndex--) {
+                            if ((c & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
+                                //setPicColor(ColorUtils.colorByCode(geneIndex)); // 颜色
+                                int angleSize = 360 / Genes.GENE_NUMBERS;
+                                int startAngle = angleSize * geneIndex;
+                                int r = round(scale * .3f);
+                                g.setColor(ColorUtils.colorByCode(geneIndex));
+                                g.fillArc(gx - r, gy - r, r * 2, r * 2, startAngle, angleSize);// 画扇形
+                                //								r = round((geneIndex + 8) * .5f); // 用不同颜色圆表示基因
+                                //								g.fillOval(gx - r, gy - r, 2 * r, 2 * r);
+
+                                g.setColor(Color.GRAY);
+                                float txtAngle = (startAngle + angleSize * 0.5f) * 3.1415926f / 180f;
+                                g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(0.12 * scale)));
+                                g.drawString(Genes.name_gene[geneIndex],
+                                        gx - (int) round(.04 * scale) + round(1.2f * r * (float) Math.cos(txtAngle)),
+                                        gy + (int) round(.04 * scale) - round(1.2f * r * (float) Math.sin(txtAngle)));
+                            }
+                        }
+                    }
+
+                    float e = a.energys[x][y][z];
+                    if (e > 0.03f || e < -0.03f) {
+                        setPicColor(e > 0 ? Color.red : Color.BLUE); // 用红色小圆表示正能量，蓝色表示负能量
+                        float size = Math.abs(e);// 再用不同大小圆形表示不同能量值
+                        if (size > 1)
+                            size = 1;
+                        drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
+                    }
+
+                    //drawingGeneNames(c, gx, gy);
+                }
 
         drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来
 
@@ -433,7 +468,30 @@ public class BrainPicture extends JPanel {
         g.drawString("step:" + step + ", ate:" + a.ateFood + ", wrong:" + a.ateWrong + ", miss:" + a.ateMiss + ", fat="
                 + a.fat, 10, 15);
 
+        // 在脑图片左面列出基因名称和色彩
+        int x = 0, y = 5;
+        for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
+            g.setColor(ColorUtils.colorByCode(geneIndex));
+            g.drawString(Genes.name_gene[geneIndex], x + 20, y * 20 + 3);
+            g.fillOval(x, y * 20 - 10, y, y);
+            y++;
+        }
+
         this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
+    }
+
+    public long drawingGeneNames(long c, int gx, int gy) {//给细胞写上所有基因名字，一个细胞可能有多个基因  
+        g.setColor(Color.gray);
+        long mask = 1l;
+        sb.setLength(0);
+        for (int i = 0; i < Genes.GENE_NUMBERS; i++) {
+            if (Genes.is(c, mask) && Genes.display_gene[i])
+                sb.append(Genes.name_gene[i]).append(" ");
+            mask = mask << 1;
+        }
+        g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(.1f * scale)));
+        g.drawString(sb.toString(), gx, gy);
+        return mask;
     }
 
     public static void setNote(String note) {

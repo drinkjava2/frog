@@ -118,7 +118,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
         GeneUtils.geneMutation(this); //分裂算法控制的基因突变
         if (RandomUtils.percent(30))
-            for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长
+            for (ArrayList<Integer> gene : genes) //基因多也要适当小扣点分，防止基因无限增长，但是扣分远少于食物的奖惩
                 fat = fat - gene.size();
         GeneUtils.createCellsFromGene(this); //根据基因，分裂生成脑细胞，如有指定基因位置也在这一步指定
     }
@@ -250,9 +250,9 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
 
     public void addEng(int x, int y, int z, float e) {//指定的a坐标对应的cell能量值加e
         float eng = energys[x][y][z] + e;
-        if (eng > 1) //如果饱和，不再增加，通过这个方法可以实现异或逻辑或更复杂的模式识别，详见TestInput3测试
+        if (eng > 1) //能量取值0~1
             eng = 1;
-        if (eng < 0) //回到传统方式，细胞不允许出现负能量。（但是能量可以出现负值，这个与实际细胞的抑制信号相似）
+        if (eng < 0) 
             eng = 0;
         energys[x][y][z] = eng;
     }
@@ -262,7 +262,7 @@ public abstract class Animal {// 这个程序大量用到public变量而不是ge
         if (FoodJudge.isSweetFood())
             this.awardAA();
         else {
-            if (Env.step > 8)
+            if (Env.step > 10) //前10步咬错了不惩罚，新手保护
                 this.penaltyAA();
         }
     }

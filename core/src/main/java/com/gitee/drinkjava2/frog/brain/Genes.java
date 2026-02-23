@@ -79,14 +79,14 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
         return register(display, fill, x_limit, y_limit, z_limit, null);
     }
 
-    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit, String geneNname) {
+    public static long register(boolean display, boolean fill, int x_limit, int y_limit, int z_limit, String geneName) {
         display_gene[GENE_NUMBERS] = display;
         fill_gene[GENE_NUMBERS] = fill;
         xLimit[GENE_NUMBERS] = x_limit;
         yLimit[GENE_NUMBERS] = y_limit;
         zLimit[GENE_NUMBERS] = z_limit;
-        if (geneNname != null)
-            name_gene[GENE_NUMBERS] = geneNname;
+        if (geneName != null)
+            name_gene[GENE_NUMBERS] = geneName;
         if (++GENE_NUMBERS >= GENE_MAX) {//
             System.out.println("目前基因位数不能超过" + GENE_MAX);
             System.exit(-1);
@@ -183,11 +183,11 @@ public class Genes { // Genes登记所有的基因， 指定每个基因允许�
 
     public static final long 忆 = register(true, true, 0, 1, 0, "忆"); //先登记一个忆基因  
 
-    public static final long 衰9 = register(true, false, 0, 0, NA, "衰9"); //衰9 表示细胞能量衰减率为90%, 以下类似
-    public static final long 衰8 = register(true, false, 0, 0, NA, "衰8"); 
+    public static final long 衰9 = register(true, false, 0, 0, NA, "9"); //衰9 表示细胞能量衰减率为90%, 以下类似
+    public static final long 衰8 = register(true, false, 0, 0, NA, "8"); 
 
-    public static final long 下1 = register(true, true, 0, 0, 4, "下1"); //下1基因代表向下方有一个固定连线，这个基因设计为饿细胞通向咬细胞的固定连线，以下类似 
-    public static final long 上1 = register(true, true, 0, 0, 2, "上1"); 
+    public static final long 下1 = register(true, true, 0, 0, 4, "下"); //下1基因代表向下方有一个固定连线，这个基因设计为饿细胞通向咬细胞的固定连线，以下类似 
+    public static final long 上1 = register(true, true, 0, 0, 2, "上"); 
     
     static {
         for (int z = 1; z <= 3; z++) //再把忆基因拷贝一些，100表示出现概率为100%，相当于填充
