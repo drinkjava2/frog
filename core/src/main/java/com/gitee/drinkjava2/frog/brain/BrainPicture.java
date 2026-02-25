@@ -473,7 +473,7 @@ public class BrainPicture extends JPanel {
         for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
             g.setColor(ColorUtils.colorByCode(geneIndex));
             g.drawString(Genes.name_gene[geneIndex], x + 20, y * 20 + 3);
-            g.fillOval(x, y * 20 - 10, y, y);
+            g.fillOval(x, y * 20 - 10, 10, 10);
             y++;
         }
 
