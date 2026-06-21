@@ -386,19 +386,20 @@ public class BrainPicture extends JPanel {
     }
 
     static StringBuilder sb = new StringBuilder();
+ 
 
-    public void drawBrainStructure(int step) {// 在这个方法里进行动物的三维脑结构的绘制
+    public void drawBrainStructure(int step) { // 在这个方法里进行动物的三维脑结构的绘制
         Animal a = Env.getShowAnimal(); // 第一个青蛙
         if (a == null || !a.alive)
             return;
-        g.setColor(WHITE);// 先清空旧图, g是buffImg，绘在内存中
+        g.setColor(WHITE); // 先清空旧图, g是buffImg，绘在内存中
         g.fillRect(0, 0, brainDispWidth, brainDispWidth);
         g.setColor(BLACK); // 画边框
         g.drawRect(0, 0, brainDispWidth, brainDispWidth);
 
         for (int x = 0; x < Animal.X_WIDTH; x++)
             for (int y = 0; y < Animal.Y_WIDTH; y++)
-                for (int z = 0; z < Animal.Z_WIDTH; z++) {// 画它所有的脑细胞位置和颜色
+                for (int z = 0; z < Animal.Z_WIDTH; z++) { // 画它所有的脑细胞位置和颜色
                     setPicColor(BLACK); // 画边框
                     drawPointCent(x, y, z, 0.03f); // 画代表这个细胞的小点
 
@@ -413,18 +414,16 @@ public class BrainPicture extends JPanel {
                     int[] xy = toScreenXY(x + 0.5f, y + 0.5f, z + 0.5f);
                     int gx = xy[0];
                     int gy = xy[1];
-                    if (x >= xMask && y >= yMask && c != 0) {// 画出细胞每个基因
+                    if (x >= xMask && y >= yMask && c != 0) { // 画出细胞每个基因
                         for (int geneIndex = Genes.GENE_NUMBERS - 1; geneIndex >= 0; geneIndex--) {
-                            if ((c & (1 << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
-                                //setPicColor(ColorUtils.colorByCode(geneIndex)); // 颜色
+                            if ((c & (1L << geneIndex)) != 0 && Genes.display_gene[geneIndex]) {
                                 int angleSize = 360 / Genes.GENE_NUMBERS;
                                 int startAngle = angleSize * geneIndex;
                                 int r = round(scale * .3f);
                                 g.setColor(ColorUtils.colorByCode(geneIndex));
-                                g.fillArc(gx - r, gy - r, r * 2, r * 2, startAngle, angleSize);// 画扇形
-                                //								r = round((geneIndex + 8) * .5f); // 用不同颜色圆表示基因
-                                //								g.fillOval(gx - r, gy - r, 2 * r, 2 * r);
+                                g.fillArc(gx - r, gy - r, r * 2, r * 2, startAngle, angleSize); // 画扇形
 
+                                // 绘制基因名称标签
                                 g.setColor(Color.GRAY);
                                 float txtAngle = (startAngle + angleSize * 0.5f) * 3.1415926f / 180f;
                                 g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, (int) round(0.12 * scale)));
@@ -438,28 +437,26 @@ public class BrainPicture extends JPanel {
                     float e = a.energys[x][y][z];
                     if (e > 0.03f || e < -0.03f) {
                         setPicColor(e > 0 ? Color.red : Color.BLUE); // 用红色小圆表示正能量，蓝色表示负能量
-                        float size = Math.abs(e);// 再用不同大小圆形表示不同能量值
+                        float size = Math.abs(e); // 再用不同大小圆形表示不同能量值
                         if (size > 1)
                             size = 1;
                         drawCircle(x + 0.5f, y + 0.5f, z + 0.5f, size);
                     }
-
-                    //drawingGeneNames(c, gx, gy);
                 }
 
-        drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE);// 把脑的框架画出来
+        drawCuboid(0, 0, 0, Env.BRAIN_SIZE, Env.BRAIN_SIZE, Env.BRAIN_SIZE); // 把脑的框架画出来
 
-        setPicColor(BLACK); // 把x,y,z坐标画出来
+        setPicColor(BLACK); // 把x,y,z坐标轴文字画出来
         drawText(Env.BRAIN_SIZE, 0, 0, "x", Env.BRAIN_SIZE * 0.1f);
         drawText(0, Env.BRAIN_SIZE, 0, "y", Env.BRAIN_SIZE * 0.1f);
         drawText(0, 0, Env.BRAIN_SIZE, "z", Env.BRAIN_SIZE * 0.1f);
-        setPicColor(RED);
+        setPicColor(RED); // 画坐标线
         drawLine(0, 0, 0, Env.BRAIN_SIZE, 0, 0);
         drawLine(0, 0, 0, 0, Env.BRAIN_SIZE, 0);
         drawLine(0, 0, 0, 0, 0, Env.BRAIN_SIZE);
 
         g.setColor(Color.black);
-        if (note != null) {// 全局注释
+        if (note != null) { // 全局注释
             g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
             g.drawString(note, 10, 20);
         }
@@ -468,17 +465,32 @@ public class BrainPicture extends JPanel {
         g.drawString("step:" + step + ", ate:" + a.ateFood + ", wrong:" + a.ateWrong + ", miss:" + a.ateMiss + ", fat="
                 + a.fat, 10, 15);
 
-        // 在脑图片左面列出基因名称和色彩
-        int x = 0, y = 5;
+        // --- 改进后的左侧图例区域 (放大 2 倍版) ---
+        int legendX = 10;
+        int legendYStart = 50; 
+        int rowHeight = 30; // 增大行间距以适应更大的图标
+        int angleSize = 360 / Genes.GENE_NUMBERS; 
+
         for (int geneIndex = 0; geneIndex < Genes.GENE_NUMBERS; geneIndex++) {
+            int currentY = legendYStart + geneIndex * rowHeight;
+            
+            // 1. 设置颜色
             g.setColor(ColorUtils.colorByCode(geneIndex));
-            g.drawString(Genes.name_gene[geneIndex], x + 20, y * 20 + 3);
-            g.fillOval(x, y * 20 - 10, 10, 10);
-            y++;
+            
+            // 2. 绘制扇形图标，半径放大 2 倍至 12 (直径 24)
+            int iconR = 12; 
+            int startAngle = angleSize * geneIndex;
+            // 这里的 y 坐标 currentY - iconR 是为了让扇形中心与文字基本对齐
+            g.fillArc(legendX, currentY - iconR, iconR * 2, iconR * 2, startAngle, angleSize);
+            
+            // 3. 绘制文字说明
+            g.setColor(BLACK);
+            g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14)); // 稍微加大文字字号更协调
+            g.drawString(Genes.name_gene[geneIndex], legendX + iconR * 2 + 10, currentY + 5);
         }
 
-        this.getGraphics().drawImage(buffImg, 0, 0, this);// 利用缓存避免画面闪烁，这里输出缓存图片
-    }
+        this.getGraphics().drawImage(buffImg, 0, 0, this); // 输出缓存图片
+    } 
 
     public long drawingGeneNames(long c, int gx, int gy) {//给细胞写上所有基因名字，一个细胞可能有多个基因  
         g.setColor(Color.gray);
